@@ -2,7 +2,7 @@ export default function SanscePMConsultingWebsitePremium() {
   const services = [
     {
       index: '01',
-      title: '自主更新全案管理',
+      title: '自主更新全案管理',ok
       desc: '協助地主與更新會整合基地條件、推動程序、跨專業協作與進度管控，建立清楚可執行的推動架構。',
     },
     {
