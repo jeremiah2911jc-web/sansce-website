@@ -119,7 +119,7 @@ export default function SansceCompanyWebsite() {
             </div>
             <div>
               <div className="text-base font-semibold text-[#0b4f79]">三策專案管理顧問有限公司</div>
-              <div className="text-sm text-slate-500">都市更新・自主更新・全案管理顧問平台</div>
+              <div className="text-sm text-slate-500">Sanze Project Management Consulting Co., Ltd.</div>
             </div>
           </div>
 
@@ -384,9 +384,10 @@ export default function SansceCompanyWebsite() {
                 </div>
                 <div className="mt-8 space-y-5 text-base text-slate-200">
                   <div>公司名稱：三策專案管理顧問有限公司</div>
-                  <div className="flex items-center gap-3"><Phone className="h-5 w-5 text-[#dcb770]" />服務電話：（待提供）</div>
-                  <div className="flex items-center gap-3"><Mail className="h-5 w-5 text-[#dcb770]" />電子郵件：（待提供）</div>
-                  <div>辦公地址：依正式上線資訊補入</div>
+                  <div className="text-sm text-slate-300">Sanze Project Management Consulting Co., Ltd.</div>
+                  <div className="flex items-center gap-3"><Phone className="h-5 w-5 text-[#dcb770]" />服務電話：0916711323</div>
+                  <div className="flex items-center gap-3"><Mail className="h-5 w-5 text-[#dcb770]" />電子郵件：sanze.consulting@gmail.com</div>
+                  <div>辦公地址：預約制洽談</div>
                   <div>服務時間：週一至週五 09:00－18:00</div>
                 </div>
 
@@ -419,26 +420,33 @@ export default function SansceCompanyWebsite() {
             </div>
           </div>
         </section>
+
+        <section className="px-6 py-16 lg:px-8 lg:py-20">
+          <div className="mx-auto max-w-7xl rounded-[36px] border border-[#e2d9cb] bg-[linear-gradient(135deg,#f7f4ee_0%,#efe4d2_100%)] px-8 py-12 text-center">
+            <div className="inline-flex items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-medium text-[#0b4f79] shadow-sm">
+              三策的承諾
+            </div>
+            <h2 className="mt-6 text-3xl font-semibold leading-relaxed text-[#11213b] sm:text-4xl">
+              真正有價值的顧問服務，<br className="hidden sm:block" />
+              不只提出建議，<br className="hidden sm:block" />
+              更在於把方向看清楚，<br className="hidden sm:block" />
+              把程序走穩健，<br className="hidden sm:block" />
+              把案件真正往前推進。
+            </h2>
+          </div>
+        </section>
       </main>
 
-      <footer className="bg-[#0b4f79] text-white">
-        <div className="mx-auto grid max-w-7xl gap-8 px-6 py-10 lg:grid-cols-[1fr_0.8fr_0.8fr] lg:px-8">
+      <footer className="border-t border-[#e4e1da] bg-white px-6 py-8 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
           <div>
-            <div className="text-2xl font-semibold">三策專案管理顧問有限公司</div>
-            <div className="mt-3 text-slate-200">以信實立本　以專業成事</div>
-            <div className="mt-4 text-sm text-slate-300">都市更新・自主更新・全案管理顧問平台</div>
+            <div className="font-semibold text-[#0b4f79]">三策專案管理顧問有限公司</div>
+            <div>Sanze Project Management Consulting Co., Ltd.</div>
           </div>
-          <div>
-            <div className="text-lg font-semibold">快速連結</div>
-            <div className="mt-4 space-y-2 text-slate-200">
-              <div>首頁</div>
-              <div>關於我們</div>
-              <div>服務項目</div>
-              <div>知識專區</div>
-              <div>聯絡我們</div>
-            </div>
+          <div className="flex items-center gap-2 text-slate-500">
+            <ShieldCheck className="h-4 w-4" />
+            © {new Date().getFullYear()} Sanze Project Management Consulting Co., Ltd. All rights reserved.
           </div>
-          <div className="flex items-end text-slate-200">© 2026 三策專案管理顧問有限公司 版權所有</div>
         </div>
       </footer>
     </div>
