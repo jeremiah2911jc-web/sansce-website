@@ -1,358 +1,446 @@
-export default function SanscePMConsultingWebsitePremium() {
-  const services = [
-    {
-      index: '01',
-      title: '自主更新全案管理',ok
-      desc: '協助地主與更新會整合基地條件、推動程序、跨專業協作與進度管控，建立清楚可執行的推動架構。',
-    },
-    {
-      index: '02',
-      title: '更新會籌組與治理協助',
-      desc: '協助籌備組織架構、會議流程、文件管理與對外溝通，讓案件推進更有秩序。',
-    },
-    {
-      index: '03',
-      title: '專業團隊整合',
-      desc: '串連建築、估價、地政、法律、財務、營造等專業資源，降低地主自行協調的負擔。',
-    },
-    {
-      index: '04',
-      title: '前期可行性評估',
-      desc: '就基地條件、整合現況、推動難點與執行路徑進行初步評估，協助釐清下一步。',
-    },
-  ]
+import React from "react";
+import { motion } from "framer-motion";
+import {
+  ArrowRight,
+  Building2,
+  CircleHelp,
+  Compass,
+  FileText,
+  Handshake,
+  Layers3,
+  Mail,
+  Phone,
+  ShieldCheck,
+  Wallet,
+  Wrench,
+} from "lucide-react";
 
-  const process = [
-    {
-      step: '01',
-      title: '初步諮詢',
-      desc: '了解基地位置、產權概況、地主共識與現階段主要困難。',
-    },
-    {
-      step: '02',
-      title: '案件評估',
-      desc: '盤點條件與需求，提出推動方向、整合重點與合作建議。',
-    },
-    {
-      step: '03',
-      title: '整合啟動',
-      desc: '建立窗口、協調專業團隊、安排會議與文件流程。',
-    },
-    {
-      step: '04',
-      title: '全案推進',
-      desc: '持續控管進度、協作節點、資訊傳達與執行品質。',
-    },
-  ]
+const services = [
+  {
+    title: "前期可行性評估",
+    desc: "評估基地條件、更新路徑與整體可行性，建立推動基礎判斷。",
+    icon: Compass,
+  },
+  {
+    title: "住戶整合與推動輔導",
+    desc: "協助社區建立溝通機制，形成初步共識與推動節奏。",
+    icon: Handshake,
+  },
+  {
+    title: "更新組織及程序輔導",
+    desc: "輔導組織建立與程序規劃，推進制度化作業。",
+    icon: FileText,
+  },
+  {
+    title: "補助及財務資源整合",
+    desc: "盤點補助資源與財務條件，協助建立推動所需資源基礎。",
+    icon: Wallet,
+  },
+  {
+    title: "專業整合與全案管理",
+    desc: "跨領域整合專業團隊與節點管理，掌握整體推動節奏。",
+    icon: Layers3,
+  },
+  {
+    title: "執行銜接與後段管理",
+    desc: "進入執行階段後持續顧問協調，確保成果落地。",
+    icon: Wrench,
+  },
+];
 
-  const strengths = [
-    '以地主端與更新會需求為核心',
-    '重視程序秩序與執行品質',
-    '整合跨領域專業而非單點服務',
-    '用清楚流程降低溝通成本與不確定性',
-  ]
+const promises = [
+  {
+    title: "信實",
+    desc: "站在委託方立場，資訊不隱瞞、程序不美化、風險不迴避。真實的評估，是穩健推動的起點。",
+  },
+  {
+    title: "整合",
+    desc: "都市更新涉及建築、法務、財務、估價、工程與金融。三策協助整合跨專業環節，讓每一段工作彼此銜接。",
+  },
+  {
+    title: "落地",
+    desc: "再完整的規劃，若無法付諸執行，仍只是紙面工程。三策重視節點管理與成果實現。",
+  },
+];
 
-  const metrics = [
-    { label: '服務定位', value: '地主端' },
-    { label: '核心能力', value: '統籌協作' },
-    { label: '推進重點', value: '程序節點' },
-  ]
+const fitCases = [
+  "老舊社區有都市更新或危老重建需求，但尚不清楚如何啟動",
+  "地主群體希望保有主導權，自主推動更新",
+  "已接觸多個專業單位，卻缺乏整合統籌的核心平台",
+  "更新案件卡在某個階段，需要有人協助突破瓶頸",
+  "面對複雜程序感到迷茫，希望有專業夥伴穩定陪伴推進",
+];
 
+const insightTopics = [
+  "什麼是都市更新？自主更新與委託實施有何不同？",
+  "都市更新的七大程序階段，你現在走到哪裡？",
+  "全案管理顧問在更新案中扮演什麼角色？",
+  "前期可行性評估，為什麼是更新最重要的第一步？",
+  "社區整合遲遲無法推進？常見的五個核心原因",
+  "危老重建與都市更新，如何選擇適合的更新路徑？",
+];
+
+function SectionTag({ children }) {
   return (
-    <div className="min-h-screen bg-[#f5f1ea] text-[#111827]">
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#111827]/92 text-white backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-8">
+    <div className="inline-flex items-center rounded-full border border-[#d5dce4] bg-white px-4 py-2 text-sm font-medium text-[#0b4f79] shadow-sm">
+      {children}
+    </div>
+  );
+}
+
+function SectionTitle({ eyebrow, title, desc, light = false }) {
+  return (
+    <div className="max-w-3xl">
+      {eyebrow ? (
+        <div className={`text-sm font-semibold tracking-[0.18em] uppercase ${light ? "text-[#dcb770]" : "text-[#b08a48]"}`}>
+          {eyebrow}
+        </div>
+      ) : null}
+      <h2 className={`mt-3 text-3xl font-semibold tracking-tight sm:text-4xl ${light ? "text-white" : "text-[#11213b]"}`}>
+        {title}
+      </h2>
+      {desc ? (
+        <p className={`mt-5 text-base leading-8 ${light ? "text-slate-200" : "text-slate-600"}`}>
+          {desc}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+export default function SansceCompanyWebsite() {
+  return (
+    <div className="min-h-screen bg-[#f7f4ee] text-slate-900">
+      <header className="sticky top-0 z-50 border-b border-[#dde5ea] bg-white/94 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
           <div className="flex items-center gap-4">
-            <img src="/logo.png" alt="三策 logo" className="h-10 w-auto object-contain md:h-12" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-[#0b4f79] text-sm font-bold text-[#0b4f79]">
+              三策
+            </div>
             <div>
-              <div className="text-[15px] font-semibold tracking-[0.16em] text-white">三策專案管理顧問有限公司</div>
-              <div className="mt-1 text-[11px] uppercase tracking-[0.28em] text-white/60">San-Sce Project Management Consulting</div>
+              <div className="text-base font-semibold text-[#0b4f79]">三策專案管理顧問有限公司</div>
+              <div className="text-sm text-slate-500">都市更新・自主更新・全案管理顧問平台</div>
             </div>
           </div>
 
-          <nav className="hidden items-center gap-8 text-sm text-white/70 md:flex">
-            <a href="#about" className="transition hover:text-white">關於我們</a>
-            <a href="#services" className="transition hover:text-white">服務項目</a>
-            <a href="#process" className="transition hover:text-white">合作流程</a>
-            <a href="#contact" className="transition hover:text-white">聯絡諮詢</a>
-          </nav>
-
-          <a
-            href="#contact"
-            className="hidden rounded-full border border-white/20 px-5 py-2.5 text-sm font-medium text-white transition hover:-translate-y-0.5 hover:bg-white hover:text-[#111827] md:inline-flex"
-          >
-            預約諮詢
-          </a>
+          <div className="hidden items-center gap-8 md:flex">
+            <a href="#about" className="text-sm font-medium text-slate-600 hover:text-[#0b4f79]">關於我們</a>
+            <a href="#services" className="text-sm font-medium text-slate-600 hover:text-[#0b4f79]">服務項目</a>
+            <a href="#insights" className="text-sm font-medium text-slate-600 hover:text-[#0b4f79]">知識專區</a>
+            <a href="#contact" className="text-sm font-medium text-slate-600 hover:text-[#0b4f79]">聯絡我們</a>
+          </div>
         </div>
       </header>
 
       <main>
-        <section className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(181,152,99,0.18),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(17,24,39,0.08),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.35),rgba(255,255,255,0))]" />
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#b59863]/50 to-transparent" />
+        <section className="relative overflow-hidden bg-[linear-gradient(135deg,#eef5f7_0%,#f7f4ee_100%)]">
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute left-[-60px] top-24 h-64 w-64 rounded-full bg-[#d6ebee]" />
+            <div className="absolute right-[-100px] top-8 h-80 w-80 rounded-full bg-[#113f64]" />
+            <div className="absolute right-28 top-40 h-28 w-28 rounded-full bg-[#f0dfcb]" />
+            <div className="absolute left-[38%] bottom-10 h-40 w-40 rounded-full bg-white/70" />
+          </div>
 
-          <div className="mx-auto grid max-w-7xl gap-14 px-6 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-24">
-            <div className="relative z-10">
-              <div className="inline-flex items-center rounded-full border border-[#b59863]/30 bg-white/80 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.3em] text-[#6b5430] shadow-sm backdrop-blur">
-                Urban Renewal · Owner-side Advisory
-              </div>
-
-              <h1 className="mt-7 max-w-3xl text-5xl font-semibold leading-[1.08] tracking-tight text-neutral-950 md:text-6xl">
-                讓複雜的都市更新案件，
-                <span className="mt-2 block text-neutral-500">進入更清楚、更穩定的推進節奏。</span>
+          <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-6 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-24">
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
+              <SectionTag>都市更新・自主更新・全案管理顧問平台</SectionTag>
+              <h1 className="mt-6 text-4xl font-bold leading-tight tracking-tight text-[#11213b] sm:text-5xl lg:text-6xl">
+                把複雜更新案件，
+                <span className="block">變成可以穩定推進的專案</span>
               </h1>
-
-              <p className="mt-8 max-w-2xl text-lg leading-9 text-neutral-600 md:text-[19px]">
-                三策專案管理顧問有限公司，專注於自主更新案件的全案管理與專案統籌，
-                協助地主與更新會整合條件、協調專業、梳理程序與控管節點，
-                使案件在複雜意見與多方協作之中，仍能維持清楚方向。
+              <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-700">
+                三策專注都市更新、自主更新與全案管理顧問服務，協助委託方釐清方向、整合專業、掌握節點，讓案件從混亂走向有序。
               </p>
-
-              <div className="mt-10 flex flex-wrap gap-4">
-                <a
-                  href="#contact"
-                  className="rounded-full bg-neutral-900 px-7 py-3.5 text-sm font-medium text-white shadow-[0_18px_45px_rgba(17,24,39,0.18)] transition hover:-translate-y-0.5"
-                >
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+                <a href="#contact" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0b4f79] px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5">
                   預約初步諮詢
+                  <ArrowRight className="h-4 w-4" />
                 </a>
-                <a
-                  href="#services"
-                  className="rounded-full border border-neutral-300 bg-white/85 px-7 py-3.5 text-sm font-medium text-neutral-800 transition hover:border-neutral-900 hover:bg-white"
-                >
-                  瀏覽服務內容
+                <a href="#services" className="inline-flex items-center justify-center rounded-full border border-[#d6dde3] bg-white px-6 py-3.5 text-sm font-semibold text-[#0b4f79] shadow-sm">
+                  了解我們的服務
                 </a>
               </div>
+            </motion.div>
 
-              <div className="mt-14 grid gap-5 sm:grid-cols-3">
-                {metrics.map((item) => (
-                  <div key={item.label} className="rounded-3xl border border-white/70 bg-white/70 p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] backdrop-blur">
-                    <div className="text-[11px] uppercase tracking-[0.24em] text-neutral-500">{item.label}</div>
-                    <div className="mt-3 text-xl font-semibold text-neutral-950">{item.value}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="relative z-10">
-              <div className="rounded-[2rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(250,247,241,0.88))] p-6 shadow-[0_30px_80px_rgba(15,23,42,0.10)] backdrop-blur-xl md:p-7">
-                <div className="rounded-[1.75rem] border border-[#b59863]/20 bg-[#111827] p-7 text-white md:p-8">
-                  <div className="flex items-start justify-between gap-5">
-                    <div>
-                      <div className="text-[11px] uppercase tracking-[0.28em] text-white/50">Consulting Overview</div>
-                      <div className="mt-3 text-3xl font-semibold leading-tight">地主端專業統籌</div>
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.08 }}>
+              <div className="rounded-[36px] bg-white p-8 shadow-[0_28px_80px_-34px_rgba(17,33,59,0.28)]">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {[
+                    ["前期評估", "建立推動基礎"],
+                    ["整合協調", "降低溝通耗損"],
+                    ["程序輔導", "推進制度作業"],
+                    ["全案管理", "掌握整體節奏"],
+                  ].map(([title, text], idx) => (
+                    <div key={title} className={`rounded-[24px] p-5 ${idx === 0 ? "bg-[#0b4f79] text-white" : idx === 1 ? "bg-[#e6f0f1] text-[#0b4f79]" : idx === 2 ? "bg-[#f0e3d6] text-[#11213b]" : "bg-[#d7ebde] text-[#11213b]"}`}>
+                      <div className="text-lg font-semibold">{title}</div>
+                      <div className="mt-2 text-sm opacity-80">{text}</div>
                     </div>
-                    <div className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/60">Owner-side</div>
-                  </div>
-
-                  <p className="mt-6 text-sm leading-8 text-white/72">
-                    聚焦地主與更新會立場，從前期評估、團隊整合、程序節點到資訊傳達，建立可持續推進的專案管理架構。
-                  </p>
-
-                  <div className="mt-8 grid gap-4">
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                      <div className="text-xs uppercase tracking-[0.22em] text-white/40">核心價值</div>
-                      <div className="mt-2 text-lg font-medium">程序、秩序、協作、推進</div>
-                    </div>
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                      <div className="text-xs uppercase tracking-[0.22em] text-white/40">適用對象</div>
-                      <div className="mt-2 text-sm leading-7 text-white/72">
-                        基地地主、更新會籌備成員、社區代表窗口，以及正在評估自主更新路徑的案件團隊。
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-[1.6rem] border border-black/5 bg-white p-5 shadow-sm">
-                    <div className="text-[11px] uppercase tracking-[0.24em] text-neutral-500">Focus</div>
-                    <div className="mt-3 text-xl font-semibold text-neutral-950">專業整合</div>
-                    <p className="mt-3 text-sm leading-7 text-neutral-600">串連建築、估價、法務、財務與營造端所需協作。</p>
-                  </div>
-                  <div className="rounded-[1.6rem] border border-black/5 bg-white p-5 shadow-sm">
-                    <div className="text-[11px] uppercase tracking-[0.24em] text-neutral-500">Approach</div>
-                    <div className="mt-3 text-xl font-semibold text-neutral-950">節點控管</div>
-                    <p className="mt-3 text-sm leading-7 text-neutral-600">讓討論、決策與執行不再分散失焦，形成穩定推進節奏。</p>
-                  </div>
+                  ))}
                 </div>
               </div>
+            </motion.div>
+          </div>
+        </section>
+
+        <section className="px-6 py-16 lg:px-8 lg:py-20">
+          <div className="mx-auto max-w-7xl">
+            <SectionTitle
+              eyebrow="Pain Points"
+              title="您是否正面對這些困境？"
+              desc="都市更新流程複雜，不知從哪裡開始？對接了多個專業單位，卻始終無法整合成一個可執行的方向？擔心資訊不透明、程序失控，錯失更新時機？社區意見分歧，推動遲遲沒有進展？"
+            />
+            <div className="mt-6 rounded-[28px] bg-white px-8 py-6 text-xl font-semibold text-[#0b4f79] shadow-sm">
+              這些問題，正是三策存在的理由。
             </div>
           </div>
         </section>
 
-        <section id="about" className="mx-auto max-w-7xl px-6 py-24 lg:px-8">
-          <div className="grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr]">
-            <div>
-              <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[#8a6a35]">About San-Sce</div>
-              <h2 className="mt-5 max-w-3xl text-4xl font-semibold leading-tight tracking-tight text-neutral-950 md:text-5xl">
-                我們的工作，是讓案件從眾聲雜沓，回到清楚可執行的架構。
-              </h2>
-              <p className="mt-8 max-w-3xl text-base leading-9 text-neutral-600 md:text-[17px]">
-                自主更新案件常同時牽涉地主整合、組織治理、專業協作、程序推進與資訊傳達。三策所提供的，不只是單一專業意見，而是協助案件建立一致的推動邏輯、穩定的協調節奏與更清楚的執行架構。
-              </p>
-              <p className="mt-5 max-w-3xl text-base leading-9 text-neutral-600 md:text-[17px]">
-                對地主端而言，真正困難的往往不是資訊不足，而是資訊過多、窗口分散、節點不明與責任模糊。因此我們更重視整體統籌、流程梳理與持續推進能力。
-              </p>
-            </div>
-
-            <div className="rounded-[2rem] border border-black/5 bg-white p-8 shadow-[0_24px_70px_rgba(15,23,42,0.07)]">
-              <div className="flex items-center justify-between gap-4">
-                <div className="text-[11px] font-medium uppercase tracking-[0.3em] text-neutral-500">Core Strengths</div>
-                <div className="h-px flex-1 bg-gradient-to-r from-neutral-200 to-transparent" />
-              </div>
-
-              <div className="mt-8 space-y-4">
-                {strengths.map((item, idx) => (
-                  <div key={item} className="flex gap-4 rounded-[1.4rem] border border-neutral-100 bg-neutral-50/80 p-4 transition hover:bg-white">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-neutral-900 text-xs font-semibold text-white">0{idx + 1}</div>
-                    <div className="pt-1 text-sm leading-7 text-neutral-700">{item}</div>
-                  </div>
-                ))}
-              </div>
+        <section id="about" className="bg-white px-6 py-16 lg:px-8 lg:py-20">
+          <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+            <SectionTitle
+              eyebrow="Positioning"
+              title="我們是誰"
+              desc="三策專案管理顧問有限公司，專注都市更新與自主更新的全案管理顧問服務。"
+            />
+            <div className="rounded-[32px] bg-[#f7f4ee] p-8 text-base leading-8 text-slate-700">
+              我們的工作，是幫委託方把方向看清楚、把程序走穩健、把案件真正往前推進。從前期評估、住戶整合、組織建立，到程序申請、財務規劃與工程管理，三策以整體專案視角協助統整環節，讓每一個關鍵節點都有人掌握、有人管理。
             </div>
           </div>
         </section>
 
-        <section id="services" className="border-y border-black/5 bg-white/70">
-          <div className="mx-auto max-w-7xl px-6 py-24 lg:px-8">
-            <div className="max-w-2xl">
-              <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[#8a6a35]">Services</div>
-              <h2 className="mt-5 text-4xl font-semibold tracking-tight text-neutral-950 md:text-5xl">服務項目</h2>
-              <p className="mt-6 text-base leading-9 text-neutral-600 md:text-[17px]">
-                從前期評估到整體推進，圍繞自主更新案件最關鍵的協作環節，建立有秩序的工作方式。
-              </p>
+        <section id="services" className="px-6 py-16 lg:px-8 lg:py-20">
+          <div className="mx-auto max-w-7xl">
+            <SectionTitle
+              eyebrow="Services"
+              title="服務亮點"
+              desc="依照案件推動階段，提供從前期評估到後段執行的完整顧問服務。"
+            />
+            <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {services.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <motion.div
+                    key={item.title}
+                    initial={{ opacity: 0, y: 18 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: 0.45, delay: index * 0.06 }}
+                    className="rounded-[30px] bg-white p-8 shadow-[0_20px_60px_-40px_rgba(17,33,59,0.35)]"
+                  >
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#e6f0f1] text-[#0b4f79]">
+                      <Icon className="h-8 w-8" />
+                    </div>
+                    <h3 className="mt-6 text-2xl font-semibold text-[#11213b]">{item.title}</h3>
+                    <p className="mt-4 text-base leading-8 text-slate-600">{item.desc}</p>
+                  </motion.div>
+                );
+              })}
             </div>
+            <div className="mt-10">
+              <a href="#services-detail" className="inline-flex items-center gap-2 rounded-full bg-[#0b4f79] px-6 py-3.5 text-sm font-semibold text-white shadow-sm">
+                查看完整服務內容
+                <ArrowRight className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+        </section>
 
-            <div className="mt-14 grid gap-6 md:grid-cols-2">
-              {services.map((service) => (
-                <div
-                  key={service.title}
-                  className="group rounded-[2rem] border border-black/5 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(248,246,241,0.92))] p-8 shadow-[0_18px_50px_rgba(15,23,42,0.06)] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_26px_70px_rgba(15,23,42,0.10)]"
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="text-[11px] uppercase tracking-[0.3em] text-[#8a6a35]">Service {service.index}</div>
-                    <div className="h-px flex-1 bg-gradient-to-r from-[#cbb27d]/50 to-transparent" />
-                  </div>
-                  <h3 className="mt-6 text-2xl font-semibold tracking-tight text-neutral-950">{service.title}</h3>
-                  <p className="mt-5 text-sm leading-8 text-neutral-600">{service.desc}</p>
-                  <div className="mt-7 text-sm font-medium text-[#8a6a35] opacity-0 transition group-hover:opacity-100">顧問式統籌視角</div>
+        <section className="bg-white px-6 py-16 lg:px-8 lg:py-20">
+          <div className="mx-auto max-w-7xl">
+            <SectionTitle eyebrow="Core Values" title="三策的三個承諾" />
+            <div className="mt-12 grid gap-6 lg:grid-cols-3">
+              {promises.map((item) => (
+                <div key={item.title} className="rounded-[30px] border border-[#e4e1da] bg-[#f7f4ee] p-8">
+                  <div className="text-2xl font-semibold text-[#0b4f79]">{item.title}</div>
+                  <p className="mt-5 text-base leading-8 text-slate-700">{item.desc}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section id="process" className="mx-auto max-w-7xl px-6 py-24 lg:px-8">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-2xl">
-              <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[#8a6a35]">Process</div>
-              <h2 className="mt-5 text-4xl font-semibold tracking-tight text-neutral-950 md:text-5xl">合作流程</h2>
-              <p className="mt-6 text-base leading-9 text-neutral-600 md:text-[17px]">
-                以清楚階段與節點安排，讓初步接觸、案件評估與正式推進之間，形成穩定銜接。
-              </p>
-            </div>
-            <div className="rounded-full border border-neutral-300 px-5 py-2 text-sm text-neutral-600">Structured Consultation Flow</div>
-          </div>
-
-          <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {process.map((item) => (
-              <div key={item.step} className="relative overflow-hidden rounded-[2rem] border border-black/5 bg-white p-8 shadow-[0_16px_45px_rgba(15,23,42,0.06)]">
-                <div className="absolute right-5 top-4 text-6xl font-semibold tracking-tight text-neutral-100">{item.step}</div>
-                <div className="relative">
-                  <div className="text-[11px] font-medium uppercase tracking-[0.28em] text-neutral-500">Step {item.step}</div>
-                  <div className="mt-5 text-2xl font-semibold tracking-tight text-neutral-950">{item.title}</div>
-                  <p className="mt-5 text-sm leading-8 text-neutral-600">{item.desc}</p>
+        <section className="px-6 py-16 lg:px-8 lg:py-20">
+          <div className="mx-auto max-w-7xl rounded-[36px] bg-[#11213b] px-8 py-10 text-white lg:px-12">
+            <SectionTitle
+              eyebrow="Fit"
+              title="以下情境，三策可以協助您"
+              desc="適合正要啟動都更、危老、自主更新、整合溝通與全案管理需求的委託方。"
+              light
+            />
+            <div className="mt-10 grid gap-4 lg:grid-cols-2">
+              {fitCases.map((item) => (
+                <div key={item} className="flex items-start gap-3 rounded-[22px] bg-white/8 px-5 py-4 text-base leading-7 text-slate-100">
+                  <CircleHelp className="mt-0.5 h-5 w-5 shrink-0 text-[#dcb770]" />
+                  <span>{item}</span>
                 </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="services-detail" className="bg-white px-6 py-16 lg:px-8 lg:py-20">
+          <div className="mx-auto max-w-7xl space-y-8">
+            <SectionTitle
+              eyebrow="Service Details"
+              title="我們能為您做什麼"
+              desc="都市更新涉及的面向廣泛，每一個階段都需要不同的專業判斷與管理能量。"
+            />
+
+            {[
+              {
+                title: "服務一：前期可行性評估",
+                text: "在決定是否啟動更新之前，先掌握基地條件與推動可行性。三策協助分析基地與建物現況、法規適用、更新路徑、整合難度、初步效益與執行風險，幫助委託方在案件初期做出更有根據的判斷。",
+              },
+              {
+                title: "服務二：住戶整合與推動輔導",
+                text: "社區整合往往是更新最困難也最關鍵的一環。三策協助整理住戶意見、建立可溝通的資訊框架、規劃說明架構，並輔導社區形成初步共識，讓整合過程更有方法與節奏。",
+              },
+              {
+                title: "服務三：更新組織及程序輔導",
+                text: "都市更新的推動，需要正式的組織架構與程序規劃。三策協助完成推動組織建立、程序規劃、文件整備與提報輔導，讓案件從討論階段進入制度化的正式推動軌道。",
+              },
+              {
+                title: "服務四：補助及財務資源整合",
+                text: "前期資金與補助資源的有效運用，對案件啟動與推進具有關鍵影響。三策協助盤點補助資源、評估資金安排方向，並整合必要的財務與金融協作。",
+              },
+              {
+                title: "服務五：專業整合與全案管理",
+                text: "這是三策最核心的定位。面對建築、法務、財務、估價、工程與金融等多方專業，三策以全案管理視角擔任整合平台，協助配置資源、建立協作機制、管理節點進度，讓複雜環節形成有效推進力量。",
+              },
+              {
+                title: "服務六：執行銜接與後段管理協助",
+                text: "案件進入執行階段後，仍需要穩定的管理支持。三策提供重要節點追蹤、各方協調、履約顧問支援與問題處理建議，讓案件在後段仍能維持管理能量與應變能力。",
+              },
+            ].map((item, index) => (
+              <div key={item.title} className="rounded-[30px] bg-[#f7f4ee] p-8">
+                <div className="text-sm font-semibold tracking-[0.16em] text-[#b08a48] uppercase">0{index + 1}</div>
+                <h3 className="mt-3 text-2xl font-semibold text-[#11213b]">{item.title}</h3>
+                <p className="mt-4 text-base leading-8 text-slate-700">{item.text}</p>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="relative overflow-hidden bg-[#111827] text-white">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(181,152,99,0.22),transparent_24%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.05),transparent_26%)]" />
-          <div className="mx-auto grid max-w-7xl gap-10 px-6 py-24 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
-            <div className="relative z-10">
-              <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[#d0b27d]">Why San-Sce</div>
-              <h2 className="mt-5 max-w-3xl text-4xl font-semibold leading-tight tracking-tight text-white md:text-5xl">
-                當案件需要的，已經不只是單一建議，而是能持續推進的統籌架構。
-              </h2>
-              <p className="mt-8 max-w-3xl text-base leading-9 text-white/72 md:text-[17px]">
-                自主更新真正考驗的，是地主整合、程序掌握、專業協作與資訊秩序。三策重視的，是讓案件在多方意見與長期推進之中，仍有可追蹤、可協調、可執行的工作方式。
-              </p>
-            </div>
-
-            <div className="relative z-10 rounded-[2rem] border border-white/10 bg-white/5 p-8 shadow-[0_25px_80px_rgba(0,0,0,0.22)] backdrop-blur-sm">
-              <div className="text-[11px] uppercase tracking-[0.28em] text-white/45">Suitable Scenarios</div>
-              <ul className="mt-8 space-y-4 text-sm leading-8 text-white/80">
-                <li className="rounded-2xl border border-white/8 bg-white/5 px-5 py-4">基地已有更新構想，但缺乏清楚推動架構</li>
-                <li className="rounded-2xl border border-white/8 bg-white/5 px-5 py-4">地主意見整合中，需要穩定而中立的專案窗口</li>
-                <li className="rounded-2xl border border-white/8 bg-white/5 px-5 py-4">已接觸部分專業單位，但缺乏整體統籌與管理</li>
-                <li className="rounded-2xl border border-white/8 bg-white/5 px-5 py-4">希望以地主端立場評估自主更新的可行方向</li>
-              </ul>
+        <section id="insights" className="px-6 py-16 lg:px-8 lg:py-20">
+          <div className="mx-auto max-w-7xl">
+            <SectionTitle
+              eyebrow="Insights"
+              title="了解更新，從這裡開始"
+              desc="都市更新過程複雜，資訊落差往往是推動困難的根源之一。三策整理實務知識、法規觀察與案例主題，協助委託方建立更清楚的判斷基礎。"
+            />
+            <div className="mt-12 grid gap-6 lg:grid-cols-2">
+              <div className="rounded-[30px] bg-white p-8 shadow-sm">
+                <div className="text-xl font-semibold text-[#0b4f79]">文章分類</div>
+                <div className="mt-5 space-y-3 text-base text-slate-700">
+                  <div>都市更新基礎知識</div>
+                  <div>自主更新實務觀察</div>
+                  <div>法規解析與政策動態</div>
+                  <div>財務規劃與資源整合</div>
+                  <div>全案管理實踐分享</div>
+                </div>
+              </div>
+              <div className="rounded-[30px] bg-white p-8 shadow-sm">
+                <div className="text-xl font-semibold text-[#0b4f79]">推薦文章主題</div>
+                <div className="mt-5 space-y-3 text-base text-slate-700">
+                  {insightTopics.map((item) => (
+                    <div key={item}>{item}</div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        <section id="contact" className="mx-auto max-w-7xl px-6 py-24 lg:px-8">
-          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-            <div>
-              <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-[#8a6a35]">Contact</div>
-              <h2 className="mt-5 text-4xl font-semibold tracking-tight text-neutral-950 md:text-5xl">預約初步諮詢</h2>
-              <p className="mt-7 max-w-2xl text-base leading-9 text-neutral-600 md:text-[17px]">
-                若您正評估自主更新案件，或希望先釐清基地條件、整合現況與合作方向，歡迎留下聯絡資訊。
-              </p>
+        <section id="contact" className="bg-white px-6 py-16 lg:px-8 lg:py-20">
+          <div className="mx-auto max-w-7xl">
+            <SectionTitle
+              eyebrow="Contact"
+              title="讓我們先了解您的案件"
+              desc="每一件更新案件的條件都不同。歡迎先透過官方 LINE 與我們聯繫，三策將依案件狀況安排初步諮詢與後續溝通方向。"
+            />
 
-              <div className="mt-10 space-y-5 rounded-[2rem] border border-black/5 bg-white p-7 shadow-[0_20px_60px_rgba(15,23,42,0.06)]">
-                <div>
-                  <div className="text-xs uppercase tracking-[0.22em] text-neutral-500">Company</div>
-                  <div className="mt-2 text-base font-medium text-neutral-950">三策專案管理顧問有限公司</div>
-                </div>
-                <div>
-                  <div className="text-xs uppercase tracking-[0.22em] text-neutral-500">Service Scope</div>
-                  <div className="mt-2 text-base text-neutral-700">自主更新全案管理・專案統籌・前期評估</div>
-                </div>
-                <div>
-                  <div className="text-xs uppercase tracking-[0.22em] text-neutral-500">Consultation</div>
-                  <div className="mt-2 text-base text-neutral-700">可先提供基地位置、案件現況與主要問題，便於安排初步判讀。</div>
+            <div className="mt-12 grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+              <div className="rounded-[32px] bg-[#f7f4ee] p-8">
+                <div className="text-2xl font-semibold text-[#11213b]">適合先與我們聯繫的情況</div>
+                <div className="mt-6 space-y-4 text-base leading-8 text-slate-700">
+                  {[
+                    "基地條件與更新方向尚未釐清",
+                    "社區已開始討論，但缺乏整合推動主軸",
+                    "案件卡在某個節點，需要重新整理進度與分工",
+                    "希望先評估是否適合都市更新或自主更新路徑",
+                  ].map((item) => (
+                    <div key={item} className="flex items-start gap-3 rounded-[22px] bg-white px-5 py-4 shadow-sm">
+                      <div className="mt-2 h-2.5 w-2.5 rounded-full bg-[#b08a48]" />
+                      <div>{item}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
 
-            <div className="rounded-[2rem] border border-black/5 bg-[linear-gradient(180deg,rgba(255,255,255,0.94),rgba(248,246,241,0.94))] p-8 shadow-[0_26px_70px_rgba(15,23,42,0.08)] md:p-10">
-              <div className="grid gap-5">
-                <div className="grid gap-5 md:grid-cols-2">
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-neutral-700">姓名</label>
-                    <input className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3.5 outline-none transition focus:border-neutral-500" placeholder="請輸入您的姓名" />
+              <div className="rounded-[32px] bg-[#11213b] p-8 text-white">
+                <div className="flex items-center gap-3 text-2xl font-semibold">
+                  <Building2 className="h-6 w-6 text-[#dcb770]" />
+                  聯絡資訊
+                </div>
+                <div className="mt-8 space-y-5 text-base text-slate-200">
+                  <div>公司名稱：三策專案管理顧問有限公司</div>
+                  <div className="flex items-center gap-3"><Phone className="h-5 w-5 text-[#dcb770]" />服務電話：（待提供）</div>
+                  <div className="flex items-center gap-3"><Mail className="h-5 w-5 text-[#dcb770]" />電子郵件：（待提供）</div>
+                  <div>辦公地址：依正式上線資訊補入</div>
+                  <div>服務時間：週一至週五 09:00－18:00</div>
+                </div>
+
+                <div className="mt-8 rounded-[28px] bg-white/10 p-5">
+                  <div className="text-lg font-semibold text-white">官方 LINE</div>
+                  <div className="mt-2 text-sm text-slate-300">LINE ID：@160rlvqj</div>
+                  <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center">
+                    <img
+                      src="https://qr-official.line.me/gs/M_160rlvqj_BW.png"
+                      alt="三策官方 LINE QR code"
+                      className="h-32 w-32 rounded-2xl bg-white p-2"
+                    />
+                    <div className="flex-1">
+                      <p className="text-sm leading-7 text-slate-200">
+                        掃描 QR code 或點擊下方按鈕，即可加入三策官方 LINE，作為主要聯絡與初步諮詢方式。
+                      </p>
+                      <a
+                        href="https://line.me/R/ti/p/@160rlvqj"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#06c755] px-5 py-3 text-sm font-semibold text-white"
+                      >
+                        加入 LINE 官方帳號
+                        <ArrowRight className="h-4 w-4" />
+                      </a>
+                    </div>
                   </div>
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-neutral-700">聯絡電話</label>
-                    <input className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3.5 outline-none transition focus:border-neutral-500" placeholder="請輸入您的聯絡電話" />
-                  </div>
                 </div>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-neutral-700">基地位置</label>
-                  <input className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3.5 outline-none transition focus:border-neutral-500" placeholder="例如：新北市板橋區..." />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-neutral-700">需求簡述</label>
-                  <textarea className="min-h-[150px] w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3.5 outline-none transition focus:border-neutral-500" placeholder="請簡要說明案件現況、目前卡點與希望優先釐清的事項" />
-                </div>
-                <button className="mt-2 rounded-full bg-neutral-900 px-7 py-3.5 text-sm font-medium text-white shadow-[0_18px_45px_rgba(17,24,39,0.18)] transition hover:-translate-y-0.5">
-                  送出諮詢資料
-                </button>
-                <p className="text-xs leading-7 text-neutral-500">目前為視覺示意版本。正式上線時可串接 Google 表單、Typeform、Email API 或 CRM 系統。</p>
               </div>
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-black/5 bg-white/70">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 text-sm text-neutral-500 md:flex-row md:items-center md:justify-between lg:px-8">
-          <div>© 2026 三策專案管理顧問有限公司 San-Sce Project Management Consulting</div>
-          <div>自主更新全案管理・地主端專案統籌</div>
+      <footer className="bg-[#0b4f79] text-white">
+        <div className="mx-auto grid max-w-7xl gap-8 px-6 py-10 lg:grid-cols-[1fr_0.8fr_0.8fr] lg:px-8">
+          <div>
+            <div className="text-2xl font-semibold">三策專案管理顧問有限公司</div>
+            <div className="mt-3 text-slate-200">以信實立本　以專業成事</div>
+            <div className="mt-4 text-sm text-slate-300">都市更新・自主更新・全案管理顧問平台</div>
+          </div>
+          <div>
+            <div className="text-lg font-semibold">快速連結</div>
+            <div className="mt-4 space-y-2 text-slate-200">
+              <div>首頁</div>
+              <div>關於我們</div>
+              <div>服務項目</div>
+              <div>知識專區</div>
+              <div>聯絡我們</div>
+            </div>
+          </div>
+          <div className="flex items-end text-slate-200">© 2026 三策專案管理顧問有限公司 版權所有</div>
         </div>
       </footer>
     </div>
-  )
+  );
 }
