@@ -25,7 +25,7 @@ export default function SanzeWebsitePreview() {
         }} />
         <div style={{ position: "relative", maxWidth: 1100, margin: "0 auto", padding: "3.2rem 2.2rem 2.7rem" }}>
           <div style={{ maxWidth: 760 }}>
-            <p style={{ fontSize: "0.7rem", letterSpacing: "0.18em", color: "#7c8883", marginBottom: "0.85rem", fontFamily: "sans-serif" }}>
+            <p style={{ fontSize: "0.58rem", letterSpacing: "0.16em", color: "#8a9591", marginBottom: "0.62rem", fontFamily: "sans-serif" }}>
               SANZE PROJECT MANAGEMENT CONSULTING
             </p>
             <h1 style={{ fontSize: "clamp(1.28rem, 2.6vw, 2.1rem)", fontWeight: 700, lineHeight: 1.22, marginBottom: "0.7rem", letterSpacing: "0.01em", color: "#2f3a38" }}>
@@ -161,7 +161,15 @@ export default function SanzeWebsitePreview() {
                     <p style={{ color: "#b8c8cf", fontSize: "0.88rem" }}>Sanze Project Management Consulting Co., Ltd.</p>
                   </div>
                   <p><span style={{ fontWeight: 700, color: "white" }}>服務電話：</span>0916711323</p>
-                  <p><span style={{ fontWeight: 700, color: "white" }}>電子郵件：</span>sanze.consulting@gmail.com</p>
+                  <p>
+                    <span style={{ fontWeight: 700, color: "white" }}>電子郵件：</span>
+                    <a
+                      href="mailto:sanze.consulting@gmail.com"
+                      style={{ color: "#d8e3e6", textDecoration: "none" }}
+                    >
+                      sanze.consulting@gmail.com
+                    </a>
+                  </p>
                   <p><span style={{ fontWeight: 700, color: "white" }}>服務時間：</span>週一至週五 09:00－18:00</p>
                 </div>
 
