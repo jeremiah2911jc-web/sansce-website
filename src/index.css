@@ -167,6 +167,17 @@ a {
   line-height: 2;
 }
 
+.hero__text p {
+  margin: 0;
+}
+
+.hero__rule {
+  width: min(100%, 440px);
+  height: 1px;
+  margin: 24px 0;
+  background: rgba(8, 59, 48, 0.14);
+}
+
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
@@ -393,6 +404,10 @@ a {
   line-height: 1.28;
 }
 
+.services__intro h2 span {
+  display: block;
+}
+
 .services__intro p:not(.section-kicker),
 .contact__cta p:not(.section-kicker) {
   margin: 0 0 28px;
@@ -573,6 +588,12 @@ a {
   font-size: 0.92rem;
   font-weight: 600;
   line-height: 1.55;
+}
+
+.contact-info__item a[href^="mailto:"] {
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
 }
 
 .contact-info__item--company p + p {
@@ -903,8 +924,8 @@ a {
     overflow: hidden;
     padding: 18px max(24px, calc((100vw - 1440px) / 2 + 24px)) 24px;
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.2) 22%, rgba(255, 255, 255, 0) 56%, #ffffff 100%),
-      url("/images/hero-community-renewal.jpg") right 22px top 12px / min(65vw, 980px) auto no-repeat,
+      linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.18) 26%, rgba(255, 255, 255, 0) 58%, #ffffff 100%),
+      url("/images/hero-community-renewal.jpg") right 22px top 12px / min(63vw, 960px) auto no-repeat,
       linear-gradient(115deg, #ffffff 0%, #f7fbf8 46%, #eef5f2 100%);
   }
 
@@ -913,7 +934,7 @@ a {
     inset: 0;
     content: "";
     background:
-      linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0.98) 34%, rgba(255, 255, 255, 0.78) 48%, rgba(255, 255, 255, 0.28) 63%, rgba(255, 255, 255, 0) 78%);
+      linear-gradient(90deg, #ffffff 0%, #ffffff 42%, rgba(255, 255, 255, 0.94) 52%, rgba(255, 255, 255, 0.48) 66%, rgba(255, 255, 255, 0.08) 80%, rgba(255, 255, 255, 0) 100%);
     pointer-events: none;
   }
 
@@ -922,7 +943,7 @@ a {
     inset: 0;
     content: "";
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0) 62%, rgba(255, 255, 255, 0.88) 84%, #ffffff 100%);
+      linear-gradient(180deg, rgba(255, 255, 255, 0) 62%, rgba(255, 255, 255, 0.9) 90%, #ffffff 100%);
     pointer-events: none;
   }
 
@@ -941,9 +962,14 @@ a {
   }
 
   .hero__text {
-    max-width: 520px;
-    font-size: 1rem;
-    line-height: 1.78;
+    max-width: 570px;
+    font-size: 0.98rem;
+    line-height: 1.68;
+  }
+
+  .hero__rule {
+    width: 430px;
+    margin: 22px 0;
   }
 
   .hero__actions {
@@ -975,17 +1001,17 @@ a {
 
   .services__intro {
     position: static;
-    max-width: 400px;
+    max-width: 390px;
   }
 
   .services__intro h2 {
-    margin: 8px 0 14px;
-    font-size: clamp(1.72rem, 1.95vw, 2.05rem);
-    line-height: 1.25;
+    margin: 8px 0 16px;
+    font-size: clamp(1.85rem, 2.1vw, 2.25rem);
+    line-height: 1.2;
   }
 
   .services__intro p:not(.section-kicker) {
-    margin-bottom: 20px;
+    margin-bottom: 22px;
     font-size: 0.92rem;
     line-height: 1.78;
   }
@@ -1105,7 +1131,7 @@ a {
   }
 
   .contact-info__columns .contact-info__item:nth-child(2) {
-    grid-column: auto;
+    grid-column: 1 / -1;
   }
 
   .contact-info__item {

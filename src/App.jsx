@@ -69,23 +69,26 @@ export default function App() {
 
           <div className="hero__content">
             <h1 id="hero-title">
-              讓地主從被動等條件，
+              讓地主從被動等條件
               <span>走向主動掌握更新方向</span>
             </h1>
-            <p className="hero__text">
-              有土地，卻不知道能怎麼做。
-              <br />
-              想更新，卻不知道條件合不合理。
-              <br />
-              建商提出分配，卻看不懂該怎麼判斷。
-              <br />
-              住戶意見不一致，案子遲遲推不動。
-              <br />
-              政府推動自主更新，卻不知道第一步該從哪裡開始。
-              <br />
-              <br />
-              三策協助地主從基地條件、分配邏輯、住戶共識與推動流程開始釐清，讓社區在都市更新、危老重建與自主更新的路上，能夠看懂條件、整合意見、掌握主導權。
-            </p>
+            <div className="hero__text">
+              <p className="hero__questions">
+                有土地，卻不知道能怎麼做。
+                <br />
+                想更新，卻不知道條件合不合理。
+                <br />
+                建商提出分配，卻看不懂該怎麼判斷。
+                <br />
+                住戶意見不一致，案子遲遲推不動。
+                <br />
+                政府推動自主更新，卻不知道第一步該從哪裡開始。
+              </p>
+              <div className="hero__rule" aria-hidden="true" />
+              <p className="hero__summary">
+                三策協助地主從基地條件、分配邏輯、住戶共識與推動流程開始釐清，讓社區在都市更新、危老重建與自主更新的路上，能夠看懂條件、整合意見、掌握主導權。
+              </p>
+            </div>
           </div>
 
           <div className="hero__visual">
@@ -96,7 +99,11 @@ export default function App() {
         <section className="services section-pad" id="services" aria-labelledby="services-title">
           <div className="services__intro">
             <p className="section-kicker">SERVICES</p>
-            <h2 id="services-title">自主更新，地主可以自己主導，但不用自己摸索</h2>
+            <h2 id="services-title">
+              自主更新
+              <span>地主可以自己主導</span>
+              <span>但不用自己摸索</span>
+            </h2>
             <p>
               過去地主想推動都市更新，常常只能等待建商提出條件，再進入合建協商。但實務上，許多案子在初期就卡住，原因往往是分配條件談不攏、住戶期待落差太大、資訊不透明、法規與財務評估不清楚。
               <br />
