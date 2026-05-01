@@ -925,7 +925,7 @@ a {
     padding: 18px max(24px, calc((100vw - 1640px) / 2 + 24px)) 24px;
     background:
       linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.12) 28%, rgba(255, 255, 255, 0) 60%, #ffffff 100%),
-      url("/images/hero-community-renewal.jpg") right -42px top 8px / min(72vw, 1180px) auto no-repeat,
+      url("/images/hero-community-renewal.jpg") right clamp(36px, 4vw, 88px) top 8px / min(76vw, 1240px) auto no-repeat,
       linear-gradient(115deg, #ffffff 0%, #f7fbf8 46%, #eef5f2 100%);
   }
 
