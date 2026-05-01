@@ -130,103 +130,108 @@ export default function App() {
         </section>
 
         <section className="contact section-pad" id="contact" aria-labelledby="contact-title">
-          <div className="contact__photo">
-            <img src="/images/contact-consulting-space.jpg" alt="明亮的顧問洽談空間" />
+          <div className="contact-feature">
+            <div className="contact__photo">
+              <img src="/images/contact-consulting-space.jpg" alt="明亮的顧問洽談空間" />
+            </div>
+
+            <div className="contact__cta">
+              <p className="section-kicker section-kicker--light">CONTACT</p>
+              <h2 id="contact-title">先看懂條件，再決定怎麼走</h2>
+              <p>
+                若您的土地或社區正在思考都市更新、危老重建或自主更新，三策可以協助您先釐清目前卡在哪裡：是基地條件、分配問題、住戶共識、法規限制，還是推動流程不清楚。
+                <br />
+                <br />
+                先把問題看清楚，才知道下一步該怎麼走。歡迎與三策聯繫，讓我們陪您從現況開始評估。
+              </p>
+              <ButtonLink href="mailto:sanze.consulting@gmail.com" variant="light">
+                預約初步諮詢
+              </ButtonLink>
+            </div>
           </div>
 
-          <div className="contact__cta">
-            <p className="section-kicker section-kicker--light">CONTACT</p>
-            <h2 id="contact-title">先看懂條件，再決定怎麼走</h2>
-            <p>
-              若您的土地或社區正在思考都市更新、危老重建或自主更新，三策可以協助您先釐清目前卡在哪裡：是基地條件、分配問題、住戶共識、法規限制，還是推動流程不清楚。
-              <br />
-              <br />
-              先把問題看清楚，才知道下一步該怎麼走。歡迎與三策聯繫，讓我們陪您從現況開始評估。
-            </p>
-            <ButtonLink href="mailto:sanze.consulting@gmail.com" variant="light">
-              預約初步諮詢
-            </ButtonLink>
+          <div className="contact-side">
+            <aside className="contact-info" aria-label="聯絡資訊">
+              <div className="contact-info__item contact-info__item--company">
+                <Building2 aria-hidden="true" size={22} />
+                <div>
+                  <p>三策專案管理顧問有限公司</p>
+                  <p className="contact-company-en">Sanze Project Management Consulting Co., Ltd.</p>
+                </div>
+              </div>
+              <div className="contact-info__columns">
+                <div className="contact-info__item">
+                  <Phone aria-hidden="true" size={21} />
+                  <div>
+                    <h3>服務電話</h3>
+                    <p>
+                      <a href="tel:0916711323">0916-711-323</a>
+                    </p>
+                  </div>
+                </div>
+                <div className="contact-info__item">
+                  <Mail aria-hidden="true" size={21} />
+                  <div>
+                    <h3>電子郵件</h3>
+                    <p>
+                      <a href="mailto:sanze.consulting@gmail.com">sanze.consulting@gmail.com</a>
+                    </p>
+                  </div>
+                </div>
+                <div className="contact-info__item">
+                  <Clock3 aria-hidden="true" size={21} />
+                  <div>
+                    <h3>服務時間</h3>
+                    <p className="service-hours">
+                      <span>週一至週五</span>
+                      <span>09:00 - 18:00</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="contact-info__item">
+                  <MapPinned aria-hidden="true" size={21} />
+                  <div>
+                    <h3>官方 LINE</h3>
+                    <p>LINE ID：@160rlvqj</p>
+                  </div>
+                </div>
+              </div>
+              <div className="line-block">
+                <div className="line-block__qr" aria-label="三策官方 LINE QR code">
+                  <QRCodeSVG value="https://line.me/R/ti/p/@160rlvqj" size={126} bgColor="#ffffff" fgColor="#111111" includeMargin />
+                </div>
+                <a className="line-block__link" href="https://line.me/R/ti/p/@160rlvqj" target="_blank" rel="noreferrer">
+                  加入 LINE 官方帳號
+                </a>
+              </div>
+            </aside>
+
+            <article className="system-card" aria-labelledby="system-card-title">
+              <div className="system-card__topline">
+                <span>PRO SYSTEM</span>
+                <BarChart3 aria-hidden="true" size={21} strokeWidth={2.2} />
+              </div>
+              <h3 id="system-card-title">開發評估系統</h3>
+              <p>
+                提供都市更新、危老重建與自主更新案件初步評估工具，協助整理基地條件、比對開發方向、評估可行性，讓前期判斷更有依據。
+              </p>
+              <div className="system-card__dashboard" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+                <span />
+              </div>
+              <div className="system-card__actions">
+                <a className="system-card__button system-card__button--primary" href="#contact">
+                  <span>進入系統</span>
+                  <ArrowUpRight aria-hidden="true" size={17} />
+                </a>
+                <a className="system-card__button system-card__button--secondary" href="#contact">
+                  <span>了解系統</span>
+                </a>
+              </div>
+            </article>
           </div>
-
-          <aside className="contact-info" aria-label="聯絡資訊">
-            <div className="contact-info__item contact-info__item--company">
-              <Building2 aria-hidden="true" size={22} />
-              <div>
-                <p>三策專案管理顧問有限公司</p>
-              </div>
-            </div>
-            <div className="contact-info__columns">
-              <div className="contact-info__item">
-                <Phone aria-hidden="true" size={21} />
-                <div>
-                  <h3>服務電話</h3>
-                  <p>
-                    <a href="tel:0916711323">0916-711-323</a>
-                  </p>
-                </div>
-              </div>
-              <div className="contact-info__item">
-                <Mail aria-hidden="true" size={21} />
-                <div>
-                  <h3>電子郵件</h3>
-                  <p>
-                    <a href="mailto:sanze.consulting@gmail.com">sanze.consulting@gmail.com</a>
-                  </p>
-                </div>
-              </div>
-              <div className="contact-info__item">
-                <Clock3 aria-hidden="true" size={21} />
-                <div>
-                  <h3>服務時間</h3>
-                  <p className="service-hours">
-                    <span>週一至週五</span>
-                    <span>09:00 - 18:00</span>
-                  </p>
-                </div>
-              </div>
-              <div className="contact-info__item">
-                <MapPinned aria-hidden="true" size={21} />
-                <div>
-                  <h3>官方 LINE</h3>
-                  <p>LINE ID：@160rlvqj</p>
-                </div>
-              </div>
-            </div>
-            <div className="line-block">
-              <div className="line-block__qr" aria-label="三策官方 LINE QR code">
-                <QRCodeSVG value="https://line.me/R/ti/p/@160rlvqj" size={126} bgColor="#ffffff" fgColor="#111111" includeMargin />
-              </div>
-              <a className="line-block__link" href="https://line.me/R/ti/p/@160rlvqj" target="_blank" rel="noreferrer">
-                加入 LINE 官方帳號
-              </a>
-            </div>
-          </aside>
-
-          <article className="system-card" aria-labelledby="system-card-title">
-            <div className="system-card__topline">
-              <span>PRO SYSTEM</span>
-              <BarChart3 aria-hidden="true" size={21} strokeWidth={2.2} />
-            </div>
-            <h3 id="system-card-title">開發評估系統</h3>
-            <p>
-              提供都市更新、危老重建與自主更新案件初步評估工具，協助整理基地條件、比對開發方向、評估可行性，讓前期判斷更有依據。
-            </p>
-            <div className="system-card__dashboard" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-              <span />
-            </div>
-            <div className="system-card__actions">
-              <a className="system-card__button system-card__button--primary" href="#contact">
-                <span>進入系統</span>
-                <ArrowUpRight aria-hidden="true" size={17} />
-              </a>
-              <a className="system-card__button system-card__button--secondary" href="#contact">
-                <span>了解系統</span>
-              </a>
-            </div>
-          </article>
         </section>
       </main>
 
