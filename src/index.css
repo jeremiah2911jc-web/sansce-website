@@ -477,7 +477,7 @@ a {
 
 .contact {
   display: grid;
-  grid-template-columns: minmax(240px, 0.82fr) minmax(310px, 0.95fr) minmax(380px, 1.1fr);
+  grid-template-columns: minmax(160px, 0.5fr) minmax(330px, 1.25fr) minmax(410px, 1.4fr) minmax(290px, 0.6fr);
   gap: 0;
   align-items: stretch;
   background:
@@ -541,7 +541,7 @@ a {
   gap: 22px;
   border: 1px solid rgba(8, 59, 48, 0.1);
   border-left: 0;
-  border-radius: 0 18px 18px 0;
+  border-radius: 0;
   background: rgba(255, 255, 255, 0.88);
   padding: clamp(26px, 3vw, 40px);
 }
@@ -613,8 +613,10 @@ a {
 
 .line-block {
   display: flex;
-  align-items: end;
-  gap: 18px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 14px;
   padding-top: 4px;
 }
 
@@ -629,6 +631,7 @@ a {
 .line-block__link {
   display: inline-flex;
   min-height: 40px;
+  width: min(100%, 240px);
   align-items: center;
   justify-content: center;
   border-radius: 999px;
@@ -637,6 +640,132 @@ a {
   padding: 10px 18px;
   font-size: 0.9rem;
   font-weight: 900;
+}
+
+.system-card {
+  position: relative;
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(8, 59, 48, 0.12);
+  border-left: 0;
+  border-radius: 0 18px 18px 0;
+  background:
+    linear-gradient(135deg, rgba(200, 168, 98, 0.26) 0 1px, transparent 1px 28px),
+    linear-gradient(150deg, #14362f 0%, #0b241f 62%, #162822 100%);
+  color: var(--white);
+  padding: clamp(26px, 3vw, 38px);
+  box-shadow: 0 18px 42px rgba(8, 59, 48, 0.14);
+  isolation: isolate;
+}
+
+.system-card::before {
+  position: absolute;
+  inset: 14px;
+  z-index: -1;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  content: "";
+}
+
+.system-card__topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--gold);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.system-card h3 {
+  margin: 16px 0 12px;
+  font-size: clamp(1.45rem, 2vw, 1.9rem);
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.system-card p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.78;
+}
+
+.system-card__dashboard {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 9px;
+  margin: 20px 0;
+}
+
+.system-card__dashboard span {
+  min-height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.system-card__dashboard span:nth-child(1) {
+  background: var(--gold);
+}
+
+.system-card__dashboard span:nth-child(2) {
+  opacity: 0.72;
+}
+
+.system-card__dashboard span:nth-child(3) {
+  grid-column: 1 / -1;
+  width: 72%;
+  background: rgba(255, 255, 255, 0.32);
+}
+
+.system-card__dashboard span:nth-child(4) {
+  grid-column: 1 / -1;
+  width: 48%;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.system-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.system-card__button {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-size: 0.86rem;
+  font-weight: 900;
+  line-height: 1.1;
+  transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+
+.system-card__button:hover {
+  transform: translateY(-1px);
+}
+
+.system-card__button--primary {
+  border-color: transparent;
+  background: var(--gold);
+  color: #11231e;
+}
+
+.system-card__button--secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--white);
 }
 
 .site-footer {
@@ -675,6 +804,12 @@ a {
     grid-column: 1 / -1;
     border-left: 1px solid rgba(8, 59, 48, 0.1);
     border-radius: 0 0 18px 18px;
+  }
+
+  .system-card {
+    grid-column: 1 / -1;
+    border-left: 1px solid rgba(8, 59, 48, 0.12);
+    border-radius: 18px;
   }
 
   .contact__photo {
@@ -734,7 +869,8 @@ a {
 
   .contact__photo,
   .contact__cta,
-  .contact-info {
+  .contact-info,
+  .system-card {
     border-radius: 18px;
   }
 
@@ -853,12 +989,24 @@ a {
   }
 
   .line-block {
-    align-items: flex-start;
+    align-items: center;
     flex-direction: column;
+    width: 100%;
+    text-align: center;
   }
 
   .line-block__link {
+    width: min(100%, 240px);
+  }
+
+  .system-card__actions {
     width: 100%;
+    justify-content: center;
+  }
+
+  .system-card__button {
+    width: auto;
+    min-width: 128px;
   }
 
   .site-footer {
@@ -888,6 +1036,10 @@ a {
 
   .contact-info {
     padding: 24px 18px;
+  }
+
+  .system-card {
+    padding: 28px 20px;
   }
 }
 
@@ -1061,21 +1213,22 @@ a {
   }
 
   .contact.section-pad {
-    padding-top: 12px;
-    padding-bottom: 10px;
+    padding-top: 8px;
+    padding-bottom: 8px;
     background:
       linear-gradient(180deg, rgba(244, 247, 245, 0.72) 0%, rgba(255, 255, 255, 0.95) 24%, rgba(241, 245, 243, 0.92) 100%);
   }
 
   .contact {
-    grid-template-columns: minmax(200px, 0.7fr) minmax(330px, 1fr) minmax(520px, 1.62fr);
+    grid-template-columns: minmax(160px, 0.5fr) minmax(330px, 1.25fr) minmax(410px, 1.4fr) minmax(290px, 0.6fr);
     align-items: stretch;
     background: transparent;
   }
 
   .contact__photo,
   .contact__cta,
-  .contact-info {
+  .contact-info,
+  .system-card {
     min-height: 150px;
   }
 
@@ -1108,16 +1261,16 @@ a {
 
   .contact-info {
     display: grid;
-    grid-template-columns: minmax(0, 1.24fr) minmax(190px, 0.66fr);
+    grid-template-columns: minmax(0, 1fr) minmax(122px, 0.46fr);
     grid-template-areas:
       "company line"
       "details line";
-    gap: 10px 22px;
+    gap: 8px 14px;
     border-color: rgba(8, 59, 48, 0.07);
     border-left: 0;
-    border-radius: 0 16px 16px 0;
+    border-radius: 0;
     background: rgba(255, 255, 255, 0.82);
-    padding: 18px 24px;
+    padding: 14px 18px;
     align-content: center;
   }
 
@@ -1127,16 +1280,17 @@ a {
 
   .contact-info__columns {
     grid-area: details;
-    gap: 10px 20px;
+    grid-template-columns: 1fr;
+    gap: 8px 18px;
   }
 
   .contact-info__columns .contact-info__item:nth-child(2) {
-    grid-column: 1 / -1;
+    grid-column: auto;
   }
 
   .contact-info__item {
     grid-template-columns: 30px minmax(0, 1fr);
-    gap: 9px;
+    gap: 8px;
   }
 
   .contact-info__item > svg {
@@ -1146,38 +1300,95 @@ a {
   }
 
   .contact-info__item h3 {
-    margin-bottom: 3px;
-    font-size: 0.82rem;
+    margin-bottom: 2px;
+    font-size: 0.78rem;
   }
 
   .contact-info__item p {
-    font-size: 0.82rem;
-    line-height: 1.38;
+    font-size: 0.78rem;
+    line-height: 1.32;
   }
 
   .line-block {
     grid-area: line;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    justify-self: center;
+    align-self: start;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     padding-top: 0;
+    text-align: center;
   }
 
   .line-block__qr {
-    padding: 8px;
+    padding: 7px;
   }
 
   .line-block__qr svg {
-    width: 112px;
-    height: 112px;
+    width: 106px;
+    height: 106px;
   }
 
   .line-block__link {
-    min-height: 32px;
-    width: 100%;
-    padding: 7px 12px;
-    font-size: 0.78rem;
+    min-height: 28px;
+    width: 128px;
+    padding: 6px 10px;
+    font-size: 0.68rem;
+  }
+
+  .system-card {
+    border-left: 0;
+    border-radius: 0 16px 16px 0;
+    min-height: 0;
+    padding: 14px 16px;
+  }
+
+  .system-card::before {
+    inset: 10px;
+    border-radius: 12px;
+  }
+
+  .system-card__topline {
+    font-size: 0.62rem;
+  }
+
+  .system-card h3 {
+    margin: 8px 0 6px;
+    font-size: clamp(1rem, 1.12vw, 1.16rem);
+  }
+
+  .system-card p {
+    font-size: 0.7rem;
+    line-height: 1.45;
+  }
+
+  .system-card__dashboard {
+    gap: 5px;
+    margin: 8px 0 10px;
+  }
+
+  .system-card__dashboard span {
+    min-height: 4px;
+  }
+
+  .system-card__dashboard span:nth-child(3) {
+    width: 66%;
+  }
+
+  .system-card__dashboard span:nth-child(4) {
+    width: 42%;
+  }
+
+  .system-card__actions {
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .system-card__button {
+    min-height: 28px;
+    padding: 6px 10px;
+    font-size: 0.68rem;
   }
 
   .site-footer {
@@ -1185,5 +1396,22 @@ a {
     padding-top: 14px;
     padding-bottom: 14px;
     font-size: 0.82rem;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1180px) {
+  .contact {
+    grid-template-columns: 0.82fr 1fr;
+  }
+
+  .contact-info,
+  .system-card {
+    grid-column: 1 / -1;
+    border-left: 1px solid rgba(8, 59, 48, 0.1);
+    border-radius: 18px;
+  }
+
+  .system-card {
+    min-height: 0;
   }
 }

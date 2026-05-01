@@ -1,5 +1,7 @@
 import {
+  ArrowUpRight,
   ArrowRight,
+  BarChart3,
   Building2,
   Clock3,
   Mail,
@@ -151,7 +153,6 @@ export default function App() {
               <Building2 aria-hidden="true" size={22} />
               <div>
                 <p>三策專案管理顧問有限公司</p>
-                <p>Sanze Project Management Consulting Co., Ltd.</p>
               </div>
             </div>
             <div className="contact-info__columns">
@@ -200,6 +201,32 @@ export default function App() {
               </a>
             </div>
           </aside>
+
+          <article className="system-card" aria-labelledby="system-card-title">
+            <div className="system-card__topline">
+              <span>PRO SYSTEM</span>
+              <BarChart3 aria-hidden="true" size={21} strokeWidth={2.2} />
+            </div>
+            <h3 id="system-card-title">開發評估系統</h3>
+            <p>
+              提供都市更新、危老重建與自主更新案件初步評估工具，協助整理基地條件、比對開發方向、評估可行性，讓前期判斷更有依據。
+            </p>
+            <div className="system-card__dashboard" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="system-card__actions">
+              <a className="system-card__button system-card__button--primary" href="#contact">
+                <span>進入系統</span>
+                <ArrowUpRight aria-hidden="true" size={17} />
+              </a>
+              <a className="system-card__button system-card__button--secondary" href="#contact">
+                <span>了解系統</span>
+              </a>
+            </div>
+          </article>
         </section>
       </main>
 
