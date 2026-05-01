@@ -53,6 +53,12 @@ a {
     var(--gray-100);
 }
 
+main {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
 .site-header {
   z-index: 10;
   display: flex;
@@ -123,8 +129,8 @@ a {
   align-items: start;
   padding: 16px max(24px, calc((100vw - 1440px) / 2 + 24px)) 58px;
   background:
-    radial-gradient(circle at 18% 22%, rgba(234, 242, 238, 0.88) 0, rgba(234, 242, 238, 0) 34%),
-    linear-gradient(115deg, #ffffff 0%, #f8faf8 40%, #edf3f1 100%);
+    radial-gradient(circle at 18% 22%, rgba(234, 242, 238, 0.72) 0, rgba(234, 242, 238, 0) 34%),
+    linear-gradient(115deg, rgba(255, 255, 255, 0.94) 0%, rgba(248, 250, 248, 0.76) 48%, rgba(237, 243, 241, 0.34) 100%);
 }
 
 .hero__content {
@@ -1050,6 +1056,28 @@ a {
       var(--gray-100);
   }
 
+  main::before {
+    position: absolute;
+    z-index: -2;
+    inset: 0 0 auto;
+    height: clamp(940px, 92vh, 1120px);
+    content: "";
+    background:
+      url("/images/hero-homepage-background-test.png") right top / min(88vw, 1520px) auto no-repeat,
+      linear-gradient(115deg, #ffffff 0%, #f7fbf8 46%, #eef5f2 100%);
+  }
+
+  main::after {
+    position: absolute;
+    z-index: -1;
+    inset: 0 0 auto;
+    height: clamp(940px, 92vh, 1120px);
+    content: "";
+    background:
+      linear-gradient(90deg, #ffffff 0%, #ffffff 35%, rgba(255, 255, 255, 0.82) 50%, rgba(255, 255, 255, 0.22) 70%, rgba(255, 255, 255, 0.02) 100%);
+    pointer-events: none;
+  }
+
   .site-header {
     position: relative;
     z-index: 3;
@@ -1075,10 +1103,7 @@ a {
     gap: 18px 32px;
     overflow: hidden;
     padding: 18px max(24px, calc((100vw - 1640px) / 2 + 24px)) 24px;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.12) 28%, rgba(255, 255, 255, 0) 60%, #ffffff 100%),
-      url("/images/hero-community-renewal.jpg") right clamp(36px, 4vw, 88px) top 8px / min(76vw, 1240px) auto no-repeat,
-      linear-gradient(115deg, #ffffff 0%, #f7fbf8 46%, #eef5f2 100%);
+    background: transparent;
   }
 
   .hero::before {
@@ -1086,17 +1111,12 @@ a {
     inset: 0;
     content: "";
     background:
-      linear-gradient(90deg, #ffffff 0%, #ffffff 38%, rgba(255, 255, 255, 0.9) 48%, rgba(255, 255, 255, 0.34) 62%, rgba(255, 255, 255, 0.06) 76%, rgba(255, 255, 255, 0) 100%);
+      linear-gradient(90deg, #ffffff 0%, #ffffff 36%, rgba(255, 255, 255, 0.9) 48%, rgba(255, 255, 255, 0.28) 65%, rgba(255, 255, 255, 0.04) 82%, rgba(255, 255, 255, 0) 100%);
     pointer-events: none;
   }
 
   .hero::after {
-    position: absolute;
-    inset: 0;
-    content: "";
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0) 66%, rgba(255, 255, 255, 0.82) 91%, #ffffff 100%);
-    pointer-events: none;
+    content: none;
   }
 
   .hero__content {
@@ -1148,7 +1168,8 @@ a {
     gap: clamp(26px, 3.4vw, 54px);
     align-items: center;
     border-top: 0;
-    background: #ffffff;
+    background: transparent;
+    backdrop-filter: none;
   }
 
   .services__intro {
