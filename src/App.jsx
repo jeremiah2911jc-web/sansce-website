@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   ArrowUpRight,
   ArrowRight,
@@ -9,6 +10,7 @@ import {
   Phone,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
+import { EvaluationSystem } from "./EvaluationSystem.jsx";
 
 const services = [
   {
@@ -60,6 +62,18 @@ function LogoMark() {
 
 export default function App() {
   const year = new Date().getFullYear();
+  const [isSystemRoute, setIsSystemRoute] = useState(() => window.location.hash.startsWith("#system"));
+
+  useEffect(() => {
+    const handleRoute = () => setIsSystemRoute(window.location.hash.startsWith("#system"));
+
+    window.addEventListener("hashchange", handleRoute);
+    return () => window.removeEventListener("hashchange", handleRoute);
+  }, []);
+
+  if (isSystemRoute) {
+    return <EvaluationSystem />;
+  }
 
   return (
     <div className="site-shell">
@@ -222,11 +236,11 @@ export default function App() {
                 <span />
               </div>
               <div className="system-card__actions">
-                <a className="system-card__button system-card__button--primary" href="#contact">
+                <a className="system-card__button system-card__button--primary" href="#system">
                   <span>進入系統</span>
                   <ArrowUpRight aria-hidden="true" size={17} />
                 </a>
-                <a className="system-card__button system-card__button--secondary" href="#contact">
+                <a className="system-card__button system-card__button--secondary" href="#system-modules">
                   <span>了解系統</span>
                 </a>
               </div>
