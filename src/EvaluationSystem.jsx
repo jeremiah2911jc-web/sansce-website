@@ -521,6 +521,218 @@ function SecurityProtectionModule({ module }) {
   );
 }
 
+function RosterChipList({ items, className = "" }) {
+  if (!items?.length) {
+    return null;
+  }
+
+  return (
+    <div className={`eval-roster-chip-list ${className}`}>
+      {items.map((item) => (
+        <span key={item}>{item}</span>
+      ))}
+    </div>
+  );
+}
+
+function RosterImportVersioning({ config }) {
+  if (!config) {
+    return null;
+  }
+
+  return (
+    <section className="eval-roster-versioning" data-roster-versioning>
+      <div className="eval-roster-hero">
+        <div>
+          <p className="eval-kicker">ROSTER IMPORT</p>
+          <h4>清冊匯入與版本控管</h4>
+          <p>{config.notice}</p>
+        </div>
+        <div className="eval-roster-actions">
+          <article>
+            <strong>{config.template.title}</strong>
+            <span>{config.template.fileName}</span>
+            <p>{config.template.description}</p>
+            <button type="button">下載標準模板</button>
+          </article>
+          <article>
+            <strong>{config.upload.title}</strong>
+            <span>{config.upload.acceptedTypes.join(" / ")}</span>
+            <p>{config.upload.description}</p>
+            <button type="button">選擇 .xlsx 檔案</button>
+          </article>
+        </div>
+      </div>
+
+      <section className="eval-module-section eval-roster-workflow">
+        <div className="eval-section-head">
+          <h4>匯入流程</h4>
+          <p>檔案先進暫存區與差異比對流程，不直接覆蓋正式清冊資料。</p>
+        </div>
+        <div className="eval-roster-step-grid">
+          {config.workflowSteps.map((step, index) => (
+            <span key={step}>
+              <b>{String(index + 1).padStart(2, "0")}</b>
+              {step}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <section className="eval-module-section">
+        <div className="eval-section-head">
+          <h4>匯入模式</h4>
+          <p>不同模式決定資料是否可補入、更新、修正或只建立版本紀錄。</p>
+        </div>
+        <div className="eval-roster-mode-grid">
+          {config.importModes.map((mode) => (
+            <article key={mode.title}>
+              <strong>{mode.title}</strong>
+              <p>{mode.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="eval-module-section">
+        <div className="eval-section-head">
+          <h4>匯入版本紀錄</h4>
+          <p>正式套用前先保留版本狀態、筆數摘要、錯誤警告與套用紀錄。</p>
+        </div>
+        <div className="eval-roster-version-list">
+          {config.sampleVersions.map((version) => (
+            <article key={version.version}>
+              <div>
+                <span className="eval-roster-version-id">{version.version}</span>
+                <strong>{version.fileName}</strong>
+                <p>
+                  {version.type} / {version.scope}
+                </p>
+              </div>
+              <div className="eval-roster-version-meta">
+                <span>{version.status}</span>
+                <small>新增 {version.added} / 更新 {version.updated} / 警告 {version.warning} / 錯誤 {version.error}</small>
+              </div>
+            </article>
+          ))}
+        </div>
+        <RosterChipList items={config.versionFields} className="eval-roster-field-list" />
+      </section>
+
+      <section className="eval-module-section">
+        <div className="eval-section-head">
+          <h4>欄位更新規則</h4>
+          <p>避免少列、錯欄或錯誤 Excel 覆蓋正式資料，先把更新權限分層控管。</p>
+        </div>
+        <div className="eval-roster-rule-grid">
+          {config.updateRules.map((rule) => (
+            <article key={rule.title} data-level={rule.level}>
+              <div>
+                <strong>{rule.title}</strong>
+                <span>{rule.level}</span>
+              </div>
+              <RosterChipList items={rule.items} />
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <div className="eval-roster-two-column">
+        <section className="eval-module-section">
+          <div className="eval-section-head">
+            <h4>欄位檢核結果</h4>
+            <p>檢查檔案格式、必要工作表、欄位名稱、數字日期、公式結果與關鍵空白。</p>
+          </div>
+          <div className="eval-roster-check-list">
+            {config.validationChecklist.map((item) => (
+              <label key={item}>
+                <input type="checkbox" readOnly />
+                <span>{item}</span>
+              </label>
+            ))}
+          </div>
+        </section>
+
+        <section className="eval-module-section">
+          <div className="eval-section-head">
+            <h4>跨表關聯檢核</h4>
+            <p>以地主編號、地號與建號檢查土地、建物、整合紀錄與分配條件是否能正確對應。</p>
+          </div>
+          <div className="eval-roster-check-list">
+            {config.relationChecks.map((item) => (
+              <label key={item}>
+                <input type="checkbox" readOnly />
+                <span>{item}</span>
+              </label>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <section className="eval-module-section eval-roster-diff" data-roster-diff>
+        <div className="eval-section-head">
+          <h4>差異比對報告</h4>
+          <p>先比對新增、更新、刪除風險與關鍵欄位異動，需人工確認的內容不自動套用。</p>
+        </div>
+        <div className="eval-roster-summary-grid">
+          {config.sampleDiffSummary.map((item) => (
+            <article key={item.label}>
+              <span>{item.label}</span>
+              <strong>{item.value}</strong>
+            </article>
+          ))}
+        </div>
+        <RosterChipList items={config.diffTypes} />
+        <div className="eval-roster-risk-box">
+          <strong>重要欄位異動警示</strong>
+          <RosterChipList items={config.highRiskChangeRules} />
+        </div>
+      </section>
+
+      <div className="eval-roster-two-column">
+        <section className="eval-module-section eval-roster-apply">
+          <div className="eval-section-head">
+            <h4>正式套用確認</h4>
+            <p>正式套用後，系統將以本次確認後的清冊資料作為後續坪效、分配、成本、現金流與融資報告的計算依據。</p>
+          </div>
+          <RosterChipList items={config.applyConfirmationFields} />
+        </section>
+
+        <section className="eval-module-section eval-roster-impact">
+          <div className="eval-section-head">
+            <h4>計算影響提醒</h4>
+            <p>若重要基礎資料變動，需提醒重新計算受影響模組並視情況重新產出報告。</p>
+          </div>
+          <RosterChipList items={config.calculationImpactTriggers} />
+          <div className="eval-roster-impact-modules">
+            {config.calculationImpactModules.map((item) => (
+              <span key={item}>{item}</span>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <div className="eval-roster-two-column">
+        <section className="eval-module-section">
+          <div className="eval-section-head">
+            <h4>回復上一版</h4>
+            <p>回復正式資料前需二次確認，並將回復動作寫入 audit log。</p>
+          </div>
+          <RosterChipList items={config.rollbackFields} />
+        </section>
+
+        <section className="eval-module-section">
+          <div className="eval-section-head">
+            <h4>匯入 audit log 欄位</h4>
+            <p>記錄匯入、套用、回復與風險等級，避免正式資料被無痕覆蓋。</p>
+          </div>
+          <RosterChipList items={config.auditLogFields} />
+        </section>
+      </div>
+    </section>
+  );
+}
+
 function RolePermissionPanel({ profile }) {
   return (
     <section className="eval-module-section eval-role-rules">
@@ -609,6 +821,7 @@ function ModuleContent({ module, accessProfile }) {
           <ModuleSection section={section} key={section.title} />
         )
       ))}
+      {module.id === "ownership" && <RosterImportVersioning config={module.rosterImportVersioning} />}
     </div>
   );
 }
