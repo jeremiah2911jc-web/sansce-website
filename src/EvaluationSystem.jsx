@@ -13,9 +13,54 @@ import {
 import { developmentPaths, evaluationModules, roleVisibilityRules } from "./evaluationSystemData.js";
 
 const sampleCases = [
-  { name: "板橋民權段自主更新", path: "自主更新", status: "前期評估", updated: "2026/05/02" },
-  { name: "新店中央路危老重建", path: "危老重建", status: "條件確認", updated: "2026/05/01" },
-  { name: "中和都市更新試算案", path: "都市更新", status: "銀行評估", updated: "2026/04/29" },
+  {
+    id: "case-001",
+    code: "CASE-001",
+    name: "板橋民權段自主更新",
+    path: "自主更新 / 前期評估",
+    status: "評估中",
+    consultant: "林顧問",
+    updated: "2026/05/02",
+    note: "第七版清冊匯入測試",
+  },
+  {
+    id: "case-002",
+    code: "CASE-002",
+    name: "新店中央路危老重建",
+    path: "危老重建 / 條件確認",
+    status: "條件確認",
+    consultant: "陳顧問",
+    updated: "2026/05/01",
+    note: "等待基地資料補齊",
+  },
+  {
+    id: "case-003",
+    code: "CASE-003",
+    name: "中和都市更新試算案",
+    path: "都市更新 / 銀行評估",
+    status: "銀行評估",
+    consultant: "王顧問",
+    updated: "2026/04/29",
+    note: "銀行報告草稿",
+  },
+];
+
+const defaultCaseForm = {
+  code: "",
+  name: "",
+  path: "",
+  status: "",
+  consultant: "",
+  updated: "",
+  note: "",
+};
+
+const caseDataFlow = [
+  "建立案件",
+  "選定目前案件",
+  "填基地基本資料",
+  "上傳土地清冊 / 建物清冊",
+  "進行坪效、成本、分配、銷售、現金流、銀行報告等試算",
 ];
 
 const TAKEOVER_MODULE_ID = "takeover-evaluation";
@@ -100,6 +145,171 @@ function SkeletonTable({ columns, rows }) {
           ))}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+function CurrentCaseSummary({ currentCase, compact = false }) {
+  if (!currentCase) {
+    return (
+      <section className={`eval-current-case-card${compact ? " eval-current-case-card--compact" : ""}`}>
+        <p className="eval-kicker">CURRENT CASE</p>
+        <h4>目前案件尚未選定</h4>
+        <p>請先在案件管理建立或選擇案件，後續基地資料、清冊、坪效、成本與報告都會掛在同一個案件底下。</p>
+      </section>
+    );
+  }
+
+  return (
+    <section className={`eval-current-case-card${compact ? " eval-current-case-card--compact" : ""}`}>
+      <p className="eval-kicker">CURRENT CASE</p>
+      <h4>目前案件</h4>
+      <dl>
+        <div>
+          <dt>案件編號</dt>
+          <dd>{currentCase.code}</dd>
+        </div>
+        <div>
+          <dt>案件名稱</dt>
+          <dd>{currentCase.name}</dd>
+        </div>
+        <div>
+          <dt>開發路徑</dt>
+          <dd>{currentCase.path}</dd>
+        </div>
+        <div>
+          <dt>案件狀態</dt>
+          <dd>{currentCase.status}</dd>
+        </div>
+      </dl>
+    </section>
+  );
+}
+
+function CaseManagementModule({ accessProfile, cases, currentCase, onAddCase, onSelectCase }) {
+  const [caseForm, setCaseForm] = useState(defaultCaseForm);
+
+  const handleChange = (field) => (event) => {
+    setCaseForm((current) => ({ ...current, [field]: event.target.value }));
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const nextIndex = cases.length + 1;
+    const createdCase = {
+      id: `case-${Date.now()}`,
+      code: caseForm.code.trim() || `CASE-${String(nextIndex).padStart(3, "0")}`,
+      name: caseForm.name.trim() || `測試案件 ${nextIndex}`,
+      path: caseForm.path.trim() || "自主更新 / 前期評估",
+      status: caseForm.status.trim() || "評估中",
+      consultant: caseForm.consultant.trim() || "待指派",
+      updated: caseForm.updated.trim() || "2026/05/02",
+      note: caseForm.note.trim() || "前端 mock 建立",
+    };
+
+    onAddCase(createdCase);
+    setCaseForm(defaultCaseForm);
+  };
+
+  return (
+    <div className="eval-module-stack">
+      <section className="eval-module-section eval-case-flow">
+        <div className="eval-section-head">
+          <h4>案件是所有資料的入口</h4>
+          <p>系統資料先建立案件，再把基地基本資料、土地清冊、建物清冊、坪效、成本、分配、銷售、現金流與銀行報告掛在目前案件底下。</p>
+        </div>
+        <div className="eval-case-flow-steps">
+          {caseDataFlow.map((step, index) => (
+            <span key={step}>
+              <b>{String(index + 1).padStart(2, "0")}</b>
+              {step}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <section className="eval-module-section">
+        <div className="eval-section-head">
+          <h4>{currentCase ? `目前選取案件：${currentCase.name}` : "目前尚未選取案件"}</h4>
+          <p>請從案件列表選定目前案件；土地清冊與建物清冊會依這個案件 context 顯示與匯入。</p>
+        </div>
+        <CurrentCaseSummary currentCase={currentCase} compact />
+      </section>
+
+      <section className="eval-module-section">
+        <div className="eval-section-head">
+          <h4>案件列表骨架</h4>
+          <p>目前為前端 mock 資料，正式版本會改由資料庫載入案件、狀態與版本紀錄。</p>
+        </div>
+        <form className="eval-case-form" onSubmit={handleSubmit}>
+          <label className="eval-field">
+            <span>案件編號</span>
+            <input type="text" value={caseForm.code} onChange={handleChange("code")} placeholder="CASE-004" />
+          </label>
+          <label className="eval-field">
+            <span>案件名稱</span>
+            <input type="text" value={caseForm.name} onChange={handleChange("name")} placeholder="測試案件名稱" />
+          </label>
+          <label className="eval-field">
+            <span>開發路徑</span>
+            <input type="text" value={caseForm.path} onChange={handleChange("path")} placeholder="自主更新 / 前期評估" />
+          </label>
+          <label className="eval-field">
+            <span>案件狀態</span>
+            <input type="text" value={caseForm.status} onChange={handleChange("status")} placeholder="評估中" />
+          </label>
+          <label className="eval-field">
+            <span>負責顧問</span>
+            <input type="text" value={caseForm.consultant} onChange={handleChange("consultant")} placeholder="待指派" />
+          </label>
+          <label className="eval-field">
+            <span>最後更新</span>
+            <input type="text" value={caseForm.updated} onChange={handleChange("updated")} placeholder="2026/05/02" />
+          </label>
+          <label className="eval-field eval-field--wide">
+            <span>版本備註</span>
+            <input type="text" value={caseForm.note} onChange={handleChange("note")} placeholder="前端 mock 建立" />
+          </label>
+          <button type="submit">加入案件列表</button>
+        </form>
+
+        <div className="eval-case-table-wrap">
+          <table className="eval-table eval-case-table">
+            <thead>
+              <tr>
+                <th>案件編號</th>
+                <th>案件名稱</th>
+                <th>開發路徑</th>
+                <th>案件狀態</th>
+                <th>負責顧問</th>
+                <th>最後更新</th>
+                <th>版本備註</th>
+                <th>目前案件</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cases.map((item) => (
+                <tr key={item.id} className={currentCase?.id === item.id ? "is-current-case" : ""}>
+                  <td>{item.code}</td>
+                  <td>{item.name}</td>
+                  <td>{item.path}</td>
+                  <td>{item.status}</td>
+                  <td>{item.consultant}</td>
+                  <td>{item.updated}</td>
+                  <td>{item.note}</td>
+                  <td>
+                    <button type="button" className="eval-small-action" onClick={() => onSelectCase(item.id)}>
+                      {currentCase?.id === item.id ? "已選定" : "選為目前案件"}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <RolePermissionPanel profile={accessProfile} />
     </div>
   );
 }
@@ -536,7 +746,7 @@ function RosterChipList({ items, className = "" }) {
   );
 }
 
-function RosterImportVersioning({ config }) {
+function RosterImportVersioning({ config, currentCase }) {
   if (!config) {
     return null;
   }
@@ -546,8 +756,11 @@ function RosterImportVersioning({ config }) {
       <div className="eval-roster-hero">
         <div>
           <p className="eval-kicker">ROSTER IMPORT</p>
-          <h4>清冊匯入與版本控管</h4>
-          <p>{config.notice}</p>
+          <h4>目前案件清冊匯入版本控管</h4>
+          <p>
+            {config.notice}
+            所有上傳的土地清冊、建物清冊與差異比對紀錄，都會綁定在目前案件「{currentCase.name}」底下，避免不同案件資料互相覆蓋。
+          </p>
         </div>
         <div className="eval-roster-actions">
           <article>
@@ -559,7 +772,7 @@ function RosterImportVersioning({ config }) {
           <article>
             <strong>{config.upload.title}</strong>
             <span>{config.upload.acceptedTypes.join(" / ")}</span>
-            <p>{config.upload.description}</p>
+            <p>此處僅建立 UI 骨架；不真正解析 Excel、不真正上傳檔案，也不接後端。上傳紀錄將歸屬於目前案件：{currentCase.code}。</p>
             <button type="button">選擇 .xlsx 檔案</button>
           </article>
         </div>
@@ -568,7 +781,7 @@ function RosterImportVersioning({ config }) {
       <section className="eval-module-section eval-roster-workflow">
         <div className="eval-section-head">
           <h4>匯入流程</h4>
-          <p>檔案先進暫存區與差異比對流程，不直接覆蓋正式清冊資料。</p>
+          <p>檔案先進目前案件的暫存區與差異比對流程，不直接覆蓋正式清冊資料。</p>
         </div>
         <div className="eval-roster-step-grid">
           {config.workflowSteps.map((step, index) => (
@@ -598,7 +811,7 @@ function RosterImportVersioning({ config }) {
       <section className="eval-module-section">
         <div className="eval-section-head">
           <h4>匯入版本紀錄</h4>
-          <p>正式套用前先保留版本狀態、筆數摘要、錯誤警告與套用紀錄。</p>
+          <p>正式套用前先在目前案件保留版本狀態、筆數摘要、錯誤警告與套用紀錄。</p>
         </div>
         <div className="eval-roster-version-list">
           {config.sampleVersions.map((version) => (
@@ -694,7 +907,7 @@ function RosterImportVersioning({ config }) {
         <section className="eval-module-section eval-roster-apply">
           <div className="eval-section-head">
             <h4>正式套用確認</h4>
-            <p>正式套用後，系統將以本次確認後的清冊資料作為後續坪效、分配、成本、現金流與融資報告的計算依據。</p>
+            <p>正式套用後，目前案件將以本次確認後的清冊資料作為後續坪效、分配、成本、現金流與融資報告的計算依據。</p>
           </div>
           <RosterChipList items={config.applyConfirmationFields} />
         </section>
@@ -795,7 +1008,45 @@ function ParameterAccessNotice({ profile }) {
   );
 }
 
-function ModuleContent({ module, accessProfile }) {
+function RosterCaseRequiredNotice({ onGoToCases }) {
+  return (
+    <section className="eval-module-section eval-case-required">
+      <LockKeyhole aria-hidden="true" size={30} />
+      <div>
+        <p className="eval-kicker">CASE REQUIRED</p>
+        <h4>請先建立或選擇案件</h4>
+        <p>
+          土地清冊與建物清冊必須歸屬於單一案件。請先至「案件管理」建立案件，或從案件列表選擇目前案件後，再進行清冊匯入、版本比對與正式套用。
+        </p>
+        <button type="button" onClick={onGoToCases}>
+          前往案件管理
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function OwnershipModule({ module, currentCase, onGoToCases }) {
+  if (!currentCase) {
+    return (
+      <div className="eval-module-stack">
+        <RosterCaseRequiredNotice onGoToCases={onGoToCases} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="eval-module-stack">
+      <CurrentCaseSummary currentCase={currentCase} />
+      {module.sections.map((section) => (
+        <ModuleSection section={section} key={section.title} />
+      ))}
+      <RosterImportVersioning config={module.rosterImportVersioning} currentCase={currentCase} />
+    </div>
+  );
+}
+
+function ModuleContent({ module, accessProfile, cases, currentCase, onAddCase, onSelectCase, onGoToCases }) {
   if (module.type === "paths") {
     return <DevelopmentPathModule />;
   }
@@ -812,9 +1063,24 @@ function ModuleContent({ module, accessProfile }) {
     return <SecurityProtectionModule module={module} />;
   }
 
+  if (module.id === "case-management") {
+    return (
+      <CaseManagementModule
+        accessProfile={accessProfile}
+        cases={cases}
+        currentCase={currentCase}
+        onAddCase={onAddCase}
+        onSelectCase={onSelectCase}
+      />
+    );
+  }
+
+  if (module.id === "ownership") {
+    return <OwnershipModule module={module} currentCase={currentCase} onGoToCases={onGoToCases} />;
+  }
+
   return (
     <div className="eval-module-stack">
-      {module.id === "case-management" && <RolePermissionPanel profile={accessProfile} />}
       {module.id === "parameters" && <ParameterAccessNotice profile={accessProfile} />}
       <AssessmentModeCards modes={module.modeOptions} />
       {module.sections.map((section) => (
@@ -822,7 +1088,6 @@ function ModuleContent({ module, accessProfile }) {
           <ModuleSection section={section} key={section.title} />
         )
       ))}
-      {module.id === "ownership" && <RosterImportVersioning config={module.rosterImportVersioning} />}
     </div>
   );
 }
@@ -883,13 +1148,13 @@ function EvaluationLanding({ onLogin }) {
   );
 }
 
-function DashboardHome({ activeModule, visibleModuleCount }) {
+function DashboardHome({ activeModule, cases, currentCase, visibleModuleCount }) {
   return (
     <section className="eval-dashboard-home" aria-label="系統總覽">
       <div className="eval-overview-grid">
         <article>
-          <span>目前案件</span>
-          <strong>3</strong>
+          <span>案件列表</span>
+          <strong>{cases.length}</strong>
           <p>示範資料，等待正式資料庫接入。</p>
         </article>
         <article>
@@ -910,8 +1175,8 @@ function DashboardHome({ activeModule, visibleModuleCount }) {
           <h2>案件管理概覽</h2>
         </div>
         <div className="eval-case-list">
-          {sampleCases.map((item) => (
-            <article key={item.name}>
+          {cases.slice(0, 3).map((item) => (
+            <article key={item.id} className={currentCase?.id === item.id ? "is-current-case" : ""}>
               <div>
                 <h3>{item.name}</h3>
                 <p>
@@ -924,9 +1189,15 @@ function DashboardHome({ activeModule, visibleModuleCount }) {
         </div>
       </div>
 
-      <div className="eval-current-module">
-        <CheckCircle2 aria-hidden="true" size={18} />
-        目前選取模組：{activeModule.title}
+      <div className="eval-context-strip">
+        <div className="eval-current-module">
+          <CheckCircle2 aria-hidden="true" size={18} />
+          目前案件：{currentCase?.name ?? "尚未選定案件"}
+        </div>
+        <div className="eval-current-module">
+          <CheckCircle2 aria-hidden="true" size={18} />
+          目前模組：{activeModule.title}
+        </div>
       </div>
     </section>
   );
@@ -1027,9 +1298,15 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mockRole, setMockRole] = useState("admin");
   const [activeModuleId, setActiveModuleId] = useState(evaluationModules[0].id);
+  const [cases, setCases] = useState(sampleCases);
+  const [currentCaseId, setCurrentCaseId] = useState("");
   const isLoggedIn = authState.status === "authenticated";
   const isTestRoute = routeHash === SYSTEM_TEST_HASH;
   const accessProfile = mockAccessProfiles[mockRole];
+  const currentCase = useMemo(
+    () => cases.find((item) => item.id === currentCaseId) ?? null,
+    [cases, currentCaseId],
+  );
   const visiblePrimaryModules = useMemo(
     () => primaryEvaluationModules.filter((module) => canViewModule(module, accessProfile)),
     [accessProfile],
@@ -1116,6 +1393,20 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     }).catch(() => {});
     setAuthState({ status: "unauthenticated", email: "", role: "" });
     setMockRole("admin");
+    setCurrentCaseId("");
+  };
+
+  const handleAddCase = (createdCase) => {
+    setCases((current) => [...current, createdCase]);
+    setCurrentCaseId(createdCase.id);
+  };
+
+  const handleSelectCase = (caseId) => {
+    setCurrentCaseId(caseId);
+  };
+
+  const handleGoToCases = () => {
+    setActiveModuleId("case-management");
   };
 
   if (!isLoggedIn) {
@@ -1207,7 +1498,12 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
           </div>
         </header>
 
-        <DashboardHome activeModule={activeModule} visibleModuleCount={visibleModules.length} />
+        <DashboardHome
+          activeModule={activeModule}
+          cases={cases}
+          currentCase={currentCase}
+          visibleModuleCount={visibleModules.length}
+        />
 
         <section className="eval-module-panel" data-active-module={activeModule.id}>
           <div className="eval-module-panel__head">
@@ -1223,7 +1519,15 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
               <Settings2 size={18} />
             </div>
           </div>
-          <ModuleContent module={activeModule} accessProfile={accessProfile} />
+          <ModuleContent
+            module={activeModule}
+            accessProfile={accessProfile}
+            cases={cases}
+            currentCase={currentCase}
+            onAddCase={handleAddCase}
+            onSelectCase={handleSelectCase}
+            onGoToCases={handleGoToCases}
+          />
         </section>
       </section>
     </main>

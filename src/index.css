@@ -1437,6 +1437,11 @@ main {
   padding: 12px 14px;
 }
 
+.eval-case-list article.is-current-case,
+.eval-case-table tr.is-current-case td {
+  background: rgba(200, 168, 98, 0.14);
+}
+
 .eval-case-list h3 {
   margin: 0 0 3px;
   color: var(--green-950);
@@ -1452,9 +1457,16 @@ main {
   font-weight: 700;
 }
 
+.eval-context-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .eval-current-module {
   display: inline-flex;
   width: max-content;
+  max-width: 100%;
   align-items: center;
   gap: 8px;
   border-radius: 999px;
@@ -1497,8 +1509,163 @@ main {
   gap: 14px;
 }
 
+.eval-module-stack > * {
+  min-width: 0;
+}
+
 .eval-module-section {
+  box-sizing: border-box;
+  min-width: 0;
   padding: 18px;
+}
+
+.eval-current-case-card {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(8, 59, 48, 0.1);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(19, 92, 73, 0.08), rgba(255, 255, 255, 0.92));
+  padding: 16px;
+}
+
+.eval-current-case-card--compact {
+  background: rgba(248, 251, 250, 0.92);
+}
+
+.eval-current-case-card h4 {
+  margin: 4px 0 12px;
+  color: var(--green-950);
+  font-size: 1.05rem;
+  font-weight: 900;
+}
+
+.eval-current-case-card p {
+  margin: 0;
+  color: var(--gray-700);
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.eval-current-case-card dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.eval-current-case-card div {
+  min-width: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.78);
+  padding: 10px 12px;
+}
+
+.eval-current-case-card dt {
+  color: var(--gray-500);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.eval-current-case-card dd {
+  margin: 4px 0 0;
+  color: var(--green-950);
+  font-size: 0.9rem;
+  font-weight: 900;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.eval-case-flow-steps {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.eval-case-flow-steps span {
+  display: grid;
+  gap: 6px;
+  min-height: 92px;
+  border-radius: 14px;
+  background: rgba(19, 92, 73, 0.08);
+  color: var(--green-950);
+  padding: 12px;
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.45;
+}
+
+.eval-case-flow-steps b {
+  color: var(--gold);
+  font-size: 0.76rem;
+}
+
+.eval-case-form {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  min-width: 0;
+  margin-bottom: 16px;
+}
+
+.eval-case-form .eval-field--wide {
+  grid-column: span 2;
+}
+
+.eval-case-form button {
+  align-self: end;
+  min-height: 38px;
+}
+
+.eval-case-table-wrap {
+  overflow-x: auto;
+}
+
+.eval-case-table {
+  min-width: 980px;
+}
+
+.eval-case-table td:last-child {
+  white-space: normal;
+}
+
+.eval-small-action {
+  min-height: 32px;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.76rem;
+}
+
+.eval-case-required {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 16px;
+  align-items: flex-start;
+  border-color: rgba(200, 168, 98, 0.34);
+  background:
+    linear-gradient(135deg, rgba(200, 168, 98, 0.16), rgba(255, 255, 255, 0.94)),
+    #fff;
+}
+
+.eval-case-required svg {
+  color: var(--gold);
+}
+
+.eval-case-required h4 {
+  margin: 4px 0 8px;
+  color: var(--green-950);
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.eval-case-required p {
+  max-width: 760px;
+  margin: 0 0 14px;
+  color: var(--gray-700);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.7;
 }
 
 .eval-section-head h4 {
@@ -2374,6 +2541,8 @@ main {
 
   .eval-mode-grid,
   .eval-output-grid,
+  .eval-case-flow-steps,
+  .eval-current-case-card dl,
   .eval-checklist,
   .eval-license-list,
   .eval-device-rules .eval-license-list,
@@ -2393,6 +2562,10 @@ main {
   .eval-roster-hero,
   .eval-roster-two-column {
     grid-template-columns: 1fr;
+  }
+
+  .eval-case-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .hero {
@@ -2630,13 +2803,25 @@ main {
     justify-content: space-between;
   }
 
+  .eval-case-form,
+  .eval-case-flow-steps,
+  .eval-current-case-card dl,
+  .eval-case-required {
+    grid-template-columns: 1fr;
+  }
+
+  .eval-case-form .eval-field--wide {
+    grid-column: auto;
+  }
+
   .eval-case-list article,
   .eval-module-panel__head {
     align-items: flex-start;
     flex-direction: column;
   }
 
-  .eval-current-module {
+  .eval-current-module,
+  .eval-context-strip {
     width: 100%;
   }
 

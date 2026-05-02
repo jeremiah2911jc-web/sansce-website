@@ -349,7 +349,7 @@ export const evaluationModules = [
     id: "ownership",
     title: "土地清冊 / 建物清冊",
     eyebrow: "LIST",
-    description: "第一階段先做前端表格骨架，未來再接 Excel 匯入與地主整合狀態。",
+    description: "土地清冊與建物清冊必須掛在目前案件底下，第一階段先做案件歸屬、表格骨架與 Excel 匯入版本控管提示。",
     sections: [
       {
         title: "土地清冊",
@@ -362,7 +362,7 @@ export const evaluationModules = [
     ],
     rosterImportVersioning: {
       notice:
-        "上傳檔案不會直接覆蓋正式資料。必須通過安全檢查、欄位檢核、跨表關聯檢核並完成正式套用確認後，才會成為後續計算使用的正式清冊資料。",
+        "上傳檔案不會直接覆蓋正式資料。必須通過安全檢查、欄位檢核、跨表關聯檢核並完成正式套用確認後，才會成為目前案件後續計算使用的正式清冊資料。",
       template: {
         title: "清冊模板下載",
         fileName: "sanze_roster_import_template_v7.xlsx",
