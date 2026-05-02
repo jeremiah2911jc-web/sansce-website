@@ -55,6 +55,39 @@ const defaultCaseForm = {
   note: "",
 };
 
+function buildCaseFormFromCase(caseItem) {
+  return {
+    code: caseItem.code ?? "",
+    name: caseItem.name ?? "",
+    path: caseItem.path ?? "",
+    status: caseItem.status ?? "",
+    consultant: caseItem.consultant ?? "",
+    updated: caseItem.updated ?? "",
+    note: caseItem.note ?? "",
+  };
+}
+
+function getNextCaseCode(cases) {
+  const maxNumber = cases.reduce((max, item) => {
+    const match = /^CASE-(\d+)$/i.exec(item.code ?? "");
+    return match ? Math.max(max, Number(match[1])) : max;
+  }, 0);
+
+  return `CASE-${String(maxNumber + 1).padStart(3, "0")}`;
+}
+
+function normalizeCaseForm(caseForm, fallbackCode) {
+  return {
+    code: caseForm.code.trim() || fallbackCode,
+    name: caseForm.name.trim() || "未命名案件",
+    path: caseForm.path.trim() || "自主更新 / 前期評估",
+    status: caseForm.status.trim() || "評估中",
+    consultant: caseForm.consultant.trim() || "待指派",
+    updated: caseForm.updated.trim() || "2026/05/02",
+    note: caseForm.note.trim() || "前端 mock 建立",
+  };
+}
+
 const caseDataFlow = [
   "建立案件",
   "選定目前案件",
@@ -186,8 +219,49 @@ function CurrentCaseSummary({ currentCase, compact = false }) {
   );
 }
 
-function CaseManagementModule({ accessProfile, cases, currentCase, onAddCase, onSelectCase }) {
+function CaseDeleteConfirmModal({ deleteConfirmation, onCancel, onContinue, onConfirm }) {
+  if (!deleteConfirmation) {
+    return null;
+  }
+
+  const isSecondStep = deleteConfirmation.step === 2;
+  const caseName = deleteConfirmation.caseItem.name || "未命名案件";
+
+  return (
+    <div className="eval-confirm-backdrop" role="presentation">
+      <section className="eval-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="case-delete-confirm-title">
+        <p className="eval-kicker">DELETE CONFIRMATION</p>
+        <h4 id="case-delete-confirm-title">{isSecondStep ? "再次確認刪除案件" : "刪除案件確認"}</h4>
+        <p>
+          {isSecondStep
+            ? `請再次確認是否刪除「${caseName}」。刪除後目前案件會被清除，相關清冊與試算資料將無法再掛在此案件底下。`
+            : "確定要刪除此案件嗎？此操作會移除目前前端 mock 案件資料，正式版會同步檢查清冊、成本、報告等關聯資料。"}
+        </p>
+        <div className="eval-confirm-actions">
+          <button type="button" className="eval-secondary-action" onClick={onCancel}>
+            取消
+          </button>
+          <button type="button" className="eval-danger-action" onClick={isSecondStep ? onConfirm : onContinue}>
+            {isSecondStep ? "確認刪除" : "繼續刪除"}
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function CaseManagementModule({ accessProfile, cases, currentCase, onAddCase, onUpdateCase, onDeleteCase, onSelectCase }) {
   const [caseForm, setCaseForm] = useState(defaultCaseForm);
+  const [editingCaseId, setEditingCaseId] = useState("");
+  const [deleteConfirmation, setDeleteConfirmation] = useState(null);
+  const editingCase = cases.find((item) => item.id === editingCaseId) ?? null;
+
+  useEffect(() => {
+    if (editingCaseId && !editingCase) {
+      setEditingCaseId("");
+      setCaseForm(defaultCaseForm);
+    }
+  }, [editingCase, editingCaseId]);
 
   const handleChange = (field) => (event) => {
     setCaseForm((current) => ({ ...current, [field]: event.target.value }));
@@ -195,20 +269,59 @@ function CaseManagementModule({ accessProfile, cases, currentCase, onAddCase, on
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const nextIndex = cases.length + 1;
+
+    if (editingCase) {
+      onUpdateCase({
+        ...editingCase,
+        ...normalizeCaseForm(caseForm, editingCase.code || getNextCaseCode(cases)),
+      });
+      setEditingCaseId("");
+      setCaseForm(defaultCaseForm);
+      return;
+    }
+
     const createdCase = {
       id: `case-${Date.now()}`,
-      code: caseForm.code.trim() || `CASE-${String(nextIndex).padStart(3, "0")}`,
-      name: caseForm.name.trim() || `測試案件 ${nextIndex}`,
-      path: caseForm.path.trim() || "自主更新 / 前期評估",
-      status: caseForm.status.trim() || "評估中",
-      consultant: caseForm.consultant.trim() || "待指派",
-      updated: caseForm.updated.trim() || "2026/05/02",
-      note: caseForm.note.trim() || "前端 mock 建立",
+      ...normalizeCaseForm(caseForm, getNextCaseCode(cases)),
     };
 
     onAddCase(createdCase);
     setCaseForm(defaultCaseForm);
+  };
+
+  const handleEditCase = (caseItem) => {
+    setEditingCaseId(caseItem.id);
+    setCaseForm(buildCaseFormFromCase(caseItem));
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCaseId("");
+    setCaseForm(defaultCaseForm);
+  };
+
+  const handleRequestDelete = (caseItem) => {
+    setDeleteConfirmation({ caseItem, step: 1 });
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmation(null);
+  };
+
+  const handleContinueDelete = () => {
+    setDeleteConfirmation((current) => current ? { ...current, step: 2 } : null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!deleteConfirmation) {
+      return;
+    }
+
+    onDeleteCase(deleteConfirmation.caseItem.id);
+    if (editingCaseId === deleteConfirmation.caseItem.id) {
+      setEditingCaseId("");
+      setCaseForm(defaultCaseForm);
+    }
+    setDeleteConfirmation(null);
   };
 
   return (
@@ -238,10 +351,14 @@ function CaseManagementModule({ accessProfile, cases, currentCase, onAddCase, on
 
       <section className="eval-module-section">
         <div className="eval-section-head">
-          <h4>案件列表骨架</h4>
-          <p>目前為前端 mock 資料，正式版本會改由資料庫載入案件、狀態與版本紀錄。</p>
+          <h4>{editingCase ? "編輯案件" : "案件列表骨架"}</h4>
+          <p>
+            {editingCase
+              ? `正在編輯：${editingCase.name || "未命名案件"}。儲存後案件列表與目前案件 context 會同步更新。`
+              : "目前為前端 mock 資料，正式版本會改由資料庫載入案件、狀態與版本紀錄。"}
+          </p>
         </div>
-        <form className="eval-case-form" onSubmit={handleSubmit}>
+        <form className={`eval-case-form${editingCase ? " is-editing" : ""}`} onSubmit={handleSubmit}>
           <label className="eval-field">
             <span>案件編號</span>
             <input type="text" value={caseForm.code} onChange={handleChange("code")} placeholder="CASE-004" />
@@ -270,7 +387,14 @@ function CaseManagementModule({ accessProfile, cases, currentCase, onAddCase, on
             <span>版本備註</span>
             <input type="text" value={caseForm.note} onChange={handleChange("note")} placeholder="前端 mock 建立" />
           </label>
-          <button type="submit">加入案件列表</button>
+          <div className="eval-case-form-actions">
+            <button type="submit">{editingCase ? "儲存案件修改" : "加入案件列表"}</button>
+            {editingCase && (
+              <button type="button" className="eval-secondary-action" onClick={handleCancelEdit}>
+                取消編輯
+              </button>
+            )}
+          </div>
         </form>
 
         <div className="eval-case-table-wrap">
@@ -284,32 +408,54 @@ function CaseManagementModule({ accessProfile, cases, currentCase, onAddCase, on
                 <th>負責顧問</th>
                 <th>最後更新</th>
                 <th>版本備註</th>
-                <th>目前案件</th>
+                <th>操作</th>
               </tr>
             </thead>
             <tbody>
-              {cases.map((item) => (
-                <tr key={item.id} className={currentCase?.id === item.id ? "is-current-case" : ""}>
-                  <td>{item.code}</td>
-                  <td>{item.name}</td>
-                  <td>{item.path}</td>
-                  <td>{item.status}</td>
-                  <td>{item.consultant}</td>
-                  <td>{item.updated}</td>
-                  <td>{item.note}</td>
-                  <td>
-                    <button type="button" className="eval-small-action" onClick={() => onSelectCase(item.id)}>
-                      {currentCase?.id === item.id ? "已選定" : "選為目前案件"}
-                    </button>
+              {cases.length ? (
+                cases.map((item) => (
+                  <tr key={item.id} className={currentCase?.id === item.id ? "is-current-case" : ""}>
+                    <td>{item.code}</td>
+                    <td>{item.name || "未命名案件"}</td>
+                    <td>{item.path}</td>
+                    <td>{item.status}</td>
+                    <td>{item.consultant}</td>
+                    <td>{item.updated}</td>
+                    <td>{item.note}</td>
+                    <td>
+                      <div className="eval-case-actions">
+                        <button type="button" className="eval-small-action" onClick={() => onSelectCase(item.id)}>
+                          {currentCase?.id === item.id ? "已選定" : "選為目前案件"}
+                        </button>
+                        <button type="button" className="eval-small-action" onClick={() => handleEditCase(item)}>
+                          編輯
+                        </button>
+                        <button type="button" className="eval-small-action eval-danger-action" onClick={() => handleRequestDelete(item)}>
+                          刪除
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={8}>
+                    <span className="eval-empty-state">目前尚無案件，請先建立案件。</span>
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
       </section>
 
       <RolePermissionPanel profile={accessProfile} />
+      <CaseDeleteConfirmModal
+        deleteConfirmation={deleteConfirmation}
+        onCancel={handleCancelDelete}
+        onContinue={handleContinueDelete}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }
@@ -1046,7 +1192,17 @@ function OwnershipModule({ module, currentCase, onGoToCases }) {
   );
 }
 
-function ModuleContent({ module, accessProfile, cases, currentCase, onAddCase, onSelectCase, onGoToCases }) {
+function ModuleContent({
+  module,
+  accessProfile,
+  cases,
+  currentCase,
+  onAddCase,
+  onUpdateCase,
+  onDeleteCase,
+  onSelectCase,
+  onGoToCases,
+}) {
   if (module.type === "paths") {
     return <DevelopmentPathModule />;
   }
@@ -1070,6 +1226,8 @@ function ModuleContent({ module, accessProfile, cases, currentCase, onAddCase, o
         cases={cases}
         currentCase={currentCase}
         onAddCase={onAddCase}
+        onUpdateCase={onUpdateCase}
+        onDeleteCase={onDeleteCase}
         onSelectCase={onSelectCase}
       />
     );
@@ -1401,6 +1559,17 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     setCurrentCaseId(createdCase.id);
   };
 
+  const handleUpdateCase = (updatedCase) => {
+    setCases((current) => current.map((item) => (item.id === updatedCase.id ? updatedCase : item)));
+  };
+
+  const handleDeleteCase = (caseId) => {
+    setCases((current) => current.filter((item) => item.id !== caseId));
+    if (currentCaseId === caseId) {
+      setCurrentCaseId("");
+    }
+  };
+
   const handleSelectCase = (caseId) => {
     setCurrentCaseId(caseId);
   };
@@ -1525,6 +1694,8 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
             cases={cases}
             currentCase={currentCase}
             onAddCase={handleAddCase}
+            onUpdateCase={handleUpdateCase}
+            onDeleteCase={handleDeleteCase}
             onSelectCase={handleSelectCase}
             onGoToCases={handleGoToCases}
           />
