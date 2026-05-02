@@ -779,6 +779,13 @@ main {
   transform: translateY(-1px);
 }
 
+.system-card__button:disabled,
+.system-card__button.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+  transform: none;
+}
+
 .system-card__button--primary {
   border-color: transparent;
   background: var(--gold);
@@ -788,6 +795,14 @@ main {
 .system-card__button--secondary {
   background: rgba(255, 255, 255, 0.08);
   color: var(--white);
+}
+
+.system-card__status {
+  margin: 10px 0 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.45;
 }
 
 .site-footer {
@@ -853,6 +868,10 @@ main {
   gap: clamp(28px, 5vw, 76px);
   align-items: center;
   padding: 34px max(22px, calc((100vw - 1440px) / 2 + 28px)) 70px;
+}
+
+.eval-landing--auth {
+  min-height: calc(100vh - 96px);
 }
 
 .eval-kicker {
@@ -945,6 +964,100 @@ main {
   color: var(--gray-700);
   font-weight: 600;
   line-height: 1.8;
+}
+
+.eval-auth-form {
+  display: grid;
+  gap: 14px;
+}
+
+.eval-auth-form label {
+  display: grid;
+  gap: 7px;
+}
+
+.eval-auth-form label span {
+  color: var(--green-950);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.eval-auth-form input {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid rgba(8, 59, 48, 0.13);
+  border-radius: 12px;
+  background: #fbfdfc;
+  color: var(--green-950);
+  padding: 11px 13px;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+
+.eval-auth-form input:focus {
+  border-color: rgba(19, 92, 73, 0.42);
+  outline: 3px solid rgba(19, 92, 73, 0.1);
+}
+
+.eval-auth-form button:disabled {
+  cursor: wait;
+  opacity: 0.68;
+}
+
+.eval-auth-error {
+  border: 1px solid rgba(167, 61, 40, 0.18);
+  border-radius: 12px;
+  background: rgba(167, 61, 40, 0.07);
+  color: #7b2f20 !important;
+  padding: 10px 12px;
+  font-size: 0.82rem;
+  font-weight: 850 !important;
+}
+
+.eval-access-closed {
+  display: grid;
+  max-width: 760px;
+  min-height: calc(100vh - 148px);
+  align-content: center;
+  margin: 0 auto;
+  padding: 34px 22px 76px;
+  text-align: center;
+}
+
+.eval-access-closed svg {
+  justify-self: center;
+  margin-bottom: 18px;
+  color: var(--gold);
+}
+
+.eval-access-closed h1 {
+  margin: 0 0 16px;
+  color: var(--green-950);
+  font-size: clamp(2.1rem, 4vw, 4rem);
+  font-weight: 900;
+  line-height: 1.08;
+}
+
+.eval-access-closed p:not(.eval-kicker) {
+  margin: 0 auto;
+  color: var(--gray-700);
+  font-size: clamp(1rem, 1.2vw, 1.12rem);
+  font-weight: 650;
+  line-height: 1.9;
+}
+
+.eval-access-closed span {
+  justify-self: center;
+  margin-top: 20px;
+  border-radius: 999px;
+  background: rgba(19, 92, 73, 0.09);
+  color: var(--green-900);
+  padding: 8px 12px;
+  font-size: 0.82rem;
+  font-weight: 900;
 }
 
 .eval-module-preview {

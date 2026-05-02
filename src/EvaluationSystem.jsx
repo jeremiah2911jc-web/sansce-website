@@ -24,6 +24,7 @@ const LICENSE_GATED_MODULES = {
   "bank-report": "bankReport",
   [TAKEOVER_MODULE_ID]: "takeover",
 };
+const SYSTEM_TEST_HASH = "#system-test";
 const primaryEvaluationModules = evaluationModules.filter((module) => module.id !== TAKEOVER_MODULE_ID);
 const takeoverEvaluationModule = evaluationModules.find((module) => module.id === TAKEOVER_MODULE_ID);
 
@@ -931,10 +932,103 @@ function DashboardHome({ activeModule, visibleModuleCount }) {
   );
 }
 
-export function EvaluationSystem() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+function EvaluationLogin({ errorMessage, isChecking, isSubmitting, onSubmit }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onSubmit({ email, password });
+  };
+
+  return (
+    <main className="evaluation-shell evaluation-shell--landing">
+      <header className="eval-public-header">
+        <a className="eval-back-link" href="#top">
+          <ArrowLeft aria-hidden="true" size={18} />
+          回到三策官網
+        </a>
+        <span>指定管理者測試入口</span>
+      </header>
+
+      <section className="eval-landing eval-landing--auth">
+        <div className="eval-landing__copy">
+          <p className="eval-kicker">SANZE SYSTEM TEST</p>
+          <h1>開發評估系統</h1>
+          <p>
+            本系統目前為三策內部授權測試，未開放公開使用。指定管理者可使用核發的 email 與測試密碼登入，正式販售前仍需接入正式 Auth、帳號授權資料庫、單一設備綁定、session 紀錄、audit log、API 權限驗證、customer data isolation 與 RLS 或後端權限檢查。
+          </p>
+        </div>
+
+        <aside className="eval-login-card" aria-label="三策管理者測試登入">
+          <LockKeyhole aria-hidden="true" size={34} />
+          <h2>管理者測試登入</h2>
+          <p>密碼不會寫在前端程式碼中；測試帳號、密碼雜湊、salt 與 session secret 需在 Vercel Environment Variables 設定。</p>
+          <form className="eval-auth-form" onSubmit={handleSubmit}>
+            <label>
+              <span>Email</span>
+              <input
+                autoComplete="username"
+                inputMode="email"
+                name="email"
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="admin@example.com"
+                type="email"
+                value={email}
+                required
+              />
+            </label>
+            <label>
+              <span>Password</span>
+              <input
+                autoComplete="current-password"
+                name="password"
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="請輸入測試密碼"
+                type="password"
+                value={password}
+                required
+              />
+            </label>
+            {errorMessage && <p className="eval-auth-error">{errorMessage}</p>}
+            <button type="submit" disabled={isChecking || isSubmitting}>
+              {isSubmitting ? "登入中..." : "登入測試系統"}
+            </button>
+          </form>
+        </aside>
+      </section>
+    </main>
+  );
+}
+
+function EvaluationAccessClosed({ isChecking }) {
+  return (
+    <main className="evaluation-shell evaluation-shell--landing">
+      <header className="eval-public-header">
+        <a className="eval-back-link" href="#top">
+          <ArrowLeft aria-hidden="true" size={18} />
+          回到三策官網
+        </a>
+        <span>系統暫不公開</span>
+      </header>
+      <section className="eval-access-closed">
+        <LockKeyhole aria-hidden="true" size={42} />
+        <p className="eval-kicker">PRIVATE TEST</p>
+        <h1>開發評估系統暫不公開</h1>
+        {isChecking && <span>正在確認測試 session...</span>}
+      </section>
+    </main>
+  );
+}
+
+export function EvaluationSystem({ routeHash = window.location.hash }) {
+  const [authState, setAuthState] = useState({ status: "checking", email: "", role: "" });
+  const [loginError, setLoginError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [mockRole, setMockRole] = useState("admin");
   const [activeModuleId, setActiveModuleId] = useState(evaluationModules[0].id);
+  const isLoggedIn = authState.status === "authenticated";
+  const isTestRoute = routeHash === SYSTEM_TEST_HASH;
   const accessProfile = mockAccessProfiles[mockRole];
   const visiblePrimaryModules = useMemo(
     () => primaryEvaluationModules.filter((module) => canViewModule(module, accessProfile)),
@@ -958,8 +1052,85 @@ export function EvaluationSystem() {
     }
   }, [activeModuleId, visibleModules]);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    fetch("/api/sanze-system-session", { credentials: "include" })
+      .then((response) => response.json())
+      .then((data) => {
+        if (!isMounted) {
+          return;
+        }
+
+        if (data.authenticated) {
+          setAuthState({ status: "authenticated", email: data.email ?? "", role: data.role ?? "admin" });
+          setMockRole("admin");
+        } else {
+          setAuthState({ status: "unauthenticated", email: "", role: "" });
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setAuthState({ status: "unauthenticated", email: "", role: "" });
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleLogin = async ({ email, password }) => {
+    setIsSubmitting(true);
+    setLoginError("");
+
+    try {
+      const response = await fetch("/api/sanze-system-login", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok || !data.authenticated) {
+        setLoginError("帳號或密碼不正確，或尚未取得授權。");
+        setAuthState({ status: "unauthenticated", email: "", role: "" });
+        return;
+      }
+
+      setAuthState({ status: "authenticated", email: data.email ?? email, role: data.role ?? "admin" });
+      setMockRole("admin");
+    } catch {
+      setLoginError("帳號或密碼不正確，或尚未取得授權。");
+      setAuthState({ status: "unauthenticated", email: "", role: "" });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    await fetch("/api/sanze-system-logout", {
+      method: "POST",
+      credentials: "include",
+    }).catch(() => {});
+    setAuthState({ status: "unauthenticated", email: "", role: "" });
+    setMockRole("admin");
+  };
+
   if (!isLoggedIn) {
-    return <EvaluationLanding onLogin={() => setIsLoggedIn(true)} />;
+    if (!isTestRoute) {
+      return <EvaluationAccessClosed isChecking={authState.status === "checking"} />;
+    }
+
+    return (
+      <EvaluationLogin
+        errorMessage={loginError}
+        isChecking={authState.status === "checking"}
+        isSubmitting={isSubmitting}
+        onSubmit={handleLogin}
+      />
+    );
   }
 
   return (
@@ -1013,11 +1184,11 @@ export function EvaluationSystem() {
       <section className="eval-workspace">
         <header className="eval-workspace__top">
           <div>
-            <p className="eval-kicker">MOCK LOGIN</p>
+            <p className="eval-kicker">AUTHORIZED TEST</p>
             <h1>開發評估系統</h1>
           </div>
           <div className="eval-user-status">
-            <span>{accessProfile.label}</span>
+            <span>{authState.email || accessProfile.label}</span>
             <div className="eval-role-switch" aria-label="mock role 切換">
               {Object.entries(mockAccessProfiles).map(([role, profile]) => (
                 <button
@@ -1030,8 +1201,8 @@ export function EvaluationSystem() {
                 </button>
               ))}
             </div>
-            <button type="button" onClick={() => setIsLoggedIn(false)}>
-              登出預覽
+            <button type="button" onClick={handleLogout}>
+              登出
             </button>
           </div>
         </header>

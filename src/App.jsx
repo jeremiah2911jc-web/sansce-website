@@ -62,17 +62,18 @@ function LogoMark() {
 
 export default function App() {
   const year = new Date().getFullYear();
-  const [isSystemRoute, setIsSystemRoute] = useState(() => window.location.hash.startsWith("#system"));
+  const [routeHash, setRouteHash] = useState(() => window.location.hash);
+  const isSystemRoute = routeHash.startsWith("#system");
 
   useEffect(() => {
-    const handleRoute = () => setIsSystemRoute(window.location.hash.startsWith("#system"));
+    const handleRoute = () => setRouteHash(window.location.hash);
 
     window.addEventListener("hashchange", handleRoute);
     return () => window.removeEventListener("hashchange", handleRoute);
   }, []);
 
   if (isSystemRoute) {
-    return <EvaluationSystem />;
+    return <EvaluationSystem routeHash={routeHash} />;
   }
 
   return (
@@ -236,14 +237,15 @@ export default function App() {
                 <span />
               </div>
               <div className="system-card__actions">
-                <a className="system-card__button system-card__button--primary" href="#system">
-                  <span>進入系統</span>
+                <button className="system-card__button system-card__button--primary is-disabled" type="button" disabled>
+                  <span>授權測試中</span>
                   <ArrowUpRight aria-hidden="true" size={17} />
-                </a>
-                <a className="system-card__button system-card__button--secondary" href="#system-modules">
-                  <span>了解系統</span>
-                </a>
+                </button>
+                <button className="system-card__button system-card__button--secondary is-disabled" type="button" disabled>
+                  <span>暫不公開</span>
+                </button>
               </div>
+              <p className="system-card__status">目前僅開放三策指定管理者測試，正式販售前將接入授權與帳號管理。</p>
             </article>
           </div>
         </section>
