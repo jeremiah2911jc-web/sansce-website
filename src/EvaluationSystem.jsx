@@ -18,39 +18,6 @@ import {
   workflowStages,
 } from "./evaluationSystemData.js";
 
-const sampleCases = [
-  {
-    id: "case-001",
-    code: "CASE-001",
-    name: "板橋民權段自主更新",
-    path: "自主更新 / 前期評估",
-    status: "評估中",
-    consultant: "林顧問",
-    updated: "2026/05/02",
-    note: "第七版清冊匯入測試",
-  },
-  {
-    id: "case-002",
-    code: "CASE-002",
-    name: "新店中央路危老重建",
-    path: "危老重建 / 條件確認",
-    status: "條件確認",
-    consultant: "陳顧問",
-    updated: "2026/05/01",
-    note: "等待基地資料補齊",
-  },
-  {
-    id: "case-003",
-    code: "CASE-003",
-    name: "中和都市更新試算案",
-    path: "都市更新 / 銀行評估",
-    status: "銀行評估",
-    consultant: "王顧問",
-    updated: "2026/04/29",
-    note: "銀行報告草稿",
-  },
-];
-
 const defaultCaseForm = {
   code: "",
   name: "",
@@ -86,11 +53,11 @@ function normalizeCaseForm(caseForm, fallbackCode) {
   return {
     code: caseForm.code.trim() || fallbackCode,
     name: caseForm.name.trim() || "未命名案件",
-    path: caseForm.path.trim() || "自主更新 / 前期評估",
+    path: caseForm.path.trim() || "待選擇開發路徑",
     status: caseForm.status.trim() || "評估中",
-    consultant: caseForm.consultant.trim() || "待指派",
-    updated: caseForm.updated.trim() || "2026/05/02",
-    note: caseForm.note.trim() || "前端 mock 建立",
+    consultant: caseForm.consultant.trim() || "三策顧問",
+    updated: caseForm.updated.trim() || new Date().toLocaleDateString("zh-TW"),
+    note: caseForm.note.trim() || "前端測試案件",
   };
 }
 
@@ -109,8 +76,140 @@ const LICENSE_GATED_MODULES = {
   [TAKEOVER_MODULE_ID]: "takeover",
 };
 const SYSTEM_TEST_HASH = "#system-test";
+const CASES_STORAGE_KEY = "sanze-evaluation-cases-v1";
+const ROSTER_STAGING_STORAGE_KEY = "sanze-evaluation-roster-staging-v1";
+const BASE_INFO_STORAGE_KEY = "sanze-evaluation-base-info-v1";
 const primaryEvaluationModules = evaluationModules.filter((module) => module.id !== TAKEOVER_MODULE_ID);
 const takeoverEvaluationModule = evaluationModules.find((module) => module.id === TAKEOVER_MODULE_ID);
+
+const defaultBaseInfo = {
+  location: "",
+  scope: "",
+  city: "",
+  district: "",
+  landSection: "",
+  zoning: "",
+  buildingCoverageRatio: "",
+  baseFloorAreaRatio: "",
+  siteShape: "",
+  roadAccess: "",
+  siteRestrictions: "",
+  legalRestrictions: "",
+  note: "",
+};
+
+const baseInfoFields = [
+  { key: "location", label: "基地位置", placeholder: "例：新北市泰山區..." },
+  { key: "scope", label: "基地範圍", placeholder: "例：更新單元範圍、街廓或鄰近道路界線" },
+  { key: "city", label: "縣市", placeholder: "例：新北市" },
+  { key: "district", label: "行政區", placeholder: "例：泰山區" },
+  { key: "landSection", label: "地段", placeholder: "例：泰山段" },
+  { key: "zoning", label: "使用分區", placeholder: "例：住宅區、商業區" },
+  { key: "buildingCoverageRatio", label: "建蔽率", placeholder: "例：50%" },
+  { key: "baseFloorAreaRatio", label: "基準容積率", placeholder: "例：300%" },
+  { key: "siteShape", label: "基地形狀", placeholder: "例：完整街廓、狹長、畸零" },
+  {
+    key: "roadAccess",
+    label: "道路 / 臨路條件",
+    placeholder: "包含臨路寬度、臨路方向、道路使用現況或特殊道路限制。",
+    wide: true,
+  },
+  { key: "siteRestrictions", label: "基地限制", placeholder: "例：高程、排水、鄰地、既有使用限制", wide: true },
+  { key: "legalRestrictions", label: "法規限制", placeholder: "例：退縮、開放空間、都計或建管限制", wide: true },
+  { key: "note", label: "備註", placeholder: "補充清冊未能表達的基地特殊情況", wide: true },
+];
+
+const legacyDemoCaseSignatures = [
+  {
+    id: "case-001",
+    code: "CASE-001",
+    markers: ["板橋民權段自主更新", "泰山文程段", "自主更新 / 前期評估", "林顧問", "第七版清冊匯入測試"],
+  },
+  {
+    id: "case-002",
+    code: "CASE-002",
+    markers: ["新店中央路危老重建", "危老重建 / 條件確認", "陳顧問", "等待基地資料補齊"],
+  },
+  {
+    id: "case-003",
+    code: "CASE-003",
+    markers: ["中和都市更新試算案", "都市更新 / 銀行評估", "王顧問", "銀行報告草稿"],
+  },
+];
+
+function readStoredJson(key, fallbackValue) {
+  if (typeof window === "undefined") {
+    return fallbackValue;
+  }
+
+  try {
+    const storedValue = window.localStorage.getItem(key);
+    return storedValue ? JSON.parse(storedValue) : fallbackValue;
+  } catch {
+    return fallbackValue;
+  }
+}
+
+function writeStoredJson(key, value) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // localStorage is only a front-end staging aid; failures should not block use.
+  }
+}
+
+function removeStoredJson(key) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    window.localStorage.removeItem(key);
+  } catch {
+    // localStorage is only a front-end staging aid; failures should not block use.
+  }
+}
+
+function clearStoredEvaluationData() {
+  [CASES_STORAGE_KEY, ROSTER_STAGING_STORAGE_KEY, BASE_INFO_STORAGE_KEY].forEach(removeStoredJson);
+}
+
+function getCaseSignatureText(caseItem) {
+  return [
+    caseItem?.name,
+    caseItem?.path,
+    caseItem?.status,
+    caseItem?.consultant,
+    caseItem?.note,
+  ].map((value) => normalizeCellValue(value)).join(" | ");
+}
+
+function isLegacyDemoCase(caseItem) {
+  const signature = legacyDemoCaseSignatures.find((item) => (
+    item.id === caseItem?.id || item.code === caseItem?.code
+  ));
+
+  if (!signature) {
+    return false;
+  }
+
+  const signatureText = getCaseSignatureText(caseItem);
+  return signature.markers.some((marker) => signatureText.includes(marker));
+}
+
+function loadStoredCases() {
+  const storedCases = readStoredJson(CASES_STORAGE_KEY, []);
+  return Array.isArray(storedCases) ? storedCases.filter((caseItem) => !isLegacyDemoCase(caseItem)) : [];
+}
+
+function loadStoredRecord(key) {
+  const storedRecord = readStoredJson(key, {});
+  return storedRecord && typeof storedRecord === "object" && !Array.isArray(storedRecord) ? storedRecord : {};
+}
 
 const mockAccessProfiles = {
   admin: {
@@ -322,10 +421,52 @@ function CaseDeleteConfirmModal({ deleteConfirmation, onCancel, onContinue, onCo
   );
 }
 
-function CaseManagementModule({ accessProfile, cases, currentCase, onAddCase, onUpdateCase, onDeleteCase, onSelectCase }) {
+function LocalDataClearConfirmModal({ clearConfirmation, onCancel, onContinue, onConfirm }) {
+  if (!clearConfirmation) {
+    return null;
+  }
+
+  const isSecondStep = clearConfirmation.step === 2;
+
+  return (
+    <div className="eval-confirm-backdrop" role="presentation">
+      <section className="eval-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="local-data-clear-confirm-title">
+        <p className="eval-kicker">LOCAL TEST DATA</p>
+        <h4 id="local-data-clear-confirm-title">
+          {isSecondStep ? "此操作會清除本機測試資料" : "是否清除本機測試資料？"}
+        </h4>
+        <p>
+          {isSecondStep
+            ? "此操作會清除本機瀏覽器中的案件、清冊暫存與基地資料，無法復原。確認清除？"
+            : "目前系統仍為前端測試階段，案件、清冊暫存與基地資料會先存在本機瀏覽器。若看到舊版測試案件或需要重新測試，可清除本機測試資料。"}
+        </p>
+        <div className="eval-confirm-actions">
+          <button type="button" className="eval-secondary-action" onClick={onCancel}>
+            取消
+          </button>
+          <button type="button" className="eval-danger-action" onClick={isSecondStep ? onConfirm : onContinue}>
+            {isSecondStep ? "確認清除" : "繼續清除"}
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function CaseManagementModule({
+  accessProfile,
+  cases,
+  currentCase,
+  onAddCase,
+  onUpdateCase,
+  onDeleteCase,
+  onSelectCase,
+  onClearLocalTestData,
+}) {
   const [caseForm, setCaseForm] = useState(defaultCaseForm);
   const [editingCaseId, setEditingCaseId] = useState("");
   const [deleteConfirmation, setDeleteConfirmation] = useState(null);
+  const [clearConfirmation, setClearConfirmation] = useState(null);
   const editingCase = cases.find((item) => item.id === editingCaseId) ?? null;
 
   useEffect(() => {
@@ -396,6 +537,26 @@ function CaseManagementModule({ accessProfile, cases, currentCase, onAddCase, on
     setDeleteConfirmation(null);
   };
 
+  const handleRequestClearLocalData = () => {
+    setClearConfirmation({ step: 1 });
+  };
+
+  const handleCancelClearLocalData = () => {
+    setClearConfirmation(null);
+  };
+
+  const handleContinueClearLocalData = () => {
+    setClearConfirmation((current) => current ? { ...current, step: 2 } : null);
+  };
+
+  const handleConfirmClearLocalData = () => {
+    onClearLocalTestData();
+    setEditingCaseId("");
+    setCaseForm(defaultCaseForm);
+    setDeleteConfirmation(null);
+    setClearConfirmation(null);
+  };
+
   return (
     <div className="eval-module-stack">
       <section className="eval-module-section eval-case-flow">
@@ -460,7 +621,7 @@ function CaseManagementModule({ accessProfile, cases, currentCase, onAddCase, on
             <input type="text" value={caseForm.note} onChange={handleChange("note")} placeholder="前端 mock 建立" />
           </label>
           <div className="eval-case-form-actions">
-            <button type="submit">{editingCase ? "儲存案件修改" : "加入案件列表"}</button>
+            <button type="submit">{editingCase ? "儲存案件修改" : "新增案件"}</button>
             {editingCase && (
               <button type="button" className="eval-secondary-action" onClick={handleCancelEdit}>
                 取消編輯
@@ -521,12 +682,36 @@ function CaseManagementModule({ accessProfile, cases, currentCase, onAddCase, on
         </div>
       </section>
 
+      <section className="eval-module-section eval-local-test-tools">
+        <div className="eval-section-head">
+          <h4>本機測試資料工具</h4>
+          <p>
+            目前系統仍為前端測試階段，案件、清冊暫存與基地資料會先存在本機瀏覽器。若看到舊版測試案件或需要重新測試，可清除本機測試資料。
+          </p>
+        </div>
+        <div className="eval-local-test-tools__body">
+          <div>
+            <strong>清除範圍</strong>
+            <p>僅限三策開發評估系統 localStorage：案件、清冊暫存、基地基本資料；不會清除其他網站資料。</p>
+          </div>
+          <button type="button" className="eval-danger-action" onClick={handleRequestClearLocalData}>
+            清除本機測試資料
+          </button>
+        </div>
+      </section>
+
       <RolePermissionPanel profile={accessProfile} />
       <CaseDeleteConfirmModal
         deleteConfirmation={deleteConfirmation}
         onCancel={handleCancelDelete}
         onContinue={handleContinueDelete}
         onConfirm={handleConfirmDelete}
+      />
+      <LocalDataClearConfirmModal
+        clearConfirmation={clearConfirmation}
+        onCancel={handleCancelClearLocalData}
+        onContinue={handleContinueClearLocalData}
+        onConfirm={handleConfirmClearLocalData}
       />
     </div>
   );
@@ -1235,6 +1420,8 @@ function buildLandRightRows(rows) {
       address: getFirstMatchingValue(row, ["地址", "通訊地址", "戶籍地址", "住址"]),
       landNumber,
       landArea: getFirstMatchingValue(row, ["土地面積", "面積"]),
+      announcedCurrentValue: getFirstMatchingValue(row, ["公告現值"]),
+      announcedLandValue: getFirstMatchingValue(row, ["公告地價"]),
       shareText: getFirstMatchingValue(row, ["權利範圍", "持分"]),
       convertedShare: getFirstMatchingValue(row, ["換算持分", "持分比例", "持分面積"]),
       contactStatus: getFirstMatchingValue(row, ["聯絡狀態", "聯絡"]),
@@ -1497,9 +1684,11 @@ function buildRosterPreview(file, workbookData) {
   const { partyRows, issues } = buildPartyPreview(landRights, buildingRights);
   const landNumbers = new Set(landRights.map((row) => row.landNumber).filter(Boolean));
   const buildingNumbers = new Set(buildingRights.map((row) => row.buildingNumber).filter(Boolean));
+  const batchId = `IMPORT-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${String(Date.now()).slice(-4)}`;
 
   return {
-    batchId: `IMPORT-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${String(Date.now()).slice(-4)}`,
+    batchId,
+    importBatchId: batchId,
     version: "TEMP-V001",
     fileName: file.name,
     importedAt: new Date().toLocaleString("zh-TW", { hour12: false }),
@@ -1507,8 +1696,11 @@ function buildRosterPreview(file, workbookData) {
     integrationFound: workbookData.integrationFound,
     allocationFound: workbookData.allocationFound,
     landRights,
+    landRows: landRights,
     buildingRights,
+    buildingRows: buildingRights,
     partyRows,
+    partyGroups: partyRows,
     issues,
     summary: {
       landCount: landRights.length,
@@ -1559,18 +1751,74 @@ function RosterPreviewTable({ title, description, emptyText, columns, rows }) {
   );
 }
 
-function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile }) {
+function getRosterLandRows(rosterStaging) {
+  return rosterStaging?.landRights ?? rosterStaging?.landRows ?? [];
+}
+
+function parseRosterNumber(value) {
+  const normalizedValue = normalizeCellValue(value).replace(/,/g, "");
+  if (!normalizedValue) {
+    return null;
+  }
+
+  const match = normalizedValue.match(/-?\d+(?:\.\d+)?/);
+  return match ? Number(match[0]) : null;
+}
+
+function formatAreaSummary(value) {
+  return `${value.toLocaleString("zh-TW", { maximumFractionDigits: 2 })} 平方公尺`;
+}
+
+function buildRosterBaseSummary(rosterStaging) {
+  const landRows = getRosterLandRows(rosterStaging);
+  const landByNumber = new Map();
+
+  landRows.forEach((row) => {
+    const landNumber = normalizeCellValue(row.landNumber);
+    if (landNumber && !landByNumber.has(landNumber)) {
+      landByNumber.set(landNumber, row);
+    }
+  });
+
+  const uniqueLandRows = Array.from(landByNumber.values());
+  const landNumbers = Array.from(landByNumber.keys());
+  const areaValues = uniqueLandRows.map((row) => parseRosterNumber(row.landArea));
+  const canSumArea = areaValues.length > 0 && areaValues.every((value) => Number.isFinite(value));
+  const areaTotal = canSumArea ? areaValues.reduce((total, value) => total + value, 0) : null;
+  const announcedCurrentValueCount = uniqueLandRows.filter((row) => normalizeCellValue(row.announcedCurrentValue)).length;
+  const announcedLandValueCount = uniqueLandRows.filter((row) => normalizeCellValue(row.announcedLandValue)).length;
+
+  return {
+    hasRoster: Boolean(rosterStaging),
+    fileName: rosterStaging?.fileName ?? "",
+    importedAt: rosterStaging?.importedAt ?? "",
+    landRightCount: landRows.length,
+    landNumberCount: landNumbers.length,
+    landNumbers,
+    landNumberDisplay: landNumbers.length > 5
+      ? `${landNumbers.slice(0, 5).join("、")}…共 ${landNumbers.length} 筆`
+      : landNumbers.join("、") || "待清冊補齊",
+    landAreaSummary: areaTotal === null ? "待清冊補齊" : formatAreaSummary(areaTotal),
+    announcedCurrentValueStatus: announcedCurrentValueCount
+      ? `清冊已提供 ${announcedCurrentValueCount} 筆地號資料`
+      : "清冊未提供",
+    announcedLandValueStatus: announcedLandValueCount
+      ? `清冊已提供 ${announcedLandValueCount} 筆地號資料`
+      : "清冊未提供",
+  };
+}
+
+function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview, onPreviewChange }) {
   const [fileName, setFileName] = useState("");
   const [isParsing, setIsParsing] = useState(false);
   const [parseError, setParseError] = useState("");
-  const [preview, setPreview] = useState(null);
   const fileInputId = `roster-upload-file-${currentCase.id}`;
+  const displayFileName = fileName || preview?.fileName || "";
 
   const handleFileChange = async (event) => {
     const file = event.target.files?.[0];
     setFileName(file?.name ?? "");
     setParseError("");
-    setPreview(null);
 
     if (!file) {
       setParseError("尚未選擇清冊檔案。");
@@ -1583,6 +1831,7 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile }) {
       return;
     }
 
+    onPreviewChange(null);
     setIsParsing(true);
     try {
       const workbookData = await parseRosterWorkbook(file);
@@ -1592,7 +1841,7 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile }) {
       }
 
       const rosterPreview = buildRosterPreview(file, workbookData);
-      setPreview(rosterPreview);
+      onPreviewChange(rosterPreview);
       if (!rosterPreview.landRights.length) {
         setParseError("解析結果為 0 筆有效土地權利列，請確認「土地清冊_匯入」是否已填寫地號、地主姓名、持分或參考編號。");
       }
@@ -1644,7 +1893,7 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile }) {
             <small>選檔後先建立暫存預覽，不會覆蓋正式案件清冊。</small>
           </div>
           <article>
-            <strong>{fileName || "尚未選擇檔案"}</strong>
+            <strong>{displayFileName || "尚未選擇檔案"}</strong>
             <p>匯入結果將暫時歸屬於目前案件：{currentCase.code} / {currentCase.name}</p>
           </article>
         </div>
@@ -1804,6 +2053,118 @@ function RosterImportVersioning({ config }) {
   );
 }
 
+function BaseInfoCaseRequiredNotice({ onGoToCases }) {
+  return (
+    <section className="eval-module-section eval-case-required">
+      <LockKeyhole aria-hidden="true" size={30} />
+      <div>
+        <p className="eval-kicker">CASE REQUIRED</p>
+        <h4>請先建立或選擇案件，才能編輯基地基本資料。</h4>
+        <p>
+          基地基本資料必須歸屬於目前案件，後續容積試算、坪效、成本、分配與銀行報告才有一致的資料來源。
+        </p>
+        <button type="button" onClick={onGoToCases}>
+          前往案件管理
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function BaseRosterSummary({ rosterStaging }) {
+  const rosterSummary = buildRosterBaseSummary(rosterStaging);
+
+  if (!rosterSummary.hasRoster) {
+    return (
+      <section className="eval-module-section eval-base-roster-summary">
+        <div className="eval-section-head">
+          <h4>清冊帶入摘要</h4>
+          <p>尚未上傳土地清冊，地號、土地面積、公告現值與公告地價將於清冊上傳後帶入。</p>
+        </div>
+      </section>
+    );
+  }
+
+  const summaryItems = [
+    ["地號筆數", rosterSummary.landNumberCount],
+    ["地號清單", rosterSummary.landNumberDisplay],
+    ["土地權利列數", rosterSummary.landRightCount],
+    ["土地面積合計", rosterSummary.landAreaSummary],
+    ["公告現值狀態", rosterSummary.announcedCurrentValueStatus],
+    ["公告地價狀態", rosterSummary.announcedLandValueStatus],
+    ["來源檔案名稱", rosterSummary.fileName],
+    ["匯入時間", rosterSummary.importedAt],
+  ];
+
+  return (
+    <section className="eval-module-section eval-base-roster-summary">
+      <div className="eval-section-head">
+        <h4>清冊帶入摘要</h4>
+        <p>本區彙整目前案件的清冊暫存解析結果，尚未正式套用至案件清冊。</p>
+      </div>
+      <div className="eval-base-summary-grid">
+        {summaryItems.map(([label, value]) => (
+          <article key={label}>
+            <span>{label}</span>
+            <strong>{value || "待清冊補齊"}</strong>
+          </article>
+        ))}
+      </div>
+      <p className="eval-base-summary-note">
+        土地面積以唯一地號為基準彙整；同一地號若出現在多筆權利列，只計算一次，避免持分列重複加總。
+      </p>
+    </section>
+  );
+}
+
+function BaseInfoModule({ currentCase, baseInfo, rosterStaging, onBaseInfoChange, onGoToCases }) {
+  if (!currentCase) {
+    return (
+      <div className="eval-module-stack">
+        <BaseInfoCaseRequiredNotice onGoToCases={onGoToCases} />
+      </div>
+    );
+  }
+
+  const handleBaseInfoChange = (field) => (event) => {
+    onBaseInfoChange({
+      ...baseInfo,
+      [field]: event.target.value,
+    });
+  };
+
+  return (
+    <div className="eval-module-stack">
+      <CurrentCaseSummary currentCase={currentCase} />
+      <BaseRosterSummary rosterStaging={rosterStaging} />
+      <section className="eval-module-section">
+        <div className="eval-section-head">
+          <h4>基地基本資料</h4>
+          <p>本表單只填寫案件層級的基地條件；地號、土地面積、公告現值與公告地價由目前案件的清冊暫存結果帶入。</p>
+        </div>
+        <div className="eval-base-case-name">
+          <span>案件名稱</span>
+          <strong>{currentCase.name}</strong>
+        </div>
+        <div className="eval-field-grid eval-base-info-form">
+          {baseInfoFields.map((field) => (
+            <label className={`eval-field${field.wide ? " eval-field--wide" : ""}`} key={field.key}>
+              <span>{field.label}</span>
+              <input
+                type="text"
+                value={baseInfo[field.key] ?? ""}
+                onChange={handleBaseInfoChange(field.key)}
+                placeholder={field.placeholder}
+              />
+              {field.key === "roadAccess" && <small>包含臨路寬度、臨路方向、道路使用現況或特殊道路限制。</small>}
+            </label>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
 function RolePermissionPanel({ profile }) {
   return (
     <section className="eval-module-section eval-role-rules">
@@ -1883,7 +2244,7 @@ function RosterCaseRequiredNotice({ onGoToCases }) {
   );
 }
 
-function OwnershipModule({ module, currentCase, onGoToCases }) {
+function OwnershipModule({ module, currentCase, rosterStaging, onRosterStagingChange, onGoToCases }) {
   const rosterFileInputRef = useRef(null);
   const handleRosterFileRequest = () => {
     rosterFileInputRef.current?.click();
@@ -1904,6 +2265,8 @@ function OwnershipModule({ module, currentCase, onGoToCases }) {
         currentCase={currentCase}
         fileInputRef={rosterFileInputRef}
         onRequestFile={handleRosterFileRequest}
+        preview={rosterStaging}
+        onPreviewChange={onRosterStagingChange}
       />
       <RosterImportVersioning
         config={module.rosterImportVersioning}
@@ -1917,10 +2280,15 @@ function ModuleContent({
   accessProfile,
   cases,
   currentCase,
+  currentBaseInfo,
+  currentRosterStaging,
   onAddCase,
   onUpdateCase,
   onDeleteCase,
   onSelectCase,
+  onBaseInfoChange,
+  onRosterStagingChange,
+  onClearLocalTestData,
   onGoToCases,
 }) {
   if (module.type === "paths") {
@@ -1949,12 +2317,33 @@ function ModuleContent({
         onUpdateCase={onUpdateCase}
         onDeleteCase={onDeleteCase}
         onSelectCase={onSelectCase}
+        onClearLocalTestData={onClearLocalTestData}
       />
     );
   }
 
   if (module.id === "ownership") {
-    return <OwnershipModule module={module} currentCase={currentCase} onGoToCases={onGoToCases} />;
+    return (
+      <OwnershipModule
+        module={module}
+        currentCase={currentCase}
+        rosterStaging={currentRosterStaging}
+        onRosterStagingChange={onRosterStagingChange}
+        onGoToCases={onGoToCases}
+      />
+    );
+  }
+
+  if (module.id === "base-info") {
+    return (
+      <BaseInfoModule
+        currentCase={currentCase}
+        baseInfo={currentBaseInfo}
+        rosterStaging={currentRosterStaging}
+        onBaseInfoChange={onBaseInfoChange}
+        onGoToCases={onGoToCases}
+      />
+    );
   }
 
   return (
@@ -2033,7 +2422,7 @@ function DashboardHome({ activeModule, cases, currentCase, visibleModuleCount })
         <article>
           <span>案件列表</span>
           <strong>{cases.length}</strong>
-          <p>示範資料，等待正式資料庫接入。</p>
+          <p>本機測試建立的案件數，正式版將由 cases 資料表提供。</p>
         </article>
         <article>
           <span>開發路徑</span>
@@ -2053,17 +2442,21 @@ function DashboardHome({ activeModule, cases, currentCase, visibleModuleCount })
           <h2>案件管理概覽</h2>
         </div>
         <div className="eval-case-list">
-          {cases.slice(0, 3).map((item) => (
-            <article key={item.id} className={currentCase?.id === item.id ? "is-current-case" : ""}>
-              <div>
-                <h3>{item.name}</h3>
-                <p>
-                  {item.path} / {item.status}
-                </p>
-              </div>
-              <span>{item.updated}</span>
-            </article>
-          ))}
+          {cases.length ? (
+            cases.slice(0, 3).map((item) => (
+              <article key={item.id} className={currentCase?.id === item.id ? "is-current-case" : ""}>
+                <div>
+                  <h3>{item.name}</h3>
+                  <p>
+                    {item.path} / {item.status}
+                  </p>
+                </div>
+                <span>{item.updated}</span>
+              </article>
+            ))
+          ) : (
+            <p className="eval-empty-state">目前尚無案件，請先建立案件。</p>
+          )}
         </div>
       </div>
 
@@ -2176,8 +2569,10 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mockRole, setMockRole] = useState("admin");
   const [activeModuleId, setActiveModuleId] = useState(evaluationModules[0].id);
-  const [cases, setCases] = useState(sampleCases);
+  const [cases, setCases] = useState(loadStoredCases);
   const [currentCaseId, setCurrentCaseId] = useState("");
+  const [rosterStagingByCaseId, setRosterStagingByCaseId] = useState(() => loadStoredRecord(ROSTER_STAGING_STORAGE_KEY));
+  const [baseInfoByCaseId, setBaseInfoByCaseId] = useState(() => loadStoredRecord(BASE_INFO_STORAGE_KEY));
   const isLoggedIn = authState.status === "authenticated";
   const isTestRoute = routeHash === SYSTEM_TEST_HASH;
   const accessProfile = mockAccessProfiles[mockRole];
@@ -2185,6 +2580,8 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     () => cases.find((item) => item.id === currentCaseId) ?? null,
     [cases, currentCaseId],
   );
+  const currentRosterStaging = currentCase ? rosterStagingByCaseId[currentCase.id] ?? null : null;
+  const currentBaseInfo = currentCase ? baseInfoByCaseId[currentCase.id] ?? defaultBaseInfo : defaultBaseInfo;
   const visiblePrimaryModules = useMemo(
     () => primaryEvaluationModules.filter((module) => canViewModule(module, accessProfile)),
     [accessProfile],
@@ -2206,6 +2603,24 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
       setActiveModuleId(visibleModules[0].id);
     }
   }, [activeModuleId, visibleModules]);
+
+  useEffect(() => {
+    writeStoredJson(CASES_STORAGE_KEY, cases);
+  }, [cases]);
+
+  useEffect(() => {
+    writeStoredJson(ROSTER_STAGING_STORAGE_KEY, rosterStagingByCaseId);
+  }, [rosterStagingByCaseId]);
+
+  useEffect(() => {
+    writeStoredJson(BASE_INFO_STORAGE_KEY, baseInfoByCaseId);
+  }, [baseInfoByCaseId]);
+
+  useEffect(() => {
+    if (currentCaseId && !cases.some((item) => item.id === currentCaseId)) {
+      setCurrentCaseId("");
+    }
+  }, [cases, currentCaseId]);
 
   useEffect(() => {
     let isMounted = true;
@@ -2276,7 +2691,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
 
   const handleAddCase = (createdCase) => {
     setCases((current) => [...current, createdCase]);
-    setCurrentCaseId(createdCase.id);
+    setCurrentCaseId((current) => current || createdCase.id);
   };
 
   const handleUpdateCase = (updatedCase) => {
@@ -2285,6 +2700,16 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
 
   const handleDeleteCase = (caseId) => {
     setCases((current) => current.filter((item) => item.id !== caseId));
+    setRosterStagingByCaseId((current) => {
+      const next = { ...current };
+      delete next[caseId];
+      return next;
+    });
+    setBaseInfoByCaseId((current) => {
+      const next = { ...current };
+      delete next[caseId];
+      return next;
+    });
     if (currentCaseId === caseId) {
       setCurrentCaseId("");
     }
@@ -2292,6 +2717,41 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
 
   const handleSelectCase = (caseId) => {
     setCurrentCaseId(caseId);
+  };
+
+  const handleRosterStagingChange = (preview) => {
+    if (!currentCase) {
+      return;
+    }
+
+    setRosterStagingByCaseId((current) => {
+      const next = { ...current };
+      if (preview) {
+        next[currentCase.id] = preview;
+      } else {
+        delete next[currentCase.id];
+      }
+      return next;
+    });
+  };
+
+  const handleBaseInfoChange = (nextBaseInfo) => {
+    if (!currentCase) {
+      return;
+    }
+
+    setBaseInfoByCaseId((current) => ({
+      ...current,
+      [currentCase.id]: nextBaseInfo,
+    }));
+  };
+
+  const handleClearLocalTestData = () => {
+    clearStoredEvaluationData();
+    setCases([]);
+    setCurrentCaseId("");
+    setRosterStagingByCaseId({});
+    setBaseInfoByCaseId({});
   };
 
   const handleGoToCases = () => {
@@ -2415,10 +2875,15 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
             accessProfile={accessProfile}
             cases={cases}
             currentCase={currentCase}
+            currentBaseInfo={currentBaseInfo}
+            currentRosterStaging={currentRosterStaging}
             onAddCase={handleAddCase}
             onUpdateCase={handleUpdateCase}
             onDeleteCase={handleDeleteCase}
             onSelectCase={handleSelectCase}
+            onBaseInfoChange={handleBaseInfoChange}
+            onRosterStagingChange={handleRosterStagingChange}
+            onClearLocalTestData={handleClearLocalTestData}
             onGoToCases={handleGoToCases}
           />
         </section>
