@@ -10,7 +10,13 @@ import {
   LockKeyhole,
   Settings2,
 } from "lucide-react";
-import { developmentPaths, evaluationModules, roleVisibilityRules } from "./evaluationSystemData.js";
+import {
+  developmentPaths,
+  evaluationModules,
+  moduleFlowMap,
+  roleVisibilityRules,
+  workflowStages,
+} from "./evaluationSystemData.js";
 
 const sampleCases = [
   {
@@ -93,7 +99,7 @@ const caseDataFlow = [
   "選定目前案件",
   "填基地基本資料",
   "上傳土地清冊 / 建物清冊",
-  "進行坪效、成本、分配、銷售、現金流、銀行報告等試算",
+  "進行坪效、成本、銷售、分配、現金流、銀行報告等試算",
 ];
 
 const TAKEOVER_MODULE_ID = "takeover-evaluation";
@@ -179,6 +185,72 @@ function SkeletonTable({ columns, rows }) {
         </tbody>
       </table>
     </div>
+  );
+}
+
+function WorkflowStageStrip({ activeModuleId }) {
+  const activeStageIndex = workflowStages.findIndex((stage) => stage.id === activeModuleId);
+
+  if (activeStageIndex < 0) {
+    return null;
+  }
+
+  const visibleStages = workflowStages.slice(
+    Math.max(0, activeStageIndex - 1),
+    Math.min(workflowStages.length, activeStageIndex + 2),
+  );
+
+  return (
+    <div className="eval-workflow-strip" aria-label="開發評估流程位置">
+      {visibleStages.map((stage) => (
+        <span className={stage.id === activeModuleId ? "is-active" : ""} key={stage.id}>
+          {stage.label}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function ModuleFlowBrief({ module }) {
+  const flow = moduleFlowMap[module.id];
+
+  if (!flow) {
+    return null;
+  }
+
+  const flowGroups = [
+    ["前置資料", flow.inputs],
+    ["產出結果", flow.outputs],
+    ["影響後續", flow.downstream],
+  ];
+
+  return (
+    <section className="eval-module-flow-brief" aria-label={`${module.title} 流程串接說明`}>
+      <div className="eval-module-flow-brief__intro">
+        <p className="eval-kicker">FLOW</p>
+        <h3>{flow.stage}</h3>
+        <p>{flow.summary}</p>
+      </div>
+      <div className="eval-module-flow-brief__grid">
+        {flowGroups.map(([title, items]) => (
+          <div className="eval-flow-mini-card" key={title}>
+            <strong>{title}</strong>
+            <ul>
+              {items.slice(0, 4).map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        <div className="eval-flow-mini-card eval-flow-mini-card--wide">
+          <strong>資料層級與目前狀態</strong>
+          <p>
+            案件層級：{flow.sharedData.join("、")}。試算 / 版本層級：{flow.versionData.join("、")}。
+          </p>
+          <p>{flow.mockStatus}</p>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -329,7 +401,7 @@ function CaseManagementModule({ accessProfile, cases, currentCase, onAddCase, on
       <section className="eval-module-section eval-case-flow">
         <div className="eval-section-head">
           <h4>案件是所有資料的入口</h4>
-          <p>系統資料先建立案件，再把基地基本資料、土地清冊、建物清冊、坪效、成本、分配、銷售、現金流與銀行報告掛在目前案件底下。</p>
+          <p>系統資料先建立案件，再把基地基本資料、土地清冊、建物清冊、坪效、成本、銷售、分配、現金流與銀行報告掛在目前案件底下。</p>
         </div>
         <div className="eval-case-flow-steps">
           {caseDataFlow.map((step, index) => (
@@ -466,6 +538,7 @@ function ModuleSection({ section }) {
       <div className="eval-section-head">
         <h4>{section.title}</h4>
         {section.formula && <p>{section.formula}</p>}
+        {section.summary && <p>{section.summary}</p>}
       </div>
 
       {section.fields && (
@@ -484,6 +557,14 @@ function ModuleSection({ section }) {
             </span>
           ))}
         </div>
+      )}
+
+      {section.items && (
+        <ul className="eval-section-list">
+          {section.items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
       )}
 
       {section.tableColumns && <SkeletonTable columns={section.tableColumns} rows={section.rows} />}
@@ -632,7 +713,7 @@ function OutputSections({ sections }) {
     <section className="eval-module-section eval-output-section">
       <div className="eval-section-head">
         <h4>反推檢核結果</h4>
-        <p>這裡先預留結果欄位，未來會依既有條件反推坪效、成本、分配、銷售、現金流與融資可行性。</p>
+        <p>這裡先預留結果欄位，未來會依既有條件反向檢查坪效、成本、銷售、分配、現金流與融資可行性。</p>
       </div>
       <div className="eval-output-grid">
         {sections.map((section) => (
@@ -1266,7 +1347,7 @@ function EvaluationLanding({ onLogin }) {
           <p className="eval-kicker">SANZE PRO SYSTEM</p>
           <h1>開發評估系統</h1>
           <p>
-            協助進行購地自建、一般合建、危老重建、都市更新與自主更新案件的前期開發可行性評估，先把基地條件、容積來源、坪效、成本、分配、銷售情境、現金流與銀行融資報告建立成可延伸的資料骨架。
+            協助進行購地自建、一般合建、危老重建、都市更新與自主更新案件的前期開發可行性評估，先把基地條件、容積來源、坪效、成本、銷售情境、分配、現金流與銀行融資報告建立成可延伸的資料骨架。
           </p>
           <div className="eval-landing__actions">
             <button type="button" onClick={onLogin}>
@@ -1688,6 +1769,8 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
               <Settings2 size={18} />
             </div>
           </div>
+          <WorkflowStageStrip activeModuleId={activeModule.id} />
+          <ModuleFlowBrief module={activeModule} />
           <ModuleContent
             module={activeModule}
             accessProfile={accessProfile}
