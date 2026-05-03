@@ -2498,6 +2498,18 @@ main {
   min-width: 112px;
 }
 
+.eval-roster-preview-scroll {
+  max-height: 520px;
+  overflow: auto;
+}
+
+.eval-roster-preview-scroll .eval-roster-preview-table thead th {
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  background: #f8fbfa;
+}
+
 .eval-roster-summary-grid--wide {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
@@ -2510,6 +2522,12 @@ main {
 .eval-roster-issue-list {
   display: grid;
   gap: 10px;
+}
+
+.eval-roster-issue-scroll {
+  max-height: 360px;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .eval-roster-issue-list article {
@@ -2549,6 +2567,79 @@ main {
   font-size: 0.78rem;
   font-weight: 750;
   line-height: 1.5;
+}
+
+.eval-roster-empty-state {
+  border-style: dashed;
+  background: #fbfdfc;
+}
+
+.eval-roster-future-flow {
+  padding: 0;
+}
+
+.eval-roster-future-flow summary {
+  display: grid;
+  gap: 6px;
+  cursor: pointer;
+  list-style: none;
+  padding: 16px;
+}
+
+.eval-roster-future-flow summary::-webkit-details-marker {
+  display: none;
+}
+
+.eval-roster-future-flow summary span {
+  color: var(--green-950);
+  font-size: 0.95rem;
+  font-weight: 900;
+}
+
+.eval-roster-future-flow summary small {
+  color: var(--gray-700);
+  font-size: 0.8rem;
+  font-weight: 750;
+  line-height: 1.55;
+}
+
+.eval-roster-future-flow summary::after {
+  justify-self: start;
+  border-radius: 999px;
+  background: rgba(8, 59, 48, 0.08);
+  color: var(--green-900);
+  content: "展開流程";
+  padding: 5px 9px;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.eval-roster-future-flow[open] summary::after {
+  content: "收合流程";
+}
+
+.eval-roster-future-flow__body {
+  display: grid;
+  gap: 10px;
+  border-top: 1px solid rgba(8, 59, 48, 0.08);
+  padding: 0 16px 16px;
+}
+
+.eval-roster-future-flow__body p,
+.eval-roster-future-flow__body li {
+  color: var(--gray-700);
+  font-size: 0.8rem;
+  font-weight: 750;
+  line-height: 1.6;
+}
+
+.eval-roster-future-flow__body p,
+.eval-roster-future-flow__body ol {
+  margin: 0;
+}
+
+.eval-roster-future-flow__body ol {
+  padding-left: 20px;
 }
 
 .eval-license-hero {

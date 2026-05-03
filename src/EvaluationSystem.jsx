@@ -1524,14 +1524,15 @@ function buildRosterPreview(file, workbookData) {
   };
 }
 
-function RosterPreviewTable({ title, emptyText, columns, rows }) {
+function RosterPreviewTable({ title, description, emptyText, columns, rows }) {
   return (
     <section className="eval-module-section">
       <div className="eval-section-head">
         <h4>{title}</h4>
+        {description && <p>{description}</p>}
       </div>
       {rows.length ? (
-        <div className="eval-table-wrap">
+        <div className="eval-table-wrap eval-roster-preview-scroll">
           <table className="eval-table eval-roster-preview-table">
             <thead>
               <tr>
@@ -1541,7 +1542,7 @@ function RosterPreviewTable({ title, emptyText, columns, rows }) {
               </tr>
             </thead>
             <tbody>
-              {rows.slice(0, 6).map((row, index) => (
+              {rows.map((row, index) => (
                 <tr key={`${title}-${row[columns[0].key] || index}`}>
                   {columns.map((column) => (
                     <td key={column.key}>{Array.isArray(row[column.key]) ? row[column.key].join("、") || "未填" : row[column.key] || "未填"}</td>
@@ -1663,12 +1664,21 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile }) {
         {parseError && <p className="eval-auth-error">{parseError}</p>}
       </section>
 
+      {!preview && !isParsing && (
+        <section className="eval-module-section eval-roster-empty-state">
+          <div className="eval-section-head">
+            <h4>尚未上傳清冊檔案</h4>
+            <p>目前尚未上傳清冊檔案，請選擇 .xlsx 清冊進行暫存預覽。未上傳前不顯示土地、建物、疑似群組或待確認的範例資料。</p>
+          </div>
+        </section>
+      )}
+
       {preview && (
         <>
           <section className="eval-module-section">
             <div className="eval-section-head">
               <h4>匯入摘要</h4>
-              <p>本摘要只代表暫存批次，不代表正式案件清冊已更新。</p>
+              <p>本區資料來源：本次上傳檔案暫存解析結果，尚未正式套用至案件清冊。</p>
             </div>
             <div className="eval-roster-summary-grid eval-roster-summary-grid--wide">
               {summaryCards.map(([label, value]) => (
@@ -1682,6 +1692,7 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile }) {
 
           <RosterPreviewTable
             title="土地權利明細預覽"
+            description="顯示本次上傳檔案解析出的每一筆土地權利列；每列都保留為原始資料，不因姓名或參考編號自動合併。"
             emptyText="目前未讀到土地清冊資料。"
             columns={[
               { key: "landRightRowId", label: "土地列 ID" },
@@ -1698,6 +1709,7 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile }) {
 
           <RosterPreviewTable
             title="建物權利明細預覽"
+            description="顯示本次上傳檔案解析出的每一筆建物權利列；若建物清冊沒有有效資料，僅顯示空狀態。"
             emptyText="目前未讀到建物清冊資料。"
             columns={[
               { key: "buildingRightRowId", label: "建物列 ID" },
@@ -1714,6 +1726,7 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile }) {
 
           <RosterPreviewTable
             title="疑似權利人群組總表"
+            description="PG-* 只是疑似權利人群組，不是正式權利人歸戶；正式歸戶需補登完整資料或人工確認。"
             emptyText="目前尚未建立疑似權利人群組。"
             columns={[
               { key: "partyGroupId", label: "群組 ID" },
@@ -1734,7 +1747,7 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile }) {
               <p>以下項目不阻擋匯入暫存，但正式套用前必須人工確認。</p>
             </div>
             {preview.issues.length ? (
-              <div className="eval-roster-issue-list">
+              <div className="eval-roster-issue-list eval-roster-issue-scroll">
                 {preview.issues.map((issue) => (
                   <article key={issue.id}>
                     <span data-severity={issue.severity}>{issue.severity}</span>
@@ -1745,7 +1758,7 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile }) {
                 ))}
               </div>
             ) : (
-              <p className="eval-roster-empty">目前沒有偵測到待人工確認項目，但正式套用前仍應由使用者確認。</p>
+              <p className="eval-roster-empty">目前沒有待人工確認項目。</p>
             )}
           </section>
 
@@ -1761,206 +1774,33 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile }) {
   );
 }
 
-function RosterImportVersioning({ config, currentCase, onRequestFile }) {
+function RosterImportVersioning({ config }) {
   if (!config) {
     return null;
   }
 
   return (
-    <section className="eval-roster-versioning" data-roster-versioning>
-      <div className="eval-roster-hero">
-        <div>
-          <p className="eval-kicker">ROSTER IMPORT</p>
-          <h4>目前案件清冊匯入版本控管</h4>
-          <p>
-            {config.notice}
-            所有上傳的土地清冊、建物清冊與差異比對紀錄，都會綁定在目前案件「{currentCase.name}」底下，避免不同案件資料互相覆蓋。
-          </p>
-        </div>
-        <div className="eval-roster-actions">
-          <article>
-            <strong>{config.template.title}</strong>
-            <span>{config.template.fileName}</span>
-            <p>{config.template.description}</p>
-            <button type="button">下載標準模板</button>
-          </article>
-          <article>
-            <strong>{config.upload.title}</strong>
-            <span>{config.upload.acceptedTypes.join(" / ")}</span>
-            <p>測試區可先讀取 .xlsx 並建立暫存預覽；正式套用、資料庫儲存與後端檢核仍待下一階段。上傳紀錄將歸屬於目前案件：{currentCase.code}。</p>
-            <button type="button" onClick={onRequestFile}>
-              選擇 .xlsx 檔案
-            </button>
-          </article>
-        </div>
+    <details className="eval-module-section eval-roster-future-flow" data-roster-versioning>
+      <summary>
+        <span>後續正式匯入流程（開發中）</span>
+        <small>正式匯入流程將包含欄位檢核、跨表關聯檢核、差異比對、二次確認、正式套用、版本回復與 audit log，目前本區僅作流程規劃提示。</small>
+      </summary>
+      <div className="eval-roster-future-flow__body">
+        <p>{config.notice}</p>
+        <ol>
+          {[
+            "上傳 Excel 並建立目前案件的暫存批次",
+            "檢查必要工作表、欄位名稱與核心資料格式",
+            "比對土地、建物、整合紀錄與分配條件的跨表關聯",
+            "產生差異比對與待人工確認清單",
+            "完成二次確認後才套用到正式案件清冊",
+            "保留版本回復與 audit log，避免正式資料被無痕覆蓋",
+          ].map((step) => (
+            <li key={step}>{step}</li>
+          ))}
+        </ol>
       </div>
-
-      <section className="eval-module-section eval-roster-workflow">
-        <div className="eval-section-head">
-          <h4>匯入流程</h4>
-          <p>檔案先進目前案件的暫存區與差異比對流程，不直接覆蓋正式清冊資料。</p>
-        </div>
-        <div className="eval-roster-step-grid">
-          {config.workflowSteps.map((step, index) => (
-            <span key={step}>
-              <b>{String(index + 1).padStart(2, "0")}</b>
-              {step}
-            </span>
-          ))}
-        </div>
-      </section>
-
-      <section className="eval-module-section">
-        <div className="eval-section-head">
-          <h4>匯入模式</h4>
-          <p>不同模式決定資料是否可補入、更新、修正或只建立版本紀錄。</p>
-        </div>
-        <div className="eval-roster-mode-grid">
-          {config.importModes.map((mode) => (
-            <article key={mode.title}>
-              <strong>{mode.title}</strong>
-              <p>{mode.description}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="eval-module-section">
-        <div className="eval-section-head">
-          <h4>匯入版本紀錄</h4>
-          <p>正式套用前先在目前案件保留版本狀態、筆數摘要、錯誤警告與套用紀錄。</p>
-        </div>
-        <div className="eval-roster-version-list">
-          {config.sampleVersions.map((version) => (
-            <article key={version.version}>
-              <div>
-                <span className="eval-roster-version-id">{version.version}</span>
-                <strong>{version.fileName}</strong>
-                <p>
-                  {version.type} / {version.scope}
-                </p>
-              </div>
-              <div className="eval-roster-version-meta">
-                <span>{version.status}</span>
-                <small>新增 {version.added} / 更新 {version.updated} / 警告 {version.warning} / 錯誤 {version.error}</small>
-              </div>
-            </article>
-          ))}
-        </div>
-        <RosterChipList items={config.versionFields} className="eval-roster-field-list" />
-      </section>
-
-      <section className="eval-module-section">
-        <div className="eval-section-head">
-          <h4>欄位更新規則</h4>
-          <p>避免少列、錯欄或錯誤 Excel 覆蓋正式資料，先把更新權限分層控管。</p>
-        </div>
-        <div className="eval-roster-rule-grid">
-          {config.updateRules.map((rule) => (
-            <article key={rule.title} data-level={rule.level}>
-              <div>
-                <strong>{rule.title}</strong>
-                <span>{rule.level}</span>
-              </div>
-              <RosterChipList items={rule.items} />
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <div className="eval-roster-two-column">
-        <section className="eval-module-section">
-          <div className="eval-section-head">
-            <h4>欄位檢核結果</h4>
-            <p>檢查檔案格式、必要工作表、欄位名稱、數字日期、公式結果與關鍵空白。</p>
-          </div>
-          <div className="eval-roster-check-list">
-            {config.validationChecklist.map((item) => (
-              <label key={item}>
-                <input type="checkbox" readOnly />
-                <span>{item}</span>
-              </label>
-            ))}
-          </div>
-        </section>
-
-        <section className="eval-module-section">
-          <div className="eval-section-head">
-            <h4>跨表關聯檢核</h4>
-            <p>以地主編號、地號與建號檢查土地、建物、整合紀錄與分配條件是否能正確對應。</p>
-          </div>
-          <div className="eval-roster-check-list">
-            {config.relationChecks.map((item) => (
-              <label key={item}>
-                <input type="checkbox" readOnly />
-                <span>{item}</span>
-              </label>
-            ))}
-          </div>
-        </section>
-      </div>
-
-      <section className="eval-module-section eval-roster-diff" data-roster-diff>
-        <div className="eval-section-head">
-          <h4>差異比對報告</h4>
-          <p>先比對新增、更新、刪除風險與關鍵欄位異動，需人工確認的內容不自動套用。</p>
-        </div>
-        <div className="eval-roster-summary-grid">
-          {config.sampleDiffSummary.map((item) => (
-            <article key={item.label}>
-              <span>{item.label}</span>
-              <strong>{item.value}</strong>
-            </article>
-          ))}
-        </div>
-        <RosterChipList items={config.diffTypes} />
-        <div className="eval-roster-risk-box">
-          <strong>重要欄位異動警示</strong>
-          <RosterChipList items={config.highRiskChangeRules} />
-        </div>
-      </section>
-
-      <div className="eval-roster-two-column">
-        <section className="eval-module-section eval-roster-apply">
-          <div className="eval-section-head">
-            <h4>正式套用確認</h4>
-            <p>正式套用後，目前案件將以本次確認後的清冊資料作為後續坪效、分配、成本、現金流與融資報告的計算依據。</p>
-          </div>
-          <RosterChipList items={config.applyConfirmationFields} />
-        </section>
-
-        <section className="eval-module-section eval-roster-impact">
-          <div className="eval-section-head">
-            <h4>計算影響提醒</h4>
-            <p>若重要基礎資料變動，需提醒重新計算受影響模組並視情況重新產出報告。</p>
-          </div>
-          <RosterChipList items={config.calculationImpactTriggers} />
-          <div className="eval-roster-impact-modules">
-            {config.calculationImpactModules.map((item) => (
-              <span key={item}>{item}</span>
-            ))}
-          </div>
-        </section>
-      </div>
-
-      <div className="eval-roster-two-column">
-        <section className="eval-module-section">
-          <div className="eval-section-head">
-            <h4>回復上一版</h4>
-            <p>回復正式資料前需二次確認，並將回復動作寫入 audit log。</p>
-          </div>
-          <RosterChipList items={config.rollbackFields} />
-        </section>
-
-        <section className="eval-module-section">
-          <div className="eval-section-head">
-            <h4>匯入 audit log 欄位</h4>
-            <p>記錄匯入、套用、回復與風險等級，避免正式資料被無痕覆蓋。</p>
-          </div>
-          <RosterChipList items={config.auditLogFields} />
-        </section>
-      </div>
-    </section>
+    </details>
   );
 }
 
@@ -2065,13 +1905,8 @@ function OwnershipModule({ module, currentCase, onGoToCases }) {
         fileInputRef={rosterFileInputRef}
         onRequestFile={handleRosterFileRequest}
       />
-      {module.sections.map((section) => (
-        <ModuleSection section={section} key={section.title} />
-      ))}
       <RosterImportVersioning
         config={module.rosterImportVersioning}
-        currentCase={currentCase}
-        onRequestFile={handleRosterFileRequest}
       />
     </div>
   );
