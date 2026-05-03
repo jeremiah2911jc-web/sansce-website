@@ -2342,6 +2342,174 @@ main {
   font-weight: 900;
 }
 
+.eval-roster-upload-test {
+  display: grid;
+  gap: 14px;
+}
+
+.eval-roster-upload-card {
+  border-color: rgba(184, 135, 56, 0.2);
+  background: linear-gradient(180deg, #fffdf8 0%, #f8fbfa 100%);
+}
+
+.eval-roster-upload-controls {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.62fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: stretch;
+}
+
+.eval-roster-upload-controls label,
+.eval-roster-upload-controls article {
+  display: grid;
+  gap: 8px;
+  align-content: center;
+  border: 1px solid rgba(8, 59, 48, 0.09);
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 14px;
+}
+
+.eval-roster-upload-controls span,
+.eval-roster-upload-controls strong {
+  color: var(--green-950);
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
+.eval-roster-upload-controls input {
+  width: 100%;
+  color: var(--gray-700);
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.eval-roster-upload-controls p {
+  margin: 0;
+  color: var(--gray-700);
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1.55;
+}
+
+.eval-roster-next-sheets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.eval-roster-next-sheets span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  border: 1px solid rgba(184, 135, 56, 0.18);
+  border-radius: 999px;
+  background: rgba(184, 135, 56, 0.08);
+  color: #7a5a16;
+  padding: 6px 10px;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.eval-roster-status-set {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+  border: 1px solid rgba(8, 59, 48, 0.08);
+  border-radius: 14px;
+  background: rgba(8, 59, 48, 0.035);
+  padding: 10px;
+}
+
+.eval-roster-status-set strong {
+  color: var(--green-950);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.eval-roster-status-set span {
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--gray-700);
+  padding: 5px 8px;
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.eval-roster-status,
+.eval-roster-empty {
+  margin: 10px 0 0;
+  border: 1px solid rgba(8, 59, 48, 0.08);
+  border-radius: 12px;
+  background: #fbfdfc;
+  color: var(--gray-700);
+  padding: 11px 12px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+.eval-roster-preview-table th,
+.eval-roster-preview-table td {
+  min-width: 112px;
+}
+
+.eval-roster-summary-grid--wide {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.eval-roster-summary-grid--wide strong {
+  font-size: 1.02rem;
+  overflow-wrap: anywhere;
+}
+
+.eval-roster-issue-list {
+  display: grid;
+  gap: 10px;
+}
+
+.eval-roster-issue-list article {
+  display: grid;
+  gap: 6px;
+  border: 1px solid rgba(8, 59, 48, 0.09);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbfa 100%);
+  padding: 13px;
+}
+
+.eval-roster-issue-list span {
+  width: fit-content;
+  border-radius: 999px;
+  background: rgba(184, 135, 56, 0.12);
+  color: #7a5a16;
+  padding: 5px 8px;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.eval-roster-issue-list span[data-severity="高"] {
+  background: rgba(167, 61, 40, 0.11);
+  color: #8b2f1f;
+}
+
+.eval-roster-issue-list strong {
+  color: var(--green-950);
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
+.eval-roster-issue-list p,
+.eval-roster-issue-list small {
+  margin: 0;
+  color: var(--gray-700);
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1.5;
+}
+
 .eval-license-hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(220px, 0.36fr);
@@ -2734,12 +2902,14 @@ main {
   .eval-roster-step-grid,
   .eval-roster-mode-grid,
   .eval-roster-summary-grid,
+  .eval-roster-summary-grid--wide,
   .eval-roster-rule-grid,
   .eval-roster-check-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .eval-roster-hero,
+  .eval-roster-upload-controls,
   .eval-roster-two-column {
     grid-template-columns: 1fr;
   }
@@ -2952,8 +3122,10 @@ main {
   .eval-roster-step-grid,
   .eval-roster-mode-grid,
   .eval-roster-summary-grid,
+  .eval-roster-summary-grid--wide,
   .eval-roster-rule-grid,
   .eval-roster-check-list,
+  .eval-roster-upload-controls,
   .eval-roster-two-column,
   .eval-roster-impact-modules,
   .eval-module-nav {

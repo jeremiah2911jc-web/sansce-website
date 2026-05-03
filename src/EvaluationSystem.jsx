@@ -973,6 +973,770 @@ function RosterChipList({ items, className = "" }) {
   );
 }
 
+const rosterImportSheets = {
+  land: "土地清冊_匯入",
+  building: "建物清冊_匯入",
+  integration: "整合紀錄_匯入",
+  allocation: "分配條件_匯入",
+};
+
+function formatSequence(prefix, index) {
+  return `${prefix}-${String(index + 1).padStart(4, "0")}`;
+}
+
+function normalizeCellValue(value) {
+  return String(value ?? "").replace(/\s+/g, " ").trim();
+}
+
+function normalizeOwnerName(value) {
+  return normalizeCellValue(value).replace(/\s/g, "");
+}
+
+function normalizeIdentityCode(value) {
+  return normalizeCellValue(value).toUpperCase().replace(/\s/g, "");
+}
+
+function isMaskedOwnerValue(value) {
+  const text = normalizeCellValue(value);
+  return /[*＊ＸX○ＯO]/.test(text) || text.length <= 1;
+}
+
+function getFirstMatchingValue(row, keywords) {
+  const entry = Object.entries(row).find(([key]) => keywords.some((keyword) => key.includes(keyword)));
+  return normalizeCellValue(entry?.[1] ?? "");
+}
+
+function getColumnIndex(cellReference = "") {
+  const letters = cellReference.replace(/[0-9]/g, "");
+  return letters.split("").reduce((total, letter) => total * 26 + letter.charCodeAt(0) - 64, 0) - 1;
+}
+
+function getRowNumber(cellReference = "") {
+  const match = cellReference.match(/\d+/);
+  return match ? Number(match[0]) : 0;
+}
+
+function readUint16(view, offset) {
+  return view.getUint16(offset, true);
+}
+
+function readUint32(view, offset) {
+  return view.getUint32(offset, true);
+}
+
+async function inflateZipEntry(bytes, method) {
+  if (method === 0) {
+    return bytes;
+  }
+
+  if (method !== 8) {
+    throw new Error("目前只支援 ZIP stored / deflate 壓縮格式。");
+  }
+
+  if (!("DecompressionStream" in window)) {
+    throw new Error("此瀏覽器不支援前端解壓縮，請改用新版 Chrome / Edge，或後續改接 xlsx 解析套件。");
+  }
+
+  const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+
+async function readZipEntries(arrayBuffer) {
+  const bytes = new Uint8Array(arrayBuffer);
+  const view = new DataView(arrayBuffer);
+  let eocdOffset = -1;
+
+  for (let offset = bytes.length - 22; offset >= 0; offset -= 1) {
+    if (readUint32(view, offset) === 0x06054b50) {
+      eocdOffset = offset;
+      break;
+    }
+  }
+
+  if (eocdOffset < 0) {
+    throw new Error("無法辨識 .xlsx 檔案結構。");
+  }
+
+  const entryCount = readUint16(view, eocdOffset + 10);
+  let centralOffset = readUint32(view, eocdOffset + 16);
+  const entries = new Map();
+  const decoder = new TextDecoder("utf-8");
+
+  for (let index = 0; index < entryCount; index += 1) {
+    if (readUint32(view, centralOffset) !== 0x02014b50) {
+      break;
+    }
+
+    const method = readUint16(view, centralOffset + 10);
+    const compressedSize = readUint32(view, centralOffset + 20);
+    const fileNameLength = readUint16(view, centralOffset + 28);
+    const extraLength = readUint16(view, centralOffset + 30);
+    const commentLength = readUint16(view, centralOffset + 32);
+    const localHeaderOffset = readUint32(view, centralOffset + 42);
+    const fileName = decoder.decode(bytes.slice(centralOffset + 46, centralOffset + 46 + fileNameLength));
+
+    const localNameLength = readUint16(view, localHeaderOffset + 26);
+    const localExtraLength = readUint16(view, localHeaderOffset + 28);
+    const dataOffset = localHeaderOffset + 30 + localNameLength + localExtraLength;
+    const compressedBytes = bytes.slice(dataOffset, dataOffset + compressedSize);
+    entries.set(fileName.replace(/\\/g, "/"), { method, compressedBytes });
+
+    centralOffset += 46 + fileNameLength + extraLength + commentLength;
+  }
+
+  return entries;
+}
+
+async function readZipText(entries, path) {
+  const entry = entries.get(path);
+  if (!entry) {
+    return "";
+  }
+
+  const inflated = await inflateZipEntry(entry.compressedBytes, entry.method);
+  return new TextDecoder("utf-8").decode(inflated);
+}
+
+function parseXml(text) {
+  return new DOMParser().parseFromString(text, "application/xml");
+}
+
+function parseRelationships(xmlText) {
+  if (!xmlText) {
+    return new Map();
+  }
+
+  const xml = parseXml(xmlText);
+  return new Map(
+    Array.from(xml.getElementsByTagName("Relationship")).map((relationship) => [
+      relationship.getAttribute("Id"),
+      relationship.getAttribute("Target"),
+    ]),
+  );
+}
+
+function resolveWorkbookTarget(target = "") {
+  const normalized = target.replace(/^\/+/, "");
+  return normalized.startsWith("xl/") ? normalized : `xl/${normalized}`;
+}
+
+function parseSharedStrings(xmlText) {
+  if (!xmlText) {
+    return [];
+  }
+
+  const xml = parseXml(xmlText);
+  return Array.from(xml.getElementsByTagName("si")).map((item) =>
+    Array.from(item.getElementsByTagName("t")).map((node) => node.textContent ?? "").join(""),
+  );
+}
+
+function getCellText(cell, sharedStrings) {
+  const type = cell.getAttribute("t");
+
+  if (type === "inlineStr") {
+    return Array.from(cell.getElementsByTagName("t")).map((node) => node.textContent ?? "").join("");
+  }
+
+  const value = cell.getElementsByTagName("v")[0]?.textContent ?? "";
+  if (type === "s") {
+    return sharedStrings[Number(value)] ?? "";
+  }
+
+  return value;
+}
+
+function parseSheetRows(xmlText, sharedStrings) {
+  if (!xmlText) {
+    return [];
+  }
+
+  const xml = parseXml(xmlText);
+  return Array.from(xml.getElementsByTagName("row")).map((row) => {
+    const values = [];
+    Array.from(row.getElementsByTagName("c")).forEach((cell) => {
+      values[getColumnIndex(cell.getAttribute("r") ?? "")] = normalizeCellValue(getCellText(cell, sharedStrings));
+    });
+    return {
+      excelRowNumber: Number(row.getAttribute("r")) || getRowNumber(row.getElementsByTagName("c")[0]?.getAttribute("r") ?? ""),
+      values,
+    };
+  });
+}
+
+function scoreHeaderRow(values, sheetType) {
+  const joined = values.join("|");
+  const commonScore = ["地主", "姓名", "所有權", "備註"].filter((keyword) => joined.includes(keyword)).length;
+  const landScore = ["地號", "土地", "持分", "權利範圍"].filter((keyword) => joined.includes(keyword)).length;
+  const buildingScore = ["建號", "建物", "門牌", "對應地號"].filter((keyword) => joined.includes(keyword)).length;
+  return commonScore + (sheetType === "land" ? landScore : buildingScore);
+}
+
+function rowsToObjects(rows, sheetType) {
+  const headerIndex = rows.findIndex((row) => scoreHeaderRow(row.values, sheetType) >= 2);
+  if (headerIndex < 0) {
+    return [];
+  }
+
+  const headers = rows[headerIndex].values.map((header, index) => normalizeCellValue(header) || `欄位${index + 1}`);
+  return rows.slice(headerIndex + 1)
+    .map((row) => {
+      const item = { __rowNumber: row.excelRowNumber };
+      headers.forEach((header, index) => {
+        item[header] = row.values[index] ?? "";
+      });
+      return item;
+    })
+    .filter((row) => Object.entries(row).some(([key, value]) => key !== "__rowNumber" && normalizeCellValue(value)));
+}
+
+async function parseRosterWorkbook(file) {
+  const entries = await readZipEntries(await file.arrayBuffer());
+  const workbookXml = await readZipText(entries, "xl/workbook.xml");
+  const workbookRels = parseRelationships(await readZipText(entries, "xl/_rels/workbook.xml.rels"));
+  const sharedStrings = parseSharedStrings(await readZipText(entries, "xl/sharedStrings.xml"));
+  const workbook = parseXml(workbookXml);
+  const sheets = new Map();
+
+  Array.from(workbook.getElementsByTagName("sheet")).forEach((sheet) => {
+    const name = sheet.getAttribute("name") ?? "";
+    const relationshipId = sheet.getAttribute("r:id");
+    const target = workbookRels.get(relationshipId);
+    if (name && target) {
+      sheets.set(name, resolveWorkbookTarget(target));
+    }
+  });
+
+  const readSheet = async (sheetName, sheetType) => {
+    const path = sheets.get(sheetName);
+    const xml = path ? await readZipText(entries, path) : "";
+    return rowsToObjects(parseSheetRows(xml, sharedStrings), sheetType);
+  };
+
+  return {
+    availableSheets: Array.from(sheets.keys()),
+    landRows: await readSheet(rosterImportSheets.land, "land"),
+    buildingRows: await readSheet(rosterImportSheets.building, "building"),
+    integrationFound: sheets.has(rosterImportSheets.integration),
+    allocationFound: sheets.has(rosterImportSheets.allocation),
+  };
+}
+
+function buildLandRightRows(rows) {
+  const mappedRows = rows.map((row) => {
+    const ownerName = getFirstMatchingValue(row, ["地主姓名", "所有權人", "姓名", "名稱"]);
+    const landNumber = getFirstMatchingValue(row, ["地號"]);
+
+    return {
+      sourceRowNumber: row.__rowNumber,
+      ownerReferenceId: getFirstMatchingValue(row, ["地主編號", "權利人編號", "所有權人編號", "參考編號"]),
+      ownerName,
+      maskedIdentityCode: getFirstMatchingValue(row, ["身分證", "統編", "統一編號", "證號", "識別碼", "前碼"]),
+      address: getFirstMatchingValue(row, ["地址", "通訊地址", "戶籍地址", "住址"]),
+      landNumber,
+      landArea: getFirstMatchingValue(row, ["土地面積", "面積"]),
+      shareText: getFirstMatchingValue(row, ["權利範圍", "持分"]),
+      convertedShare: getFirstMatchingValue(row, ["換算持分", "持分比例", "持分面積"]),
+      contactStatus: getFirstMatchingValue(row, ["聯絡狀態", "聯絡"]),
+      consentStatus: getFirstMatchingValue(row, ["同意狀態", "同意"]),
+      contractStatus: getFirstMatchingValue(row, ["簽約狀態", "簽約"]),
+      note: getFirstMatchingValue(row, ["備註", "說明"]),
+      validationStatus: ownerName && landNumber ? "可建立疑似群組" : "待人工確認",
+    };
+  });
+
+  return mappedRows
+    .filter((row) => [
+      row.ownerReferenceId,
+      row.ownerName,
+      row.maskedIdentityCode,
+      row.landNumber,
+      row.landArea,
+      row.shareText,
+      row.convertedShare,
+    ].some(Boolean))
+    .map((row, index) => ({
+      ...row,
+      landRightRowId: formatSequence("LR", index),
+    }));
+}
+
+function buildBuildingRightRows(rows) {
+  const mappedRows = rows.map((row) => {
+    const ownerName = getFirstMatchingValue(row, ["地主姓名", "所有權人", "姓名", "名稱"]);
+    const buildingNumber = getFirstMatchingValue(row, ["建號"]);
+
+    return {
+      sourceRowNumber: row.__rowNumber,
+      ownerReferenceId: getFirstMatchingValue(row, ["地主編號", "權利人編號", "所有權人編號", "參考編號"]),
+      ownerName,
+      maskedIdentityCode: getFirstMatchingValue(row, ["身分證", "統編", "統一編號", "證號", "識別碼", "前碼"]),
+      relatedLandNumber: getFirstMatchingValue(row, ["對應地號", "地號"]),
+      buildingNumber,
+      address: getFirstMatchingValue(row, ["門牌", "地址"]),
+      buildingArea: getFirstMatchingValue(row, ["建物面積", "面積"]),
+      shareText: getFirstMatchingValue(row, ["權利範圍", "持分"]),
+      note: getFirstMatchingValue(row, ["備註", "說明"]),
+      validationStatus: ownerName && buildingNumber ? "可建立疑似群組" : "待人工確認",
+    };
+  });
+
+  return mappedRows
+    .filter((row) => [
+      row.ownerReferenceId,
+      row.ownerName,
+      row.maskedIdentityCode,
+      row.relatedLandNumber,
+      row.buildingNumber,
+      row.address,
+      row.buildingArea,
+      row.shareText,
+    ].some(Boolean))
+    .map((row, index) => ({
+      ...row,
+      buildingRightRowId: formatSequence("BR", index),
+    }));
+}
+
+function createRosterIssue(type, severity, message, rows = []) {
+  return {
+    id: `${type}-${rows.join("-") || Math.random().toString(36).slice(2)}`,
+    type,
+    severity,
+    message,
+    rows,
+  };
+}
+
+function buildPartyPreview(landRights, buildingRights) {
+  const issues = [];
+  const landNumbers = new Set(landRights.map((row) => row.landNumber).filter(Boolean));
+  const suspectedGroups = new Map();
+  const namesByReference = new Map();
+  const rowsByIdentity = new Map();
+  const rowsByOwnerName = new Map();
+
+  [...landRights, ...buildingRights].forEach((row) => {
+    const ownerName = normalizeOwnerName(row.ownerName);
+    const referenceId = normalizeCellValue(row.ownerReferenceId);
+    const identityCode = normalizeIdentityCode(row.maskedIdentityCode);
+    const rowId = row.landRightRowId ?? row.buildingRightRowId;
+
+    if (!ownerName) {
+      issues.push(createRosterIssue(
+        row.landRightRowId ? "土地缺少姓名" : "建物缺少姓名",
+        "高",
+        row.landRightRowId ? "土地權利列缺少地主姓名，無法歸戶。" : "建物權利列缺少地主姓名，無法歸戶。",
+        [rowId],
+      ));
+      return;
+    }
+
+    if (!rowsByOwnerName.has(ownerName)) {
+      rowsByOwnerName.set(ownerName, { landRows: [], buildingRows: [], references: new Set(), landNumbers: new Set(), buildingNumbers: new Set() });
+    }
+    const nameGroup = rowsByOwnerName.get(ownerName);
+    if (referenceId) nameGroup.references.add(referenceId);
+    if (row.landRightRowId) {
+      nameGroup.landRows.push(row.landRightRowId);
+      if (row.landNumber) nameGroup.landNumbers.add(row.landNumber);
+    }
+    if (row.buildingRightRowId) {
+      nameGroup.buildingRows.push(row.buildingRightRowId);
+      if (row.buildingNumber) nameGroup.buildingNumbers.add(row.buildingNumber);
+    }
+
+    const groupKey = [
+      `name:${ownerName}`,
+      identityCode ? `id:${identityCode}` : "",
+      row.address ? `address:${normalizeOwnerName(row.address)}` : "",
+    ].filter(Boolean).join("|");
+
+    if (!suspectedGroups.has(groupKey)) {
+      suspectedGroups.set(groupKey, {
+        name: row.ownerName,
+        maskedNames: new Set(),
+        landRows: [],
+        buildingRows: [],
+        references: new Set(),
+        identityCodes: new Set(),
+        addresses: new Set(),
+        notes: new Set(),
+        landNumbers: new Set(),
+        buildingNumbers: new Set(),
+      });
+    }
+
+    const group = suspectedGroups.get(groupKey);
+    group.maskedNames.add(row.ownerName);
+    if (row.landRightRowId) {
+      group.landRows.push(row.landRightRowId);
+      if (row.landNumber) group.landNumbers.add(row.landNumber);
+    }
+    if (row.buildingRightRowId) {
+      group.buildingRows.push(row.buildingRightRowId);
+      if (row.buildingNumber) group.buildingNumbers.add(row.buildingNumber);
+    }
+    if (identityCode) {
+      group.identityCodes.add(identityCode);
+      if (!rowsByIdentity.has(identityCode)) {
+        rowsByIdentity.set(identityCode, { names: new Set(), rows: [] });
+      }
+      rowsByIdentity.get(identityCode).names.add(ownerName);
+      rowsByIdentity.get(identityCode).rows.push(rowId);
+    }
+    if (row.address) group.addresses.add(row.address);
+    if (row.note) group.notes.add(row.note);
+    if (referenceId) {
+      group.references.add(referenceId);
+      if (!namesByReference.has(referenceId)) {
+        namesByReference.set(referenceId, new Set());
+      }
+      namesByReference.get(referenceId).add(ownerName);
+    }
+  });
+
+  rowsByOwnerName.forEach((group) => {
+    if (group.references.size > 1) {
+      issues.push(createRosterIssue("同姓名不同參考編號", "中", "同姓名不同參考編號，建議人工確認是否同一權利人。", [...group.landRows, ...group.buildingRows]));
+    }
+    if (group.landNumbers.size > 1) {
+      issues.push(createRosterIssue("同姓名多地號", "中", "疑似同姓或遮蔽姓名相似，涉及多筆地號，需人工確認是否同一權利人。", group.landRows));
+    }
+    if (group.buildingNumbers.size > 1) {
+      issues.push(createRosterIssue("同姓名多建號", "中", "疑似同姓或遮蔽姓名相似，涉及多筆建號，需人工確認是否同一權利人。", group.buildingRows));
+    }
+  });
+
+  rowsByIdentity.forEach((identityGroup, identityCode) => {
+    if (identityGroup.rows.length > 1) {
+      issues.push(createRosterIssue(
+        "部分識別碼相符",
+        "中",
+        `部分識別碼「${identityCode}」出現在多筆權利列，只能作為疑似比對依據，不能直接確認為同一人。`,
+        identityGroup.rows,
+      ));
+    }
+  });
+
+  namesByReference.forEach((names, referenceId) => {
+    if (names.size > 1) {
+      issues.push(createRosterIssue(
+        "同編號不同姓名",
+        "高",
+        `同一參考編號「${referenceId}」對應不同姓名，請檢查原始清冊。`,
+        [],
+      ));
+    }
+  });
+
+  buildingRights.forEach((row) => {
+    if (row.buildingNumber && !row.relatedLandNumber) {
+      issues.push(createRosterIssue("建物缺對應地號", "中", "建物缺少對應地號，後續土地 / 建物串接可能失敗。", [row.buildingRightRowId]));
+    }
+    if (row.relatedLandNumber && !landNumbers.has(row.relatedLandNumber)) {
+      issues.push(createRosterIssue("建物地號未匹配", "中", "建物對應地號未出現在土地清冊。", [row.buildingRightRowId]));
+    }
+  });
+
+  const partyRows = Array.from(suspectedGroups.values()).map((group, index) => {
+    const reasons = [];
+    const totalRows = group.landRows.length + group.buildingRows.length;
+    const hasMaskedName = Array.from(group.maskedNames).some((name) => isMaskedOwnerValue(name));
+    let confidence = "未歸戶";
+
+    if (totalRows === 1) {
+      reasons.push("單筆權利列先保留為原始資料，尚未進行正式歸戶。");
+    }
+    if (group.references.size > 1) {
+      reasons.push("同姓名不同參考編號，建議人工確認是否同一權利人。");
+      confidence = "待人工確認";
+    }
+    if (group.identityCodes.size && totalRows > 1) {
+      reasons.push("部分識別碼相符，僅能作為疑似比對線索。");
+      confidence = confidence === "待人工確認" ? confidence : "部分識別碼相符";
+    }
+    if (group.landNumbers.size > 1) {
+      reasons.push("疑似同姓或遮蔽姓名相似，涉及多筆地號。");
+      confidence = confidence === "待人工確認" || confidence === "部分識別碼相符" ? confidence : "疑似同姓";
+    }
+    if (group.buildingNumbers.size > 1) {
+      reasons.push("疑似同姓或遮蔽姓名相似，涉及多筆建號。");
+      confidence = confidence === "待人工確認" || confidence === "部分識別碼相符" ? confidence : "疑似同姓";
+    }
+    if (totalRows > 1 && hasMaskedName) {
+      reasons.push("資料疑似來自第二類謄本或遮蔽姓名，不能直接完成正式歸戶。");
+      confidence = confidence === "未歸戶" ? "疑似同姓" : confidence;
+    }
+    if (totalRows > 1 && group.identityCodes.size === 1 && (group.addresses.size === 1 || group.references.size === 1)) {
+      reasons.push("遮蔽姓名、部分識別碼與輔助資訊一致，屬高度疑似但仍需人工確認。");
+      confidence = "高度疑似同一人";
+    }
+
+    return {
+      partyGroupId: formatSequence("PG", index),
+      name: group.name,
+      ownerReferenceIds: Array.from(group.references),
+      maskedIdentityCodes: Array.from(group.identityCodes),
+      landRightRowIds: group.landRows,
+      buildingRightRowIds: group.buildingRows,
+      landNumbers: Array.from(group.landNumbers),
+      buildingNumbers: Array.from(group.buildingNumbers),
+      confidence,
+      status: confidence,
+      reasons,
+    };
+  });
+
+  return { partyRows, issues };
+}
+
+function buildRosterPreview(file, workbookData) {
+  const landRights = buildLandRightRows(workbookData.landRows);
+  const buildingRights = buildBuildingRightRows(workbookData.buildingRows);
+  const { partyRows, issues } = buildPartyPreview(landRights, buildingRights);
+  const landNumbers = new Set(landRights.map((row) => row.landNumber).filter(Boolean));
+  const buildingNumbers = new Set(buildingRights.map((row) => row.buildingNumber).filter(Boolean));
+
+  return {
+    batchId: `IMPORT-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${String(Date.now()).slice(-4)}`,
+    version: "TEMP-V001",
+    fileName: file.name,
+    importedAt: new Date().toLocaleString("zh-TW", { hour12: false }),
+    availableSheets: workbookData.availableSheets,
+    integrationFound: workbookData.integrationFound,
+    allocationFound: workbookData.allocationFound,
+    landRights,
+    buildingRights,
+    partyRows,
+    issues,
+    summary: {
+      landCount: landRights.length,
+      buildingCount: buildingRights.length,
+      partyCount: partyRows.length,
+      landNumberCount: landNumbers.size,
+      buildingNumberCount: buildingNumbers.size,
+      sameNameMultiLandCount: partyRows.filter((party) => party.landNumbers.length > 1).length,
+      sameNameMultiBuildingCount: partyRows.filter((party) => party.buildingNumbers.length > 1).length,
+      manualReviewCount: partyRows.filter((party) => !["已人工確認", "已完整資料確認"].includes(party.status)).length + issues.length,
+      warningCount: issues.length,
+    },
+  };
+}
+
+function RosterPreviewTable({ title, emptyText, columns, rows }) {
+  return (
+    <section className="eval-module-section">
+      <div className="eval-section-head">
+        <h4>{title}</h4>
+      </div>
+      {rows.length ? (
+        <div className="eval-table-wrap">
+          <table className="eval-table eval-roster-preview-table">
+            <thead>
+              <tr>
+                {columns.map((column) => (
+                  <th key={column.key}>{column.label}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.slice(0, 6).map((row, index) => (
+                <tr key={`${title}-${row[columns[0].key] || index}`}>
+                  {columns.map((column) => (
+                    <td key={column.key}>{Array.isArray(row[column.key]) ? row[column.key].join("、") || "未填" : row[column.key] || "未填"}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="eval-roster-empty">{emptyText}</p>
+      )}
+    </section>
+  );
+}
+
+function RosterUploadTesting({ currentCase }) {
+  const [fileName, setFileName] = useState("");
+  const [isParsing, setIsParsing] = useState(false);
+  const [parseError, setParseError] = useState("");
+  const [preview, setPreview] = useState(null);
+
+  const handleFileChange = async (event) => {
+    const file = event.target.files?.[0];
+    setFileName(file?.name ?? "");
+    setParseError("");
+    setPreview(null);
+
+    if (!file) {
+      return;
+    }
+
+    if (!file.name.toLowerCase().endsWith(".xlsx")) {
+      setParseError("目前清冊上傳測試只接受 .xlsx 檔案。");
+      return;
+    }
+
+    setIsParsing(true);
+    try {
+      const workbookData = await parseRosterWorkbook(file);
+      setPreview(buildRosterPreview(file, workbookData));
+    } catch (error) {
+      setParseError(error instanceof Error ? error.message : "清冊解析失敗，請確認檔案是否為標準 .xlsx。");
+    } finally {
+      setIsParsing(false);
+    }
+  };
+
+  const summaryCards = preview ? [
+    ["匯入批次", preview.batchId],
+    ["檔案名稱", preview.fileName],
+    ["匯入時間", preview.importedAt],
+    ["土地清冊筆數", preview.summary.landCount],
+    ["建物清冊筆數", preview.summary.buildingCount],
+    ["疑似權利人群組數", preview.summary.partyCount],
+    ["涉及地號數", preview.summary.landNumberCount],
+    ["涉及建號數", preview.summary.buildingNumberCount],
+    ["疑似同姓多地號群組", preview.summary.sameNameMultiLandCount],
+    ["疑似同姓多建號群組", preview.summary.sameNameMultiBuildingCount],
+    ["待人工確認筆數", preview.summary.manualReviewCount],
+    ["檢核警示數", preview.summary.warningCount],
+  ] : [];
+
+  return (
+    <section className="eval-roster-upload-test">
+      <section className="eval-module-section eval-roster-upload-card">
+        <div className="eval-section-head">
+          <h4>清冊上傳測試</h4>
+          <p>先以上傳檔建立目前案件的暫存批次，不直接覆蓋正式資料，也不寫入資料庫。地主編號只作為原始參考欄位，不作為唯一必填主鍵。</p>
+          <p>若資料來自第二類謄本，系統以地號、建號與原始權利列為基準，只做暫時比對與疑似權利人群組，不因同姓或部分證號相同而自動合併。正式歸戶需等後續補上完整姓名、完整證號、統編，或經人工確認後才成立。</p>
+        </div>
+        <div className="eval-roster-upload-controls">
+          <label>
+            <span>選擇 Excel 檔案</span>
+            <input type="file" accept=".xlsx" onChange={handleFileChange} />
+          </label>
+          <article>
+            <strong>{fileName || "尚未選擇檔案"}</strong>
+            <p>匯入結果將暫時歸屬於目前案件：{currentCase.code} / {currentCase.name}</p>
+          </article>
+        </div>
+        <div className="eval-roster-next-sheets">
+          <span>{rosterImportSheets.land}</span>
+          <span>{rosterImportSheets.building}</span>
+          <span>{rosterImportSheets.integration}：下一階段串接</span>
+          <span>{rosterImportSheets.allocation}：下一階段串接</span>
+        </div>
+        <div className="eval-roster-status-set" aria-label="疑似權利人群組狀態">
+          <strong>歸戶狀態設計</strong>
+          {["未歸戶", "疑似同姓", "部分識別碼相符", "高度疑似同一人", "待人工確認", "已人工確認", "已完整資料確認"].map((status) => (
+            <span key={status}>{status}</span>
+          ))}
+        </div>
+        {isParsing && <p className="eval-roster-status">正在讀取清冊並建立疑似權利人群組...</p>}
+        {parseError && <p className="eval-auth-error">{parseError}</p>}
+      </section>
+
+      {preview && (
+        <>
+          <section className="eval-module-section">
+            <div className="eval-section-head">
+              <h4>匯入摘要</h4>
+              <p>本摘要只代表暫存批次，不代表正式案件清冊已更新。</p>
+            </div>
+            <div className="eval-roster-summary-grid eval-roster-summary-grid--wide">
+              {summaryCards.map(([label, value]) => (
+                <article key={label}>
+                  <span>{label}</span>
+                  <strong>{value}</strong>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <RosterPreviewTable
+            title="土地權利明細預覽"
+            emptyText="目前未讀到土地清冊資料。"
+            columns={[
+              { key: "landRightRowId", label: "土地列 ID" },
+              { key: "sourceRowNumber", label: "原始列號" },
+              { key: "ownerReferenceId", label: "地主編號" },
+              { key: "ownerName", label: "地主姓名" },
+              { key: "maskedIdentityCode", label: "遮蔽證號 / 前碼" },
+              { key: "landNumber", label: "地號" },
+              { key: "shareText", label: "權利範圍 / 持分" },
+              { key: "validationStatus", label: "檢核狀態" },
+            ]}
+            rows={preview.landRights}
+          />
+
+          <RosterPreviewTable
+            title="建物權利明細預覽"
+            emptyText="目前未讀到建物清冊資料。"
+            columns={[
+              { key: "buildingRightRowId", label: "建物列 ID" },
+              { key: "sourceRowNumber", label: "原始列號" },
+              { key: "ownerReferenceId", label: "地主編號" },
+              { key: "ownerName", label: "地主姓名" },
+              { key: "maskedIdentityCode", label: "遮蔽證號 / 前碼" },
+              { key: "relatedLandNumber", label: "對應地號" },
+              { key: "buildingNumber", label: "建號" },
+              { key: "validationStatus", label: "檢核狀態" },
+            ]}
+            rows={preview.buildingRights}
+          />
+
+          <RosterPreviewTable
+            title="疑似權利人群組總表"
+            emptyText="目前尚未建立疑似權利人群組。"
+            columns={[
+              { key: "partyGroupId", label: "群組 ID" },
+              { key: "name", label: "原始姓名 / 名稱" },
+              { key: "ownerReferenceIds", label: "原始參考編號" },
+              { key: "maskedIdentityCodes", label: "遮蔽證號 / 前碼" },
+              { key: "landNumbers", label: "涉及地號" },
+              { key: "buildingNumbers", label: "涉及建號" },
+              { key: "confidence", label: "歸戶狀態" },
+              { key: "reasons", label: "待確認原因" },
+            ]}
+            rows={preview.partyRows}
+          />
+
+          <section className="eval-module-section">
+            <div className="eval-section-head">
+              <h4>待人工確認清單</h4>
+              <p>以下項目不阻擋匯入暫存，但正式套用前必須人工確認。</p>
+            </div>
+            {preview.issues.length ? (
+              <div className="eval-roster-issue-list">
+                {preview.issues.map((issue) => (
+                  <article key={issue.id}>
+                    <span data-severity={issue.severity}>{issue.severity}</span>
+                    <strong>{issue.type}</strong>
+                    <p>{issue.message}</p>
+                    <small>{issue.rows.length ? `關聯列：${issue.rows.join("、")}` : "請回原始清冊確認"}</small>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <p className="eval-roster-empty">目前沒有偵測到待人工確認項目，但正式套用前仍應由使用者確認。</p>
+            )}
+          </section>
+
+          <section className="eval-module-section">
+            <div className="eval-section-head">
+              <h4>下一步提示</h4>
+              <p>正式流程會是：上傳 Excel → 暫存批次 → 欄位檢核 → 疑似權利人群組 → 人工確認合併 / 拆分 → 補登完整資料 → 二次確認 → 套用到正式案件清冊，並可升級為正式權利人總表。</p>
+            </div>
+          </section>
+        </>
+      )}
+    </section>
+  );
+}
+
 function RosterImportVersioning({ config, currentCase }) {
   if (!config) {
     return null;
@@ -999,7 +1763,7 @@ function RosterImportVersioning({ config, currentCase }) {
           <article>
             <strong>{config.upload.title}</strong>
             <span>{config.upload.acceptedTypes.join(" / ")}</span>
-            <p>此處僅建立 UI 骨架；不真正解析 Excel、不真正上傳檔案，也不接後端。上傳紀錄將歸屬於目前案件：{currentCase.code}。</p>
+            <p>測試區可先讀取 .xlsx 並建立暫存預覽；正式套用、資料庫儲存與後端檢核仍待下一階段。上傳紀錄將歸屬於目前案件：{currentCase.code}。</p>
             <button type="button">選擇 .xlsx 檔案</button>
           </article>
         </div>
@@ -1265,6 +2029,7 @@ function OwnershipModule({ module, currentCase, onGoToCases }) {
   return (
     <div className="eval-module-stack">
       <CurrentCaseSummary currentCase={currentCase} />
+      <RosterUploadTesting currentCase={currentCase} />
       {module.sections.map((section) => (
         <ModuleSection section={section} key={section.title} />
       ))}
