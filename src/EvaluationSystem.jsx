@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -1558,11 +1558,12 @@ function RosterPreviewTable({ title, emptyText, columns, rows }) {
   );
 }
 
-function RosterUploadTesting({ currentCase }) {
+function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile }) {
   const [fileName, setFileName] = useState("");
   const [isParsing, setIsParsing] = useState(false);
   const [parseError, setParseError] = useState("");
   const [preview, setPreview] = useState(null);
+  const fileInputId = `roster-upload-file-${currentCase.id}`;
 
   const handleFileChange = async (event) => {
     const file = event.target.files?.[0];
@@ -1571,22 +1572,34 @@ function RosterUploadTesting({ currentCase }) {
     setPreview(null);
 
     if (!file) {
+      setParseError("尚未選擇清冊檔案。");
       return;
     }
 
     if (!file.name.toLowerCase().endsWith(".xlsx")) {
       setParseError("目前清冊上傳測試只接受 .xlsx 檔案。");
+      event.target.value = "";
       return;
     }
 
     setIsParsing(true);
     try {
       const workbookData = await parseRosterWorkbook(file);
-      setPreview(buildRosterPreview(file, workbookData));
+      if (!workbookData.availableSheets.includes(rosterImportSheets.land)) {
+        setParseError("找不到「土地清冊_匯入」工作表，請確認檔案是否為第七版清冊模板。");
+        return;
+      }
+
+      const rosterPreview = buildRosterPreview(file, workbookData);
+      setPreview(rosterPreview);
+      if (!rosterPreview.landRights.length) {
+        setParseError("解析結果為 0 筆有效土地權利列，請確認「土地清冊_匯入」是否已填寫地號、地主姓名、持分或參考編號。");
+      }
     } catch (error) {
       setParseError(error instanceof Error ? error.message : "清冊解析失敗，請確認檔案是否為標準 .xlsx。");
     } finally {
       setIsParsing(false);
+      event.target.value = "";
     }
   };
 
@@ -1614,10 +1627,21 @@ function RosterUploadTesting({ currentCase }) {
           <p>若資料來自第二類謄本，系統以地號、建號與原始權利列為基準，只做暫時比對與疑似權利人群組，不因同姓或部分證號相同而自動合併。正式歸戶需等後續補上完整姓名、完整證號、統編，或經人工確認後才成立。</p>
         </div>
         <div className="eval-roster-upload-controls">
-          <label>
-            <span>選擇 Excel 檔案</span>
-            <input type="file" accept=".xlsx" onChange={handleFileChange} />
-          </label>
+          <div className="eval-roster-file-picker">
+            <input
+              ref={fileInputRef}
+              id={fileInputId}
+              type="file"
+              accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              onChange={handleFileChange}
+              className="eval-roster-file-input"
+            />
+            <label htmlFor={fileInputId}>清冊檔案上傳 .xlsx</label>
+            <button type="button" onClick={onRequestFile}>
+              選擇 .xlsx 檔案
+            </button>
+            <small>選檔後先建立暫存預覽，不會覆蓋正式案件清冊。</small>
+          </div>
           <article>
             <strong>{fileName || "尚未選擇檔案"}</strong>
             <p>匯入結果將暫時歸屬於目前案件：{currentCase.code} / {currentCase.name}</p>
@@ -1737,7 +1761,7 @@ function RosterUploadTesting({ currentCase }) {
   );
 }
 
-function RosterImportVersioning({ config, currentCase }) {
+function RosterImportVersioning({ config, currentCase, onRequestFile }) {
   if (!config) {
     return null;
   }
@@ -1764,7 +1788,9 @@ function RosterImportVersioning({ config, currentCase }) {
             <strong>{config.upload.title}</strong>
             <span>{config.upload.acceptedTypes.join(" / ")}</span>
             <p>測試區可先讀取 .xlsx 並建立暫存預覽；正式套用、資料庫儲存與後端檢核仍待下一階段。上傳紀錄將歸屬於目前案件：{currentCase.code}。</p>
-            <button type="button">選擇 .xlsx 檔案</button>
+            <button type="button" onClick={onRequestFile}>
+              選擇 .xlsx 檔案
+            </button>
           </article>
         </div>
       </div>
@@ -2018,6 +2044,11 @@ function RosterCaseRequiredNotice({ onGoToCases }) {
 }
 
 function OwnershipModule({ module, currentCase, onGoToCases }) {
+  const rosterFileInputRef = useRef(null);
+  const handleRosterFileRequest = () => {
+    rosterFileInputRef.current?.click();
+  };
+
   if (!currentCase) {
     return (
       <div className="eval-module-stack">
@@ -2029,11 +2060,19 @@ function OwnershipModule({ module, currentCase, onGoToCases }) {
   return (
     <div className="eval-module-stack">
       <CurrentCaseSummary currentCase={currentCase} />
-      <RosterUploadTesting currentCase={currentCase} />
+      <RosterUploadTesting
+        currentCase={currentCase}
+        fileInputRef={rosterFileInputRef}
+        onRequestFile={handleRosterFileRequest}
+      />
       {module.sections.map((section) => (
         <ModuleSection section={section} key={section.title} />
       ))}
-      <RosterImportVersioning config={module.rosterImportVersioning} currentCase={currentCase} />
+      <RosterImportVersioning
+        config={module.rosterImportVersioning}
+        currentCase={currentCase}
+        onRequestFile={handleRosterFileRequest}
+      />
     </div>
   );
 }

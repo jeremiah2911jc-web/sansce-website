@@ -2359,7 +2359,7 @@ main {
   align-items: stretch;
 }
 
-.eval-roster-upload-controls label,
+.eval-roster-file-picker,
 .eval-roster-upload-controls article {
   display: grid;
   gap: 8px;
@@ -2370,6 +2370,47 @@ main {
   padding: 14px;
 }
 
+.eval-roster-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.eval-roster-file-picker label {
+  color: var(--green-950);
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
+.eval-roster-file-picker button {
+  justify-self: start;
+  border: 0;
+  border-radius: 999px;
+  background: var(--green-900);
+  color: var(--white);
+  padding: 9px 13px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.eval-roster-file-picker button:hover,
+.eval-roster-file-picker button:focus-visible {
+  background: var(--green-950);
+}
+
+.eval-roster-file-picker small {
+  color: var(--gray-700);
+  font-size: 0.76rem;
+  font-weight: 750;
+  line-height: 1.5;
+}
+
 .eval-roster-upload-controls span,
 .eval-roster-upload-controls strong {
   color: var(--green-950);
@@ -2377,7 +2418,7 @@ main {
   font-weight: 900;
 }
 
-.eval-roster-upload-controls input {
+.eval-roster-upload-controls input:not(.eval-roster-file-input) {
   width: 100%;
   color: var(--gray-700);
   font-size: 0.82rem;
