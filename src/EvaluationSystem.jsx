@@ -17,6 +17,19 @@ import {
   roleVisibilityRules,
   workflowStages,
 } from "./evaluationSystemData.js";
+import {
+  INTERNAL_DECIMAL_DIGITS,
+  SHARE_TOTAL_TOLERANCE,
+  formatAreaPing,
+  formatAreaSqm,
+  formatNumber as formatPrecisionNumber,
+  parsePrecisionNumber,
+  parseRatio,
+  pingToSqm,
+  roundForStorage,
+  roundRecordNumbers,
+  sqmToPing,
+} from "./evaluationPrecision.js";
 
 const defaultCaseForm = {
   code: "",
@@ -96,7 +109,6 @@ const LOCAL_TEST_DATA_TYPE = "local-test-data";
 const LOCAL_TEST_DATA_SCHEMA_VERSION = 2;
 const SUPPORTED_LOCAL_TEST_DATA_SCHEMA_VERSIONS = new Set([1, 2]);
 const LOCAL_TEST_DATA_COMMIT_HINT = "cbddef4";
-const SQM_PER_PING = 3.305785;
 const LOCAL_TEST_DATA_RECORD_FIELDS = [
   { dataKey: "capacityInputsByCaseId", storageKey: CAPACITY_INPUTS_STORAGE_KEY },
   { dataKey: "capacityResultsByCaseId", storageKey: CAPACITY_RESULTS_STORAGE_KEY },
@@ -418,12 +430,12 @@ function parseNumericInput(value) {
   return parseRosterNumber(value);
 }
 
-function formatNumber(value, maximumFractionDigits = 2) {
+function formatNumber(value, maximumFractionDigits = 2, minimumFractionDigits = 0) {
   if (!Number.isFinite(value)) {
     return "待補資料";
   }
 
-  return value.toLocaleString("zh-TW", { maximumFractionDigits });
+  return formatPrecisionNumber(value, maximumFractionDigits, { minimumFractionDigits });
 }
 
 function formatPercentValue(value) {
@@ -439,15 +451,15 @@ function formatCurrencyTwd(value) {
 }
 
 function formatSqm(value) {
-  return Number.isFinite(value) ? `${formatNumber(value, 2)} 平方公尺` : "待補資料";
+  return formatAreaSqm(value);
 }
 
 function formatPing(value) {
-  return Number.isFinite(value) ? `${formatNumber(value, 2)} 坪` : "待補資料";
+  return formatAreaPing(value);
 }
 
 function convertSqmToPing(value) {
-  return Number.isFinite(value) ? value / SQM_PER_PING : null;
+  return sqmToPing(value);
 }
 
 function formatSqmAndPing(value) {
@@ -455,7 +467,7 @@ function formatSqmAndPing(value) {
     return "待補資料";
   }
 
-  return `${formatSqm(value)} / ${formatPing(convertSqmToPing(value))}`;
+  return `${formatSqm(value)} / 約 ${formatPing(convertSqmToPing(value))}`;
 }
 
 function getCaseSignatureText(caseItem) {
@@ -1697,6 +1709,32 @@ function getFirstMatchingValue(row, keywords) {
   return normalizeCellValue(entry?.[1] ?? "");
 }
 
+function getFirstExactHeaderValue(row, headers) {
+  const normalizedHeaders = new Set(headers.map((header) => normalizeCellValue(header)));
+  const entry = Object.entries(row).find(([key]) => normalizedHeaders.has(normalizeCellValue(key)));
+  return normalizeCellValue(entry?.[1] ?? "");
+}
+
+function getHeaderValue(row, exactHeaders, fallbackKeywords = exactHeaders) {
+  return getFirstExactHeaderValue(row, exactHeaders) || getFirstMatchingValue(row, fallbackKeywords);
+}
+
+function formatShareText(numerator, denominator, fallbackValue = "") {
+  const normalizedNumerator = normalizeCellValue(numerator);
+  const normalizedDenominator = normalizeCellValue(denominator);
+
+  if (!normalizedNumerator && !normalizedDenominator) {
+    return normalizeCellValue(fallbackValue);
+  }
+
+  return `${normalizedNumerator || "待補"} / ${normalizedDenominator || "待補"}`;
+}
+
+function calculateShareArea(areaSqm, numerator, denominator) {
+  const ratio = parseRatio(numerator, denominator);
+  return Number.isFinite(areaSqm) && Number.isFinite(ratio) ? areaSqm * ratio : null;
+}
+
 function getColumnIndex(cellReference = "") {
   const letters = cellReference.replace(/[0-9]/g, "");
   return letters.split("").reduce((total, letter) => total * 26 + letter.charCodeAt(0) - 64, 0) - 1;
@@ -1915,6 +1953,15 @@ async function parseRosterWorkbook(file) {
 
 function buildLandRightRows(rows) {
   const mappedRows = rows.map((row) => {
+    const landAreaRaw = getHeaderValue(row, ["土地面積㎡", "土地面積"], ["土地面積", "面積"]);
+    const landAreaSqm = parseRosterNumber(landAreaRaw);
+    const excelLandAreaPing = getFirstExactHeaderValue(row, ["土地面積坪"]);
+    const shareNumerator = getFirstExactHeaderValue(row, ["持分分子"]);
+    const shareDenominator = getFirstExactHeaderValue(row, ["持分分母"]);
+    const excelShareRatio = getFirstExactHeaderValue(row, ["持分比例"]);
+    const excelShareAreaPing = getFirstExactHeaderValue(row, ["持分面積坪"]);
+    const calculatedShareRatio = parseRatio(shareNumerator, shareDenominator);
+    const calculatedShareAreaSqm = calculateShareArea(landAreaSqm, shareNumerator, shareDenominator);
     const ownerName = getFirstMatchingValue(row, ["地主姓名", "所有權人", "姓名", "名稱"]);
     const landNumber = getFirstMatchingValue(row, ["地號"]);
 
@@ -1925,6 +1972,16 @@ function buildLandRightRows(rows) {
       maskedIdentityCode: getFirstMatchingValue(row, ["身分證", "統編", "統一編號", "證號", "識別碼", "前碼"]),
       address: getFirstMatchingValue(row, ["地址", "通訊地址", "戶籍地址", "住址"]),
       landNumber,
+      landAreaRaw,
+      landAreaSqm: roundForStorage(landAreaSqm, INTERNAL_DECIMAL_DIGITS),
+      excelLandAreaPing,
+      shareNumerator,
+      shareDenominator,
+      excelShareRatio,
+      excelShareAreaPing,
+      calculatedShareRatio: roundForStorage(calculatedShareRatio, INTERNAL_DECIMAL_DIGITS),
+      calculatedShareAreaSqm: roundForStorage(calculatedShareAreaSqm, INTERNAL_DECIMAL_DIGITS),
+      calculatedShareAreaPing: roundForStorage(sqmToPing(calculatedShareAreaSqm), INTERNAL_DECIMAL_DIGITS),
       landArea: getFirstMatchingValue(row, ["土地面積", "面積"]),
       announcedCurrentValue: getFirstMatchingValue(row, ["公告現值"]),
       announcedLandValue: getFirstMatchingValue(row, ["公告地價"]),
@@ -1938,7 +1995,16 @@ function buildLandRightRows(rows) {
     };
   });
 
-  return mappedRows
+  const enrichedRows = mappedRows.map((row) => ({
+    ...row,
+    landArea: row.landAreaRaw || row.landArea,
+    shareText: formatShareText(row.shareNumerator, row.shareDenominator, row.shareText),
+    convertedShare: Number.isFinite(row.calculatedShareRatio)
+      ? String(row.calculatedShareRatio)
+      : row.convertedShare,
+  }));
+
+  return enrichedRows
     .filter((row) => [
       row.ownerReferenceId,
       row.ownerName,
@@ -1956,6 +2022,15 @@ function buildLandRightRows(rows) {
 
 function buildBuildingRightRows(rows) {
   const mappedRows = rows.map((row) => {
+    const buildingAreaRaw = getHeaderValue(row, ["建物面積㎡", "建物面積"], ["建物面積", "面積"]);
+    const buildingAreaSqm = parseRosterNumber(buildingAreaRaw);
+    const excelBuildingAreaPing = getFirstExactHeaderValue(row, ["建物面積坪"]);
+    const shareNumerator = getFirstExactHeaderValue(row, ["持分分子"]);
+    const shareDenominator = getFirstExactHeaderValue(row, ["持分分母"]);
+    const excelShareRatio = getFirstExactHeaderValue(row, ["持分比例"]);
+    const excelShareAreaSqm = getFirstExactHeaderValue(row, ["建物持分面積㎡"]);
+    const calculatedShareRatio = parseRatio(shareNumerator, shareDenominator);
+    const calculatedShareAreaSqm = calculateShareArea(buildingAreaSqm, shareNumerator, shareDenominator);
     const ownerName = getFirstMatchingValue(row, ["地主姓名", "所有權人", "姓名", "名稱"]);
     const buildingNumber = getFirstMatchingValue(row, ["建號"]);
 
@@ -1967,6 +2042,16 @@ function buildBuildingRightRows(rows) {
       relatedLandNumber: getFirstMatchingValue(row, ["對應地號", "地號"]),
       buildingNumber,
       address: getFirstMatchingValue(row, ["門牌", "地址"]),
+      buildingAreaRaw,
+      buildingAreaSqm: roundForStorage(buildingAreaSqm, INTERNAL_DECIMAL_DIGITS),
+      excelBuildingAreaPing,
+      shareNumerator,
+      shareDenominator,
+      excelShareRatio,
+      excelShareAreaSqm,
+      calculatedShareRatio: roundForStorage(calculatedShareRatio, INTERNAL_DECIMAL_DIGITS),
+      calculatedShareAreaSqm: roundForStorage(calculatedShareAreaSqm, INTERNAL_DECIMAL_DIGITS),
+      calculatedShareAreaPing: roundForStorage(sqmToPing(calculatedShareAreaSqm), INTERNAL_DECIMAL_DIGITS),
       buildingArea: getFirstMatchingValue(row, ["建物面積", "面積"]),
       shareText: getFirstMatchingValue(row, ["權利範圍", "持分"]),
       note: getFirstMatchingValue(row, ["備註", "說明"]),
@@ -1974,7 +2059,13 @@ function buildBuildingRightRows(rows) {
     };
   });
 
-  return mappedRows
+  const enrichedRows = mappedRows.map((row) => ({
+    ...row,
+    buildingArea: row.buildingAreaRaw || row.buildingArea,
+    shareText: formatShareText(row.shareNumerator, row.shareDenominator, row.shareText),
+  }));
+
+  return enrichedRows
     .filter((row) => [
       row.ownerReferenceId,
       row.ownerName,
@@ -2184,10 +2275,49 @@ function buildPartyPreview(landRights, buildingRights) {
   return { partyRows, issues };
 }
 
+function buildLandShareTotalIssues(landRights) {
+  const sharesByLandNumber = new Map();
+
+  landRights.forEach((row) => {
+    const landNumber = normalizeCellValue(row.landNumber);
+    const shareRatio = parseRatio(row.shareNumerator, row.shareDenominator);
+
+    if (!landNumber || !Number.isFinite(shareRatio)) {
+      return;
+    }
+
+    const group = sharesByLandNumber.get(landNumber) ?? {
+      totalShareRatio: 0,
+      rowIds: [],
+    };
+
+    group.totalShareRatio += shareRatio;
+    group.rowIds.push(row.landRightRowId);
+    sharesByLandNumber.set(landNumber, group);
+  });
+
+  return Array.from(sharesByLandNumber.entries()).flatMap(([landNumber, group]) => {
+    const difference = Math.abs(group.totalShareRatio - 1);
+
+    if (difference <= SHARE_TOTAL_TOLERANCE) {
+      return [];
+    }
+
+    return createRosterIssue(
+      "地號持分合計待確認",
+      "中",
+      `地號「${landNumber}」持分合計為 ${formatNumber(group.totalShareRatio, 6)}，與 1 的差距超過 ${SHARE_TOTAL_TOLERANCE}，請人工確認原始分子 / 分母。`,
+      group.rowIds.filter(Boolean),
+    );
+  });
+}
+
 function buildRosterPreview(file, workbookData) {
   const landRights = buildLandRightRows(workbookData.landRows);
   const buildingRights = buildBuildingRightRows(workbookData.buildingRows);
-  const { partyRows, issues } = buildPartyPreview(landRights, buildingRights);
+  const { partyRows, issues: partyIssues } = buildPartyPreview(landRights, buildingRights);
+  const shareTotalIssues = buildLandShareTotalIssues(landRights);
+  const issues = [...partyIssues, ...shareTotalIssues];
   const landNumbers = new Set(landRights.map((row) => row.landNumber).filter(Boolean));
   const buildingNumbers = new Set(buildingRights.map((row) => row.buildingNumber).filter(Boolean));
   const batchId = `IMPORT-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${String(Date.now()).slice(-4)}`;
@@ -2262,17 +2392,11 @@ function getRosterLandRows(rosterStaging) {
 }
 
 function parseRosterNumber(value) {
-  const normalizedValue = normalizeCellValue(value).replace(/,/g, "");
-  if (!normalizedValue) {
-    return null;
-  }
-
-  const match = normalizedValue.match(/-?\d+(?:\.\d+)?/);
-  return match ? Number(match[0]) : null;
+  return parsePrecisionNumber(value);
 }
 
 function formatAreaSummary(value) {
-  return `${value.toLocaleString("zh-TW", { maximumFractionDigits: 2 })} 平方公尺`;
+  return formatSqmAndPing(value);
 }
 
 function buildRosterBaseSummary(rosterStaging) {
@@ -2288,9 +2412,15 @@ function buildRosterBaseSummary(rosterStaging) {
 
   const uniqueLandRows = Array.from(landByNumber.values());
   const landNumbers = Array.from(landByNumber.keys());
-  const areaValues = uniqueLandRows.map((row) => parseRosterNumber(row.landArea));
+  const areaValues = uniqueLandRows.map((row) => pickNumericValue(
+    row.landAreaSqm,
+    parseRosterNumber(row.landAreaRaw),
+    parseRosterNumber(row.landArea),
+  ));
   const canSumArea = areaValues.length > 0 && areaValues.every((value) => Number.isFinite(value));
-  const areaTotal = canSumArea ? areaValues.reduce((total, value) => total + value, 0) : null;
+  const areaTotal = canSumArea
+    ? roundForStorage(areaValues.reduce((total, value) => total + value, 0), INTERNAL_DECIMAL_DIGITS)
+    : null;
   const announcedCurrentValueCount = uniqueLandRows.filter((row) => normalizeCellValue(row.announcedCurrentValue)).length;
   const announcedLandValueCount = uniqueLandRows.filter((row) => normalizeCellValue(row.announcedLandValue)).length;
 
@@ -2390,7 +2520,7 @@ function calculateCapacityResult(rosterStaging, baseInfo, capacityInputs) {
     : null;
   const totalCapacityAreaSqm = canCalculate ? landAreaSqm * totalFloorAreaRatio / 100 : null;
 
-  return {
+  return roundRecordNumbers({
     landAreaSqm,
     landAreaPing: convertSqmToPing(landAreaSqm),
     landNumberCount: rosterSummary.landNumberCount,
@@ -2417,7 +2547,7 @@ function calculateCapacityResult(rosterStaging, baseInfo, capacityInputs) {
       siteRestrictions: baseInfo?.siteRestrictions || "",
       legalRestrictions: baseInfo?.legalRestrictions || "",
     },
-  };
+  }, INTERNAL_DECIMAL_DIGITS);
 }
 
 function calculateFloorEfficiencyResult(rosterStaging, baseInfo, capacityResult, floorParams) {
@@ -2531,7 +2661,7 @@ function calculateFloorEfficiencyResult(rosterStaging, baseInfo, capacityResult,
   const legalParkingCount = canCalculate ? Math.max((aboveGroundFloorAreaSqm - 500) / 150, 0) : null;
   const totalParkingCount = canCalculate ? legalParkingCount + selfParkingCount + motorcycleParkingCount + bikeParkingCount : null;
   const parkingAreaPing = canCalculate ? totalParkingCount * parkingUnitAreaPing : null;
-  const parkingAreaSqm = canCalculate ? parkingAreaPing * SQM_PER_PING : null;
+  const parkingAreaSqm = canCalculate ? pingToSqm(parkingAreaPing) : null;
   const sharedPublicAreaSqm = canCalculate ? Math.max(basementFloorAreaSqm - parkingAreaSqm, 0) : null;
   const totalFloorAreaSqm = canCalculate ? aboveGroundBuildAreaSqm + basementFloorAreaSqm : null;
   const totalFloorAreaPing = convertSqmToPing(totalFloorAreaSqm);
@@ -2547,7 +2677,7 @@ function calculateFloorEfficiencyResult(rosterStaging, baseInfo, capacityResult,
   const buildPingPerLandPing = canCalculate && landAreaPing ? totalFloorAreaPingValue / landAreaPing : null;
   const saleablePingPerLandPing = canCalculate && landAreaPing ? saleableAreaPing / landAreaPing : null;
 
-  return {
+  return roundRecordNumbers({
     landAreaSqm,
     landAreaPing,
     landNumberCount: rosterSummary.landNumberCount,
@@ -2616,7 +2746,7 @@ function calculateFloorEfficiencyResult(rosterStaging, baseInfo, capacityResult,
     missingItems,
     formulaStatus: "測試用公式；正式公式待確認",
     formulaSource: "坪效計算表(1).xlsx",
-  };
+  }, INTERNAL_DECIMAL_DIGITS);
 }
 
 function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview, onPreviewChange }) {
@@ -2922,7 +3052,7 @@ function BaseRosterSummary({ rosterStaging }) {
         ))}
       </div>
       <p className="eval-base-summary-note">
-        土地面積以唯一地號為基準彙整；同一地號若出現在多筆權利列，只計算一次，避免持分列重複加總。
+        土地面積以唯一地號為基準彙整；同一地號若出現在多筆權利列，只計算一次。畫面數字為四捨五入顯示；系統內部以較高精度試算，坪數換算統一使用 1 坪 = 3.305785 平方公尺。
       </p>
     </section>
   );
