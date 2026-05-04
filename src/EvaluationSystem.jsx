@@ -79,6 +79,10 @@ const SYSTEM_TEST_HASH = "#system-test";
 const CASES_STORAGE_KEY = "sanze-evaluation-cases-v1";
 const ROSTER_STAGING_STORAGE_KEY = "sanze-evaluation-roster-staging-v1";
 const BASE_INFO_STORAGE_KEY = "sanze-evaluation-base-info-v1";
+const LOCAL_TEST_DATA_APP = "sanze-evaluation-system";
+const LOCAL_TEST_DATA_TYPE = "local-test-data";
+const LOCAL_TEST_DATA_SCHEMA_VERSION = 1;
+const LOCAL_TEST_DATA_COMMIT_HINT = "6e0fcab";
 const primaryEvaluationModules = evaluationModules.filter((module) => module.id !== TAKEOVER_MODULE_ID);
 const takeoverEvaluationModule = evaluationModules.find((module) => module.id === TAKEOVER_MODULE_ID);
 
@@ -176,6 +180,124 @@ function removeStoredJson(key) {
 
 function clearStoredEvaluationData() {
   [CASES_STORAGE_KEY, ROSTER_STAGING_STORAGE_KEY, BASE_INFO_STORAGE_KEY].forEach(removeStoredJson);
+}
+
+function isPlainRecord(value) {
+  return Boolean(value && typeof value === "object" && !Array.isArray(value));
+}
+
+function padDatePart(value) {
+  return String(value).padStart(2, "0");
+}
+
+function buildLocalTestDataFileName(date = new Date()) {
+  const yyyy = date.getFullYear();
+  const mm = padDatePart(date.getMonth() + 1);
+  const dd = padDatePart(date.getDate());
+  const hh = padDatePart(date.getHours());
+  const min = padDatePart(date.getMinutes());
+  return `sanze-evaluation-test-data-${yyyy}${mm}${dd}-${hh}${min}.json`;
+}
+
+function getSourceOrigin() {
+  return typeof window === "undefined" ? "unknown" : window.location.origin;
+}
+
+function buildLocalTestDataExport({
+  cases,
+  currentCaseId,
+  rosterStagingByCaseId,
+  baseInfoByCaseId,
+}) {
+  return {
+    app: LOCAL_TEST_DATA_APP,
+    type: LOCAL_TEST_DATA_TYPE,
+    schemaVersion: LOCAL_TEST_DATA_SCHEMA_VERSION,
+    exportedAt: new Date().toISOString(),
+    source: {
+      origin: getSourceOrigin(),
+      commitHint: LOCAL_TEST_DATA_COMMIT_HINT,
+    },
+    data: {
+      cases: Array.isArray(cases) ? cases : [],
+      currentCaseId: currentCaseId || "",
+      rosterStagingByCaseId: isPlainRecord(rosterStagingByCaseId) ? rosterStagingByCaseId : {},
+      baseInfoByCaseId: isPlainRecord(baseInfoByCaseId) ? baseInfoByCaseId : {},
+    },
+  };
+}
+
+function downloadJsonFile(payload, fileName) {
+  if (typeof document === "undefined") {
+    return;
+  }
+
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function resolveImportedCurrentCaseId(cases, importedCurrentCaseId) {
+  if (importedCurrentCaseId && cases.some((caseItem) => caseItem.id === importedCurrentCaseId)) {
+    return importedCurrentCaseId;
+  }
+
+  return cases[0]?.id ?? "";
+}
+
+function validateLocalTestDataPayload(payload) {
+  const invalidMessage = "這不是有效的三策開發評估系統測試資料檔，請確認檔案來源。";
+
+  if (!isPlainRecord(payload)) {
+    return { ok: false, message: invalidMessage };
+  }
+
+  if (payload.app !== LOCAL_TEST_DATA_APP || payload.type !== LOCAL_TEST_DATA_TYPE) {
+    return { ok: false, message: invalidMessage };
+  }
+
+  if (payload.schemaVersion !== LOCAL_TEST_DATA_SCHEMA_VERSION) {
+    return { ok: false, message: "schemaVersion 不支援，請確認檔案來源。" };
+  }
+
+  if (!isPlainRecord(payload.data)) {
+    return { ok: false, message: "data 結構缺漏，請確認檔案來源。" };
+  }
+
+  if (!Array.isArray(payload.data.cases)) {
+    return { ok: false, message: "cases 不是陣列，請確認檔案來源。" };
+  }
+
+  if (!isPlainRecord(payload.data.rosterStagingByCaseId)) {
+    return { ok: false, message: "rosterStagingByCaseId 不是 object，請確認檔案來源。" };
+  }
+
+  if (!isPlainRecord(payload.data.baseInfoByCaseId)) {
+    return { ok: false, message: "baseInfoByCaseId 不是 object，請確認檔案來源。" };
+  }
+
+  const cases = payload.data.cases;
+  const currentCaseId = typeof payload.data.currentCaseId === "string" ? payload.data.currentCaseId : "";
+
+  return {
+    ok: true,
+    data: {
+      cases,
+      currentCaseId,
+      rosterStagingByCaseId: payload.data.rosterStagingByCaseId,
+      baseInfoByCaseId: payload.data.baseInfoByCaseId,
+    },
+    meta: {
+      exportedAt: typeof payload.exportedAt === "string" ? payload.exportedAt : "",
+      schemaVersion: payload.schemaVersion,
+    },
+  };
 }
 
 function getCaseSignatureText(caseItem) {
@@ -453,20 +575,61 @@ function LocalDataClearConfirmModal({ clearConfirmation, onCancel, onContinue, o
   );
 }
 
+function LocalDataImportConfirmModal({ importConfirmation, onCancel, onContinue, onConfirm }) {
+  if (!importConfirmation) {
+    return null;
+  }
+
+  const isSecondStep = importConfirmation.step === 2;
+
+  return (
+    <div className="eval-confirm-backdrop" role="presentation">
+      <section className="eval-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="local-data-import-confirm-title">
+        <p className="eval-kicker">LOCAL TEST DATA</p>
+        <h4 id="local-data-import-confirm-title">
+          {isSecondStep ? "匯入後會覆蓋本機測試資料" : "是否匯入本機測試資料？"}
+        </h4>
+        <p>
+          {isSecondStep
+            ? "匯入後會覆蓋目前瀏覽器中的案件、清冊暫存與基地資料，無法復原。確認匯入？"
+            : "匯入後會取代目前瀏覽器中的本機測試資料。這不會影響正式資料庫，因目前尚未接正式資料庫。"}
+        </p>
+        <div className="eval-confirm-actions">
+          <button type="button" className="eval-secondary-action" onClick={onCancel}>
+            取消
+          </button>
+          <button type="button" className="eval-danger-action" onClick={isSecondStep ? onConfirm : onContinue}>
+            {isSecondStep ? "確認匯入" : "繼續匯入"}
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 function CaseManagementModule({
   accessProfile,
   cases,
+  currentCaseId,
   currentCase,
+  rosterStagingByCaseId,
+  baseInfoByCaseId,
   onAddCase,
   onUpdateCase,
   onDeleteCase,
   onSelectCase,
   onClearLocalTestData,
+  onImportLocalTestData,
 }) {
   const [caseForm, setCaseForm] = useState(defaultCaseForm);
   const [editingCaseId, setEditingCaseId] = useState("");
   const [deleteConfirmation, setDeleteConfirmation] = useState(null);
   const [clearConfirmation, setClearConfirmation] = useState(null);
+  const [importConfirmation, setImportConfirmation] = useState(null);
+  const [importPreview, setImportPreview] = useState(null);
+  const [localDataMessage, setLocalDataMessage] = useState("");
+  const [localDataError, setLocalDataError] = useState("");
+  const importFileInputRef = useRef(null);
   const editingCase = cases.find((item) => item.id === editingCaseId) ?? null;
 
   useEffect(() => {
@@ -555,7 +718,123 @@ function CaseManagementModule({
     setCaseForm(defaultCaseForm);
     setDeleteConfirmation(null);
     setClearConfirmation(null);
+    setImportConfirmation(null);
+    setImportPreview(null);
+    setLocalDataError("");
+    setLocalDataMessage("已清除本機測試資料。");
   };
+
+  const handleExportLocalTestData = () => {
+    const payload = buildLocalTestDataExport({
+      cases,
+      currentCaseId,
+      rosterStagingByCaseId,
+      baseInfoByCaseId,
+    });
+
+    downloadJsonFile(payload, buildLocalTestDataFileName());
+    setLocalDataError("");
+    setLocalDataMessage("已匯出本機測試資料。此檔僅供三策開發評估系統測試使用，請勿視為正式案件資料備份。");
+  };
+
+  const handleImportFileRequest = () => {
+    setLocalDataMessage("");
+    setLocalDataError("");
+    if (!importFileInputRef.current) {
+      setLocalDataError("尚未選擇檔案。");
+      return;
+    }
+    importFileInputRef.current.value = "";
+    importFileInputRef.current.click();
+  };
+
+  const handleImportFileChange = async (event) => {
+    const file = event.target.files?.[0];
+    setLocalDataMessage("");
+    setLocalDataError("");
+    setImportPreview(null);
+    setImportConfirmation(null);
+
+    if (!file) {
+      setLocalDataError("尚未選擇檔案。");
+      return;
+    }
+
+    if (!file.name.toLowerCase().endsWith(".json")) {
+      setLocalDataError("檔案不是 .json，請選擇三策測試資料 JSON。");
+      return;
+    }
+
+    let parsedData;
+    try {
+      parsedData = JSON.parse(await file.text());
+    } catch {
+      setLocalDataError("JSON 解析失敗，請確認檔案內容。");
+      return;
+    }
+
+    const validation = validateLocalTestDataPayload(parsedData);
+    if (!validation.ok) {
+      setLocalDataError(validation.message);
+      return;
+    }
+
+    setImportPreview({
+      fileName: file.name,
+      data: validation.data,
+      meta: validation.meta,
+      resolvedCurrentCaseId: resolveImportedCurrentCaseId(validation.data.cases, validation.data.currentCaseId),
+    });
+  };
+
+  const handleRequestImportLocalData = () => {
+    if (!importPreview) {
+      setLocalDataError("尚未選擇有效的三策測試資料 JSON。");
+      return;
+    }
+
+    setLocalDataMessage("");
+    setLocalDataError("");
+    setImportConfirmation({ step: 1 });
+  };
+
+  const handleCancelImportLocalData = () => {
+    setImportConfirmation(null);
+    setLocalDataError("匯入被取消，尚未變更目前本機測試資料。");
+  };
+
+  const handleContinueImportLocalData = () => {
+    setImportConfirmation((current) => current ? { ...current, step: 2 } : null);
+  };
+
+  const handleConfirmImportLocalData = () => {
+    if (!importPreview) {
+      setImportConfirmation(null);
+      setLocalDataError("尚未選擇有效的三策測試資料 JSON。");
+      return;
+    }
+
+    onImportLocalTestData(importPreview.data);
+    setEditingCaseId("");
+    setCaseForm(defaultCaseForm);
+    setDeleteConfirmation(null);
+    setClearConfirmation(null);
+    setImportConfirmation(null);
+    setLocalDataError("");
+    setLocalDataMessage("已匯入本機測試資料。");
+  };
+
+  const importSummaryItems = importPreview ? [
+    ["檔案名稱", importPreview.fileName],
+    ["匯出時間", importPreview.meta.exportedAt || "未提供"],
+    ["schemaVersion", importPreview.meta.schemaVersion],
+    ["案件數", importPreview.data.cases.length],
+    ["有清冊暫存的案件數", Object.keys(importPreview.data.rosterStagingByCaseId).length],
+    ["有基地基本資料的案件數", Object.keys(importPreview.data.baseInfoByCaseId).length],
+    ["currentCaseId", importPreview.data.currentCaseId || "未提供"],
+    ["匯入後目前案件", importPreview.resolvedCurrentCaseId || "無"],
+    ["是否會覆蓋目前本機資料", "是，採覆蓋模式"],
+  ] : [];
 
   return (
     <div className="eval-module-stack">
@@ -686,18 +965,66 @@ function CaseManagementModule({
         <div className="eval-section-head">
           <h4>本機測試資料工具</h4>
           <p>
-            目前系統仍為前端測試階段，案件、清冊暫存與基地資料會先存在本機瀏覽器。若看到舊版測試案件或需要重新測試，可清除本機測試資料。
+            目前系統尚未接正式資料庫，案件、清冊暫存與基地資料會先保存在本機瀏覽器。可使用 JSON 匯出 / 匯入，在不同電腦之間移轉測試資料。
           </p>
         </div>
+        <input
+          ref={importFileInputRef}
+          className="eval-local-test-file-input"
+          type="file"
+          accept=".json,application/json"
+          onChange={handleImportFileChange}
+        />
         <div className="eval-local-test-tools__body">
-          <div>
-            <strong>清除範圍</strong>
-            <p>僅限三策開發評估系統 localStorage：案件、清冊暫存、基地基本資料；不會清除其他網站資料。</p>
-          </div>
-          <button type="button" className="eval-danger-action" onClick={handleRequestClearLocalData}>
-            清除本機測試資料
-          </button>
+          <article className="eval-local-test-card">
+            <div>
+              <strong>匯出本機測試資料</strong>
+              <p>下載目前瀏覽器中的案件、清冊暫存與基地資料，供其他電腦匯入測試。</p>
+            </div>
+            <button type="button" onClick={handleExportLocalTestData}>
+              匯出本機測試資料
+            </button>
+          </article>
+          <article className="eval-local-test-card">
+            <div>
+              <strong>匯入本機測試資料</strong>
+              <p>匯入先前匯出的三策測試資料 JSON。匯入後會覆蓋目前瀏覽器中的本機測試資料，請先確認檔案來源。</p>
+            </div>
+            <button type="button" onClick={handleImportFileRequest}>
+              選擇 JSON 匯入
+            </button>
+          </article>
+          <article className="eval-local-test-card eval-local-test-card--danger">
+            <div>
+              <strong>清除本機測試資料</strong>
+              <p>僅限三策開發評估系統 localStorage：案件、清冊暫存、基地基本資料；不會清除其他網站資料。</p>
+            </div>
+            <button type="button" className="eval-danger-action" onClick={handleRequestClearLocalData}>
+              清除本機測試資料
+            </button>
+          </article>
         </div>
+        {localDataMessage && <p className="eval-local-test-message">{localDataMessage}</p>}
+        {localDataError && <p className="eval-local-test-message eval-local-test-message--error">{localDataError}</p>}
+        {importPreview && (
+          <div className="eval-import-summary">
+            <div>
+              <strong>匯入摘要</strong>
+              <p>匯入後會取代目前瀏覽器中的本機測試資料。這不會影響正式資料庫，因目前尚未接正式資料庫。</p>
+            </div>
+            <dl>
+              {importSummaryItems.map(([label, value]) => (
+                <div key={label}>
+                  <dt>{label}</dt>
+                  <dd>{value}</dd>
+                </div>
+              ))}
+            </dl>
+            <button type="button" className="eval-danger-action" onClick={handleRequestImportLocalData}>
+              匯入本機測試資料
+            </button>
+          </div>
+        )}
       </section>
 
       <RolePermissionPanel profile={accessProfile} />
@@ -712,6 +1039,12 @@ function CaseManagementModule({
         onCancel={handleCancelClearLocalData}
         onContinue={handleContinueClearLocalData}
         onConfirm={handleConfirmClearLocalData}
+      />
+      <LocalDataImportConfirmModal
+        importConfirmation={importConfirmation}
+        onCancel={handleCancelImportLocalData}
+        onContinue={handleContinueImportLocalData}
+        onConfirm={handleConfirmImportLocalData}
       />
     </div>
   );
@@ -2279,9 +2612,12 @@ function ModuleContent({
   module,
   accessProfile,
   cases,
+  currentCaseId,
   currentCase,
   currentBaseInfo,
   currentRosterStaging,
+  rosterStagingByCaseId,
+  baseInfoByCaseId,
   onAddCase,
   onUpdateCase,
   onDeleteCase,
@@ -2289,6 +2625,7 @@ function ModuleContent({
   onBaseInfoChange,
   onRosterStagingChange,
   onClearLocalTestData,
+  onImportLocalTestData,
   onGoToCases,
 }) {
   if (module.type === "paths") {
@@ -2312,12 +2649,16 @@ function ModuleContent({
       <CaseManagementModule
         accessProfile={accessProfile}
         cases={cases}
+        currentCaseId={currentCaseId}
         currentCase={currentCase}
+        rosterStagingByCaseId={rosterStagingByCaseId}
+        baseInfoByCaseId={baseInfoByCaseId}
         onAddCase={onAddCase}
         onUpdateCase={onUpdateCase}
         onDeleteCase={onDeleteCase}
         onSelectCase={onSelectCase}
         onClearLocalTestData={onClearLocalTestData}
+        onImportLocalTestData={onImportLocalTestData}
       />
     );
   }
@@ -2754,6 +3095,26 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     setBaseInfoByCaseId({});
   };
 
+  const handleImportLocalTestData = (importedData) => {
+    const importedCases = Array.isArray(importedData?.cases) ? importedData.cases : [];
+    const importedRosterStaging = isPlainRecord(importedData?.rosterStagingByCaseId)
+      ? importedData.rosterStagingByCaseId
+      : {};
+    const importedBaseInfo = isPlainRecord(importedData?.baseInfoByCaseId)
+      ? importedData.baseInfoByCaseId
+      : {};
+    const importedCurrentCaseId = typeof importedData?.currentCaseId === "string" ? importedData.currentCaseId : "";
+    const nextCurrentCaseId = resolveImportedCurrentCaseId(importedCases, importedCurrentCaseId);
+
+    writeStoredJson(CASES_STORAGE_KEY, importedCases);
+    writeStoredJson(ROSTER_STAGING_STORAGE_KEY, importedRosterStaging);
+    writeStoredJson(BASE_INFO_STORAGE_KEY, importedBaseInfo);
+    setCases(importedCases);
+    setCurrentCaseId(nextCurrentCaseId);
+    setRosterStagingByCaseId(importedRosterStaging);
+    setBaseInfoByCaseId(importedBaseInfo);
+  };
+
   const handleGoToCases = () => {
     setActiveModuleId("case-management");
   };
@@ -2874,9 +3235,12 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
             module={activeModule}
             accessProfile={accessProfile}
             cases={cases}
+            currentCaseId={currentCaseId}
             currentCase={currentCase}
             currentBaseInfo={currentBaseInfo}
             currentRosterStaging={currentRosterStaging}
+            rosterStagingByCaseId={rosterStagingByCaseId}
+            baseInfoByCaseId={baseInfoByCaseId}
             onAddCase={handleAddCase}
             onUpdateCase={handleUpdateCase}
             onDeleteCase={handleDeleteCase}
@@ -2884,6 +3248,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
             onBaseInfoChange={handleBaseInfoChange}
             onRosterStagingChange={handleRosterStagingChange}
             onClearLocalTestData={handleClearLocalTestData}
+            onImportLocalTestData={handleImportLocalTestData}
             onGoToCases={handleGoToCases}
           />
         </section>
