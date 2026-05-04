@@ -79,10 +79,44 @@ const SYSTEM_TEST_HASH = "#system-test";
 const CASES_STORAGE_KEY = "sanze-evaluation-cases-v1";
 const ROSTER_STAGING_STORAGE_KEY = "sanze-evaluation-roster-staging-v1";
 const BASE_INFO_STORAGE_KEY = "sanze-evaluation-base-info-v1";
+const CAPACITY_INPUTS_STORAGE_KEY = "sanze-evaluation-capacity-inputs-v1";
+const CAPACITY_RESULTS_STORAGE_KEY = "sanze-evaluation-capacity-results-v1";
+const FLOOR_EFFICIENCY_PARAMS_STORAGE_KEY = "sanze-evaluation-floor-efficiency-params-v1";
+const FLOOR_EFFICIENCY_RESULTS_STORAGE_KEY = "sanze-evaluation-floor-efficiency-results-v1";
+const COST_INPUTS_STORAGE_KEY = "sanze-evaluation-cost-inputs-v1";
+const COST_RESULTS_STORAGE_KEY = "sanze-evaluation-cost-results-v1";
+const SALES_SCENARIOS_STORAGE_KEY = "sanze-evaluation-sales-scenarios-v1";
+const ALLOCATION_INPUTS_STORAGE_KEY = "sanze-evaluation-allocation-inputs-v1";
+const ALLOCATION_RESULTS_STORAGE_KEY = "sanze-evaluation-allocation-results-v1";
+const CASHFLOW_INPUTS_STORAGE_KEY = "sanze-evaluation-cashflow-inputs-v1";
+const CASHFLOW_RESULTS_STORAGE_KEY = "sanze-evaluation-cashflow-results-v1";
+const BANK_REPORT_DATA_STORAGE_KEY = "sanze-evaluation-bank-report-data-v1";
 const LOCAL_TEST_DATA_APP = "sanze-evaluation-system";
 const LOCAL_TEST_DATA_TYPE = "local-test-data";
-const LOCAL_TEST_DATA_SCHEMA_VERSION = 1;
-const LOCAL_TEST_DATA_COMMIT_HINT = "6e0fcab";
+const LOCAL_TEST_DATA_SCHEMA_VERSION = 2;
+const SUPPORTED_LOCAL_TEST_DATA_SCHEMA_VERSIONS = new Set([1, 2]);
+const LOCAL_TEST_DATA_COMMIT_HINT = "cbddef4";
+const SQM_PER_PING = 3.305785;
+const LOCAL_TEST_DATA_RECORD_FIELDS = [
+  { dataKey: "capacityInputsByCaseId", storageKey: CAPACITY_INPUTS_STORAGE_KEY },
+  { dataKey: "capacityResultsByCaseId", storageKey: CAPACITY_RESULTS_STORAGE_KEY },
+  { dataKey: "floorEfficiencyParamsByCaseId", storageKey: FLOOR_EFFICIENCY_PARAMS_STORAGE_KEY },
+  { dataKey: "floorEfficiencyResultsByCaseId", storageKey: FLOOR_EFFICIENCY_RESULTS_STORAGE_KEY },
+  { dataKey: "costInputsByCaseId", storageKey: COST_INPUTS_STORAGE_KEY },
+  { dataKey: "costResultsByCaseId", storageKey: COST_RESULTS_STORAGE_KEY },
+  { dataKey: "salesScenariosByCaseId", storageKey: SALES_SCENARIOS_STORAGE_KEY },
+  { dataKey: "allocationInputsByCaseId", storageKey: ALLOCATION_INPUTS_STORAGE_KEY },
+  { dataKey: "allocationResultsByCaseId", storageKey: ALLOCATION_RESULTS_STORAGE_KEY },
+  { dataKey: "cashflowInputsByCaseId", storageKey: CASHFLOW_INPUTS_STORAGE_KEY },
+  { dataKey: "cashflowResultsByCaseId", storageKey: CASHFLOW_RESULTS_STORAGE_KEY },
+  { dataKey: "bankReportDataByCaseId", storageKey: BANK_REPORT_DATA_STORAGE_KEY },
+];
+const EVALUATION_STORAGE_KEYS = [
+  CASES_STORAGE_KEY,
+  ROSTER_STAGING_STORAGE_KEY,
+  BASE_INFO_STORAGE_KEY,
+  ...LOCAL_TEST_DATA_RECORD_FIELDS.map((field) => field.storageKey),
+];
 const primaryEvaluationModules = evaluationModules.filter((module) => module.id !== TAKEOVER_MODULE_ID);
 const takeoverEvaluationModule = evaluationModules.find((module) => module.id === TAKEOVER_MODULE_ID);
 
@@ -100,6 +134,40 @@ const defaultBaseInfo = {
   siteRestrictions: "",
   legalRestrictions: "",
   note: "",
+};
+
+const defaultCapacityInputs = {
+  baseFloorAreaRatio: "",
+  transferRatio: "",
+  urbanRenewalBonusRatio: "",
+  unsafeBuildingBonusRatio: "",
+  otherBonusRatio: "",
+  otherCapacitySourceNote: "",
+};
+
+const defaultFloorEfficiencyParams = {
+  simpleUrbanRenewalBonusRate: "",
+  landUseBonusRate: "",
+  tdrRate: "",
+  urbanRenewalBonusRate: "",
+  dangerousOldBuildingBonusRate: "",
+  equipmentExemptionRate: "15%",
+  lobbyRate: "10%",
+  balconyRate: "5%",
+  roofProjectionRate: "12.5%",
+  rainShelterRate: "0%",
+  buildingEnvelopeRate: "0%",
+  publicServiceRate: "0%",
+  basementMultiplier: "0.7",
+  undergroundFloors: "4",
+  parkingUnitAreaPing: "12",
+  selfParkingCount: "0",
+  motorcycleParkingCount: "0",
+  bikeParkingCount: "0",
+  saleableAdjustmentRatio: "100%",
+  publicAreaRatio: "",
+  parkingNote: "",
+  deductionNote: "",
 };
 
 const baseInfoFields = [
@@ -179,7 +247,7 @@ function removeStoredJson(key) {
 }
 
 function clearStoredEvaluationData() {
-  [CASES_STORAGE_KEY, ROSTER_STAGING_STORAGE_KEY, BASE_INFO_STORAGE_KEY].forEach(removeStoredJson);
+  EVALUATION_STORAGE_KEYS.forEach(removeStoredJson);
 }
 
 function isPlainRecord(value) {
@@ -208,7 +276,24 @@ function buildLocalTestDataExport({
   currentCaseId,
   rosterStagingByCaseId,
   baseInfoByCaseId,
+  capacityInputsByCaseId,
+  capacityResultsByCaseId,
+  floorEfficiencyParamsByCaseId,
+  floorEfficiencyResultsByCaseId,
 }) {
+  const recordData = {
+    capacityInputsByCaseId,
+    capacityResultsByCaseId,
+    floorEfficiencyParamsByCaseId,
+    floorEfficiencyResultsByCaseId,
+  };
+
+  LOCAL_TEST_DATA_RECORD_FIELDS.forEach(({ dataKey, storageKey }) => {
+    if (recordData[dataKey] === undefined) {
+      recordData[dataKey] = loadStoredRecord(storageKey);
+    }
+  });
+
   return {
     app: LOCAL_TEST_DATA_APP,
     type: LOCAL_TEST_DATA_TYPE,
@@ -223,6 +308,12 @@ function buildLocalTestDataExport({
       currentCaseId: currentCaseId || "",
       rosterStagingByCaseId: isPlainRecord(rosterStagingByCaseId) ? rosterStagingByCaseId : {},
       baseInfoByCaseId: isPlainRecord(baseInfoByCaseId) ? baseInfoByCaseId : {},
+      ...Object.fromEntries(
+        LOCAL_TEST_DATA_RECORD_FIELDS.map(({ dataKey }) => [
+          dataKey,
+          isPlainRecord(recordData[dataKey]) ? recordData[dataKey] : {},
+        ]),
+      ),
     },
   };
 }
@@ -262,7 +353,7 @@ function validateLocalTestDataPayload(payload) {
     return { ok: false, message: invalidMessage };
   }
 
-  if (payload.schemaVersion !== LOCAL_TEST_DATA_SCHEMA_VERSION) {
+  if (!SUPPORTED_LOCAL_TEST_DATA_SCHEMA_VERSIONS.has(payload.schemaVersion)) {
     return { ok: false, message: "schemaVersion 不支援，請確認檔案來源。" };
   }
 
@@ -284,6 +375,18 @@ function validateLocalTestDataPayload(payload) {
 
   const cases = payload.data.cases;
   const currentCaseId = typeof payload.data.currentCaseId === "string" ? payload.data.currentCaseId : "";
+  const recordData = {};
+
+  for (const { dataKey } of LOCAL_TEST_DATA_RECORD_FIELDS) {
+    const value = payload.data[dataKey];
+    if (value === undefined) {
+      recordData[dataKey] = {};
+    } else if (isPlainRecord(value)) {
+      recordData[dataKey] = value;
+    } else {
+      return { ok: false, message: `${dataKey} 不是 object，請確認檔案來源。` };
+    }
+  }
 
   return {
     ok: true,
@@ -292,12 +395,67 @@ function validateLocalTestDataPayload(payload) {
       currentCaseId,
       rosterStagingByCaseId: payload.data.rosterStagingByCaseId,
       baseInfoByCaseId: payload.data.baseInfoByCaseId,
+      ...recordData,
     },
     meta: {
       exportedAt: typeof payload.exportedAt === "string" ? payload.exportedAt : "",
       schemaVersion: payload.schemaVersion,
     },
   };
+}
+
+function countCaseRecords(...records) {
+  const caseIds = new Set();
+  records.forEach((record) => {
+    if (isPlainRecord(record)) {
+      Object.keys(record).forEach((caseId) => caseIds.add(caseId));
+    }
+  });
+  return caseIds.size;
+}
+
+function parseNumericInput(value) {
+  return parseRosterNumber(value);
+}
+
+function formatNumber(value, maximumFractionDigits = 2) {
+  if (!Number.isFinite(value)) {
+    return "待補資料";
+  }
+
+  return value.toLocaleString("zh-TW", { maximumFractionDigits });
+}
+
+function formatPercentValue(value) {
+  if (!Number.isFinite(value)) {
+    return "待補資料";
+  }
+
+  return `${formatNumber(value, 2)}%`;
+}
+
+function formatCurrencyTwd(value) {
+  return Number.isFinite(value) ? `${formatNumber(value, 0)} 元` : "清冊未提供";
+}
+
+function formatSqm(value) {
+  return Number.isFinite(value) ? `${formatNumber(value, 2)} 平方公尺` : "待補資料";
+}
+
+function formatPing(value) {
+  return Number.isFinite(value) ? `${formatNumber(value, 2)} 坪` : "待補資料";
+}
+
+function convertSqmToPing(value) {
+  return Number.isFinite(value) ? value / SQM_PER_PING : null;
+}
+
+function formatSqmAndPing(value) {
+  if (!Number.isFinite(value)) {
+    return "待補資料";
+  }
+
+  return `${formatSqm(value)} / ${formatPing(convertSqmToPing(value))}`;
 }
 
 function getCaseSignatureText(caseItem) {
@@ -559,8 +717,8 @@ function LocalDataClearConfirmModal({ clearConfirmation, onCancel, onContinue, o
         </h4>
         <p>
           {isSecondStep
-            ? "此操作會清除本機瀏覽器中的案件、清冊暫存與基地資料，無法復原。確認清除？"
-            : "目前系統仍為前端測試階段，案件、清冊暫存與基地資料會先存在本機瀏覽器。若看到舊版測試案件或需要重新測試，可清除本機測試資料。"}
+            ? "此操作會清除本機瀏覽器中的案件、清冊暫存、基地、容積、坪效與後續模組預留資料，無法復原。確認清除？"
+            : "目前系統仍為前端測試階段，案件、清冊暫存、基地、容積、坪效與後續模組預留資料會先存在本機瀏覽器。若看到舊版測試案件或需要重新測試，可清除本機測試資料。"}
         </p>
         <div className="eval-confirm-actions">
           <button type="button" className="eval-secondary-action" onClick={onCancel}>
@@ -591,7 +749,7 @@ function LocalDataImportConfirmModal({ importConfirmation, onCancel, onContinue,
         </h4>
         <p>
           {isSecondStep
-            ? "匯入後會覆蓋目前瀏覽器中的案件、清冊暫存與基地資料，無法復原。確認匯入？"
+            ? "匯入後會覆蓋目前瀏覽器中的案件、清冊暫存、基地、容積、坪效與後續模組預留資料，無法復原。確認匯入？"
             : "匯入後會取代目前瀏覽器中的本機測試資料。這不會影響正式資料庫，因目前尚未接正式資料庫。"}
         </p>
         <div className="eval-confirm-actions">
@@ -614,6 +772,10 @@ function CaseManagementModule({
   currentCase,
   rosterStagingByCaseId,
   baseInfoByCaseId,
+  capacityInputsByCaseId,
+  capacityResultsByCaseId,
+  floorEfficiencyParamsByCaseId,
+  floorEfficiencyResultsByCaseId,
   onAddCase,
   onUpdateCase,
   onDeleteCase,
@@ -730,6 +892,10 @@ function CaseManagementModule({
       currentCaseId,
       rosterStagingByCaseId,
       baseInfoByCaseId,
+      capacityInputsByCaseId,
+      capacityResultsByCaseId,
+      floorEfficiencyParamsByCaseId,
+      floorEfficiencyResultsByCaseId,
     });
 
     downloadJsonFile(payload, buildLocalTestDataFileName());
@@ -831,6 +997,13 @@ function CaseManagementModule({
     ["案件數", importPreview.data.cases.length],
     ["有清冊暫存的案件數", Object.keys(importPreview.data.rosterStagingByCaseId).length],
     ["有基地基本資料的案件數", Object.keys(importPreview.data.baseInfoByCaseId).length],
+    ["有容積試算資料的案件數", countCaseRecords(importPreview.data.capacityInputsByCaseId, importPreview.data.capacityResultsByCaseId)],
+    ["有坪效明細資料的案件數", countCaseRecords(importPreview.data.floorEfficiencyParamsByCaseId, importPreview.data.floorEfficiencyResultsByCaseId)],
+    ["有成本資料的案件數", countCaseRecords(importPreview.data.costInputsByCaseId, importPreview.data.costResultsByCaseId)],
+    ["有銷售情境資料的案件數", countCaseRecords(importPreview.data.salesScenariosByCaseId)],
+    ["有分配資料的案件數", countCaseRecords(importPreview.data.allocationInputsByCaseId, importPreview.data.allocationResultsByCaseId)],
+    ["有現金流資料的案件數", countCaseRecords(importPreview.data.cashflowInputsByCaseId, importPreview.data.cashflowResultsByCaseId)],
+    ["有銀行報告資料的案件數", countCaseRecords(importPreview.data.bankReportDataByCaseId)],
     ["currentCaseId", importPreview.data.currentCaseId || "未提供"],
     ["匯入後目前案件", importPreview.resolvedCurrentCaseId || "無"],
     ["是否會覆蓋目前本機資料", "是，採覆蓋模式"],
@@ -965,7 +1138,7 @@ function CaseManagementModule({
         <div className="eval-section-head">
           <h4>本機測試資料工具</h4>
           <p>
-            目前系統尚未接正式資料庫，案件、清冊暫存與基地資料會先保存在本機瀏覽器。可使用 JSON 匯出 / 匯入，在不同電腦之間移轉測試資料。
+            目前系統尚未接正式資料庫，案件、清冊暫存、基地、容積、坪效與後續模組預留資料會先保存在本機瀏覽器。可使用 JSON 匯出 / 匯入，在不同電腦之間移轉測試資料。
           </p>
         </div>
         <input
@@ -979,7 +1152,7 @@ function CaseManagementModule({
           <article className="eval-local-test-card">
             <div>
               <strong>匯出本機測試資料</strong>
-              <p>下載目前瀏覽器中的案件、清冊暫存與基地資料，供其他電腦匯入測試。</p>
+              <p>下載目前瀏覽器中的案件、清冊暫存、基地、容積、坪效與後續模組預留資料，供其他電腦匯入測試。</p>
             </div>
             <button type="button" onClick={handleExportLocalTestData}>
               匯出本機測試資料
@@ -997,7 +1170,7 @@ function CaseManagementModule({
           <article className="eval-local-test-card eval-local-test-card--danger">
             <div>
               <strong>清除本機測試資料</strong>
-              <p>僅限三策開發評估系統 localStorage：案件、清冊暫存、基地基本資料；不會清除其他網站資料。</p>
+              <p>僅限三策開發評估系統 localStorage：案件、清冊暫存、基地、容積、坪效與後續模組預留資料；不會清除其他網站資料。</p>
             </div>
             <button type="button" className="eval-danger-action" onClick={handleRequestClearLocalData}>
               清除本機測試資料
@@ -2131,6 +2304,7 @@ function buildRosterBaseSummary(rosterStaging) {
     landNumberDisplay: landNumbers.length > 5
       ? `${landNumbers.slice(0, 5).join("、")}…共 ${landNumbers.length} 筆`
       : landNumbers.join("、") || "待清冊補齊",
+    landAreaSqm: areaTotal,
     landAreaSummary: areaTotal === null ? "待清冊補齊" : formatAreaSummary(areaTotal),
     announcedCurrentValueStatus: announcedCurrentValueCount
       ? `清冊已提供 ${announcedCurrentValueCount} 筆地號資料`
@@ -2138,6 +2312,310 @@ function buildRosterBaseSummary(rosterStaging) {
     announcedLandValueStatus: announcedLandValueCount
       ? `清冊已提供 ${announcedLandValueCount} 筆地號資料`
       : "清冊未提供",
+  };
+}
+
+function getEffectiveCapacityInputs(capacityInputs, baseInfo) {
+  return {
+    ...defaultCapacityInputs,
+    ...capacityInputs,
+    baseFloorAreaRatio: capacityInputs?.baseFloorAreaRatio || baseInfo?.baseFloorAreaRatio || "",
+  };
+}
+
+function pickNumericValue(...values) {
+  for (const value of values) {
+    if (Number.isFinite(value)) {
+      return value;
+    }
+  }
+
+  return null;
+}
+
+function parseRateInput(value, fallbackValue = null) {
+  const parsedValue = parseNumericInput(value);
+  return Number.isFinite(parsedValue) ? parsedValue : fallbackValue;
+}
+
+function parsePlainNumberInput(value, fallbackValue = null) {
+  const parsedValue = parseNumericInput(value);
+  return Number.isFinite(parsedValue) ? parsedValue : fallbackValue;
+}
+
+function getEffectiveFloorEfficiencyParams(floorParams, capacityResult) {
+  return {
+    ...defaultFloorEfficiencyParams,
+    ...floorParams,
+    landUseBonusRate: floorParams?.landUseBonusRate || (
+      Number.isFinite(capacityResult?.otherBonusRatio) ? formatPercentValue(capacityResult.otherBonusRatio) : defaultFloorEfficiencyParams.landUseBonusRate
+    ),
+    tdrRate: floorParams?.tdrRate || (
+      Number.isFinite(capacityResult?.transferRatio) ? formatPercentValue(capacityResult.transferRatio) : defaultFloorEfficiencyParams.tdrRate
+    ),
+    urbanRenewalBonusRate: floorParams?.urbanRenewalBonusRate || (
+      Number.isFinite(capacityResult?.urbanRenewalBonusRatio) ? formatPercentValue(capacityResult.urbanRenewalBonusRatio) : defaultFloorEfficiencyParams.urbanRenewalBonusRate
+    ),
+    dangerousOldBuildingBonusRate: floorParams?.dangerousOldBuildingBonusRate || (
+      Number.isFinite(capacityResult?.unsafeBuildingBonusRatio) ? formatPercentValue(capacityResult.unsafeBuildingBonusRatio) : defaultFloorEfficiencyParams.dangerousOldBuildingBonusRate
+    ),
+  };
+}
+
+function calculateCapacityResult(rosterStaging, baseInfo, capacityInputs) {
+  const rosterSummary = buildRosterBaseSummary(rosterStaging);
+  const landAreaSqm = rosterSummary.landAreaSqm;
+  const baseFloorAreaRatio = parseNumericInput(capacityInputs.baseFloorAreaRatio);
+  const transferRatio = parseNumericInput(capacityInputs.transferRatio) ?? 0;
+  const urbanRenewalBonusRatio = parseNumericInput(capacityInputs.urbanRenewalBonusRatio) ?? 0;
+  const unsafeBuildingBonusRatio = parseNumericInput(capacityInputs.unsafeBuildingBonusRatio) ?? 0;
+  const otherBonusRatio = parseNumericInput(capacityInputs.otherBonusRatio) ?? 0;
+  const missingItems = [];
+
+  if (!Number.isFinite(landAreaSqm)) {
+    missingItems.push("土地清冊或土地面積");
+  }
+  if (!Number.isFinite(baseFloorAreaRatio)) {
+    missingItems.push("基準容積率");
+  }
+
+  const canCalculate = !missingItems.length;
+  const baseCapacityAreaSqm = canCalculate ? landAreaSqm * baseFloorAreaRatio / 100 : null;
+  const transferAreaSqm = Number.isFinite(landAreaSqm) ? landAreaSqm * transferRatio / 100 : null;
+  const urbanRenewalBonusAreaSqm = Number.isFinite(landAreaSqm) ? landAreaSqm * urbanRenewalBonusRatio / 100 : null;
+  const unsafeBuildingBonusAreaSqm = Number.isFinite(landAreaSqm) ? landAreaSqm * unsafeBuildingBonusRatio / 100 : null;
+  const otherBonusAreaSqm = Number.isFinite(landAreaSqm) ? landAreaSqm * otherBonusRatio / 100 : null;
+  const totalFloorAreaRatio = Number.isFinite(baseFloorAreaRatio)
+    ? baseFloorAreaRatio + transferRatio + urbanRenewalBonusRatio + unsafeBuildingBonusRatio + otherBonusRatio
+    : null;
+  const totalCapacityAreaSqm = canCalculate ? landAreaSqm * totalFloorAreaRatio / 100 : null;
+
+  return {
+    landAreaSqm,
+    landAreaPing: convertSqmToPing(landAreaSqm),
+    landNumberCount: rosterSummary.landNumberCount,
+    baseFloorAreaRatio,
+    transferRatio,
+    urbanRenewalBonusRatio,
+    unsafeBuildingBonusRatio,
+    otherBonusRatio,
+    baseCapacityAreaSqm,
+    transferAreaSqm,
+    urbanRenewalBonusAreaSqm,
+    unsafeBuildingBonusAreaSqm,
+    otherBonusAreaSqm,
+    totalFloorAreaRatio,
+    totalCapacityAreaSqm,
+    totalCapacityAreaPing: convertSqmToPing(totalCapacityAreaSqm),
+    calculationStatus: canCalculate ? "可進行前端測試初算" : `尚缺：${missingItems.join("、")}`,
+    missingItems,
+    formulaStatus: "測試用簡化公式；正式公式待確認",
+    source: {
+      zoning: baseInfo?.zoning || "",
+      buildingCoverageRatio: baseInfo?.buildingCoverageRatio || "",
+      roadAccess: baseInfo?.roadAccess || "",
+      siteRestrictions: baseInfo?.siteRestrictions || "",
+      legalRestrictions: baseInfo?.legalRestrictions || "",
+    },
+  };
+}
+
+function calculateFloorEfficiencyResult(rosterStaging, baseInfo, capacityResult, floorParams) {
+  const rosterSummary = buildRosterBaseSummary(rosterStaging);
+  const landAreaSqm = pickNumericValue(capacityResult?.landAreaSqm, rosterSummary.landAreaSqm);
+  const landAreaPing = convertSqmToPing(landAreaSqm);
+  const coverageRate = parseRateInput(baseInfo?.buildingCoverageRatio);
+  const baseFarRate = parseRateInput(baseInfo?.baseFloorAreaRatio, capacityResult?.baseFloorAreaRatio ?? null);
+  const simpleUrbanRenewalBonusRate = parseRateInput(floorParams.simpleUrbanRenewalBonusRate, 0);
+  const landUseBonusRate = parseRateInput(floorParams.landUseBonusRate, capacityResult?.otherBonusRatio ?? 0);
+  const tdrRate = parseRateInput(floorParams.tdrRate, capacityResult?.transferRatio ?? 0);
+  const urbanRenewalBonusRate = parseRateInput(floorParams.urbanRenewalBonusRate, capacityResult?.urbanRenewalBonusRatio ?? 0);
+  const dangerousOldBuildingBonusRate = parseRateInput(floorParams.dangerousOldBuildingBonusRate, capacityResult?.unsafeBuildingBonusRatio ?? 0);
+  const equipmentExemptionRate = parseRateInput(floorParams.equipmentExemptionRate);
+  const lobbyRate = parseRateInput(floorParams.lobbyRate);
+  const balconyRate = parseRateInput(floorParams.balconyRate);
+  const roofProjectionRate = parseRateInput(floorParams.roofProjectionRate);
+  const rainShelterRate = parseRateInput(floorParams.rainShelterRate, 0);
+  const buildingEnvelopeRate = parseRateInput(floorParams.buildingEnvelopeRate, 0);
+  const publicServiceRate = parseRateInput(floorParams.publicServiceRate, 0);
+  const basementMultiplier = parsePlainNumberInput(floorParams.basementMultiplier);
+  const undergroundFloors = parsePlainNumberInput(floorParams.undergroundFloors);
+  const parkingUnitAreaPing = parsePlainNumberInput(floorParams.parkingUnitAreaPing);
+  const selfParkingCount = parsePlainNumberInput(floorParams.selfParkingCount, 0);
+  const motorcycleParkingCount = parsePlainNumberInput(floorParams.motorcycleParkingCount, 0);
+  const bikeParkingCount = parsePlainNumberInput(floorParams.bikeParkingCount, 0);
+  const saleableAdjustmentRatio = parseRateInput(floorParams.saleableAdjustmentRatio);
+  const targetPublicAreaRatio = parseRateInput(floorParams.publicAreaRatio);
+  const currentValuePerSqmValues = getRosterLandRows(rosterStaging)
+    .map((row) => parseRosterNumber(row.announcedCurrentValue))
+    .filter(Number.isFinite);
+  const currentValuePerSqm = currentValuePerSqmValues.length
+    ? currentValuePerSqmValues.reduce((total, value) => total + value, 0) / currentValuePerSqmValues.length
+    : null;
+  const currentValueTotal = Number.isFinite(currentValuePerSqm) && Number.isFinite(landAreaSqm)
+    ? currentValuePerSqm * landAreaSqm
+    : null;
+  const missingItems = [];
+
+  if (!Number.isFinite(landAreaSqm)) {
+    missingItems.push("土地面積");
+  }
+  if (!Number.isFinite(baseFarRate)) {
+    missingItems.push("基準容積率");
+  }
+  if (!Number.isFinite(capacityResult?.totalCapacityAreaSqm)) {
+    missingItems.push("容積來源試算結果");
+  }
+  if (!Number.isFinite(coverageRate)) {
+    missingItems.push("建蔽率");
+  }
+  if (!Number.isFinite(equipmentExemptionRate)) {
+    missingItems.push("設備空間免計比例");
+  }
+  if (!Number.isFinite(lobbyRate)) {
+    missingItems.push("梯廳比例");
+  }
+  if (!Number.isFinite(balconyRate)) {
+    missingItems.push("陽台比例");
+  }
+  if (!Number.isFinite(roofProjectionRate)) {
+    missingItems.push("屋突比例");
+  }
+  if (!Number.isFinite(basementMultiplier)) {
+    missingItems.push("地下層面積倍數");
+  }
+  if (!Number.isFinite(undergroundFloors)) {
+    missingItems.push("地下層數");
+  }
+  if (!Number.isFinite(parkingUnitAreaPing)) {
+    missingItems.push("車位單位面積");
+  }
+  if (!Number.isFinite(saleableAdjustmentRatio)) {
+    missingItems.push("銷售面積校正比例");
+  }
+
+  const canCalculate = !missingItems.length;
+  const legalCoverageAreaSqm = canCalculate ? landAreaSqm * coverageRate / 100 : null;
+  const baseCapacityAreaSqm = canCalculate ? landAreaSqm * baseFarRate / 100 : null;
+  const simpleUrbanRenewalBonusAreaSqm = canCalculate ? baseCapacityAreaSqm * simpleUrbanRenewalBonusRate / 100 : null;
+  const landUseBonusAreaSqm = canCalculate ? baseCapacityAreaSqm * landUseBonusRate / 100 : null;
+  const tdrCapacityAreaSqm = canCalculate ? baseCapacityAreaSqm * tdrRate / 100 : null;
+  const urbanRenewalBonusAreaSqm = canCalculate ? baseCapacityAreaSqm * urbanRenewalBonusRate / 100 : null;
+  const dangerousOldBuildingBonusAreaSqm = canCalculate ? baseCapacityAreaSqm * dangerousOldBuildingBonusRate / 100 : null;
+  const rewardCapacityAreaSqm = canCalculate
+    ? simpleUrbanRenewalBonusAreaSqm
+      + landUseBonusAreaSqm
+      + tdrCapacityAreaSqm
+      + urbanRenewalBonusAreaSqm
+      + dangerousOldBuildingBonusAreaSqm
+    : null;
+  const totalRewardCapacityAreaSqm = canCalculate ? rewardCapacityAreaSqm : null;
+  const allowedCapacityAreaSqm = canCalculate ? baseCapacityAreaSqm + totalRewardCapacityAreaSqm : null;
+  const equipmentExemptionAreaSqm = canCalculate ? allowedCapacityAreaSqm * equipmentExemptionRate / 100 : null;
+  const lobbyAreaSqm = canCalculate ? (allowedCapacityAreaSqm + equipmentExemptionAreaSqm) / 0.95 * lobbyRate / 100 : null;
+  const balconyAreaSqm = canCalculate ? (allowedCapacityAreaSqm + equipmentExemptionAreaSqm + lobbyAreaSqm) * balconyRate / 100 : null;
+  const excludedCapacityAreaSqm = canCalculate ? equipmentExemptionAreaSqm + lobbyAreaSqm + balconyAreaSqm : null;
+  const roofProjectionAreaSqm = canCalculate ? legalCoverageAreaSqm * roofProjectionRate / 100 * 3 : null;
+  const rainShelterAreaSqm = canCalculate ? allowedCapacityAreaSqm * rainShelterRate / 100 : null;
+  const buildingEnvelopeAreaSqm = canCalculate ? allowedCapacityAreaSqm * buildingEnvelopeRate / 100 : null;
+  const publicServiceAreaSqm = canCalculate ? baseCapacityAreaSqm * publicServiceRate / 100 : null;
+  const roofAndProjectionAreaSqm = canCalculate
+    ? roofProjectionAreaSqm + rainShelterAreaSqm + buildingEnvelopeAreaSqm + publicServiceAreaSqm
+    : null;
+  const aboveGroundBuildAreaSqm = canCalculate ? allowedCapacityAreaSqm + excludedCapacityAreaSqm + roofAndProjectionAreaSqm : null;
+  const aboveGroundFloorAreaSqm = canCalculate ? aboveGroundBuildAreaSqm - balconyAreaSqm - roofProjectionAreaSqm : null;
+  const aboveGroundFloors = canCalculate && legalCoverageAreaSqm > 0
+    ? Math.ceil(aboveGroundFloorAreaSqm / legalCoverageAreaSqm)
+    : null;
+  const basementFloorAreaSqm = canCalculate ? landAreaSqm * basementMultiplier * undergroundFloors : null;
+  const legalParkingCount = canCalculate ? Math.max((aboveGroundFloorAreaSqm - 500) / 150, 0) : null;
+  const totalParkingCount = canCalculate ? legalParkingCount + selfParkingCount + motorcycleParkingCount + bikeParkingCount : null;
+  const parkingAreaPing = canCalculate ? totalParkingCount * parkingUnitAreaPing : null;
+  const parkingAreaSqm = canCalculate ? parkingAreaPing * SQM_PER_PING : null;
+  const sharedPublicAreaSqm = canCalculate ? Math.max(basementFloorAreaSqm - parkingAreaSqm, 0) : null;
+  const totalFloorAreaSqm = canCalculate ? aboveGroundBuildAreaSqm + basementFloorAreaSqm : null;
+  const totalFloorAreaPing = convertSqmToPing(totalFloorAreaSqm);
+  const saleableAreaBeforeAdjustmentSqm = canCalculate
+    ? allowedCapacityAreaSqm + excludedCapacityAreaSqm + roofAndProjectionAreaSqm + sharedPublicAreaSqm
+    : null;
+  const saleableAreaSqm = canCalculate ? saleableAreaBeforeAdjustmentSqm * saleableAdjustmentRatio / 100 : null;
+  const saleableAreaPing = convertSqmToPing(saleableAreaSqm);
+  const publicAreaSqm = canCalculate ? equipmentExemptionAreaSqm + lobbyAreaSqm + roofProjectionAreaSqm + sharedPublicAreaSqm : null;
+  const publicAreaPing = convertSqmToPing(publicAreaSqm);
+  const calculatedPublicAreaRatio = canCalculate && saleableAreaSqm > 0 ? publicAreaSqm / saleableAreaSqm * 100 : null;
+  const totalFloorAreaPingValue = convertSqmToPing(totalFloorAreaSqm);
+  const buildPingPerLandPing = canCalculate && landAreaPing ? totalFloorAreaPingValue / landAreaPing : null;
+  const saleablePingPerLandPing = canCalculate && landAreaPing ? saleableAreaPing / landAreaPing : null;
+
+  return {
+    landAreaSqm,
+    landAreaPing,
+    landNumberCount: rosterSummary.landNumberCount,
+    landNumberDisplay: rosterSummary.landNumberDisplay,
+    currentValueTotal,
+    currentValuePerSqm,
+    coverageRate,
+    baseFarRate,
+    baseFloorAreaRatio: baseFarRate,
+    simpleUrbanRenewalBonusRate,
+    landUseBonusRate,
+    tdrRate,
+    urbanRenewalBonusRate,
+    dangerousOldBuildingBonusRate,
+    totalFloorAreaRatio: Number.isFinite(capacityResult?.totalFloorAreaRatio)
+      ? capacityResult.totalFloorAreaRatio
+      : Number.isFinite(baseFarRate)
+        ? baseFarRate + simpleUrbanRenewalBonusRate + landUseBonusRate + tdrRate + urbanRenewalBonusRate + dangerousOldBuildingBonusRate
+        : null,
+    legalCoverageAreaSqm,
+    baseCapacityAreaSqm,
+    simpleUrbanRenewalBonusAreaSqm,
+    landUseBonusAreaSqm,
+    tdrCapacityAreaSqm,
+    urbanRenewalBonusAreaSqm,
+    dangerousOldBuildingBonusAreaSqm,
+    rewardCapacityAreaSqm,
+    totalRewardCapacityAreaSqm,
+    allowedCapacityAreaSqm,
+    capacityModuleTotalAreaSqm: capacityResult?.totalCapacityAreaSqm ?? null,
+    equipmentExemptionAreaSqm,
+    lobbyAreaSqm,
+    balconyAreaSqm,
+    excludedCapacityAreaSqm,
+    roofProjectionAreaSqm,
+    rainShelterAreaSqm,
+    buildingEnvelopeAreaSqm,
+    publicServiceAreaSqm,
+    roofAndProjectionAreaSqm,
+    aboveGroundBuildAreaSqm,
+    aboveGroundFloors,
+    undergroundFloors,
+    aboveGroundFloorAreaSqm,
+    basementFloorAreaSqm,
+    legalParkingCount,
+    selfParkingCount,
+    motorcycleParkingCount,
+    bikeParkingCount,
+    totalParkingCount,
+    parkingUnitAreaPing,
+    parkingAreaSqm,
+    sharedPublicAreaSqm,
+    totalFloorAreaSqm,
+    totalFloorAreaPing,
+    saleableAdjustmentRatio,
+    saleableAreaBeforeAdjustmentSqm,
+    saleableAreaSqm,
+    saleableAreaPing,
+    publicAreaSqm,
+    publicAreaPing,
+    targetPublicAreaRatio,
+    calculatedPublicAreaRatio,
+    buildPingPerLandPing,
+    saleablePingPerLandPing,
+    calculationStatus: canCalculate ? "可依坪效計算表模型進行前端測試初算" : `尚缺：${missingItems.join("、")}`,
+    missingItems,
+    formulaStatus: "測試用公式；正式公式待確認",
+    formulaSource: "坪效計算表(1).xlsx",
   };
 }
 
@@ -2498,6 +2976,476 @@ function BaseInfoModule({ currentCase, baseInfo, rosterStaging, onBaseInfoChange
   );
 }
 
+function DataSummaryGrid({ items }) {
+  return (
+    <div className="eval-linked-data-grid">
+      {items.map(([label, value]) => (
+        <article key={label}>
+          <span>{label}</span>
+          <strong>{value || "待補資料"}</strong>
+        </article>
+      ))}
+    </div>
+  );
+}
+
+function MissingDataNotice({ missingItems }) {
+  if (!missingItems?.length) {
+    return null;
+  }
+
+  return (
+    <section className="eval-module-section eval-missing-data">
+      <div className="eval-section-head">
+        <h4>缺漏資料提醒</h4>
+        <p>目前尚缺以下資料，暫不顯示完整初步數字：</p>
+      </div>
+      <ul>
+        {missingItems.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function CapacityCaseRequiredNotice({ onGoToCases }) {
+  return (
+    <section className="eval-module-section eval-case-required">
+      <LockKeyhole aria-hidden="true" size={30} />
+      <div>
+        <p className="eval-kicker">CASE REQUIRED</p>
+        <h4>請先建立或選擇案件，才能進行容積來源與獎勵試算。</h4>
+        <p>容積試算必須掛在目前案件底下，並承接該案件的土地清冊、基地基本資料與開發路徑。</p>
+        <button type="button" onClick={onGoToCases}>
+          前往案件管理
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function FloorEfficiencyCaseRequiredNotice({ onGoToCases }) {
+  return (
+    <section className="eval-module-section eval-case-required">
+      <LockKeyhole aria-hidden="true" size={30} />
+      <div>
+        <p className="eval-kicker">CASE REQUIRED</p>
+        <h4>請先建立或選擇案件，才能進行坪效明細計算。</h4>
+        <p>坪效明細必須承接目前案件的清冊土地面積、基地基本資料與容積來源試算結果。</p>
+        <button type="button" onClick={onGoToCases}>
+          前往案件管理
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function CapacityModule({
+  currentCase,
+  baseInfo,
+  rosterStaging,
+  capacityInputs,
+  onCapacityInputsChange,
+  onCapacityResultsChange,
+  onGoToCases,
+}) {
+  const effectiveInputs = useMemo(
+    () => getEffectiveCapacityInputs(capacityInputs, baseInfo),
+    [capacityInputs, baseInfo],
+  );
+  const capacityResult = useMemo(
+    () => calculateCapacityResult(rosterStaging, baseInfo, effectiveInputs),
+    [rosterStaging, baseInfo, effectiveInputs],
+  );
+
+  useEffect(() => {
+    if (!currentCase) {
+      return;
+    }
+    onCapacityResultsChange(capacityResult);
+  }, [
+    currentCase?.id,
+    capacityResult.landAreaSqm,
+    capacityResult.baseFloorAreaRatio,
+    capacityResult.transferRatio,
+    capacityResult.urbanRenewalBonusRatio,
+    capacityResult.unsafeBuildingBonusRatio,
+    capacityResult.otherBonusRatio,
+    capacityResult.totalFloorAreaRatio,
+    capacityResult.totalCapacityAreaSqm,
+    capacityResult.calculationStatus,
+  ]);
+
+  if (!currentCase) {
+    return (
+      <div className="eval-module-stack">
+        <CapacityCaseRequiredNotice onGoToCases={onGoToCases} />
+      </div>
+    );
+  }
+
+  const handleCapacityInputChange = (field) => (event) => {
+    onCapacityInputsChange({
+      ...defaultCapacityInputs,
+      ...capacityInputs,
+      [field]: event.target.value,
+    });
+  };
+
+  const rosterSummary = buildRosterBaseSummary(rosterStaging);
+  const sourceItems = [
+    ["地號筆數", rosterSummary.hasRoster ? rosterSummary.landNumberCount : "尚未上傳清冊"],
+    ["土地面積合計", rosterSummary.landAreaSqm === null ? "待補資料" : formatSqmAndPing(rosterSummary.landAreaSqm)],
+    ["使用分區", baseInfo.zoning || "尚未輸入"],
+    ["建蔽率", baseInfo.buildingCoverageRatio || "尚未輸入"],
+    ["基準容積率", effectiveInputs.baseFloorAreaRatio || "尚未輸入"],
+    ["道路 / 臨路條件", baseInfo.roadAccess || "尚未輸入"],
+    ["基地限制", baseInfo.siteRestrictions || "尚未輸入"],
+    ["法規限制", baseInfo.legalRestrictions || "尚未輸入"],
+  ];
+  const resultItems = [
+    ["土地面積合計", formatSqmAndPing(capacityResult.landAreaSqm)],
+    ["基準容積率", formatPercentValue(capacityResult.baseFloorAreaRatio)],
+    ["基準容積量", formatSqmAndPing(capacityResult.baseCapacityAreaSqm)],
+    ["容積移轉增加量", formatSqmAndPing(capacityResult.transferAreaSqm)],
+    ["都市更新獎勵增加量", formatSqmAndPing(capacityResult.urbanRenewalBonusAreaSqm)],
+    ["危老獎勵增加量", formatSqmAndPing(capacityResult.unsafeBuildingBonusAreaSqm)],
+    ["其他獎勵增加量", formatSqmAndPing(capacityResult.otherBonusAreaSqm)],
+    ["總容積率", formatPercentValue(capacityResult.totalFloorAreaRatio)],
+    ["總容積量", formatSqmAndPing(capacityResult.totalCapacityAreaSqm)],
+    ["計算狀態", capacityResult.calculationStatus],
+  ];
+
+  return (
+    <div className="eval-module-stack">
+      <CurrentCaseSummary currentCase={currentCase} />
+      <section className="eval-module-section eval-linked-module">
+        <div className="eval-section-head">
+          <h4>前置資料摘要</h4>
+          <p>本區承接目前案件的清冊土地面積與基地基本資料；缺漏處顯示待補資料，不放假數字。</p>
+        </div>
+        <DataSummaryGrid items={sourceItems} />
+      </section>
+      <section className="eval-module-section eval-linked-module">
+        <div className="eval-section-head">
+          <h4>容積條件輸入</h4>
+          <p>基準容積率可由基地基本資料帶入，也可在本模組依目前案件另行調整；單位皆為百分比。</p>
+        </div>
+        <div className="eval-field-grid eval-linked-input-grid">
+          <label className="eval-field">
+            <span>基準容積率（%）</span>
+            <input type="text" value={effectiveInputs.baseFloorAreaRatio} onChange={handleCapacityInputChange("baseFloorAreaRatio")} placeholder="例：225%" />
+            <small>{capacityInputs?.baseFloorAreaRatio ? "來源：本模組調整值" : "來源：基地基本資料，可在此調整"}</small>
+          </label>
+          <label className="eval-field">
+            <span>容積移轉比例（%）</span>
+            <input type="text" value={effectiveInputs.transferRatio} onChange={handleCapacityInputChange("transferRatio")} placeholder="例：30%" />
+          </label>
+          <label className="eval-field">
+            <span>都市更新獎勵比例（%）</span>
+            <input type="text" value={effectiveInputs.urbanRenewalBonusRatio} onChange={handleCapacityInputChange("urbanRenewalBonusRatio")} placeholder="例：20%" />
+          </label>
+          <label className="eval-field">
+            <span>危老獎勵比例（%）</span>
+            <input type="text" value={effectiveInputs.unsafeBuildingBonusRatio} onChange={handleCapacityInputChange("unsafeBuildingBonusRatio")} placeholder="例：10%" />
+          </label>
+          <label className="eval-field">
+            <span>其他獎勵比例（%）</span>
+            <input type="text" value={effectiveInputs.otherBonusRatio} onChange={handleCapacityInputChange("otherBonusRatio")} placeholder="例：5%" />
+          </label>
+          <label className="eval-field eval-field--wide">
+            <span>其他容積來源說明</span>
+            <input type="text" value={effectiveInputs.otherCapacitySourceNote} onChange={handleCapacityInputChange("otherCapacitySourceNote")} placeholder="補充容積來源、限制或待確認事項" />
+          </label>
+        </div>
+      </section>
+      <MissingDataNotice missingItems={capacityResult.missingItems} />
+      <section className="eval-module-section eval-linked-module">
+        <div className="eval-section-head">
+          <h4>初步試算結果</h4>
+          <p>此為前端測試用初步試算，正式公式與法規適用仍待確認。</p>
+        </div>
+        <DataSummaryGrid items={resultItems} />
+      </section>
+      <section className="eval-module-section eval-formula-note">
+        <h4>測試用簡化公式 / 正式公式待確認</h4>
+        <p>基準容積量 = 土地面積合計 × 基準容積率 / 100；各項增加量 = 土地面積合計 × 該比例 / 100；總容積率 = 基準容積率 + 容積移轉比例 + 都更獎勵比例 + 危老獎勵比例 + 其他獎勵比例；總容積量 = 土地面積合計 × 總容積率 / 100。</p>
+        <p>下游影響：坪效明細計算會承接總容積量、總容積率、基準容積量與各項獎勵 / 移轉增加量。</p>
+      </section>
+    </div>
+  );
+}
+
+function FloorEfficiencyModule({
+  currentCase,
+  rosterStaging,
+  baseInfo,
+  capacityResult,
+  floorParams,
+  onFloorParamsChange,
+  onFloorResultsChange,
+  onGoToCases,
+}) {
+  const effectiveParams = useMemo(
+    () => getEffectiveFloorEfficiencyParams(floorParams, capacityResult),
+    [floorParams, capacityResult],
+  );
+  const floorResult = useMemo(
+    () => calculateFloorEfficiencyResult(rosterStaging, baseInfo, capacityResult, effectiveParams),
+    [rosterStaging, baseInfo, capacityResult, effectiveParams],
+  );
+
+  useEffect(() => {
+    if (!currentCase) {
+      return;
+    }
+    onFloorResultsChange(floorResult);
+  }, [
+    currentCase?.id,
+    floorResult.landAreaSqm,
+    floorResult.allowedCapacityAreaSqm,
+    floorResult.totalFloorAreaSqm,
+    floorResult.saleableAreaSqm,
+    floorResult.publicAreaSqm,
+    floorResult.buildPingPerLandPing,
+    floorResult.saleablePingPerLandPing,
+    floorResult.calculationStatus,
+  ]);
+
+  if (!currentCase) {
+    return (
+      <div className="eval-module-stack">
+        <FloorEfficiencyCaseRequiredNotice onGoToCases={onGoToCases} />
+      </div>
+    );
+  }
+
+  const handleFloorParamChange = (field) => (event) => {
+    onFloorParamsChange({
+      ...defaultFloorEfficiencyParams,
+      ...floorParams,
+      [field]: event.target.value,
+    });
+  };
+
+  const formulaRateFields = [
+    ["simpleUrbanRenewalBonusRate", "簡易都更獎勵比例（%）", "例：20%"],
+    ["landUseBonusRate", "土管 / 規模獎勵比例（%）", "例：0%"],
+    ["tdrRate", "容積移轉比例（%）", "例：30%"],
+    ["urbanRenewalBonusRate", "都市更新獎勵比例（%）", "例：20%"],
+    ["dangerousOldBuildingBonusRate", "危老獎勵比例（%）", "例：10%"],
+    ["equipmentExemptionRate", "設備空間免計比例（%）", "例：15%"],
+    ["lobbyRate", "梯廳比例（%）", "例：10%"],
+    ["balconyRate", "陽台比例（%）", "例：5%"],
+    ["roofProjectionRate", "屋突比例（%）", "例：12.5%"],
+    ["rainShelterRate", "雨遮面積比例（%）", "例：0%"],
+    ["buildingEnvelopeRate", "外皮面積比例（%）", "例：0%"],
+    ["publicServiceRate", "公共服務空間比例（%）", "例：0%"],
+  ];
+  const formulaScaleFields = [
+    ["basementMultiplier", "地下層面積倍數", "例：0.7"],
+    ["undergroundFloors", "地下層數", "例：4"],
+    ["parkingUnitAreaPing", "車位單位面積（坪 / 位）", "例：12"],
+    ["selfParkingCount", "自設汽車位數", "例：50"],
+    ["motorcycleParkingCount", "機車位數", "例：0"],
+    ["bikeParkingCount", "自行車位數", "例：0"],
+    ["saleableAdjustmentRatio", "銷售面積校正比例（%）", "例：100%"],
+    ["publicAreaRatio", "目標公設比（%）", "例：35%"],
+  ];
+  const sourceItems = [
+    ["目前案件", `${currentCase.code} / ${currentCase.name}`],
+    ["地號筆數", floorResult.landNumberCount || "待清冊補齊"],
+    ["地號清單", floorResult.landNumberDisplay],
+    ["土地面積合計", formatSqmAndPing(floorResult.landAreaSqm)],
+    ["公告現值總額", formatCurrencyTwd(floorResult.currentValueTotal)],
+    ["公告現值單價", Number.isFinite(floorResult.currentValuePerSqm) ? `${formatCurrencyTwd(floorResult.currentValuePerSqm)} / 平方公尺` : "清冊未提供"],
+    ["使用分區", baseInfo.zoning || "尚未輸入"],
+    ["建蔽率", formatPercentValue(floorResult.coverageRate)],
+    ["基準容積率", formatPercentValue(floorResult.baseFarRate)],
+    ["道路 / 臨路條件", baseInfo.roadAccess || "尚未輸入"],
+    ["基地限制", baseInfo.siteRestrictions || "尚未輸入"],
+    ["法規限制", baseInfo.legalRestrictions || "尚未輸入"],
+  ];
+  const capacitySourceItems = [
+    ["容積模組總容積率", formatPercentValue(floorResult.totalFloorAreaRatio)],
+    ["容積模組總容積量", formatSqmAndPing(floorResult.capacityModuleTotalAreaSqm)],
+    ["簡易都更獎勵", formatPercentValue(floorResult.simpleUrbanRenewalBonusRate)],
+    ["土管 / 規模獎勵", formatPercentValue(floorResult.landUseBonusRate)],
+    ["容積移轉", formatPercentValue(floorResult.tdrRate)],
+    ["都市更新獎勵", formatPercentValue(floorResult.urbanRenewalBonusRate)],
+    ["危老獎勵", formatPercentValue(floorResult.dangerousOldBuildingBonusRate)],
+    ["總容積率", formatPercentValue(floorResult.totalFloorAreaRatio)],
+    ["基準容積量", formatSqmAndPing(floorResult.baseCapacityAreaSqm)],
+    ["獎勵 / 移轉合計", formatSqmAndPing(floorResult.totalRewardCapacityAreaSqm)],
+    ["允建容積面積", formatSqmAndPing(floorResult.allowedCapacityAreaSqm)],
+  ];
+  const resultItems = [
+    ["法定建蔽面積", formatSqmAndPing(floorResult.legalCoverageAreaSqm)],
+    ["基準容積量", formatSqmAndPing(floorResult.baseCapacityAreaSqm)],
+    ["獎勵容積量", formatSqmAndPing(floorResult.rewardCapacityAreaSqm)],
+    ["容積移轉量", formatSqmAndPing(floorResult.tdrCapacityAreaSqm)],
+    ["總獎勵 / 移轉容積", formatSqmAndPing(floorResult.totalRewardCapacityAreaSqm)],
+    ["免計容積面積", formatSqmAndPing(floorResult.excludedCapacityAreaSqm)],
+    ["屋突 / 雨遮 / 外皮", formatSqmAndPing(floorResult.roofAndProjectionAreaSqm)],
+    ["地上興建面積", formatSqmAndPing(floorResult.aboveGroundBuildAreaSqm)],
+    ["地上樓層推估", Number.isFinite(floorResult.aboveGroundFloors) ? `${floorResult.aboveGroundFloors} 層` : "待補資料"],
+    ["地上樓地板面積", formatSqmAndPing(floorResult.aboveGroundFloorAreaSqm)],
+    ["地下樓地板面積", formatSqmAndPing(floorResult.basementFloorAreaSqm)],
+    ["總樓地板面積", formatSqmAndPing(floorResult.totalFloorAreaSqm)],
+  ];
+  const salesItems = [
+    ["銷售面積", formatSqmAndPing(floorResult.saleableAreaSqm)],
+    ["公設面積", formatSqmAndPing(floorResult.publicAreaSqm)],
+    ["試算公設比", formatPercentValue(floorResult.calculatedPublicAreaRatio)],
+    ["目標公設比", formatPercentValue(floorResult.targetPublicAreaRatio)],
+    ["每坪土地可產生建坪", Number.isFinite(floorResult.buildPingPerLandPing) ? `${formatNumber(floorResult.buildPingPerLandPing, 3)} 建坪 / 土地坪` : "待補資料"],
+    ["每坪土地可產生可售坪", Number.isFinite(floorResult.saleablePingPerLandPing) ? `${formatNumber(floorResult.saleablePingPerLandPing, 3)} 可售坪 / 土地坪` : "待補資料"],
+    ["坪效摘要", Number.isFinite(floorResult.saleablePingPerLandPing) ? `每 1 坪土地約產生 ${formatNumber(floorResult.saleablePingPerLandPing, 3)} 坪可售面積。` : "待補資料"],
+    ["計算狀態", floorResult.calculationStatus],
+  ];
+  const parkingItems = [
+    ["地下層數", Number.isFinite(floorResult.undergroundFloors) ? `${formatNumber(floorResult.undergroundFloors, 0)} 層` : "待補資料"],
+    ["地下層面積倍數", Number.isFinite(floorResult.basementFloorAreaSqm) ? effectiveParams.basementMultiplier : "待補資料"],
+    ["法定汽車位推估", Number.isFinite(floorResult.legalParkingCount) ? `${formatNumber(floorResult.legalParkingCount, 2)} 位` : "待補資料"],
+    ["自設汽車位", Number.isFinite(floorResult.selfParkingCount) ? `${formatNumber(floorResult.selfParkingCount, 0)} 位` : "待補資料"],
+    ["機車 / 自行車位", Number.isFinite(floorResult.motorcycleParkingCount) && Number.isFinite(floorResult.bikeParkingCount) ? `${formatNumber(floorResult.motorcycleParkingCount, 0)} / ${formatNumber(floorResult.bikeParkingCount, 0)} 位` : "待補資料"],
+    ["停車與車道面積", formatSqmAndPing(floorResult.parkingAreaSqm)],
+    ["地下層可攤公設面積", formatSqmAndPing(floorResult.sharedPublicAreaSqm)],
+  ];
+
+  return (
+    <div className="eval-module-stack">
+      <CurrentCaseSummary currentCase={currentCase} />
+      <section className="eval-module-section eval-linked-module">
+        <div className="eval-section-head">
+          <h4>來源資料摘要</h4>
+          <p>坪效明細承接清冊土地面積、公告現值、基地基本資料與道路 / 法規限制；缺漏處會列入提醒。</p>
+        </div>
+        <DataSummaryGrid items={sourceItems} />
+      </section>
+      <section className="eval-module-section eval-linked-module">
+        <div className="eval-section-head">
+          <h4>容積與獎勵來源摘要</h4>
+          <p>本區承接容積來源與獎勵試算，並依「坪效計算表(1).xlsx」拆出獎勵、免計與可銷售面積計算所需的前端測試參數。</p>
+        </div>
+        <DataSummaryGrid items={capacitySourceItems} />
+      </section>
+      <MissingDataNotice missingItems={floorResult.missingItems} />
+      <section className="eval-module-section eval-linked-module">
+        <div className="eval-section-head">
+          <h4>坪效公式參數</h4>
+          <p>以下欄位依 Excel 公式模型整理，預設會承接容積模組的容積移轉、都更獎勵、危老獎勵與其他獎勵比例；可依目前案件暫時調整。</p>
+        </div>
+        <div className="eval-field-grid eval-linked-input-grid">
+          {formulaRateFields.map(([field, label, placeholder]) => (
+            <label className="eval-field" key={field}>
+              <span>{label}</span>
+              <input type="text" value={effectiveParams[field]} onChange={handleFloorParamChange(field)} placeholder={placeholder} />
+            </label>
+          ))}
+          {formulaScaleFields.map(([field, label, placeholder]) => (
+            <label className="eval-field" key={field}>
+              <span>{label}</span>
+              <input type="text" value={effectiveParams[field]} onChange={handleFloorParamChange(field)} placeholder={placeholder} />
+            </label>
+          ))}
+          <label className="eval-field eval-field--wide">
+            <span>車位 / 附屬面積備註</span>
+            <input type="text" value={effectiveParams.parkingNote} onChange={handleFloorParamChange("parkingNote")} placeholder="例：車位數、地下室或附屬面積待建築師確認" />
+          </label>
+          <label className="eval-field eval-field--wide">
+            <span>特殊扣除備註</span>
+            <input type="text" value={effectiveParams.deductionNote} onChange={handleFloorParamChange("deductionNote")} placeholder="例：法規扣除、免計容積、不可售面積或特殊限制" />
+          </label>
+        </div>
+      </section>
+      <section className="eval-module-section eval-linked-module">
+        <div className="eval-section-head">
+          <h4>初步坪效計算結果</h4>
+          <p>自動承接土地面積、建蔽率、基準容積率與容積獎勵條件後，先依 Excel 模型呈現前端測試數字。</p>
+        </div>
+        <DataSummaryGrid items={resultItems} />
+      </section>
+      <section className="eval-module-section eval-linked-module">
+        <div className="eval-section-head">
+          <h4>銷售面積與公設摘要</h4>
+          <p>銷售面積與公設比先作為成本、銷售情境與權利分配的下游基礎；正式銷售坪轉換方式仍待確認。</p>
+        </div>
+        <DataSummaryGrid items={salesItems} />
+      </section>
+      <section className="eval-module-section eval-linked-module">
+        <div className="eval-section-head">
+          <h4>車位與地下層摘要</h4>
+          <p>地下層、法定車位、自設車位與停車面積目前依 Excel 的前端測試假設整理，後續需由建築配置與法規檢核確認。</p>
+        </div>
+        <DataSummaryGrid items={parkingItems} />
+      </section>
+      <section className="eval-module-section eval-formula-note">
+        <h4>前端測試用坪效初算 / 正式公式待確認</h4>
+        <p>目前公式依「坪效計算表(1).xlsx」整理為前端測試模型，正式法規適用、容積獎勵認定、免計容積、車位、雨遮、外皮、公設與銷售坪轉換方式仍待確認。</p>
+        <p>主要測試公式：基準容積量 = 土地面積 × 基準容積率；獎勵 / 移轉容積依基準容積量乘各比例；免計容積依允建容積與設備、梯廳、陽台比例推估；地下層面積 = 土地面積 × 地下層面積倍數 × 地下層數；銷售面積 = 允建容積 + 免計 / 屋突 / 地下可攤公設後再乘銷售面積校正比例。1 坪 = 3.305785 平方公尺。</p>
+        <p>測試用公式；正式公式待確認。</p>
+        <p>下游影響：成本與共同負擔、銷售價格情境與實施方式 / 權利分配會承接可建樓地板面積、預估可售面積與坪效摘要。</p>
+      </section>
+    </div>
+  );
+}
+
+const downstreamModuleGuidance = {
+  costs: {
+    title: "成本與共同負擔將承接前面模組結果",
+    description: "此模組未來會承接坪效明細結果、可建樓地板面積、可售面積、開發期程、開發路徑，以及都市更新 / 危老 / 合建等適用成本項目。目前正式成本公式待確認。",
+    missing: "待坪效結果與成本參數補齊後，才能形成成本總額與共同負擔摘要。",
+  },
+  sales: {
+    title: "銷售價格情境將承接可售面積與成本",
+    description: "此模組未來會承接坪效結果、可售面積、成本總額、當地行情與預估銷售單價，作為分配合理性與損益平衡判斷基礎。目前正式銷售模型待確認。",
+    missing: "待坪效與成本結果補齊後，才能形成低 / 中 / 高銷售情境。",
+  },
+  allocation: {
+    title: "實施方式與權利分配將承接權利與財務條件",
+    description: "此模組未來會承接土地 / 建物權利資料、坪效結果、成本結果、銷售情境與開發路徑；分配條件不是獨立輸入頁。目前正式分配模型待確認。",
+    missing: "待清冊、坪效、成本與銷售結果補齊後，才能進行合理分配判斷。",
+  },
+  cashflow: {
+    title: "現金流與資金需求將承接成本、銷售與期程",
+    description: "此模組未來會承接成本結果、銷售回收節點、開發期程、融資需求與利息假設，整理高峰資金缺口。目前正式金流模型待確認。",
+    missing: "待成本、銷售與期程假設補齊後，才能形成資金需求摘要。",
+  },
+  "bank-report": {
+    title: "銀行融資報告將彙整全案資料",
+    description: "此模組未來會彙整案件基本資料、清冊摘要、基地資料、容積試算、坪效明細、成本與共同負擔、銷售價格情境、分配條件、現金流與資金需求、風險與待補資料。目前正式報告格式待確認。",
+    missing: "待前面模組結果補齊後，才能形成銀行融資報告摘要。",
+  },
+};
+
+function DownstreamModuleNotice({ moduleId, currentCase, capacityResult, floorResult }) {
+  const guidance = downstreamModuleGuidance[moduleId];
+
+  if (!guidance) {
+    return null;
+  }
+
+  const downstreamSaleableAreaSqm = pickNumericValue(floorResult?.saleableAreaSqm, floorResult?.estimatedSaleableAreaSqm);
+  const sourceItems = [
+    ["目前案件", currentCase ? `${currentCase.code} / ${currentCase.name}` : "尚未選定案件"],
+    ["容積試算", Number.isFinite(capacityResult?.totalCapacityAreaSqm) ? `總容積量 ${formatSqmAndPing(capacityResult.totalCapacityAreaSqm)}` : "待容積來源與獎勵試算"],
+    ["坪效明細", Number.isFinite(downstreamSaleableAreaSqm) ? `銷售面積 ${formatSqmAndPing(downstreamSaleableAreaSqm)}` : "待坪效明細計算"],
+  ];
+
+  return (
+    <section className="eval-module-section eval-downstream-notice">
+      <div className="eval-section-head">
+        <h4>{guidance.title}</h4>
+        <p>{guidance.description}</p>
+      </div>
+      <DataSummaryGrid items={sourceItems} />
+      <p>{guidance.missing}</p>
+    </section>
+  );
+}
+
 function RolePermissionPanel({ profile }) {
   return (
     <section className="eval-module-section eval-role-rules">
@@ -2616,14 +3564,26 @@ function ModuleContent({
   currentCase,
   currentBaseInfo,
   currentRosterStaging,
+  currentCapacityInputs,
+  currentCapacityResults,
+  currentFloorEfficiencyParams,
+  currentFloorEfficiencyResults,
   rosterStagingByCaseId,
   baseInfoByCaseId,
+  capacityInputsByCaseId,
+  capacityResultsByCaseId,
+  floorEfficiencyParamsByCaseId,
+  floorEfficiencyResultsByCaseId,
   onAddCase,
   onUpdateCase,
   onDeleteCase,
   onSelectCase,
   onBaseInfoChange,
   onRosterStagingChange,
+  onCapacityInputsChange,
+  onCapacityResultsChange,
+  onFloorEfficiencyParamsChange,
+  onFloorEfficiencyResultsChange,
   onClearLocalTestData,
   onImportLocalTestData,
   onGoToCases,
@@ -2653,6 +3613,10 @@ function ModuleContent({
         currentCase={currentCase}
         rosterStagingByCaseId={rosterStagingByCaseId}
         baseInfoByCaseId={baseInfoByCaseId}
+        capacityInputsByCaseId={capacityInputsByCaseId}
+        capacityResultsByCaseId={capacityResultsByCaseId}
+        floorEfficiencyParamsByCaseId={floorEfficiencyParamsByCaseId}
+        floorEfficiencyResultsByCaseId={floorEfficiencyResultsByCaseId}
         onAddCase={onAddCase}
         onUpdateCase={onUpdateCase}
         onDeleteCase={onDeleteCase}
@@ -2687,9 +3651,41 @@ function ModuleContent({
     );
   }
 
+  if (module.id === "capacity") {
+    return (
+      <CapacityModule
+        currentCase={currentCase}
+        baseInfo={currentBaseInfo}
+        rosterStaging={currentRosterStaging}
+        capacityInputs={currentCapacityInputs}
+        onCapacityInputsChange={onCapacityInputsChange}
+        onCapacityResultsChange={onCapacityResultsChange}
+        onGoToCases={onGoToCases}
+      />
+    );
+  }
+
+  if (module.id === "efficiency") {
+    return (
+      <FloorEfficiencyModule
+        currentCase={currentCase}
+        rosterStaging={currentRosterStaging}
+        baseInfo={currentBaseInfo}
+        capacityResult={currentCapacityResults}
+        floorParams={currentFloorEfficiencyParams}
+        onFloorParamsChange={onFloorEfficiencyParamsChange}
+        onFloorResultsChange={onFloorEfficiencyResultsChange}
+        onGoToCases={onGoToCases}
+      />
+    );
+  }
+
   return (
     <div className="eval-module-stack">
       {module.id === "parameters" && <ParameterAccessNotice profile={accessProfile} />}
+      {["costs", "sales", "allocation", "cashflow", "bank-report"].includes(module.id) && (
+        <DownstreamModuleNotice moduleId={module.id} currentCase={currentCase} capacityResult={currentCapacityResults} floorResult={currentFloorEfficiencyResults} />
+      )}
       <AssessmentModeCards modes={module.modeOptions} />
       {module.sections.map((section) => (
         module.id === "parameters" && section.access === "admin" && !accessProfile.permissions.systemParameters ? null : (
@@ -2914,6 +3910,10 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   const [currentCaseId, setCurrentCaseId] = useState("");
   const [rosterStagingByCaseId, setRosterStagingByCaseId] = useState(() => loadStoredRecord(ROSTER_STAGING_STORAGE_KEY));
   const [baseInfoByCaseId, setBaseInfoByCaseId] = useState(() => loadStoredRecord(BASE_INFO_STORAGE_KEY));
+  const [capacityInputsByCaseId, setCapacityInputsByCaseId] = useState(() => loadStoredRecord(CAPACITY_INPUTS_STORAGE_KEY));
+  const [capacityResultsByCaseId, setCapacityResultsByCaseId] = useState(() => loadStoredRecord(CAPACITY_RESULTS_STORAGE_KEY));
+  const [floorEfficiencyParamsByCaseId, setFloorEfficiencyParamsByCaseId] = useState(() => loadStoredRecord(FLOOR_EFFICIENCY_PARAMS_STORAGE_KEY));
+  const [floorEfficiencyResultsByCaseId, setFloorEfficiencyResultsByCaseId] = useState(() => loadStoredRecord(FLOOR_EFFICIENCY_RESULTS_STORAGE_KEY));
   const isLoggedIn = authState.status === "authenticated";
   const isTestRoute = routeHash === SYSTEM_TEST_HASH;
   const accessProfile = mockAccessProfiles[mockRole];
@@ -2923,6 +3923,10 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   );
   const currentRosterStaging = currentCase ? rosterStagingByCaseId[currentCase.id] ?? null : null;
   const currentBaseInfo = currentCase ? baseInfoByCaseId[currentCase.id] ?? defaultBaseInfo : defaultBaseInfo;
+  const currentCapacityInputs = currentCase ? capacityInputsByCaseId[currentCase.id] ?? defaultCapacityInputs : defaultCapacityInputs;
+  const currentCapacityResults = currentCase ? capacityResultsByCaseId[currentCase.id] ?? null : null;
+  const currentFloorEfficiencyParams = currentCase ? floorEfficiencyParamsByCaseId[currentCase.id] ?? defaultFloorEfficiencyParams : defaultFloorEfficiencyParams;
+  const currentFloorEfficiencyResults = currentCase ? floorEfficiencyResultsByCaseId[currentCase.id] ?? null : null;
   const visiblePrimaryModules = useMemo(
     () => primaryEvaluationModules.filter((module) => canViewModule(module, accessProfile)),
     [accessProfile],
@@ -2956,6 +3960,22 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   useEffect(() => {
     writeStoredJson(BASE_INFO_STORAGE_KEY, baseInfoByCaseId);
   }, [baseInfoByCaseId]);
+
+  useEffect(() => {
+    writeStoredJson(CAPACITY_INPUTS_STORAGE_KEY, capacityInputsByCaseId);
+  }, [capacityInputsByCaseId]);
+
+  useEffect(() => {
+    writeStoredJson(CAPACITY_RESULTS_STORAGE_KEY, capacityResultsByCaseId);
+  }, [capacityResultsByCaseId]);
+
+  useEffect(() => {
+    writeStoredJson(FLOOR_EFFICIENCY_PARAMS_STORAGE_KEY, floorEfficiencyParamsByCaseId);
+  }, [floorEfficiencyParamsByCaseId]);
+
+  useEffect(() => {
+    writeStoredJson(FLOOR_EFFICIENCY_RESULTS_STORAGE_KEY, floorEfficiencyResultsByCaseId);
+  }, [floorEfficiencyResultsByCaseId]);
 
   useEffect(() => {
     if (currentCaseId && !cases.some((item) => item.id === currentCaseId)) {
@@ -3051,6 +4071,26 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
       delete next[caseId];
       return next;
     });
+    setCapacityInputsByCaseId((current) => {
+      const next = { ...current };
+      delete next[caseId];
+      return next;
+    });
+    setCapacityResultsByCaseId((current) => {
+      const next = { ...current };
+      delete next[caseId];
+      return next;
+    });
+    setFloorEfficiencyParamsByCaseId((current) => {
+      const next = { ...current };
+      delete next[caseId];
+      return next;
+    });
+    setFloorEfficiencyResultsByCaseId((current) => {
+      const next = { ...current };
+      delete next[caseId];
+      return next;
+    });
     if (currentCaseId === caseId) {
       setCurrentCaseId("");
     }
@@ -3087,12 +4127,60 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     }));
   };
 
+  const handleCapacityInputsChange = (nextCapacityInputs) => {
+    if (!currentCase) {
+      return;
+    }
+
+    setCapacityInputsByCaseId((current) => ({
+      ...current,
+      [currentCase.id]: nextCapacityInputs,
+    }));
+  };
+
+  const handleCapacityResultsChange = (nextCapacityResults) => {
+    if (!currentCase) {
+      return;
+    }
+
+    setCapacityResultsByCaseId((current) => ({
+      ...current,
+      [currentCase.id]: nextCapacityResults,
+    }));
+  };
+
+  const handleFloorEfficiencyParamsChange = (nextFloorEfficiencyParams) => {
+    if (!currentCase) {
+      return;
+    }
+
+    setFloorEfficiencyParamsByCaseId((current) => ({
+      ...current,
+      [currentCase.id]: nextFloorEfficiencyParams,
+    }));
+  };
+
+  const handleFloorEfficiencyResultsChange = (nextFloorEfficiencyResults) => {
+    if (!currentCase) {
+      return;
+    }
+
+    setFloorEfficiencyResultsByCaseId((current) => ({
+      ...current,
+      [currentCase.id]: nextFloorEfficiencyResults,
+    }));
+  };
+
   const handleClearLocalTestData = () => {
     clearStoredEvaluationData();
     setCases([]);
     setCurrentCaseId("");
     setRosterStagingByCaseId({});
     setBaseInfoByCaseId({});
+    setCapacityInputsByCaseId({});
+    setCapacityResultsByCaseId({});
+    setFloorEfficiencyParamsByCaseId({});
+    setFloorEfficiencyResultsByCaseId({});
   };
 
   const handleImportLocalTestData = (importedData) => {
@@ -3103,16 +4191,46 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     const importedBaseInfo = isPlainRecord(importedData?.baseInfoByCaseId)
       ? importedData.baseInfoByCaseId
       : {};
+    const importedCapacityInputs = isPlainRecord(importedData?.capacityInputsByCaseId)
+      ? importedData.capacityInputsByCaseId
+      : {};
+    const importedCapacityResults = isPlainRecord(importedData?.capacityResultsByCaseId)
+      ? importedData.capacityResultsByCaseId
+      : {};
+    const importedFloorEfficiencyParams = isPlainRecord(importedData?.floorEfficiencyParamsByCaseId)
+      ? importedData.floorEfficiencyParamsByCaseId
+      : {};
+    const importedFloorEfficiencyResults = isPlainRecord(importedData?.floorEfficiencyResultsByCaseId)
+      ? importedData.floorEfficiencyResultsByCaseId
+      : {};
     const importedCurrentCaseId = typeof importedData?.currentCaseId === "string" ? importedData.currentCaseId : "";
     const nextCurrentCaseId = resolveImportedCurrentCaseId(importedCases, importedCurrentCaseId);
 
     writeStoredJson(CASES_STORAGE_KEY, importedCases);
     writeStoredJson(ROSTER_STAGING_STORAGE_KEY, importedRosterStaging);
     writeStoredJson(BASE_INFO_STORAGE_KEY, importedBaseInfo);
+    writeStoredJson(CAPACITY_INPUTS_STORAGE_KEY, importedCapacityInputs);
+    writeStoredJson(CAPACITY_RESULTS_STORAGE_KEY, importedCapacityResults);
+    writeStoredJson(FLOOR_EFFICIENCY_PARAMS_STORAGE_KEY, importedFloorEfficiencyParams);
+    writeStoredJson(FLOOR_EFFICIENCY_RESULTS_STORAGE_KEY, importedFloorEfficiencyResults);
+    LOCAL_TEST_DATA_RECORD_FIELDS
+      .filter(({ dataKey }) => ![
+        "capacityInputsByCaseId",
+        "capacityResultsByCaseId",
+        "floorEfficiencyParamsByCaseId",
+        "floorEfficiencyResultsByCaseId",
+      ].includes(dataKey))
+      .forEach(({ dataKey, storageKey }) => {
+        writeStoredJson(storageKey, isPlainRecord(importedData?.[dataKey]) ? importedData[dataKey] : {});
+      });
     setCases(importedCases);
     setCurrentCaseId(nextCurrentCaseId);
     setRosterStagingByCaseId(importedRosterStaging);
     setBaseInfoByCaseId(importedBaseInfo);
+    setCapacityInputsByCaseId(importedCapacityInputs);
+    setCapacityResultsByCaseId(importedCapacityResults);
+    setFloorEfficiencyParamsByCaseId(importedFloorEfficiencyParams);
+    setFloorEfficiencyResultsByCaseId(importedFloorEfficiencyResults);
   };
 
   const handleGoToCases = () => {
@@ -3239,14 +4357,26 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
             currentCase={currentCase}
             currentBaseInfo={currentBaseInfo}
             currentRosterStaging={currentRosterStaging}
+            currentCapacityInputs={currentCapacityInputs}
+            currentCapacityResults={currentCapacityResults}
+            currentFloorEfficiencyParams={currentFloorEfficiencyParams}
+            currentFloorEfficiencyResults={currentFloorEfficiencyResults}
             rosterStagingByCaseId={rosterStagingByCaseId}
             baseInfoByCaseId={baseInfoByCaseId}
+            capacityInputsByCaseId={capacityInputsByCaseId}
+            capacityResultsByCaseId={capacityResultsByCaseId}
+            floorEfficiencyParamsByCaseId={floorEfficiencyParamsByCaseId}
+            floorEfficiencyResultsByCaseId={floorEfficiencyResultsByCaseId}
             onAddCase={handleAddCase}
             onUpdateCase={handleUpdateCase}
             onDeleteCase={handleDeleteCase}
             onSelectCase={handleSelectCase}
             onBaseInfoChange={handleBaseInfoChange}
             onRosterStagingChange={handleRosterStagingChange}
+            onCapacityInputsChange={handleCapacityInputsChange}
+            onCapacityResultsChange={handleCapacityResultsChange}
+            onFloorEfficiencyParamsChange={handleFloorEfficiencyParamsChange}
+            onFloorEfficiencyResultsChange={handleFloorEfficiencyResultsChange}
             onClearLocalTestData={handleClearLocalTestData}
             onImportLocalTestData={handleImportLocalTestData}
             onGoToCases={handleGoToCases}
