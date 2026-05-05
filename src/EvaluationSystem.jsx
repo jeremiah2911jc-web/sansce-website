@@ -80,7 +80,7 @@ const LICENSE_GATED_MODULES = {
   "bank-report": "bankReport",
   [TAKEOVER_MODULE_ID]: "takeover",
 };
-const DOWNSTREAM_PLACEHOLDER_MODULE_IDS = new Set(["costs", "sales", "allocation", "cashflow", "bank-report"]);
+const DOWNSTREAM_PLACEHOLDER_MODULE_IDS = new Set(["sales", "allocation", "cashflow", "bank-report"]);
 const SYSTEM_TEST_HASH = "#system-test";
 const CASES_STORAGE_KEY = "sanze-evaluation-cases-v1";
 const CURRENT_CASE_ID_STORAGE_KEY = "sanze-evaluation-current-case-id-v1";
@@ -347,6 +347,424 @@ const defaultFloorEfficiencyParams = {
   deductionNote: "",
 };
 
+const demolitionStructureOptions = [
+  ["steel", "鋼骨造"],
+  ["src", "鋼骨鋼筋混凝土造"],
+  ["rc", "鋼筋混凝土造"],
+  ["reinforcedBrick", "加強磚造"],
+  ["brick", "磚造"],
+  ["wood", "竹、木造"],
+  ["rubble", "漿砌卵石"],
+  ["metalShed", "金屬或鋼鐵棚架"],
+  ["other", "其他材料構造物"],
+];
+
+const demolitionUnitPriceCaps = {
+  steel: 1720,
+  src: 1400,
+  rc: 1050,
+  reinforcedBrick: 900,
+  brick: 620,
+  wood: 230,
+  rubble: 200,
+  metalShed: 350,
+};
+
+const costCommonGroups = [
+  { id: "A", title: "工程費用", subtitle: "拆除、設計、營建、公共設施與其他必要工程費。" },
+  { id: "B", title: "容積獎勵後續管理維護相關經費", subtitle: "依事業計畫審定金額與委辦資料提列。" },
+  { id: "C", title: "權利變換費用", subtitle: "規劃、估價、鑑界、鑽探、安置、測量與地籍整理等費用。" },
+  { id: "D", title: "貸款利息", subtitle: "依新北市公式拆分補償/負擔項目與工程權變項目。" },
+  { id: "E", title: "稅捐", subtitle: "印花稅、營業稅與相關函釋計算欄位。" },
+  { id: "F", title: "管理費用", subtitle: "行政作業、信託、人事行政、銷售管理與風險管理費。" },
+  { id: "G", title: "都市計畫變更負擔費用", subtitle: "依法令變更都市計畫所需捐贈、負擔或委辦費。" },
+  { id: "H", title: "容積移轉費用", subtitle: "容積購入費用、委辦費、捐贈公設地或折繳代金方式。" },
+];
+
+const costCommonItemDefinitions = [
+  {
+    id: "a1Demolition",
+    groupId: "A",
+    code: "A-1",
+    title: "拆除費用",
+    description: "僅更新前範圍內未提列合法建築物拆遷補償費且屬無主建築物，始得提列。",
+    mode: "quantityUnit",
+    quantityLabel: "拆除面積（㎡）",
+    unitPriceLabel: "拆除單價（元 / ㎡）",
+    defaultUnitPrice: "1050",
+    selectField: "structureType",
+    selectLabel: "構造類別",
+    selectOptions: demolitionStructureOptions,
+    defaultSelectValue: "rc",
+    formula: "拆除費用 = 拆除面積 × 拆除單價",
+    basis: "鋼骨造 1,720、SRC 1,400、RC 1,050、加強磚造 900、磚造 620、竹木造 230、漿砌卵石 200、金屬棚架 350 元 / ㎡；其他材料核實計算。",
+    evidence: "拆除面積資料、構造證明；其他材料須檢附報價單。",
+  },
+  {
+    id: "a2ArchitectureDesign",
+    groupId: "A",
+    code: "A-2",
+    title: "建築設計費用",
+    description: "依新北市工程造價標準表與建築師公會酬金標準表計算。",
+    mode: "manual",
+    formula: "依公會酬金標準及審議認列",
+    basis: "特殊必要設計費用得提列，但須審議同意並檢附合約佐證。",
+    evidence: "建築師合約、酬金標準計算表、審議同意資料。",
+    reviewRequired: true,
+  },
+  {
+    id: "a3Construction",
+    groupId: "A",
+    code: "A-3",
+    title: "營建費用",
+    description: "依構造、樓層、總樓地板面積級距、建材設備表判斷。",
+    mode: "quantityUnit",
+    quantityLabel: "總樓地板面積（㎡）",
+    unitPriceLabel: "營建單價（元 / ㎡）",
+    quantitySource: "totalFloorAreaSqm",
+    formula: "營建費用 = 總樓地板面積 × 營建單價",
+    basis: "營建單價上限依新北市分項說明二營建單價基準；正式單價需依構造、樓層、總樓地板面積與物價指數確認。",
+    evidence: "總樓地板面積、建材設備表、營建單價基準、特殊工程佐證。",
+    temporary: true,
+  },
+  {
+    id: "a4ConstructionManagement",
+    groupId: "A",
+    code: "A-4",
+    title: "工程管理費",
+    description: "原則以自組更新會或非以更新後房地折價抵付之代執行機構者始得提列。",
+    mode: "manual",
+    formula: "依實際狀況認列",
+    basis: "須檢具契約影本佐證。",
+    evidence: "工程管理契約影本。",
+    reviewRequired: true,
+  },
+  {
+    id: "a5AirPollution",
+    groupId: "A",
+    code: "A-5",
+    title: "空氣污染防制費",
+    description: "依空氣污染防制費收費辦法核計。",
+    mode: "manual",
+    formula: "依收費辦法核計",
+    basis: "依主管機關核定金額。",
+    evidence: "空污費核計資料或繳費文件。",
+  },
+  {
+    id: "a6ExternalUtilities",
+    groupId: "A",
+    code: "A-6",
+    title: "外接水、電、瓦斯管線工程費用",
+    description: "其他特殊情形得視個案提列，需審議通過或檢具事業機構證明。",
+    mode: "quantityUnit",
+    quantityLabel: "更新後戶數",
+    unitPriceLabel: "單價（元 / 戶）",
+    defaultUnitPrice: "75000",
+    capUnitPrice: 75000,
+    formula: "外接水電瓦斯費 = 更新後戶數 × 75,000 元 / 戶",
+    basis: "新北市上限 75,000 元 / 戶。",
+    evidence: "戶數資料、管線事業機構證明、特殊情形審議資料。",
+  },
+  {
+    id: "a7PublicRoad",
+    groupId: "A",
+    code: "A-7",
+    title: "公共設施工程開闢費用 - 計畫道路",
+    description: "公共設施用地、公益設施裝修與認養經費依管理機關審定。",
+    mode: "quantityUnit",
+    quantityLabel: "開闢面積（㎡）",
+    unitPriceLabel: "開闢單價（元 / ㎡）",
+    defaultUnitPrice: "4000",
+    capUnitPrice: 4000,
+    formula: "計畫道路開闢費 = 開闢面積 × 開闢單價",
+    basis: "計畫道路不得超過 4,000 元 / ㎡；其他公共設施用地依各管理機關審定金額為準。",
+    evidence: "公共設施管理機關審定資料、開闢面積圖說。",
+  },
+  {
+    id: "a7PublicFacilityDonation",
+    groupId: "A",
+    code: "A-7b",
+    title: "公共設施用地捐贈本市土地成本 / 公益設施",
+    description: "更新單元外得列入共同負擔；更新單元內不得提列。",
+    mode: "manual",
+    formula: "依都市更新建築容積獎勵辦法第八條規定成本或管理機關審定金額",
+    basis: "公益設施室內裝修 / 認養經費依公益設施管理機關審定金額認列。",
+    evidence: "捐贈契約、管理機關審定文件、位置與範圍證明。",
+    reviewRequired: true,
+  },
+  {
+    id: "b1BonusMaintenance",
+    groupId: "B",
+    code: "B",
+    title: "容積獎勵後續管理維護相關經費",
+    description: "保留項目名稱、審定金額、佐證文件與備註。",
+    mode: "manual",
+    formula: "依事業計畫所審定金額",
+    basis: "依事業計畫所審定金額為準。",
+    evidence: "事業計畫審定資料、委辦契約。",
+  },
+  {
+    id: "c1UrbanPlanning",
+    groupId: "C",
+    code: "C-1",
+    title: "都市更新規劃費用",
+    description: "P1 事業概要 150 萬，P2 報核 300 萬 + X + Y，P3 成果報核 150 萬。",
+    mode: "planningFee",
+    formula: "都市更新規劃費 = P1 + P2 + P3 + 其他項目",
+    basis: "X 更新面積規模、Y 權利人人數採累計方式；各項費用有 20% 調整彈性，加計費用不得與其他共同負擔重複。",
+    evidence: "規劃委任契約、面積與權利人數計算、加計項目佐證。",
+  },
+  {
+    id: "c2Appraisal",
+    groupId: "C",
+    code: "C-2",
+    title: "不動產估價費用",
+    description: "一家估價師事務所估價服務費用 = 40 萬 + 更新前主建物筆數及土地筆數 × 0.45 萬 + 更新後主建物筆數 × 0.45 萬。",
+    mode: "manual",
+    formula: "估價費 = 400,000 + 更新前筆數 × 4,500 + 更新後筆數 × 4,500；選定費用得加計 30%，且不低於 250,000。",
+    basis: "被選定為權利變換基礎之鑑價機構得加計服務費 30%，且不低於 25 萬元。",
+    evidence: "估價委任契約、筆數資料、選定鑑價機構資料。",
+  },
+  {
+    id: "c3BoundarySurvey",
+    groupId: "C",
+    code: "C-3",
+    title: "土地鑑界費",
+    mode: "quantityUnit",
+    quantityLabel: "更新前地號數",
+    unitPriceLabel: "單價（元 / 筆）",
+    defaultUnitPrice: "4000",
+    capUnitPrice: 4000,
+    quantitySource: "landNumberCount",
+    formula: "土地鑑界費 = 更新前地號數 × 4,000 元",
+    basis: "更新前每筆地號 4,000 元。",
+    evidence: "地號清冊、鑑界規費資料。",
+  },
+  {
+    id: "c4Boring",
+    groupId: "C",
+    code: "C-4",
+    title: "鑽探費用",
+    mode: "quantityUnit",
+    quantityLabel: "鑽探孔數",
+    unitPriceLabel: "單價（元 / 孔）",
+    defaultUnitPrice: "75000",
+    capUnitPrice: 75000,
+    formula: "鑽探費用 = 鑽探孔數 × 75,000 元 / 孔",
+    basis: "新北市上限 75,000 元 / 孔；台北市為 97,500 元 / 孔，本案預設新北市。",
+    evidence: "鑽探報告、孔數規劃、契約或報價資料。",
+  },
+  {
+    id: "c5NeighborSurvey",
+    groupId: "C",
+    code: "C-5",
+    title: "鄰房鑑定費用",
+    mode: "manual",
+    formula: "依新北市建築物施工損壞鄰房事件處理程序及相關公會收費標準計算",
+    basis: "需提供鑑定範圍圖及戶數證明。",
+    evidence: "鑑定範圍圖、戶數證明、公會收費標準或契約。",
+  },
+  {
+    id: "c6PreMeasurement",
+    groupId: "C",
+    code: "C-6",
+    title: "更新前土地及建物測量費用",
+    mode: "manual",
+    formula: "依實際狀況認列",
+    basis: "須檢具契約影本佐證。",
+    evidence: "測量契約影本。",
+  },
+  {
+    id: "c7ImprovementCompensation",
+    groupId: "C",
+    code: "C-7",
+    title: "土地改良物拆遷補償費用",
+    mode: "manual",
+    formula: "由實施者委任專業估價者查估後評定",
+    basis: "合法建築物、非合法建築物、其他土地改良物補償單價均需專業估價。",
+    evidence: "估價報告、補償清冊、拆遷計畫。",
+    reviewRequired: true,
+  },
+  {
+    id: "c8Relocation",
+    groupId: "C",
+    code: "C-8",
+    title: "拆遷安置費",
+    mode: "manual",
+    formula: "Σ住宅拆遷安置費 + Σ營業拆遷安置費 + 其他安置費",
+    basis: "住宅 = 居住面積 × 住宅租金水準 × 安置期間；營業 = 營業面積 × 營業租金水準 × 安置期間。",
+    evidence: "居住 / 營業面積、租金水準、安置期間與補償資料。",
+  },
+  {
+    id: "c9Cadastral",
+    groupId: "C",
+    code: "C-9",
+    title: "地籍整理費用",
+    mode: "quantityUnit",
+    quantityLabel: "更新後戶數",
+    unitPriceLabel: "單價（元 / 戶）",
+    defaultUnitPrice: "20000",
+    capUnitPrice: 20000,
+    formula: "地籍整理費用 = 更新後戶數 × 20,000 元 + 地政機關行政規費",
+    basis: "原則以更新後每戶 20,000 元計列，另加計地政機關行政規費。",
+    evidence: "更新後戶數、地政規費計算明細。",
+  },
+  {
+    id: "d1LoanInterest",
+    groupId: "D",
+    code: "D",
+    title: "貸款利息",
+    mode: "loanInterest",
+    formula: "(1) + (2)",
+    basis: "(1)〔合法建築物及其他土地改良物拆遷補償費 + G + H〕× 年利率 × 貸款期間；(2)〔(A - 公寓大廈管理基金) + (C - 補償費)〕× 年利率 × 貸款期間 × 0.5。貸款期間不得長於實際施工期間加 12 個月。",
+    evidence: "補償費明細、都市計畫變更負擔、容積移轉費、利率資料、施工期間推估。",
+  },
+  {
+    id: "e1StampTax",
+    groupId: "E",
+    code: "E-1",
+    title: "印花稅",
+    mode: "manual",
+    formula: "依印花稅法第五條規定提列，扣除營業稅計算",
+    basis: "依印花稅法及契據類型認列。",
+    evidence: "契據金額、印花稅計算表。",
+  },
+  {
+    id: "e2BusinessTax",
+    groupId: "E",
+    code: "E-2",
+    title: "營業稅",
+    mode: "manual",
+    formula: "依財政部相關函釋擇一計算",
+    basis: "本輪先保留輸入欄位與說明，正式公式待稅務資料確認。",
+    evidence: "權利價值、共同負擔、稅務試算資料。",
+    temporary: true,
+  },
+  {
+    id: "f1AdminOperation",
+    groupId: "F",
+    code: "F-1",
+    title: "行政作業費用",
+    mode: "administrativeFee",
+    formula: "行政作業費用 = 更新單元內土地公告現值總值 × 2.5%",
+    basis: "新北市基準 2.5%。",
+    evidence: "土地公告現值總值、主管機關需求資料。",
+  },
+  {
+    id: "f2Trust",
+    groupId: "F",
+    code: "F-2",
+    title: "信託費用",
+    mode: "manual",
+    formula: "依信託費用表及合約計算",
+    basis: "一般建商以 50% 提列；自組更新會或非以更新後房地折價抵付之代執行機構者可提列全額。資金信託全額，土地信託拆半。",
+    evidence: "信託契約、費用表、信託拆分明細。",
+  },
+  {
+    id: "f3PersonnelAdmin",
+    groupId: "F",
+    code: "F-3",
+    title: "人事行政管理費用",
+    mode: "personnelAdmin",
+    formula: "人事行政管理費用 = (A + C + G) × 人事行政管理費率",
+    basis: "費率依產權級別與基地面積，最高 6%；本費率為上限，實際仍須說明合理性與必要性並依審議結果。",
+    evidence: "產權級別、基地面積、費率合理性說明。",
+  },
+  {
+    id: "f4SalesManagement",
+    groupId: "F",
+    code: "F-4",
+    title: "銷售管理費用",
+    mode: "salesManagement",
+    formula: "實施者實際獲配單元及車位總價值 × 級距費率",
+    basis: "25 億以下部分：6%；超過 25 億至 50 億部分：5.5%；超過 50 億部分：5%，採級距累進。",
+    evidence: "實施者實際獲配單元與車位總價值。",
+  },
+  {
+    id: "f5RiskManagement",
+    groupId: "F",
+    code: "F-5",
+    title: "風險管理費用",
+    mode: "riskManagement",
+    formula: "風險管理費 = (A + C + D + F1 + F2 + F3 + G + H) × 風險管理費率",
+    basis: "費率依產權級別及總樓地板面積；最高 14%。共同負擔比率低於 40% 等特定情形仍須審議同意。",
+    evidence: "產權級別、總樓地板面積、共同負擔比率與風險說明。",
+  },
+  {
+    id: "g1UrbanPlanChange",
+    groupId: "G",
+    code: "G",
+    title: "都市計畫變更負擔費用",
+    mode: "manual",
+    formula: "依事業計畫所審定金額",
+    basis: "依法令變更都市計畫，應提供或捐贈一定金額、可建築土地或樓地板面積，及辦理都市計畫變更所支付之委辦費。",
+    evidence: "都市計畫變更審定資料、捐贈或負擔文件、委辦契約。",
+  },
+  {
+    id: "h1TdrDonation",
+    groupId: "H",
+    code: "H-1",
+    title: "容積移轉費用 - 捐贈送出基地公共設施方式",
+    mode: "manual",
+    formula: "容積購入費用及委辦費",
+    basis: "應檢具相關契約影本佐證。",
+    evidence: "送出基地契約、移轉容積文件、委辦費合約。",
+    reviewRequired: true,
+  },
+  {
+    id: "h2TdrCashPayment",
+    groupId: "H",
+    code: "H-2",
+    title: "容積移轉費用 - 折繳代金方式",
+    mode: "manual",
+    formula: "得以估價方式提列所需購入容積移轉費用",
+    basis: "正式容積移轉費用仍待估價、契約及主管機關審查確認。",
+    evidence: "估價報告、代金試算、主管機關審查資料。",
+    temporary: true,
+  },
+];
+
+const otherCostItemDefinitions = [
+  ["landTakeover", "土地讓出 / 承接價款"],
+  ["internalDevelopment", "公司整合開發費"],
+  ["architectUnconfirmed", "建築師已請款但尚未確認可列共同負擔部分"],
+  ["landFinance", "土地融資利息或公司內部資金成本"],
+  ["ownerAgreement", "地主協議款"],
+  ["companyAdvances", "公司已墊付款"],
+  ["brokerConsultant", "仲介 / 協調 / 顧問費"],
+  ["taxTransaction", "稅務或交易成本"],
+  ["otherInvestment", "其他公司內部投資成本"],
+].map(([id, title]) => ({ id, title }));
+
+const defaultCostInputs = {
+  commonItems: Object.fromEntries(costCommonItemDefinitions.map((item) => [
+    item.id,
+    {
+      included: true,
+      quantity: "",
+      unitPrice: item.defaultUnitPrice ?? "",
+      amount: "",
+      note: "",
+      evidence: "",
+      temporary: Boolean(item.temporary),
+      ...(item.selectField ? { [item.selectField]: item.defaultSelectValue ?? "" } : {}),
+      ...(item.mode === "planningFee" ? { xFee: "", yFee: "", otherFee: "" } : {}),
+      ...(item.mode === "loanInterest" ? { componentOneAmount: "", componentTwoAmount: "", annualRate: "", loanMonths: "" } : {}),
+      ...(item.mode === "administrativeFee" ? { rate: "2.5" } : {}),
+      ...(item.mode === "salesManagement" ? { allocationValue: "" } : {}),
+      ...(item.mode === "riskManagement" ? { rate: "" } : {}),
+    },
+  ])),
+  otherCostItems: Object.fromEntries(otherCostItemDefinitions.map((item) => [
+    item.id,
+    {
+      amount: "",
+      note: "",
+      temporary: true,
+    },
+  ])),
+};
+
 const baseInfoFields = [
   { key: "location", label: "基地位置", placeholder: "例：新北市泰山區..." },
   { key: "scope", label: "基地範圍", placeholder: "例：更新單元範圍、街廓或鄰近道路界線" },
@@ -482,6 +900,8 @@ function buildLocalTestDataExport({
   capacityResultsByCaseId,
   floorEfficiencyParamsByCaseId,
   floorEfficiencyResultsByCaseId,
+  costInputsByCaseId,
+  costResultsByCaseId,
 }) {
   const normalizedCases = Array.isArray(cases) ? cases : [];
   const normalizedCurrentCaseId = resolveImportedCurrentCaseId(normalizedCases, currentCaseId);
@@ -489,6 +909,7 @@ function buildLocalTestDataExport({
   const normalizedBaseInfo = isPlainRecord(baseInfoByCaseId) ? baseInfoByCaseId : {};
   const normalizedCapacityInputs = isPlainRecord(capacityInputsByCaseId) ? capacityInputsByCaseId : {};
   const normalizedFloorEfficiencyParams = isPlainRecord(floorEfficiencyParamsByCaseId) ? floorEfficiencyParamsByCaseId : {};
+  const normalizedCostInputs = isPlainRecord(costInputsByCaseId) ? costInputsByCaseId : {};
   const {
     capacityResultsByCaseId: recalculatedCapacityResults,
     floorEfficiencyResultsByCaseId: recalculatedFloorEfficiencyResults,
@@ -499,11 +920,24 @@ function buildLocalTestDataExport({
     capacityInputsByCaseId: normalizedCapacityInputs,
     floorEfficiencyParamsByCaseId: normalizedFloorEfficiencyParams,
   });
+  const recalculatedCostResults = {
+    ...(isPlainRecord(costResultsByCaseId) ? costResultsByCaseId : {}),
+    ...recalculateCostResultsByCaseId({
+      cases: normalizedCases,
+      costInputsByCaseId: normalizedCostInputs,
+      rosterStagingByCaseId: normalizedRosterStaging,
+      baseInfoByCaseId: normalizedBaseInfo,
+      capacityResultsByCaseId: recalculatedCapacityResults,
+      floorEfficiencyResultsByCaseId: recalculatedFloorEfficiencyResults,
+    }),
+  };
   const recordData = {
     capacityInputsByCaseId: normalizedCapacityInputs,
     capacityResultsByCaseId: recalculatedCapacityResults,
     floorEfficiencyParamsByCaseId: normalizedFloorEfficiencyParams,
     floorEfficiencyResultsByCaseId: recalculatedFloorEfficiencyResults,
+    costInputsByCaseId: normalizedCostInputs,
+    costResultsByCaseId: recalculatedCostResults,
   };
 
   LOCAL_TEST_DATA_RECORD_FIELDS.forEach(({ dataKey, storageKey }) => {
@@ -1025,6 +1459,8 @@ function CaseManagementModule({
   capacityResultsByCaseId,
   floorEfficiencyParamsByCaseId,
   floorEfficiencyResultsByCaseId,
+  costInputsByCaseId,
+  costResultsByCaseId,
   onAddCase,
   onUpdateCase,
   onDeleteCase,
@@ -1145,6 +1581,8 @@ function CaseManagementModule({
       capacityResultsByCaseId,
       floorEfficiencyParamsByCaseId,
       floorEfficiencyResultsByCaseId,
+      costInputsByCaseId,
+      costResultsByCaseId,
     });
 
     downloadJsonFile(payload, buildLocalTestDataFileName());
@@ -2803,6 +3241,266 @@ function parseRateInput(value, fallbackValue = null) {
 function parsePlainNumberInput(value, fallbackValue = null) {
   const parsedValue = parseNumericInput(value);
   return Number.isFinite(parsedValue) ? parsedValue : fallbackValue;
+}
+
+function normalizeCostItemInput(definition, itemInput) {
+  const baseInput = defaultCostInputs.commonItems[definition.id] ?? {};
+  return {
+    ...baseInput,
+    ...(isPlainRecord(itemInput) ? itemInput : {}),
+  };
+}
+
+function normalizeCostInputs(costInputs) {
+  const inputRecord = isPlainRecord(costInputs) ? costInputs : {};
+  const commonItems = {};
+  const otherCostItems = {};
+
+  costCommonItemDefinitions.forEach((definition) => {
+    commonItems[definition.id] = normalizeCostItemInput(
+      definition,
+      inputRecord.commonItems?.[definition.id],
+    );
+  });
+
+  otherCostItemDefinitions.forEach((definition) => {
+    otherCostItems[definition.id] = {
+      ...defaultCostInputs.otherCostItems[definition.id],
+      ...(isPlainRecord(inputRecord.otherCostItems?.[definition.id]) ? inputRecord.otherCostItems[definition.id] : {}),
+    };
+  });
+
+  return { commonItems, otherCostItems };
+}
+
+function getCostSourceQuantity(quantitySource, context) {
+  if (quantitySource === "totalFloorAreaSqm") {
+    return pickNumericValue(context.floorResult?.totalFloorAreaSqm);
+  }
+  if (quantitySource === "landNumberCount") {
+    return Number.isFinite(context.rosterSummary?.landNumberCount) ? context.rosterSummary.landNumberCount : null;
+  }
+  if (quantitySource === "landAreaSqm") {
+    return pickNumericValue(context.rosterSummary?.landAreaSqm, context.capacityResult?.landAreaSqm);
+  }
+  return null;
+}
+
+function getCostQuantity(input, definition, context) {
+  const quantity = parseNumericInput(input.quantity);
+  return Number.isFinite(quantity) ? quantity : getCostSourceQuantity(definition.quantitySource, context);
+}
+
+function getDemolitionCap(input) {
+  return demolitionUnitPriceCaps[input.structureType] ?? null;
+}
+
+function calculateProgressiveSalesManagementFee(value) {
+  if (!Number.isFinite(value) || value <= 0) {
+    return 0;
+  }
+
+  const firstTier = Math.min(value, 2500000000) * 0.06;
+  const secondTier = Math.min(Math.max(value - 2500000000, 0), 2500000000) * 0.055;
+  const thirdTier = Math.max(value - 5000000000, 0) * 0.05;
+  return firstTier + secondTier + thirdTier;
+}
+
+function calculatePersonnelAdminRate(propertyCount, landAreaSqm) {
+  const propertyBand = propertyCount < 30 ? 0 : propertyCount <= 150 ? 1 : 2;
+  const areaBand = landAreaSqm < 1500 ? 0 : landAreaSqm < 2500 ? 1 : 2;
+  const rateMatrix = [
+    [4, 4.5, 5],
+    [4.5, 5, 5.5],
+    [5, 5.5, 6],
+  ];
+  return rateMatrix[areaBand][propertyBand];
+}
+
+function calculateRiskManagementRate(propertyCount, totalFloorAreaPing) {
+  const propertyBand = propertyCount < 30 ? 0 : propertyCount <= 150 ? 1 : 2;
+  const areaBand = totalFloorAreaPing <= 2500 ? 0 : totalFloorAreaPing <= 7500 ? 1 : 2;
+  const rateMatrix = [
+    [12, 12.5, 13],
+    [12.5, 13, 13.5],
+    [13, 13.5, 14],
+  ];
+  return rateMatrix[areaBand][propertyBand];
+}
+
+function calculateCostItemAmount(definition, input, context, calculatedItems, groupTotals) {
+  if (!input.included) {
+    return { amount: 0, warning: "", status: "未列入共同負擔" };
+  }
+
+  const warnings = [];
+  let amount = 0;
+  let status = "待填";
+
+  if (definition.mode === "quantityUnit") {
+    const quantity = getCostQuantity(input, definition, context);
+    const unitPrice = parseNumericInput(input.unitPrice);
+    amount = Number.isFinite(quantity) && Number.isFinite(unitPrice) ? quantity * unitPrice : 0;
+    status = amount > 0 ? "可初算" : "待填";
+    const capUnitPrice = definition.id === "a1Demolition" ? getDemolitionCap(input) : definition.capUnitPrice;
+    if (Number.isFinite(capUnitPrice) && Number.isFinite(unitPrice) && unitPrice > capUnitPrice) {
+      warnings.push("超出新北市基準，需佐證 / 審議確認");
+    }
+  } else if (definition.mode === "planningFee") {
+    amount = 1500000
+      + 3000000
+      + 1500000
+      + (parseNumericInput(input.xFee) ?? 0)
+      + (parseNumericInput(input.yFee) ?? 0)
+      + (parseNumericInput(input.otherFee) ?? 0);
+    status = "依新北市 P1/P2/P3 架構初算";
+  } else if (definition.mode === "loanInterest") {
+    const componentOneAmount = parseNumericInput(input.componentOneAmount) ?? 0;
+    const componentTwoAmount = parseNumericInput(input.componentTwoAmount) ?? 0;
+    const annualRate = parseNumericInput(input.annualRate);
+    const loanMonths = parseNumericInput(input.loanMonths);
+    amount = Number.isFinite(annualRate) && Number.isFinite(loanMonths)
+      ? (componentOneAmount * (annualRate / 100) * (loanMonths / 12))
+        + (componentTwoAmount * (annualRate / 100) * (loanMonths / 12) * 0.5)
+      : 0;
+    status = amount > 0 ? "依貸款利息公式初算" : "待填";
+  } else if (definition.mode === "administrativeFee") {
+    const rate = parseNumericInput(input.rate) ?? 2.5;
+    amount = Number.isFinite(context.rosterSummary.assessedCurrentValueTotal)
+      ? context.rosterSummary.assessedCurrentValueTotal * (rate / 100)
+      : 0;
+    status = amount > 0 ? "依公告現值初算" : "待清冊公告現值";
+  } else if (definition.mode === "personnelAdmin") {
+    const propertyCount = context.rosterSummary.landRightCount || 0;
+    const landAreaSqm = context.rosterSummary.landAreaSqm || 0;
+    const rate = calculatePersonnelAdminRate(propertyCount, landAreaSqm);
+    amount = ((groupTotals.A ?? 0) + (groupTotals.C ?? 0) + (groupTotals.G ?? 0)) * (rate / 100);
+    status = `自動判斷上限 ${formatPercentValue(rate)}`;
+  } else if (definition.mode === "salesManagement") {
+    const allocationValue = parseNumericInput(input.allocationValue);
+    amount = calculateProgressiveSalesManagementFee(allocationValue);
+    status = amount > 0 ? "級距累進初算" : "待填實施者獲配價值";
+  } else if (definition.mode === "riskManagement") {
+    const propertyCount = context.rosterSummary.landRightCount || 0;
+    const totalFloorAreaPing = pickNumericValue(
+      context.floorResult?.totalFloorAreaPing,
+      Number.isFinite(context.floorResult?.totalFloorAreaSqm) ? convertSqmToPing(context.floorResult.totalFloorAreaSqm) : null,
+    ) ?? 0;
+    const autoRate = calculateRiskManagementRate(propertyCount, totalFloorAreaPing);
+    const rate = parseNumericInput(input.rate) ?? autoRate;
+    const riskBase = (groupTotals.A ?? 0)
+      + (groupTotals.C ?? 0)
+      + (groupTotals.D ?? 0)
+      + (calculatedItems.f1AdminOperation?.amount ?? 0)
+      + (calculatedItems.f2Trust?.amount ?? 0)
+      + (calculatedItems.f3PersonnelAdmin?.amount ?? 0)
+      + (groupTotals.G ?? 0)
+      + (groupTotals.H ?? 0);
+    amount = riskBase * (rate / 100);
+    status = `自動判斷上限 ${formatPercentValue(autoRate)}`;
+    if (rate > 14) {
+      warnings.push("風險管理費率超過 14%，需審議確認");
+    }
+  } else {
+    amount = parseNumericInput(input.amount) ?? 0;
+    status = amount > 0 ? "依輸入金額" : "待填";
+  }
+
+  if (definition.reviewRequired) {
+    warnings.push("需合約佐證 / 審議確認");
+  }
+  if (definition.temporary || input.temporary) {
+    warnings.push("目前暫估");
+  }
+
+  return {
+    amount,
+    warning: warnings.join("；"),
+    status,
+  };
+}
+
+function calculateCostResults(costInputs, rosterStaging, baseInfo, capacityResult, floorResult) {
+  const effectiveInputs = normalizeCostInputs(costInputs);
+  const rosterSummary = buildRosterBaseSummary(rosterStaging);
+  const context = { rosterSummary, baseInfo, capacityResult, floorResult };
+  const items = {};
+  const groupTotals = Object.fromEntries(costCommonGroups.map((group) => [group.id, 0]));
+  const deferredItemIds = new Set(["f3PersonnelAdmin", "f5RiskManagement"]);
+
+  costCommonItemDefinitions.forEach((definition) => {
+    if (deferredItemIds.has(definition.id)) {
+      return;
+    }
+    const input = effectiveInputs.commonItems[definition.id];
+    const result = calculateCostItemAmount(definition, input, context, items, groupTotals);
+    items[definition.id] = result;
+    groupTotals[definition.groupId] += result.amount;
+  });
+
+  ["f3PersonnelAdmin", "f5RiskManagement"].forEach((itemId) => {
+    const definition = costCommonItemDefinitions.find((item) => item.id === itemId);
+    const result = calculateCostItemAmount(definition, effectiveInputs.commonItems[itemId], context, items, groupTotals);
+    items[itemId] = result;
+    groupTotals[definition.groupId] += result.amount;
+  });
+
+  const otherItems = {};
+  let otherCostTotal = 0;
+  otherCostItemDefinitions.forEach((definition) => {
+    const input = effectiveInputs.otherCostItems[definition.id];
+    const amount = parseNumericInput(input.amount) ?? 0;
+    otherItems[definition.id] = {
+      amount,
+      status: amount > 0 ? "公司內部成本" : "待填",
+    };
+    otherCostTotal += amount;
+  });
+
+  const commonBurdenTotal = Object.values(groupTotals).reduce((total, amount) => total + amount, 0);
+  return roundRecordNumbers({
+    jurisdiction: "new-taipei",
+    groupTotals,
+    items,
+    otherItems,
+    commonBurdenTotal,
+    otherCostTotal,
+    internalTotalCost: commonBurdenTotal + otherCostTotal,
+    sourceSummary: {
+      landAreaSqm: rosterSummary.landAreaSqm,
+      landRightCount: rosterSummary.landRightCount,
+      landNumberCount: rosterSummary.landNumberCount,
+      assessedCurrentValueTotal: rosterSummary.assessedCurrentValueTotal,
+      totalCapacityAreaSqm: capacityResult?.totalCapacityAreaSqm ?? null,
+      transferRatio: capacityResult?.transferRatio ?? null,
+      transferAreaSqm: capacityResult?.transferAreaSqm ?? null,
+      tdrScoringSummary: capacityResult?.tdrScoringSummary ?? null,
+    },
+  }, INTERNAL_DECIMAL_DIGITS);
+}
+
+function recalculateCostResultsByCaseId({
+  cases,
+  costInputsByCaseId,
+  rosterStagingByCaseId,
+  baseInfoByCaseId,
+  capacityResultsByCaseId,
+  floorEfficiencyResultsByCaseId,
+}) {
+  const nextResults = {};
+  (Array.isArray(cases) ? cases : []).forEach((caseItem) => {
+    if (!caseItem?.id || !isPlainRecord(costInputsByCaseId?.[caseItem.id])) {
+      return;
+    }
+    nextResults[caseItem.id] = calculateCostResults(
+      costInputsByCaseId[caseItem.id],
+      rosterStagingByCaseId?.[caseItem.id],
+      baseInfoByCaseId?.[caseItem.id],
+      capacityResultsByCaseId?.[caseItem.id],
+      floorEfficiencyResultsByCaseId?.[caseItem.id],
+    );
+  });
+  return nextResults;
 }
 
 function clampScore(value, min, max, fallbackValue = 0) {
@@ -4654,6 +5352,408 @@ function FloorEfficiencyModule({
   );
 }
 
+function CostCaseRequiredNotice({ onGoToCases }) {
+  return (
+    <section className="eval-module-section eval-case-required">
+      <LockKeyhole aria-hidden="true" size={30} />
+      <div>
+        <p className="eval-kicker">CASE REQUIRED</p>
+        <h4>請先建立或選擇案件，才能進行成本與共同負擔試算。</h4>
+        <p>成本資料會掛在目前案件底下，並承接清冊、基地、容積、坪效與 TDR 評點結果。</p>
+        <button type="button" onClick={onGoToCases}>
+          前往案件管理
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function CostTextInput({ label, value, onChange, placeholder = "待填" }) {
+  return (
+    <label className="eval-cost-mini-field">
+      <span>{label}</span>
+      <input type="text" value={value ?? ""} onChange={onChange} placeholder={placeholder} />
+    </label>
+  );
+}
+
+function CostItemInputControls({ definition, input, context, onChange }) {
+  if (definition.mode === "manual") {
+    return (
+      <CostTextInput
+        label={`${definition.code} 金額`}
+        value={input.amount}
+        onChange={onChange("amount")}
+        placeholder="例：1000000"
+      />
+    );
+  }
+
+  if (definition.mode === "planningFee") {
+    return (
+      <div className="eval-cost-mini-grid">
+        <span>P1 1,500,000 + P2 3,000,000 + P3 1,500,000</span>
+        <CostTextInput label="X 費用" value={input.xFee} onChange={onChange("xFee")} />
+        <CostTextInput label="Y 費用" value={input.yFee} onChange={onChange("yFee")} />
+        <CostTextInput label="其他項目" value={input.otherFee} onChange={onChange("otherFee")} />
+      </div>
+    );
+  }
+
+  if (definition.mode === "loanInterest") {
+    return (
+      <div className="eval-cost-mini-grid">
+        <CostTextInput label="(1) 基礎金額" value={input.componentOneAmount} onChange={onChange("componentOneAmount")} />
+        <CostTextInput label="(2) 基礎金額" value={input.componentTwoAmount} onChange={onChange("componentTwoAmount")} />
+        <CostTextInput label="年利率（%）" value={input.annualRate} onChange={onChange("annualRate")} />
+        <CostTextInput label="貸款期間（月）" value={input.loanMonths} onChange={onChange("loanMonths")} />
+      </div>
+    );
+  }
+
+  if (definition.mode === "administrativeFee") {
+    return (
+      <div className="eval-cost-mini-grid">
+        <span>公告現值總額：{formatCurrencyTwd(context.rosterSummary.assessedCurrentValueTotal)}</span>
+        <CostTextInput label="費率（%）" value={input.rate} onChange={onChange("rate")} />
+      </div>
+    );
+  }
+
+  if (definition.mode === "personnelAdmin") {
+    const rate = calculatePersonnelAdminRate(context.rosterSummary.landRightCount || 0, context.rosterSummary.landAreaSqm || 0);
+    return <span className="eval-cost-readonly">依產權級別與基地面積自動採 {formatPercentValue(rate)} 上限</span>;
+  }
+
+  if (definition.mode === "salesManagement") {
+    return (
+      <div className="eval-cost-mini-grid">
+        <CostTextInput label="實施者獲配價值" value={input.allocationValue} onChange={onChange("allocationValue")} placeholder="例：3000000000" />
+        <span>25 億以下部分 6%，25-50 億部分 5.5%，50 億以上部分 5%。</span>
+      </div>
+    );
+  }
+
+  if (definition.mode === "riskManagement") {
+    const totalFloorAreaPing = pickNumericValue(
+      context.floorResult?.totalFloorAreaPing,
+      Number.isFinite(context.floorResult?.totalFloorAreaSqm) ? convertSqmToPing(context.floorResult.totalFloorAreaSqm) : null,
+    ) ?? 0;
+    const autoRate = calculateRiskManagementRate(context.rosterSummary.landRightCount || 0, totalFloorAreaPing);
+    return (
+      <div className="eval-cost-mini-grid">
+        <span>依產權級別與總樓地板面積自動採 {formatPercentValue(autoRate)} 上限。</span>
+        <CostTextInput label="覆寫費率（%）" value={input.rate} onChange={onChange("rate")} placeholder="空白則自動" />
+      </div>
+    );
+  }
+
+  const sourceQuantity = getCostSourceQuantity(definition.quantitySource, context);
+  return (
+    <div className="eval-cost-mini-grid">
+      {definition.selectField && (
+        <label className="eval-cost-mini-field">
+          <span>{definition.selectLabel}</span>
+          <select value={input[definition.selectField] ?? ""} onChange={onChange(definition.selectField)}>
+            {definition.selectOptions.map(([value, label]) => (
+              <option value={value} key={value}>{label}</option>
+            ))}
+          </select>
+        </label>
+      )}
+      <CostTextInput
+        label={definition.quantityLabel}
+        value={input.quantity}
+        onChange={onChange("quantity")}
+        placeholder={Number.isFinite(sourceQuantity) ? formatNumber(sourceQuantity, 2) : "待填"}
+      />
+      <CostTextInput
+        label={definition.unitPriceLabel}
+        value={input.unitPrice}
+        onChange={onChange("unitPrice")}
+        placeholder="待填"
+      />
+    </div>
+  );
+}
+
+function CostCommonItemRow({ definition, input, result, context, onChange, onCheckboxChange }) {
+  return (
+    <tr className={result?.warning ? "has-warning" : ""}>
+      <td>
+        <strong>{definition.code} {definition.title}</strong>
+        <p>{definition.description}</p>
+      </td>
+      <td>{definition.formula}</td>
+      <td>
+        <CostItemInputControls definition={definition} input={input} context={context} onChange={onChange} />
+      </td>
+      <td>
+        <strong>{formatCurrencyTwd(result?.amount)}</strong>
+        <span>{result?.status || "待填"}</span>
+      </td>
+      <td>{definition.basis}</td>
+      <td>{definition.evidence}</td>
+      <td>
+        <label className="eval-check-field eval-check-field--compact">
+          <input type="checkbox" checked={Boolean(input.included)} onChange={onCheckboxChange("included")} />
+          <span>{input.included ? "列入" : "不列入"}</span>
+        </label>
+      </td>
+      <td>
+        <CostTextInput label="備註" value={input.note} onChange={onChange("note")} placeholder="待填" />
+        {result?.warning && <p className="eval-cost-warning">{result.warning}</p>}
+      </td>
+    </tr>
+  );
+}
+
+function TaipeiDifferenceReference() {
+  return (
+    <details className="eval-module-section eval-collapsible-section eval-cost-reference">
+      <summary>台北市版本差異參考</summary>
+      <ul>
+        <li>台北市 113 年 10 月版使用 A-I 架構。</li>
+        <li>台北市把公共設施費用獨立為 B。</li>
+        <li>台北市把相關申請建築容積獎勵所支付之費用獨立為 C。</li>
+        <li>台北市容積移轉為 E，新北市容積移轉為 H。</li>
+        <li>台北市管理費為 I，新北市管理費為 F。</li>
+        <li>鑽探費：台北市 97,500 元 / 孔，新北市 75,000 元 / 孔。</li>
+        <li>外接水電瓦斯：台北市 97,500 元 / 戶，新北市 75,000 元 / 戶。</li>
+        <li>公共設施開闢：台北市道路 5,070 元 / ㎡、綠地 4,800 元 / ㎡、鄰里公園 6,000 元 / ㎡；新北市計畫道路不得超過 4,000 元 / ㎡，其他依管理機關審定。</li>
+        <li>拆除費：台北市依構造與樓層分級，新北市依構造別固定單價。</li>
+        <li>台北市資料僅供差異比較，泰山案預設以新北市為準。</li>
+      </ul>
+    </details>
+  );
+}
+
+function CostAndCommonBurdenModule({
+  currentCase,
+  rosterStaging,
+  baseInfo,
+  capacityResult,
+  floorResult,
+  costInputs,
+  costResults,
+  saveStatus,
+  onCostInputsChange,
+  onCostResultsChange,
+  onMarkUnsaved,
+  onSaveModule,
+  onGoToCases,
+}) {
+  const effectiveInputs = normalizeCostInputs(costInputs);
+  const calculatedResults = useMemo(
+    () => calculateCostResults(effectiveInputs, rosterStaging, baseInfo, capacityResult, floorResult),
+    [effectiveInputs, rosterStaging, baseInfo, capacityResult, floorResult],
+  );
+  const resultSignature = JSON.stringify(calculatedResults);
+
+  useEffect(() => {
+    onCostResultsChange(calculatedResults);
+  }, [resultSignature]);
+
+  if (!currentCase) {
+    return (
+      <div className="eval-module-stack">
+        <CostCaseRequiredNotice onGoToCases={onGoToCases} />
+      </div>
+    );
+  }
+
+  const rosterSummary = buildRosterBaseSummary(rosterStaging);
+  const context = { rosterSummary, baseInfo, capacityResult, floorResult };
+  const displayResults = calculatedResults;
+  const summaryItems = [
+    ["共同負擔總額", formatCurrencyTwd(displayResults.commonBurdenTotal)],
+    ["非共同負擔成本小計", formatCurrencyTwd(displayResults.otherCostTotal)],
+    ["公司內部總成本觀察", formatCurrencyTwd(displayResults.internalTotalCost)],
+    ["新北市基準", "A + B + C + D + E + F + G + H"],
+  ];
+  const sourceItems = [
+    ["目前案件", `${currentCase.code} / ${currentCase.name}`],
+    ["土地面積", formatSqmAndPing(rosterSummary.landAreaSqm)],
+    ["公告現值總額", formatCurrencyTwd(rosterSummary.assessedCurrentValueTotal)],
+    ["總容積量", formatSqmAndPing(capacityResult?.totalCapacityAreaSqm)],
+    ["容積移轉比例", formatPercentValue(capacityResult?.transferRatio)],
+    ["容積移轉量", formatSqmAndPing(capacityResult?.transferAreaSqm)],
+    ["TDR 評點狀態", capacityResult?.tdrScoringSummary?.scoringStatus || "待評點"],
+  ];
+  const groupSummaryItems = costCommonGroups.map((group) => [
+    `${group.id} ${group.title}`,
+    formatCurrencyTwd(displayResults.groupTotals?.[group.id]),
+  ]);
+
+  const handleCommonItemChange = (itemId) => (field) => (event) => {
+    onMarkUnsaved();
+    onCostInputsChange({
+      ...effectiveInputs,
+      commonItems: {
+        ...effectiveInputs.commonItems,
+        [itemId]: {
+          ...effectiveInputs.commonItems[itemId],
+          [field]: event.target.value,
+        },
+      },
+    });
+  };
+  const handleCommonItemCheckboxChange = (itemId) => (field) => (event) => {
+    onMarkUnsaved();
+    onCostInputsChange({
+      ...effectiveInputs,
+      commonItems: {
+        ...effectiveInputs.commonItems,
+        [itemId]: {
+          ...effectiveInputs.commonItems[itemId],
+          [field]: event.target.checked,
+        },
+      },
+    });
+  };
+  const handleOtherCostChange = (itemId, field) => (event) => {
+    onMarkUnsaved();
+    onCostInputsChange({
+      ...effectiveInputs,
+      otherCostItems: {
+        ...effectiveInputs.otherCostItems,
+        [itemId]: {
+          ...effectiveInputs.otherCostItems[itemId],
+          [field]: event.target.value,
+        },
+      },
+    });
+  };
+
+  return (
+    <div className="eval-module-stack">
+      <CurrentCaseSummary currentCase={currentCase} />
+      <ModuleSaveStatusBar saveStatus={saveStatus} onSave={onSaveModule} />
+
+      <section className="eval-module-section eval-cost-hero">
+        <div className="eval-section-head">
+          <h4>成本與共同負擔總覽</h4>
+          <p>本區依新北市共同負擔基準建立；實際認列仍以主管機關審查與核定內容為準。</p>
+        </div>
+        <DataSummaryGrid items={summaryItems} />
+        <DataSummaryGrid items={sourceItems} />
+      </section>
+
+      <section className="eval-module-section">
+        <div className="eval-section-head">
+          <h4>共同負擔費用 A-H</h4>
+          <p>共同負擔總額 = A + B + C + D + E + F + G + H。各項可展開輸入與檢視上限。</p>
+        </div>
+        <DataSummaryGrid items={groupSummaryItems} />
+      </section>
+
+      {costCommonGroups.map((group) => {
+        const definitions = costCommonItemDefinitions.filter((item) => item.groupId === group.id);
+        return (
+          <details className="eval-module-section eval-collapsible-section eval-cost-group" key={group.id}>
+            <summary>{group.id} {group.title}</summary>
+            <p>{group.subtitle}</p>
+            {group.id === "H" && (
+              <div className="eval-cost-tdr-note">
+                <DataSummaryGrid items={[
+                  ["目標容移比例", formatPercentValue(capacityResult?.transferRatio)],
+                  ["容積移轉量", formatSqmAndPing(capacityResult?.transferAreaSqm)],
+                  ["捐贈公設地方式", "保留契約佐證欄位"],
+                  ["折繳代金方式", "保留估價提列欄位"],
+                ]} />
+                <p>正式容積移轉費用仍待估價、契約及主管機關審查確認。</p>
+              </div>
+            )}
+            <div className="eval-table-wrap eval-cost-table-wrap">
+              <table className="eval-table eval-cost-table">
+                <thead>
+                  <tr>
+                    <th>項目</th>
+                    <th>提列公式</th>
+                    <th>數量 / 單價</th>
+                    <th>金額</th>
+                    <th>新北市提列上限 / 認列基準</th>
+                    <th>佐證文件</th>
+                    <th>列入共同負擔</th>
+                    <th>備註</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {definitions.map((definition) => (
+                    <CostCommonItemRow
+                      key={definition.id}
+                      definition={definition}
+                      input={effectiveInputs.commonItems[definition.id]}
+                      result={displayResults.items?.[definition.id]}
+                      context={context}
+                      onChange={handleCommonItemChange(definition.id)}
+                      onCheckboxChange={handleCommonItemCheckboxChange(definition.id)}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {group.id === "C" && (
+              <details className="eval-inline-details">
+                <summary>地籍整理行政規費項目</summary>
+                <ul>
+                  <li>所有權移轉登記：申報地價 × 1‰</li>
+                  <li>建物所有權第一次登記：使用執照所載造價 × 2‰</li>
+                  <li>權利變換登記：申報地價 × 1‰</li>
+                  <li>信託登記：信託契約所載土地及建物價值 × 1‰</li>
+                  <li>塗銷信託登記：信託契約所載土地及建物價值 × 1‰</li>
+                  <li>建物第一次測量：位置測量費 4,000 + 轉繪費 × 更新後建號數減一 × 200</li>
+                  <li>建物滅失：更新前建號數 × 400</li>
+                  <li>土地分割：分割地號數 × 800</li>
+                </ul>
+              </details>
+            )}
+          </details>
+        );
+      })}
+
+      <section className="eval-module-section eval-cost-other">
+        <div className="eval-section-head">
+          <h4>其他成本 / 非共同負擔</h4>
+          <p>此區為公司內部投資與承接評估使用，不代表可列入權利變換共同負擔。</p>
+        </div>
+        <div className="eval-table-wrap eval-cost-table-wrap">
+          <table className="eval-table eval-cost-table eval-cost-table--other">
+            <thead>
+              <tr>
+                <th>項目</th>
+                <th>金額</th>
+                <th>狀態</th>
+                <th>備註</th>
+              </tr>
+            </thead>
+            <tbody>
+              {otherCostItemDefinitions.map((definition) => {
+                const input = effectiveInputs.otherCostItems[definition.id];
+                const result = displayResults.otherItems?.[definition.id];
+                return (
+                  <tr key={definition.id}>
+                    <td><strong>{definition.title}</strong></td>
+                    <td>
+                      <CostTextInput label={`${definition.title} 金額`} value={input.amount} onChange={handleOtherCostChange(definition.id, "amount")} />
+                    </td>
+                    <td>{result?.status || "待填"}</td>
+                    <td>
+                      <CostTextInput label={`${definition.title} 備註`} value={input.note} onChange={handleOtherCostChange(definition.id, "note")} />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <TaipeiDifferenceReference />
+    </div>
+  );
+}
+
 const downstreamModuleGuidance = {
   costs: {
     title: "成本與共同負擔",
@@ -4866,6 +5966,8 @@ function ModuleContent({
   currentCapacityResults,
   currentFloorEfficiencyParams,
   currentFloorEfficiencyResults,
+  currentCostInputs,
+  currentCostResults,
   moduleSaveStatusByCaseId,
   rosterStagingByCaseId,
   baseInfoByCaseId,
@@ -4873,6 +5975,8 @@ function ModuleContent({
   capacityResultsByCaseId,
   floorEfficiencyParamsByCaseId,
   floorEfficiencyResultsByCaseId,
+  costInputsByCaseId,
+  costResultsByCaseId,
   onAddCase,
   onUpdateCase,
   onDeleteCase,
@@ -4883,6 +5987,8 @@ function ModuleContent({
   onCapacityResultsChange,
   onFloorEfficiencyParamsChange,
   onFloorEfficiencyResultsChange,
+  onCostInputsChange,
+  onCostResultsChange,
   onMarkModuleUnsaved,
   onSaveModuleData,
   onClearLocalTestData,
@@ -4924,6 +6030,8 @@ function ModuleContent({
         capacityResultsByCaseId={capacityResultsByCaseId}
         floorEfficiencyParamsByCaseId={floorEfficiencyParamsByCaseId}
         floorEfficiencyResultsByCaseId={floorEfficiencyResultsByCaseId}
+        costInputsByCaseId={costInputsByCaseId}
+        costResultsByCaseId={costResultsByCaseId}
         onAddCase={onAddCase}
         onUpdateCase={onUpdateCase}
         onDeleteCase={onDeleteCase}
@@ -4989,6 +6097,26 @@ function ModuleContent({
         saveStatus={getCurrentSaveStatus(moduleSaveStatusByCaseId, currentCase?.id, module.id)}
         onFloorParamsChange={onFloorEfficiencyParamsChange}
         onFloorResultsChange={onFloorEfficiencyResultsChange}
+        onMarkUnsaved={() => onMarkModuleUnsaved(module.id)}
+        onSaveModule={() => onSaveModuleData(module.id)}
+        onGoToCases={onGoToCases}
+      />
+    );
+  }
+
+  if (module.id === "costs") {
+    return (
+      <CostAndCommonBurdenModule
+        currentCase={currentCase}
+        rosterStaging={currentRosterStaging}
+        baseInfo={currentBaseInfo}
+        capacityResult={currentCapacityResults}
+        floorResult={currentFloorEfficiencyResults}
+        costInputs={currentCostInputs}
+        costResults={currentCostResults}
+        saveStatus={getCurrentSaveStatus(moduleSaveStatusByCaseId, currentCase?.id, module.id)}
+        onCostInputsChange={onCostInputsChange}
+        onCostResultsChange={onCostResultsChange}
         onMarkUnsaved={() => onMarkModuleUnsaved(module.id)}
         onSaveModule={() => onSaveModuleData(module.id)}
         onGoToCases={onGoToCases}
@@ -5235,6 +6363,8 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   const [capacityResultsByCaseId, setCapacityResultsByCaseId] = useState(() => loadStoredRecord(CAPACITY_RESULTS_STORAGE_KEY));
   const [floorEfficiencyParamsByCaseId, setFloorEfficiencyParamsByCaseId] = useState(() => loadStoredRecord(FLOOR_EFFICIENCY_PARAMS_STORAGE_KEY));
   const [floorEfficiencyResultsByCaseId, setFloorEfficiencyResultsByCaseId] = useState(() => loadStoredRecord(FLOOR_EFFICIENCY_RESULTS_STORAGE_KEY));
+  const [costInputsByCaseId, setCostInputsByCaseId] = useState(() => loadStoredRecord(COST_INPUTS_STORAGE_KEY));
+  const [costResultsByCaseId, setCostResultsByCaseId] = useState(() => loadStoredRecord(COST_RESULTS_STORAGE_KEY));
   const [moduleSaveStatusByCaseId, setModuleSaveStatusByCaseId] = useState({});
   const isLoggedIn = authState.status === "authenticated";
   const isTestRoute = routeHash === SYSTEM_TEST_HASH;
@@ -5249,6 +6379,8 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   const currentCapacityResults = currentCase ? capacityResultsByCaseId[currentCase.id] ?? null : null;
   const currentFloorEfficiencyParams = currentCase ? floorEfficiencyParamsByCaseId[currentCase.id] ?? defaultFloorEfficiencyParams : defaultFloorEfficiencyParams;
   const currentFloorEfficiencyResults = currentCase ? floorEfficiencyResultsByCaseId[currentCase.id] ?? null : null;
+  const currentCostInputs = currentCase ? costInputsByCaseId[currentCase.id] ?? defaultCostInputs : defaultCostInputs;
+  const currentCostResults = currentCase ? costResultsByCaseId[currentCase.id] ?? null : null;
   const visiblePrimaryModules = useMemo(
     () => primaryEvaluationModules.filter((module) => canViewModule(module, accessProfile)),
     [accessProfile],
@@ -5298,6 +6430,14 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   useEffect(() => {
     writeStoredJson(FLOOR_EFFICIENCY_RESULTS_STORAGE_KEY, floorEfficiencyResultsByCaseId);
   }, [floorEfficiencyResultsByCaseId]);
+
+  useEffect(() => {
+    writeStoredJson(COST_INPUTS_STORAGE_KEY, costInputsByCaseId);
+  }, [costInputsByCaseId]);
+
+  useEffect(() => {
+    writeStoredJson(COST_RESULTS_STORAGE_KEY, costResultsByCaseId);
+  }, [costResultsByCaseId]);
 
   useEffect(() => {
     const resolvedCurrentCaseId = resolveImportedCurrentCaseId(cases, currentCaseId);
@@ -5420,6 +6560,16 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
       return next;
     });
     setFloorEfficiencyResultsByCaseId((current) => {
+      const next = { ...current };
+      delete next[caseId];
+      return next;
+    });
+    setCostInputsByCaseId((current) => {
+      const next = { ...current };
+      delete next[caseId];
+      return next;
+    });
+    setCostResultsByCaseId((current) => {
       const next = { ...current };
       delete next[caseId];
       return next;
@@ -5550,6 +6700,28 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     }));
   };
 
+  const handleCostInputsChange = (nextCostInputs) => {
+    if (!currentCase) {
+      return;
+    }
+
+    setCostInputsByCaseId((current) => ({
+      ...current,
+      [currentCase.id]: nextCostInputs,
+    }));
+  };
+
+  const handleCostResultsChange = (nextCostResults) => {
+    if (!currentCase) {
+      return;
+    }
+
+    setCostResultsByCaseId((current) => ({
+      ...current,
+      [currentCase.id]: nextCostResults,
+    }));
+  };
+
   const handleClearLocalTestData = () => {
     clearStoredEvaluationData();
     setCases([]);
@@ -5560,6 +6732,8 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     setCapacityResultsByCaseId({});
     setFloorEfficiencyParamsByCaseId({});
     setFloorEfficiencyResultsByCaseId({});
+    setCostInputsByCaseId({});
+    setCostResultsByCaseId({});
     setModuleSaveStatusByCaseId({});
   };
 
@@ -5577,6 +6751,9 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     const importedFloorEfficiencyParams = isPlainRecord(importedData?.floorEfficiencyParamsByCaseId)
       ? importedData.floorEfficiencyParamsByCaseId
       : {};
+    const importedCostInputs = isPlainRecord(importedData?.costInputsByCaseId)
+      ? importedData.costInputsByCaseId
+      : {};
     const {
       capacityResultsByCaseId: recalculatedCapacityResults,
       floorEfficiencyResultsByCaseId: recalculatedFloorEfficiencyResults,
@@ -5587,6 +6764,17 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
       capacityInputsByCaseId: importedCapacityInputs,
       floorEfficiencyParamsByCaseId: importedFloorEfficiencyParams,
     });
+    const recalculatedCostResults = {
+      ...(isPlainRecord(importedData?.costResultsByCaseId) ? importedData.costResultsByCaseId : {}),
+      ...recalculateCostResultsByCaseId({
+        cases: importedCases,
+        costInputsByCaseId: importedCostInputs,
+        rosterStagingByCaseId: importedRosterStaging,
+        baseInfoByCaseId: importedBaseInfo,
+        capacityResultsByCaseId: recalculatedCapacityResults,
+        floorEfficiencyResultsByCaseId: recalculatedFloorEfficiencyResults,
+      }),
+    };
     const importedCurrentCaseId = typeof importedData?.currentCaseId === "string" ? importedData.currentCaseId : "";
     const nextCurrentCaseId = resolveImportedCurrentCaseId(importedCases, importedCurrentCaseId);
 
@@ -5602,12 +6790,16 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     writeStoredJson(CAPACITY_RESULTS_STORAGE_KEY, recalculatedCapacityResults);
     writeStoredJson(FLOOR_EFFICIENCY_PARAMS_STORAGE_KEY, importedFloorEfficiencyParams);
     writeStoredJson(FLOOR_EFFICIENCY_RESULTS_STORAGE_KEY, recalculatedFloorEfficiencyResults);
+    writeStoredJson(COST_INPUTS_STORAGE_KEY, importedCostInputs);
+    writeStoredJson(COST_RESULTS_STORAGE_KEY, recalculatedCostResults);
     LOCAL_TEST_DATA_RECORD_FIELDS
       .filter(({ dataKey }) => ![
         "capacityInputsByCaseId",
         "capacityResultsByCaseId",
         "floorEfficiencyParamsByCaseId",
         "floorEfficiencyResultsByCaseId",
+        "costInputsByCaseId",
+        "costResultsByCaseId",
       ].includes(dataKey))
       .forEach(({ dataKey, storageKey }) => {
         writeStoredJson(storageKey, isPlainRecord(importedData?.[dataKey]) ? importedData[dataKey] : {});
@@ -5620,6 +6812,8 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     setCapacityResultsByCaseId(recalculatedCapacityResults);
     setFloorEfficiencyParamsByCaseId(importedFloorEfficiencyParams);
     setFloorEfficiencyResultsByCaseId(recalculatedFloorEfficiencyResults);
+    setCostInputsByCaseId(importedCostInputs);
+    setCostResultsByCaseId(recalculatedCostResults);
     setModuleSaveStatusByCaseId({});
   };
 
@@ -5751,12 +6945,16 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
             currentCapacityResults={currentCapacityResults}
             currentFloorEfficiencyParams={currentFloorEfficiencyParams}
             currentFloorEfficiencyResults={currentFloorEfficiencyResults}
+            currentCostInputs={currentCostInputs}
+            currentCostResults={currentCostResults}
             rosterStagingByCaseId={rosterStagingByCaseId}
             baseInfoByCaseId={baseInfoByCaseId}
             capacityInputsByCaseId={capacityInputsByCaseId}
             capacityResultsByCaseId={capacityResultsByCaseId}
             floorEfficiencyParamsByCaseId={floorEfficiencyParamsByCaseId}
             floorEfficiencyResultsByCaseId={floorEfficiencyResultsByCaseId}
+            costInputsByCaseId={costInputsByCaseId}
+            costResultsByCaseId={costResultsByCaseId}
             moduleSaveStatusByCaseId={moduleSaveStatusByCaseId}
             onAddCase={handleAddCase}
             onUpdateCase={handleUpdateCase}
@@ -5768,6 +6966,8 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
             onCapacityResultsChange={handleCapacityResultsChange}
             onFloorEfficiencyParamsChange={handleFloorEfficiencyParamsChange}
             onFloorEfficiencyResultsChange={handleFloorEfficiencyResultsChange}
+            onCostInputsChange={handleCostInputsChange}
+            onCostResultsChange={handleCostResultsChange}
             onMarkModuleUnsaved={handleMarkModuleUnsaved}
             onSaveModuleData={handleSaveModuleData}
             onClearLocalTestData={handleClearLocalTestData}
