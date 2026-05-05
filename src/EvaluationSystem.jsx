@@ -90,6 +90,7 @@ const LICENSE_GATED_MODULES = {
 };
 const SYSTEM_TEST_HASH = "#system-test";
 const CASES_STORAGE_KEY = "sanze-evaluation-cases-v1";
+const CURRENT_CASE_ID_STORAGE_KEY = "sanze-evaluation-current-case-id-v1";
 const ROSTER_STAGING_STORAGE_KEY = "sanze-evaluation-roster-staging-v1";
 const BASE_INFO_STORAGE_KEY = "sanze-evaluation-base-info-v1";
 const CAPACITY_INPUTS_STORAGE_KEY = "sanze-evaluation-capacity-inputs-v1";
@@ -125,6 +126,7 @@ const LOCAL_TEST_DATA_RECORD_FIELDS = [
 ];
 const EVALUATION_STORAGE_KEYS = [
   CASES_STORAGE_KEY,
+  CURRENT_CASE_ID_STORAGE_KEY,
   ROSTER_STAGING_STORAGE_KEY,
   BASE_INFO_STORAGE_KEY,
   ...LOCAL_TEST_DATA_RECORD_FIELDS.map((field) => field.storageKey),
@@ -246,6 +248,31 @@ function writeStoredJson(key, value) {
   }
 }
 
+function readStoredString(key, fallbackValue = "") {
+  if (typeof window === "undefined") {
+    return fallbackValue;
+  }
+
+  try {
+    const storedValue = window.localStorage.getItem(key);
+    return storedValue ?? fallbackValue;
+  } catch {
+    return fallbackValue;
+  }
+}
+
+function writeStoredString(key, value) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(key, value);
+  } catch {
+    // localStorage is only a front-end staging aid; failures should not block use.
+  }
+}
+
 function removeStoredJson(key) {
   if (typeof window === "undefined") {
     return;
@@ -294,6 +321,7 @@ function buildLocalTestDataExport({
   floorEfficiencyResultsByCaseId,
 }) {
   const normalizedCases = Array.isArray(cases) ? cases : [];
+  const normalizedCurrentCaseId = resolveImportedCurrentCaseId(normalizedCases, currentCaseId);
   const normalizedRosterStaging = isPlainRecord(rosterStagingByCaseId) ? rosterStagingByCaseId : {};
   const normalizedBaseInfo = isPlainRecord(baseInfoByCaseId) ? baseInfoByCaseId : {};
   const normalizedCapacityInputs = isPlainRecord(capacityInputsByCaseId) ? capacityInputsByCaseId : {};
@@ -332,7 +360,7 @@ function buildLocalTestDataExport({
     },
     data: {
       cases: normalizedCases,
-      currentCaseId: currentCaseId || "",
+      currentCaseId: normalizedCurrentCaseId,
       rosterStagingByCaseId: normalizedRosterStaging,
       baseInfoByCaseId: normalizedBaseInfo,
       ...Object.fromEntries(
@@ -366,7 +394,7 @@ function resolveImportedCurrentCaseId(cases, importedCurrentCaseId) {
     return importedCurrentCaseId;
   }
 
-  return cases[0]?.id ?? "";
+  return cases.length === 1 ? cases[0]?.id ?? "" : "";
 }
 
 function validateLocalTestDataPayload(payload) {
@@ -535,6 +563,10 @@ function isLegacyDemoCase(caseItem) {
 function loadStoredCases() {
   const storedCases = readStoredJson(CASES_STORAGE_KEY, []);
   return Array.isArray(storedCases) ? storedCases.filter((caseItem) => !isLegacyDemoCase(caseItem)) : [];
+}
+
+function loadStoredCurrentCaseId() {
+  return readStoredString(CURRENT_CASE_ID_STORAGE_KEY, "");
 }
 
 function loadStoredRecord(key) {
@@ -4339,7 +4371,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   const [mockRole, setMockRole] = useState("admin");
   const [activeModuleId, setActiveModuleId] = useState(evaluationModules[0].id);
   const [cases, setCases] = useState(loadStoredCases);
-  const [currentCaseId, setCurrentCaseId] = useState("");
+  const [currentCaseId, setCurrentCaseId] = useState(loadStoredCurrentCaseId);
   const [rosterStagingByCaseId, setRosterStagingByCaseId] = useState(() => loadStoredRecord(ROSTER_STAGING_STORAGE_KEY));
   const [baseInfoByCaseId, setBaseInfoByCaseId] = useState(() => loadStoredRecord(BASE_INFO_STORAGE_KEY));
   const [capacityInputsByCaseId, setCapacityInputsByCaseId] = useState(() => loadStoredRecord(CAPACITY_INPUTS_STORAGE_KEY));
@@ -4411,8 +4443,18 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   }, [floorEfficiencyResultsByCaseId]);
 
   useEffect(() => {
-    if (currentCaseId && !cases.some((item) => item.id === currentCaseId)) {
-      setCurrentCaseId("");
+    const resolvedCurrentCaseId = resolveImportedCurrentCaseId(cases, currentCaseId);
+    if (resolvedCurrentCaseId !== currentCaseId) {
+      setCurrentCaseId(resolvedCurrentCaseId);
+    }
+  }, [cases, currentCaseId]);
+
+  useEffect(() => {
+    const resolvedCurrentCaseId = resolveImportedCurrentCaseId(cases, currentCaseId);
+    if (resolvedCurrentCaseId) {
+      writeStoredString(CURRENT_CASE_ID_STORAGE_KEY, resolvedCurrentCaseId);
+    } else {
+      removeStoredJson(CURRENT_CASE_ID_STORAGE_KEY);
     }
   }, [cases, currentCaseId]);
 
@@ -4480,6 +4522,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     }).catch(() => {});
     setAuthState({ status: "unauthenticated", email: "", role: "" });
     setMockRole("admin");
+    removeStoredJson(CURRENT_CASE_ID_STORAGE_KEY);
     setCurrentCaseId("");
   };
 
@@ -4530,12 +4573,19 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
       return next;
     });
     if (currentCaseId === caseId) {
+      removeStoredJson(CURRENT_CASE_ID_STORAGE_KEY);
       setCurrentCaseId("");
     }
   };
 
   const handleSelectCase = (caseId) => {
-    setCurrentCaseId(caseId);
+    if (cases.some((item) => item.id === caseId)) {
+      writeStoredString(CURRENT_CASE_ID_STORAGE_KEY, caseId);
+      setCurrentCaseId(caseId);
+    } else {
+      removeStoredJson(CURRENT_CASE_ID_STORAGE_KEY);
+      setCurrentCaseId("");
+    }
   };
 
   const handleMarkModuleUnsaved = (moduleId) => {
@@ -4684,6 +4734,11 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     const nextCurrentCaseId = resolveImportedCurrentCaseId(importedCases, importedCurrentCaseId);
 
     writeStoredJson(CASES_STORAGE_KEY, importedCases);
+    if (nextCurrentCaseId) {
+      writeStoredString(CURRENT_CASE_ID_STORAGE_KEY, nextCurrentCaseId);
+    } else {
+      removeStoredJson(CURRENT_CASE_ID_STORAGE_KEY);
+    }
     writeStoredJson(ROSTER_STAGING_STORAGE_KEY, importedRosterStaging);
     writeStoredJson(BASE_INFO_STORAGE_KEY, importedBaseInfo);
     writeStoredJson(CAPACITY_INPUTS_STORAGE_KEY, importedCapacityInputs);
