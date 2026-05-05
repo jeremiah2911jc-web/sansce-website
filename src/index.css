@@ -1766,6 +1766,49 @@ main {
   color: #9a3412;
 }
 
+.eval-module-save-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border-color: rgba(32, 99, 87, 0.18);
+  background: #f7fbf9;
+}
+
+.eval-module-save-status div {
+  display: grid;
+  gap: 4px;
+}
+
+.eval-module-save-status span {
+  color: var(--green-900);
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.eval-module-save-status small {
+  color: var(--gray-700);
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+
+.eval-module-save-status.is-dirty {
+  border-color: rgba(154, 52, 18, 0.2);
+  background: #fffdfa;
+}
+
+.eval-module-save-status.is-dirty span {
+  color: #9a3412;
+}
+
+.eval-module-save-status button {
+  flex: 0 0 auto;
+  min-height: 38px;
+  border-color: rgba(8, 59, 48, 0.16);
+  background: var(--green-900);
+  color: #fff;
+}
+
 .eval-local-test-tools {
   border-color: rgba(154, 52, 18, 0.14);
   background: linear-gradient(180deg, #fffdfa 0%, #fbfdfc 100%);
@@ -3611,9 +3654,14 @@ main {
   }
 
   .eval-case-list article,
+  .eval-module-save-status,
   .eval-module-panel__head {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .eval-module-save-status button {
+    width: 100%;
   }
 
   .eval-current-module,

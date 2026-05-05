@@ -478,6 +478,22 @@ function formatSqmAndPing(value) {
   return `${formatSqm(value)} / 約 ${formatPing(convertSqmToPing(value))}`;
 }
 
+function getModuleSaveStatusLabel(saveStatus) {
+  if (saveStatus?.state === "dirty") {
+    return "尚有未儲存變更";
+  }
+
+  if (saveStatus?.state === "saved") {
+    return "本機測試資料已儲存";
+  }
+
+  return "目前資料已自動暫存於本機，可按下儲存確認本模組狀態";
+}
+
+function getCurrentSaveStatus(moduleSaveStatusByCaseId, caseId, moduleId) {
+  return moduleSaveStatusByCaseId?.[caseId]?.[moduleId] ?? { state: "ready", savedAt: "" };
+}
+
 function getCaseSignatureText(caseItem) {
   return [
     caseItem?.name,
@@ -3184,7 +3200,16 @@ function BaseRosterSummary({ rosterStaging }) {
   );
 }
 
-function BaseInfoModule({ currentCase, baseInfo, rosterStaging, onBaseInfoChange, onGoToCases }) {
+function BaseInfoModule({
+  currentCase,
+  baseInfo,
+  rosterStaging,
+  saveStatus,
+  onBaseInfoChange,
+  onMarkUnsaved,
+  onSaveModule,
+  onGoToCases,
+}) {
   if (!currentCase) {
     return (
       <div className="eval-module-stack">
@@ -3194,6 +3219,7 @@ function BaseInfoModule({ currentCase, baseInfo, rosterStaging, onBaseInfoChange
   }
 
   const handleBaseInfoChange = (field) => (event) => {
+    onMarkUnsaved();
     onBaseInfoChange({
       ...baseInfo,
       [field]: event.target.value,
@@ -3203,6 +3229,7 @@ function BaseInfoModule({ currentCase, baseInfo, rosterStaging, onBaseInfoChange
   return (
     <div className="eval-module-stack">
       <CurrentCaseSummary currentCase={currentCase} />
+      <ModuleSaveStatusBar saveStatus={saveStatus} onSave={onSaveModule} />
       <BaseRosterSummary rosterStaging={rosterStaging} />
       <section className="eval-module-section">
         <div className="eval-section-head">
@@ -3265,6 +3292,23 @@ function MissingDataNotice({ missingItems }) {
   );
 }
 
+function ModuleSaveStatusBar({ saveStatus, onSave }) {
+  const statusLabel = getModuleSaveStatusLabel(saveStatus);
+  const savedAt = saveStatus?.savedAt || "尚未按下本模組儲存";
+
+  return (
+    <section className={`eval-module-section eval-module-save-status is-${saveStatus?.state ?? "ready"}`}>
+      <div>
+        <span>{statusLabel}</span>
+        <small>最後儲存時間：{savedAt}</small>
+      </div>
+      <button type="button" onClick={onSave}>
+        儲存本模組資料
+      </button>
+    </section>
+  );
+}
+
 function CapacityCaseRequiredNotice({ onGoToCases }) {
   return (
     <section className="eval-module-section eval-case-required">
@@ -3302,8 +3346,11 @@ function CapacityModule({
   baseInfo,
   rosterStaging,
   capacityInputs,
+  saveStatus,
   onCapacityInputsChange,
   onCapacityResultsChange,
+  onMarkUnsaved,
+  onSaveModule,
   onGoToCases,
 }) {
   const effectiveInputs = useMemo(
@@ -3346,6 +3393,7 @@ function CapacityModule({
   }
 
   const handleCapacityInputChange = (field) => (event) => {
+    onMarkUnsaved();
     onCapacityInputsChange({
       ...defaultCapacityInputs,
       ...capacityInputs,
@@ -3389,6 +3437,7 @@ function CapacityModule({
   return (
     <div className="eval-module-stack">
       <CurrentCaseSummary currentCase={currentCase} />
+      <ModuleSaveStatusBar saveStatus={saveStatus} onSave={onSaveModule} />
       <section className="eval-module-section eval-linked-module">
         <div className="eval-section-head">
           <h4>前置資料摘要</h4>
@@ -3459,8 +3508,11 @@ function FloorEfficiencyModule({
   baseInfo,
   capacityResult,
   floorParams,
+  saveStatus,
   onFloorParamsChange,
   onFloorResultsChange,
+  onMarkUnsaved,
+  onSaveModule,
   onGoToCases,
 }) {
   const effectiveParams = useMemo(
@@ -3501,6 +3553,7 @@ function FloorEfficiencyModule({
   }
 
   const handleFloorParamChange = (field) => (event) => {
+    onMarkUnsaved();
     onFloorParamsChange({
       ...defaultFloorEfficiencyParams,
       ...floorParams,
@@ -3597,6 +3650,7 @@ function FloorEfficiencyModule({
   return (
     <div className="eval-module-stack">
       <CurrentCaseSummary currentCase={currentCase} />
+      <ModuleSaveStatusBar saveStatus={saveStatus} onSave={onSaveModule} />
       <section className="eval-module-section eval-linked-module">
         <div className="eval-section-head">
           <h4>來源資料摘要</h4>
@@ -3851,6 +3905,7 @@ function ModuleContent({
   currentCapacityResults,
   currentFloorEfficiencyParams,
   currentFloorEfficiencyResults,
+  moduleSaveStatusByCaseId,
   rosterStagingByCaseId,
   baseInfoByCaseId,
   capacityInputsByCaseId,
@@ -3867,6 +3922,8 @@ function ModuleContent({
   onCapacityResultsChange,
   onFloorEfficiencyParamsChange,
   onFloorEfficiencyResultsChange,
+  onMarkModuleUnsaved,
+  onSaveModuleData,
   onClearLocalTestData,
   onImportLocalTestData,
   onGoToCases,
@@ -3928,7 +3985,10 @@ function ModuleContent({
         currentCase={currentCase}
         baseInfo={currentBaseInfo}
         rosterStaging={currentRosterStaging}
+        saveStatus={getCurrentSaveStatus(moduleSaveStatusByCaseId, currentCase?.id, module.id)}
         onBaseInfoChange={onBaseInfoChange}
+        onMarkUnsaved={() => onMarkModuleUnsaved(module.id)}
+        onSaveModule={() => onSaveModuleData(module.id)}
         onGoToCases={onGoToCases}
       />
     );
@@ -3941,8 +4001,11 @@ function ModuleContent({
         baseInfo={currentBaseInfo}
         rosterStaging={currentRosterStaging}
         capacityInputs={currentCapacityInputs}
+        saveStatus={getCurrentSaveStatus(moduleSaveStatusByCaseId, currentCase?.id, module.id)}
         onCapacityInputsChange={onCapacityInputsChange}
         onCapacityResultsChange={onCapacityResultsChange}
+        onMarkUnsaved={() => onMarkModuleUnsaved(module.id)}
+        onSaveModule={() => onSaveModuleData(module.id)}
         onGoToCases={onGoToCases}
       />
     );
@@ -3956,8 +4019,11 @@ function ModuleContent({
         baseInfo={currentBaseInfo}
         capacityResult={currentCapacityResults}
         floorParams={currentFloorEfficiencyParams}
+        saveStatus={getCurrentSaveStatus(moduleSaveStatusByCaseId, currentCase?.id, module.id)}
         onFloorParamsChange={onFloorEfficiencyParamsChange}
         onFloorResultsChange={onFloorEfficiencyResultsChange}
+        onMarkUnsaved={() => onMarkModuleUnsaved(module.id)}
+        onSaveModule={() => onSaveModuleData(module.id)}
         onGoToCases={onGoToCases}
       />
     );
@@ -4197,6 +4263,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   const [capacityResultsByCaseId, setCapacityResultsByCaseId] = useState(() => loadStoredRecord(CAPACITY_RESULTS_STORAGE_KEY));
   const [floorEfficiencyParamsByCaseId, setFloorEfficiencyParamsByCaseId] = useState(() => loadStoredRecord(FLOOR_EFFICIENCY_PARAMS_STORAGE_KEY));
   const [floorEfficiencyResultsByCaseId, setFloorEfficiencyResultsByCaseId] = useState(() => loadStoredRecord(FLOOR_EFFICIENCY_RESULTS_STORAGE_KEY));
+  const [moduleSaveStatusByCaseId, setModuleSaveStatusByCaseId] = useState({});
   const isLoggedIn = authState.status === "authenticated";
   const isTestRoute = routeHash === SYSTEM_TEST_HASH;
   const accessProfile = mockAccessProfiles[mockRole];
@@ -4374,6 +4441,11 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
       delete next[caseId];
       return next;
     });
+    setModuleSaveStatusByCaseId((current) => {
+      const next = { ...current };
+      delete next[caseId];
+      return next;
+    });
     if (currentCaseId === caseId) {
       setCurrentCaseId("");
     }
@@ -4381,6 +4453,40 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
 
   const handleSelectCase = (caseId) => {
     setCurrentCaseId(caseId);
+  };
+
+  const handleMarkModuleUnsaved = (moduleId) => {
+    if (!currentCase) {
+      return;
+    }
+
+    setModuleSaveStatusByCaseId((current) => ({
+      ...current,
+      [currentCase.id]: {
+        ...(current[currentCase.id] ?? {}),
+        [moduleId]: {
+          ...getCurrentSaveStatus(current, currentCase.id, moduleId),
+          state: "dirty",
+        },
+      },
+    }));
+  };
+
+  const handleSaveModuleData = (moduleId) => {
+    if (!currentCase) {
+      return;
+    }
+
+    setModuleSaveStatusByCaseId((current) => ({
+      ...current,
+      [currentCase.id]: {
+        ...(current[currentCase.id] ?? {}),
+        [moduleId]: {
+          state: "saved",
+          savedAt: new Date().toLocaleString("zh-TW", { hour12: false }),
+        },
+      },
+    }));
   };
 
   const handleRosterStagingChange = (preview) => {
@@ -4464,6 +4570,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     setCapacityResultsByCaseId({});
     setFloorEfficiencyParamsByCaseId({});
     setFloorEfficiencyResultsByCaseId({});
+    setModuleSaveStatusByCaseId({});
   };
 
   const handleImportLocalTestData = (importedData) => {
@@ -4514,6 +4621,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     setCapacityResultsByCaseId(importedCapacityResults);
     setFloorEfficiencyParamsByCaseId(importedFloorEfficiencyParams);
     setFloorEfficiencyResultsByCaseId(importedFloorEfficiencyResults);
+    setModuleSaveStatusByCaseId({});
   };
 
   const handleGoToCases = () => {
@@ -4650,6 +4758,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
             capacityResultsByCaseId={capacityResultsByCaseId}
             floorEfficiencyParamsByCaseId={floorEfficiencyParamsByCaseId}
             floorEfficiencyResultsByCaseId={floorEfficiencyResultsByCaseId}
+            moduleSaveStatusByCaseId={moduleSaveStatusByCaseId}
             onAddCase={handleAddCase}
             onUpdateCase={handleUpdateCase}
             onDeleteCase={handleDeleteCase}
@@ -4660,6 +4769,8 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
             onCapacityResultsChange={handleCapacityResultsChange}
             onFloorEfficiencyParamsChange={handleFloorEfficiencyParamsChange}
             onFloorEfficiencyResultsChange={handleFloorEfficiencyResultsChange}
+            onMarkModuleUnsaved={handleMarkModuleUnsaved}
+            onSaveModuleData={handleSaveModuleData}
             onClearLocalTestData={handleClearLocalTestData}
             onImportLocalTestData={handleImportLocalTestData}
             onGoToCases={handleGoToCases}
