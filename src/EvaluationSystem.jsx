@@ -70,17 +70,9 @@ function normalizeCaseForm(caseForm, fallbackCode) {
     status: caseForm.status.trim() || "評估中",
     consultant: caseForm.consultant.trim() || "三策顧問",
     updated: caseForm.updated.trim() || new Date().toLocaleDateString("zh-TW"),
-    note: caseForm.note.trim() || "前端測試案件",
+    note: caseForm.note.trim() || "初始建立",
   };
 }
-
-const caseDataFlow = [
-  "建立案件",
-  "選定目前案件",
-  "填基地基本資料",
-  "上傳土地清冊 / 建物清冊",
-  "進行坪效、成本、銷售、分配、現金流、銀行報告等試算",
-];
 
 const TAKEOVER_MODULE_ID = "takeover-evaluation";
 const ADMIN_ONLY_MODULE_IDS = new Set(["license-management", "security-protection"]);
@@ -88,6 +80,7 @@ const LICENSE_GATED_MODULES = {
   "bank-report": "bankReport",
   [TAKEOVER_MODULE_ID]: "takeover",
 };
+const DOWNSTREAM_PLACEHOLDER_MODULE_IDS = new Set(["costs", "sales", "allocation", "cashflow", "bank-report"]);
 const SYSTEM_TEST_HASH = "#system-test";
 const CASES_STORAGE_KEY = "sanze-evaluation-cases-v1";
 const CURRENT_CASE_ID_STORAGE_KEY = "sanze-evaluation-current-case-id-v1";
@@ -857,13 +850,17 @@ function ModuleFlowBrief({ module }) {
   ];
 
   return (
-    <section className="eval-module-flow-brief" aria-label={`${module.title} 流程串接說明`}>
-      <div className="eval-module-flow-brief__intro">
+    <details className="eval-module-flow-brief" aria-label={`${module.title} 資料串聯`}>
+      <summary>
         <p className="eval-kicker">FLOW</p>
-        <h3>{flow.stage}</h3>
-        <p>{flow.summary}</p>
-      </div>
+        <strong>{flow.stage}</strong>
+        <span>資料串聯</span>
+      </summary>
       <div className="eval-module-flow-brief__grid">
+        <div className="eval-flow-mini-card eval-flow-mini-card--wide">
+          <strong>模組定位</strong>
+          <p>{flow.summary}</p>
+        </div>
         {flowGroups.map(([title, items]) => (
           <div className="eval-flow-mini-card" key={title}>
             <strong>{title}</strong>
@@ -875,14 +872,13 @@ function ModuleFlowBrief({ module }) {
           </div>
         ))}
         <div className="eval-flow-mini-card eval-flow-mini-card--wide">
-          <strong>資料層級與目前狀態</strong>
+          <strong>資料層級</strong>
           <p>
             案件層級：{flow.sharedData.join("、")}。試算 / 版本層級：{flow.versionData.join("、")}。
           </p>
-          <p>{flow.mockStatus}</p>
         </div>
       </div>
-    </section>
+    </details>
   );
 }
 
@@ -939,7 +935,7 @@ function CaseDeleteConfirmModal({ deleteConfirmation, onCancel, onContinue, onCo
         <p>
           {isSecondStep
             ? `請再次確認是否刪除「${caseName}」。刪除後目前案件會被清除，相關清冊與試算資料將無法再掛在此案件底下。`
-            : "確定要刪除此案件嗎？此操作會移除目前前端 mock 案件資料，正式版會同步檢查清冊、成本、報告等關聯資料。"}
+            : "確定要刪除此案件嗎？此操作會移除目前瀏覽器中的案件與關聯評估資料。"}
         </p>
         <div className="eval-confirm-actions">
           <button type="button" className="eval-secondary-action" onClick={onCancel}>
@@ -971,7 +967,7 @@ function LocalDataClearConfirmModal({ clearConfirmation, onCancel, onContinue, o
         <p>
           {isSecondStep
             ? "此操作會清除本機瀏覽器中的案件、清冊暫存、基地、容積、坪效與後續模組預留資料，無法復原。確認清除？"
-            : "目前系統仍為前端測試階段，案件、清冊暫存、基地、容積、坪效與後續模組預留資料會先存在本機瀏覽器。若看到舊版測試案件或需要重新測試，可清除本機測試資料。"}
+            : "此操作會清除目前瀏覽器中的案件、清冊暫存、基地、容積、坪效與後續模組資料；清除前會再次確認。"}
         </p>
         <div className="eval-confirm-actions">
           <button type="button" className="eval-secondary-action" onClick={onCancel}>
@@ -1264,36 +1260,21 @@ function CaseManagementModule({
 
   return (
     <div className="eval-module-stack">
-      <section className="eval-module-section eval-case-flow">
-        <div className="eval-section-head">
-          <h4>案件是所有資料的入口</h4>
-          <p>系統資料先建立案件，再把基地基本資料、土地清冊、建物清冊、坪效、成本、銷售、分配、現金流與銀行報告掛在目前案件底下。</p>
-        </div>
-        <div className="eval-case-flow-steps">
-          {caseDataFlow.map((step, index) => (
-            <span key={step}>
-              <b>{String(index + 1).padStart(2, "0")}</b>
-              {step}
-            </span>
-          ))}
-        </div>
-      </section>
-
       <section className="eval-module-section">
         <div className="eval-section-head">
-          <h4>{currentCase ? `目前選取案件：${currentCase.name}` : "目前尚未選取案件"}</h4>
-          <p>請從案件列表選定目前案件；土地清冊與建物清冊會依這個案件 context 顯示與匯入。</p>
+          <h4>{currentCase ? `目前案件：${currentCase.name}` : "目前尚未選取案件"}</h4>
+          <p>後續基地、清冊、容積與坪效資料都會掛在目前案件底下。</p>
         </div>
         <CurrentCaseSummary currentCase={currentCase} compact />
       </section>
 
       <section className="eval-module-section">
         <div className="eval-section-head">
-          <h4>{editingCase ? "編輯案件" : "案件列表骨架"}</h4>
+          <h4>{editingCase ? "編輯案件" : "案件列表"}</h4>
           <p>
             {editingCase
               ? `正在編輯：${editingCase.name || "未命名案件"}。儲存後案件列表與目前案件 context 會同步更新。`
-              : "目前為前端 mock 資料，正式版本會改由資料庫載入案件、狀態與版本紀錄。"}
+              : "新增、選取或維護目前評估案件。"}
           </p>
         </div>
         <form className={`eval-case-form${editingCase ? " is-editing" : ""}`} onSubmit={handleSubmit}>
@@ -1323,7 +1304,7 @@ function CaseManagementModule({
           </label>
           <label className="eval-field eval-field--wide">
             <span>版本備註</span>
-            <input type="text" value={caseForm.note} onChange={handleChange("note")} placeholder="前端 mock 建立" />
+            <input type="text" value={caseForm.note} onChange={handleChange("note")} placeholder="初始建立" />
           </label>
           <div className="eval-case-form-actions">
             <button type="submit">{editingCase ? "儲存案件修改" : "新增案件"}</button>
@@ -1362,9 +1343,13 @@ function CaseManagementModule({
                     <td>{item.note}</td>
                     <td>
                       <div className="eval-case-actions">
-                        <button type="button" className="eval-small-action" onClick={() => onSelectCase(item.id)}>
-                          {currentCase?.id === item.id ? "已選定" : "選為目前案件"}
-                        </button>
+                        {currentCase?.id === item.id ? (
+                          <span className="eval-current-case-pill">已選定</span>
+                        ) : (
+                          <button type="button" className="eval-small-action" onClick={() => onSelectCase(item.id)}>
+                            選為目前案件
+                          </button>
+                        )}
                         <button type="button" className="eval-small-action" onClick={() => handleEditCase(item)}>
                           編輯
                         </button>
@@ -1390,9 +1375,7 @@ function CaseManagementModule({
       <section className="eval-module-section eval-local-test-tools">
         <div className="eval-section-head">
           <h4>本機測試資料工具</h4>
-          <p>
-            目前系統尚未接正式資料庫，案件、清冊暫存、基地、容積、坪效與後續模組預留資料會先保存在本機瀏覽器。可使用 JSON 匯出 / 匯入，在不同電腦之間移轉測試資料。
-          </p>
+          <p>匯出、匯入或清除目前瀏覽器中的評估資料。</p>
         </div>
         <input
           ref={importFileInputRef}
@@ -1405,7 +1388,7 @@ function CaseManagementModule({
           <article className="eval-local-test-card">
             <div>
               <strong>匯出本機測試資料</strong>
-              <p>下載目前瀏覽器中的案件、清冊暫存、基地、容積、坪效與後續模組預留資料，供其他電腦匯入測試。</p>
+              <p>下載目前案件、清冊、基地、容積與坪效資料。</p>
             </div>
             <button type="button" onClick={handleExportLocalTestData}>
               匯出本機測試資料
@@ -1414,7 +1397,7 @@ function CaseManagementModule({
           <article className="eval-local-test-card">
             <div>
               <strong>匯入本機測試資料</strong>
-              <p>匯入先前匯出的三策測試資料 JSON。匯入後會覆蓋目前瀏覽器中的本機測試資料，請先確認檔案來源。</p>
+              <p>匯入三策評估系統 JSON，匯入前會再次確認。</p>
             </div>
             <button type="button" onClick={handleImportFileRequest}>
               選擇 JSON 匯入
@@ -1423,7 +1406,7 @@ function CaseManagementModule({
           <article className="eval-local-test-card eval-local-test-card--danger">
             <div>
               <strong>清除本機測試資料</strong>
-              <p>僅限三策開發評估系統 localStorage：案件、清冊暫存、基地、容積、坪效與後續模組預留資料；不會清除其他網站資料。</p>
+              <p>清除目前瀏覽器中的評估資料，會保留二次確認。</p>
             </div>
             <button type="button" className="eval-danger-action" onClick={handleRequestClearLocalData}>
               清除本機測試資料
@@ -1453,7 +1436,6 @@ function CaseManagementModule({
         )}
       </section>
 
-      <RolePermissionPanel profile={accessProfile} />
       <CaseDeleteConfirmModal
         deleteConfirmation={deleteConfirmation}
         onCancel={handleCancelDelete}
@@ -1671,17 +1653,34 @@ function OutputSections({ sections }) {
   );
 }
 
-function TakeoverEvaluationModule({ module }) {
+function TakeoverEvaluationModule({ currentCase, currentCapacityResults, currentFloorEfficiencyResults }) {
+  const saleableAreaSqm = pickNumericValue(
+    currentFloorEfficiencyResults?.saleableAreaSqm,
+    currentFloorEfficiencyResults?.estimatedSaleableAreaSqm,
+  );
+  const sourceItems = [
+    ["目前案件", currentCase ? `${currentCase.code} / ${currentCase.name}` : "尚未選定案件"],
+    ["容積來源", Number.isFinite(currentCapacityResults?.totalCapacityAreaSqm) ? `總容積量 ${formatSqmAndPing(currentCapacityResults.totalCapacityAreaSqm)}` : "待容積試算"],
+    ["坪效結果", Number.isFinite(saleableAreaSqm) ? `銷售面積 ${formatSqmAndPing(saleableAreaSqm)}` : "待坪效計算"],
+  ];
+
   return (
     <div className="eval-module-stack">
-      <FlowCards flows={module.flows} />
-      <AssessmentModeCards modes={module.modeOptions} />
-      <ReferenceModuleCards references={module.references} />
-      {module.sections.map((section) => (
-        <ModuleSection section={section} key={section.title} />
-      ))}
-      <RiskChecklist items={module.riskChecklist} />
-      <OutputSections sections={module.outputSections} />
+      <section className="eval-module-section eval-downstream-notice">
+        <div className="eval-section-head">
+          <h4>承接 / 讓出評估</h4>
+          <p>本模組將承接基地、容積、坪效、成本、銷售與權利資料，用來判斷既有條件是否適合承接、協助或讓出。</p>
+        </div>
+        <DataSummaryGrid items={sourceItems} />
+        <details className="eval-inline-details">
+          <summary>下一階段建置範圍</summary>
+          <ul>
+            <li>既有條件輸入與版本紀錄</li>
+            <li>整合進度與分配條件檢核</li>
+            <li>承接風險摘要與建議處理方向</li>
+          </ul>
+        </details>
+      </section>
     </div>
   );
 }
@@ -1740,9 +1739,9 @@ function SecondDeviceWarning({ warning }) {
       </div>
       <div className="eval-device-warning__actions">
         {warning.actions.map((action) => (
-          <button type="button" key={action}>
+          <span key={action}>
             {action}
-          </button>
+          </span>
         ))}
       </div>
     </section>
@@ -3100,9 +3099,9 @@ function calculateCapacityResult(rosterStaging, baseInfo, capacityInputs) {
     totalFloorAreaRatio,
     totalCapacityAreaSqm,
     totalCapacityAreaPing: convertSqmToPing(totalCapacityAreaSqm),
-    calculationStatus: canCalculate ? "可進行前端測試初算" : `尚缺：${missingItems.join("、")}`,
+    calculationStatus: canCalculate ? "可進行初步試算" : `尚缺：${missingItems.join("、")}`,
     missingItems,
-    formulaStatus: "測試用簡化公式；正式公式待確認",
+    formulaStatus: "初步試算公式",
     tdrCostFormulaStatus: "容積移轉費用正式計算方式待確認",
     tdrScoringSummary,
     // Future TDR cost calculations must use these raw numeric fields, not formatted display strings.
@@ -3362,9 +3361,9 @@ function calculateFloorEfficiencyResult(rosterStaging, baseInfo, capacityResult,
     calculatedPublicAreaRatio,
     buildPingPerLandPing,
     saleablePingPerLandPing,
-    calculationStatus: canCalculate ? "可依坪效計算表模型進行前端測試初算" : `尚缺：${missingItems.join("、")}`,
+    calculationStatus: canCalculate ? "可依坪效模型初算" : `尚缺：${missingItems.join("、")}`,
     missingItems,
-    formulaStatus: "測試用公式；正式公式待確認",
+    formulaStatus: "初步坪效模型",
     formulaSource: "坪效計算表(1).xlsx",
   }, INTERNAL_DECIMAL_DIGITS);
 }
@@ -3433,9 +3432,8 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview
     <section className="eval-roster-upload-test">
       <section className="eval-module-section eval-roster-upload-card">
         <div className="eval-section-head">
-          <h4>清冊上傳測試</h4>
-          <p>先以上傳檔建立目前案件的暫存批次，不直接覆蓋正式資料，也不寫入資料庫。地主編號只作為原始參考欄位，不作為唯一必填主鍵。</p>
-          <p>若資料來自第二類謄本，系統以地號、建號與原始權利列為基準，只做暫時比對與疑似權利人群組，不因同姓或部分證號相同而自動合併。正式歸戶需等後續補上完整姓名、完整證號、統編，或經人工確認後才成立。</p>
+          <h4>清冊匯入</h4>
+          <p>上傳 .xlsx 後建立目前案件的清冊暫存與疑似權利人群組；正式套用前仍需人工確認。</p>
         </div>
         <div className="eval-roster-upload-controls">
           <div className="eval-roster-file-picker">
@@ -3451,24 +3449,11 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview
             <button type="button" onClick={onRequestFile}>
               選擇 .xlsx 檔案
             </button>
-            <small>選檔後先建立暫存預覽，不會覆蓋正式案件清冊。</small>
           </div>
           <article>
             <strong>{displayFileName || "尚未選擇檔案"}</strong>
             <p>匯入結果將暫時歸屬於目前案件：{currentCase.code} / {currentCase.name}</p>
           </article>
-        </div>
-        <div className="eval-roster-next-sheets">
-          <span>{rosterImportSheets.land}</span>
-          <span>{rosterImportSheets.building}</span>
-          <span>{rosterImportSheets.integration}：下一階段串接</span>
-          <span>{rosterImportSheets.allocation}：下一階段串接</span>
-        </div>
-        <div className="eval-roster-status-set" aria-label="疑似權利人群組狀態">
-          <strong>歸戶狀態設計</strong>
-          {["未歸戶", "疑似同姓", "部分識別碼相符", "高度疑似同一人", "待人工確認", "已人工確認", "已完整資料確認"].map((status) => (
-            <span key={status}>{status}</span>
-          ))}
         </div>
         {isParsing && <p className="eval-roster-status">正在讀取清冊並建立疑似權利人群組...</p>}
         {parseError && <p className="eval-auth-error">{parseError}</p>}
@@ -3478,7 +3463,7 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview
         <section className="eval-module-section eval-roster-empty-state">
           <div className="eval-section-head">
             <h4>尚未上傳清冊檔案</h4>
-            <p>目前尚未上傳清冊檔案，請選擇 .xlsx 清冊進行暫存預覽。未上傳前不顯示土地、建物、疑似群組或待確認的範例資料。</p>
+            <p>請選擇 .xlsx 清冊進行暫存預覽。</p>
           </div>
         </section>
       )}
@@ -3488,7 +3473,7 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview
           <section className="eval-module-section">
             <div className="eval-section-head">
               <h4>匯入摘要</h4>
-              <p>本區資料來源：本次上傳檔案暫存解析結果，尚未正式套用至案件清冊。</p>
+              <p>目前案件的清冊暫存解析結果。</p>
             </div>
             <div className="eval-roster-summary-grid eval-roster-summary-grid--wide">
               {summaryCards.map(([label, value]) => (
@@ -3502,7 +3487,7 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview
 
           <RosterPreviewTable
             title="土地權利明細預覽"
-            description="顯示本次上傳檔案解析出的每一筆土地權利列；每列都保留為原始資料，不因姓名或參考編號自動合併。"
+            description="每一筆土地權利列保留原始資料，不自動合併。"
             emptyText="目前未讀到土地清冊資料。"
             columns={[
               { key: "landRightRowId", label: "土地列 ID" },
@@ -3519,7 +3504,7 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview
 
           <RosterPreviewTable
             title="建物權利明細預覽"
-            description="顯示本次上傳檔案解析出的每一筆建物權利列；若建物清冊沒有有效資料，僅顯示空狀態。"
+            description="顯示建物權利列；無有效資料時顯示空狀態。"
             emptyText="目前未讀到建物清冊資料。"
             columns={[
               { key: "buildingRightRowId", label: "建物列 ID" },
@@ -3536,7 +3521,7 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview
 
           <RosterPreviewTable
             title="疑似權利人群組總表"
-            description="PG-* 只是疑似權利人群組，不是正式權利人歸戶；正式歸戶需補登完整資料或人工確認。"
+            description="PG-* 為疑似群組，正式歸戶仍需完整資料或人工確認。"
             emptyText="目前尚未建立疑似權利人群組。"
             columns={[
               { key: "partyGroupId", label: "群組 ID" },
@@ -3572,12 +3557,6 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview
             )}
           </section>
 
-          <section className="eval-module-section">
-            <div className="eval-section-head">
-              <h4>下一步提示</h4>
-              <p>正式流程會是：上傳 Excel → 暫存批次 → 欄位檢核 → 疑似權利人群組 → 人工確認合併 / 拆分 → 補登完整資料 → 二次確認 → 套用到正式案件清冊，並可升級為正式權利人總表。</p>
-            </div>
-          </section>
         </>
       )}
     </section>
@@ -3592,8 +3571,8 @@ function RosterImportVersioning({ config }) {
   return (
     <details className="eval-module-section eval-roster-future-flow" data-roster-versioning>
       <summary>
-        <span>後續正式匯入流程（開發中）</span>
-        <small>正式匯入流程將包含欄位檢核、跨表關聯檢核、差異比對、二次確認、正式套用、版本回復與 audit log，目前本區僅作流程規劃提示。</small>
+        <span>匯入版本流程</span>
+        <small>欄位檢核、差異比對與正式套用規則。</small>
       </summary>
       <div className="eval-roster-future-flow__body">
         <p>{config.notice}</p>
@@ -3601,10 +3580,8 @@ function RosterImportVersioning({ config }) {
           {[
             "上傳 Excel 並建立目前案件的暫存批次",
             "檢查必要工作表、欄位名稱與核心資料格式",
-            "比對土地、建物、整合紀錄與分配條件的跨表關聯",
             "產生差異比對與待人工確認清單",
             "完成二次確認後才套用到正式案件清冊",
-            "保留版本回復與 audit log，避免正式資料被無痕覆蓋",
           ].map((step) => (
             <li key={step}>{step}</li>
           ))}
@@ -3648,22 +3625,18 @@ function BaseRosterSummary({ rosterStaging }) {
 
   const summaryItems = [
     ["地號筆數", rosterSummary.landNumberCount],
-    ["地號清單", rosterSummary.landNumberDisplay],
     ["土地權利列數", rosterSummary.landRightCount],
     ["土地面積合計", rosterSummary.landAreaSummary],
-    ["公告現值狀態", rosterSummary.announcedCurrentValueStatus],
     ["公告現值總額", formatCurrencyTwd(rosterSummary.assessedCurrentValueTotal)],
     ["公告現值加權平均單價", formatCurrencyTwdPerSqm(rosterSummary.assessedCurrentValueWeightedUnit)],
-    ["公告地價狀態", rosterSummary.announcedLandValueStatus],
-    ["來源檔案名稱", rosterSummary.fileName],
-    ["匯入時間", rosterSummary.importedAt],
+    ["公告現值狀態", rosterSummary.announcedCurrentValueStatus],
   ];
 
   return (
     <section className="eval-module-section eval-base-roster-summary">
       <div className="eval-section-head">
         <h4>清冊帶入摘要</h4>
-        <p>本區彙整目前案件的清冊暫存解析結果，尚未正式套用至案件清冊。</p>
+        <p>土地面積與公告現值由目前案件清冊帶入，作為基地與容積試算基礎。</p>
       </div>
       <div className="eval-base-summary-grid">
         {summaryItems.map(([label, value]) => (
@@ -3673,12 +3646,26 @@ function BaseRosterSummary({ rosterStaging }) {
           </article>
         ))}
       </div>
-      <p className="eval-base-summary-note">
-        土地面積以唯一地號為基準彙整；同一地號若出現在多筆權利列，只計算一次。畫面數字為四捨五入顯示；系統內部以較高精度試算，坪數換算統一使用 1 坪 = 3.305785 平方公尺。
-      </p>
-      <p className="eval-base-summary-note">
-        公告現值總額依各地號面積與公告現值逐筆加總；單價為加權平均，畫面四捨五入顯示。後續容積移轉費用、成本與分配若引用公告現值，應引用系統內部原始數值，不使用格式化後字串或整數顯示值。
-      </p>
+      <details className="eval-inline-details">
+        <summary>計算方式說明</summary>
+        <p>
+          土地面積以唯一地號彙整，同一地號只計算一次。公告現值總額依各地號面積與公告現值逐筆加總，單價為加權平均；系統內部保留原始精度試算。
+        </p>
+        <dl>
+          <div>
+            <dt>地號清單</dt>
+            <dd>{rosterSummary.landNumberDisplay}</dd>
+          </div>
+          <div>
+            <dt>來源檔案</dt>
+            <dd>{rosterSummary.fileName || "待補資料"}</dd>
+          </div>
+          <div>
+            <dt>匯入時間</dt>
+            <dd>{rosterSummary.importedAt || "待補資料"}</dd>
+          </div>
+        </dl>
+      </details>
     </section>
   );
 }
@@ -3968,7 +3955,7 @@ function CapacityModule({
     const parsedValue = parseNumericInput(value);
     return Number.isFinite(parsedValue) ? formatCurrencyTwd(parsedValue) : "待補資料";
   };
-  const capacityFormulaNote = "各項獎勵、增額容積與容積移轉皆以基準容積量為計算基礎；畫面最後才格式化顯示。";
+  const capacityFormulaNote = "獎勵、增額與容移均以基準容積量計算。";
   const sourceItems = [
     ["地號筆數", rosterSummary.hasRoster ? rosterSummary.landNumberCount : "尚未上傳清冊"],
     ["土地面積合計", rosterSummary.landAreaSqm === null ? "待補資料" : formatSqmAndPing(rosterSummary.landAreaSqm)],
@@ -4116,14 +4103,14 @@ function CapacityModule({
       <section className="eval-module-section eval-linked-module">
         <div className="eval-section-head">
           <h4>前置資料摘要</h4>
-          <p>本區承接目前案件的清冊土地面積與基地基本資料；缺漏處顯示待補資料，不放假數字。</p>
+          <p>承接清冊土地面積與基地條件，作為容積試算基礎。</p>
         </div>
         <DataSummaryGrid items={sourceItems} />
       </section>
       <section className="eval-module-section eval-linked-module">
         <div className="eval-section-head">
           <h4>一、基準容積</h4>
-          <p>基準容積量由土地面積與基準容積率推得，作為後續都市更新、危老、增額、容積移轉與其他獎勵的共同計算基礎。</p>
+          <p>土地面積乘基準容積率，作為後續獎勵與容移計算基礎。</p>
         </div>
         <div className="eval-field-grid eval-linked-input-grid">
           <label className="eval-field">
@@ -4272,7 +4259,10 @@ function CapacityModule({
               </label>
             </div>
             <DataSummaryGrid items={tdrDonationItems} />
-            <p className="eval-capacity-method-note">接受基地移入容積 = 送出基地土地面積 ×（送出基地公告土地現值 ÷ 接受基地公告土地現值）× 接受基地容積率。此為內部快速估算，正式仍以實際送出基地、公告現值、成交條件與容移審查結果為準。</p>
+            <details className="eval-inline-details">
+              <summary>估算方式</summary>
+              <p>接受基地移入容積 = 送出基地土地面積 ×（送出基地公告土地現值 ÷ 接受基地公告土地現值）× 接受基地容積率。正式仍以實際送出基地、公告現值、成交條件與容移審查結果為準。</p>
+            </details>
           </article>
           <article className="eval-capacity-method-card">
             <h5>B. 折繳代金方式</h5>
@@ -4295,17 +4285,20 @@ function CapacityModule({
               </label>
             </div>
             <DataSummaryGrid items={tdrCashPaymentItems} />
-            <div className="eval-reference-grid">
-              <span>土地開發分析法：主要</span>
-              <span>比較法：參酌</span>
-              <span>收益法：暫不列入正式計算，可保留備註</span>
-            </div>
-            <p className="eval-capacity-method-note">折繳代金需依主管機關估價與審議結果確認，目前不硬寫正式代金公式。</p>
+            <details className="eval-inline-details">
+              <summary>估價備註</summary>
+              <div className="eval-reference-grid">
+                <span>土地開發分析法：主要</span>
+                <span>比較法：參酌</span>
+                <span>收益法：暫不列入正式計算</span>
+              </div>
+              <p>折繳代金需依主管機關估價與審議結果確認，目前不硬寫正式代金公式。</p>
+            </details>
           </article>
         </div>
         <div className="eval-capacity-subsection eval-tdr-scoring">
           <h5>容積移轉量體評點檢核（112 年 1 月 1 日以後）</h5>
-          <p className="eval-capacity-method-note">來源：容積移轉申請移入容積量體評點項目查核表。本區為前期檢核工具，正式仍須建築師簽證及主管機關審查確認。</p>
+          <p className="eval-capacity-method-note">前期檢核工具；正式仍須建築師簽證及主管機關審查確認。</p>
           <DataSummaryGrid items={tdrScoringSummaryItems} />
           <div className="eval-capacity-subsection">
             <h5>一、臨路條件初判</h5>
@@ -4318,7 +4311,6 @@ function CapacityModule({
             </div>
             <DataSummaryGrid items={tdrRoadPrecheckItems} />
             <p className="eval-capacity-method-note">{tdrScoringSummary.roadTargetNotice}</p>
-            <DocumentChecklist items={tdrScoringDocuments.road} />
           </div>
           <div className="eval-capacity-subsection">
             <h5>二、接受基地內部條件</h5>
@@ -4334,7 +4326,6 @@ function CapacityModule({
                 </div>
                 <DataSummaryGrid items={tdrSiteCompletenessItems} />
                 <p className="eval-capacity-method-note">甲一至甲六目前僅作基地面積級距分類，不硬寫正式分數。</p>
-                <DocumentChecklist items={tdrScoringDocuments.siteCompleteness} />
               </article>
               <article className="eval-capacity-method-card">
                 <h5>B. 周邊鄰地建築物現況與公共設施</h5>
@@ -4344,7 +4335,6 @@ function CapacityModule({
                   <CapacitySelectField label="TOD 規劃距離" value={tdrScoring.todDistance} options={tdrScoreOptions.todDistance} onChange={handleTdrScoringInputChange("todDistance")} />
                 </div>
                 <DataSummaryGrid items={tdrSurroundingItems} />
-                <DocumentChecklist items={tdrScoringDocuments.surrounding} />
               </article>
               <article className="eval-capacity-method-card">
                 <h5>C. 送出基地位置</h5>
@@ -4362,7 +4352,6 @@ function CapacityModule({
                   <CapacityCheckboxField label="百分之百折繳代金方式辦理：+10" checked={tdrScoring.fullCashPayment} onChange={handleTdrScoringCheckboxChange("fullCashPayment")} />
                 </div>
                 <DataSummaryGrid items={tdrSendingSiteItems} />
-                <DocumentChecklist items={tdrScoringDocuments.sendingSite} />
               </article>
               <article className="eval-capacity-method-card">
                 <h5>D. 地面層開放空間</h5>
@@ -4372,7 +4361,6 @@ function CapacityModule({
                 </div>
                 <DataSummaryGrid items={tdrOpenSpaceItems} />
                 <p className="eval-capacity-method-note">開放空間不得與開放空間獎勵、法定退縮範圍重複計算；正式仍須建築師檢討與簽證。</p>
-                <DocumentChecklist items={tdrScoringDocuments.openSpace} />
               </article>
               <article className="eval-capacity-method-card">
                 <h5>E. 捐贈接受基地內部公益性設施</h5>
@@ -4383,7 +4371,6 @@ function CapacityModule({
                 </div>
                 <DataSummaryGrid items={tdrWelfareItems} />
                 <p className="eval-capacity-method-note">接受基地規模應達 3,000㎡ 以上；相關出入口、停車位、樓層高度、管理維護基金及接管機關同意，仍須依正式規定檢討。</p>
-                <DocumentChecklist items={tdrScoringDocuments.welfare} />
               </article>
             </div>
           </div>
@@ -4397,7 +4384,6 @@ function CapacityModule({
                   <CapacitySelectField label="協助開闢綠地、計畫道路等公共設施位置" value={tdrScoring.publicFacilityImprovementLocation} options={tdrScoreOptions.publicFacilityImprovementLocation} onChange={handleTdrScoringInputChange("publicFacilityImprovementLocation")} wide />
                 </div>
                 <p className="eval-capacity-method-note">開闢面積應大於 1/2 申請移入容積樓地板面積，且在 500㎡ 以上；正式仍須權管機關同意。</p>
-                <DocumentChecklist items={tdrScoringDocuments.publicFacilityImprovement} />
               </article>
               <article className="eval-capacity-method-card">
                 <h5>B. 提供環境改善價金</h5>
@@ -4407,9 +4393,10 @@ function CapacityModule({
                     <input type="text" value={tdrScoring.environmentImprovementScore} onChange={handleTdrScoringInputChange("environmentImprovementScore")} placeholder="例：1" />
                   </label>
                 </div>
-                <p className="eval-capacity-method-note">環境改善價金 = 接受基地面積（㎡）× 接受基地法定容積率 × 1.31 × 20,000 元 × 積分數。法定容積率 200% 會以 2.0 計算。</p>
-                <p className="eval-capacity-method-note">此為依檢核表公式之內部前期試算；正式金額仍以主管機關審查、建築師簽證及相關文件為準。</p>
-                <DocumentChecklist items={tdrScoringDocuments.environmentPrice} />
+                <details className="eval-inline-details">
+                  <summary>價金試算方式</summary>
+                  <p>環境改善價金 = 接受基地面積（㎡）× 接受基地法定容積率 × 1.31 × 20,000 元 × 積分數。正式金額仍以主管機關審查為準。</p>
+                </details>
               </article>
               <article className="eval-capacity-method-card">
                 <h5>C. 綠色交通</h5>
@@ -4418,7 +4405,6 @@ function CapacityModule({
                   <CapacityCheckboxField label="基準容積外增加容積樓地板面積達 6,000㎡ 以上，需加倍留設" checked={tdrScoring.greenTransportAddedCapacityOver6000} onChange={handleTdrScoringCheckboxChange("greenTransportAddedCapacityOver6000")} />
                 </div>
                 <p className="eval-capacity-method-note">設施建置及維護費用先顯示 2,000,000 元；若達 6,000㎡ 以上，暫以 4,000,000 元提示，待正式確認。</p>
-                <DocumentChecklist items={tdrScoringDocuments.greenTransport} />
               </article>
             </div>
             <DataSummaryGrid items={tdrExternalItems} />
@@ -4433,15 +4419,14 @@ function CapacityModule({
       <section className="eval-module-section eval-linked-module">
         <div className="eval-section-head">
           <h4>五、總容積結果</h4>
-          <p>此為前端測試用初步試算，正式公式與法規適用仍待確認。</p>
+          <p>核心容積結果會提供坪效、成本與銀行報告引用。</p>
         </div>
         <DataSummaryGrid items={resultItems} />
       </section>
-      <section className="eval-module-section eval-formula-note">
-        <h4>測試用簡化公式 / 正式公式待確認</h4>
+      <details className="eval-module-section eval-formula-note eval-collapsible-section">
+        <summary>計算方式說明</summary>
         <p>基準容積量 = 土地面積合計 × 基準容積率 / 100；都市更新獎勵、危老獎勵、增額容積、容積移轉與其他獎勵量 = 基準容積量 × 該比例 / 100；總容積量 = 基準容積量 + 各項獎勵 / 增額 / 容移量；總容積率 = 總容積量 ÷ 土地面積合計 × 100。</p>
-        <p>本模組結果將提供坪效明細、成本與共同負擔、銷售情境、權利分配、現金流與銀行融資報告引用。</p>
-      </section>
+      </details>
     </div>
   );
 }
@@ -4601,23 +4586,22 @@ function FloorEfficiencyModule({
           <p>坪效明細承接清冊土地面積、公告現值、基地基本資料與道路 / 法規限制；缺漏處會列入提醒。</p>
         </div>
         <DataSummaryGrid items={sourceItems} />
-        <p className="eval-base-summary-note">
-          公告現值總額依唯一地號逐筆加總；加權平均單價僅供判讀來源基準。坪效與後續成本模組若需引用公告現值，應使用高精度原始數值，不使用畫面四捨五入後的數字。
-        </p>
+        <details className="eval-inline-details">
+          <summary>公告現值計算方式</summary>
+          <p>公告現值總額依唯一地號逐筆加總；加權平均單價僅供判讀來源基準。後續模組引用時使用內部原始數值。</p>
+        </details>
       </section>
       <section className="eval-module-section eval-linked-module">
         <div className="eval-section-head">
           <h4>容積與獎勵來源摘要</h4>
-          <p>本區承接容積來源與獎勵試算，並依「坪效計算表(1).xlsx」拆出獎勵、免計與可銷售面積計算所需的前端測試參數。</p>
+          <p>承接容積來源與獎勵試算，整理可供坪效模型使用的比例與面積。</p>
         </div>
         <DataSummaryGrid items={capacitySourceItems} />
       </section>
       <MissingDataNotice missingItems={floorResult.missingItems} />
-      <section className="eval-module-section eval-linked-module">
-        <div className="eval-section-head">
-          <h4>坪效公式參數</h4>
-          <p>以下欄位依 Excel 公式模型整理，預設會承接容積模組的容積移轉、都更獎勵、危老獎勵與其他獎勵比例；可依目前案件暫時調整。</p>
-        </div>
+      <details className="eval-module-section eval-linked-module eval-collapsible-section">
+        <summary>坪效公式參數</summary>
+        <p>預設承接容積模組數值，可依目前案件暫時調整。</p>
         <div className="eval-field-grid eval-linked-input-grid">
           {formulaRateFields.map(([field, label, placeholder]) => (
             <label className="eval-field" key={field}>
@@ -4640,64 +4624,61 @@ function FloorEfficiencyModule({
             <input type="text" value={effectiveParams.deductionNote} onChange={handleFloorParamChange("deductionNote")} placeholder="例：法規扣除、免計容積、不可售面積或特殊限制" />
           </label>
         </div>
-      </section>
+      </details>
       <section className="eval-module-section eval-linked-module">
         <div className="eval-section-head">
           <h4>初步坪效計算結果</h4>
-          <p>自動承接土地面積、建蔽率、基準容積率與容積獎勵條件後，先依 Excel 模型呈現前端測試數字。</p>
+          <p>承接土地面積、建蔽率、基準容積率與容積獎勵條件。</p>
         </div>
         <DataSummaryGrid items={resultItems} />
       </section>
       <section className="eval-module-section eval-linked-module">
         <div className="eval-section-head">
           <h4>銷售面積與公設摘要</h4>
-          <p>銷售面積與公設比先作為成本、銷售情境與權利分配的下游基礎；正式銷售坪轉換方式仍待確認。</p>
+          <p>作為成本、銷售情境與權利分配的下游基礎。</p>
         </div>
         <DataSummaryGrid items={salesItems} />
       </section>
       <section className="eval-module-section eval-linked-module">
         <div className="eval-section-head">
           <h4>車位與地下層摘要</h4>
-          <p>地下層、法定車位、自設車位與停車面積目前依 Excel 的前端測試假設整理，後續需由建築配置與法規檢核確認。</p>
+          <p>地下層、車位與停車面積仍需由建築配置與法規檢核確認。</p>
         </div>
         <DataSummaryGrid items={parkingItems} />
       </section>
-      <section className="eval-module-section eval-formula-note">
-        <h4>前端測試用坪效初算 / 正式公式待確認</h4>
-        <p>目前公式依「坪效計算表(1).xlsx」整理為前端測試模型，正式法規適用、容積獎勵認定、免計容積、車位、雨遮、外皮、公設與銷售坪轉換方式仍待確認。</p>
-        <p>主要測試公式：基準容積量 = 土地面積 × 基準容積率；獎勵 / 移轉容積依基準容積量乘各比例；免計容積依允建容積與設備、梯廳、陽台比例推估；地下層面積 = 土地面積 × 地下層面積倍數 × 地下層數；銷售面積 = 允建容積 + 免計 / 屋突 / 地下可攤公設後再乘銷售面積校正比例。1 坪 = 3.305785 平方公尺。</p>
-        <p>測試用公式；正式公式待確認。</p>
-        <p>下游影響：成本與共同負擔、銷售價格情境與實施方式 / 權利分配會承接可建樓地板面積、預估可售面積與坪效摘要。</p>
-      </section>
+      <details className="eval-module-section eval-formula-note eval-collapsible-section">
+        <summary>計算方式說明</summary>
+        <p>基準容積量 = 土地面積 × 基準容積率；獎勵 / 移轉容積依基準容積量乘各比例；免計容積依允建容積與設備、梯廳、陽台比例推估；地下層面積 = 土地面積 × 地下層面積倍數 × 地下層數；銷售面積 = 允建容積 + 免計 / 屋突 / 地下可攤公設後再乘銷售面積校正比例。</p>
+      </details>
     </div>
   );
 }
 
 const downstreamModuleGuidance = {
   costs: {
-    title: "成本與共同負擔將承接前面模組結果",
-    description: "此模組未來會承接坪效明細結果、可建樓地板面積、可售面積、公告現值總額、公告現值加權平均單價、開發期程、開發路徑，以及都市更新 / 危老 / 合建等適用成本項目。目前正式成本公式待確認。",
-    missing: "待坪效結果與成本參數補齊後，才能形成成本總額與共同負擔摘要。",
+    title: "成本與共同負擔",
+    description: "本模組將承接基地、容積、坪效與評點結果，作為後續成本與分配試算基礎。",
+    missing: "下一階段建立成本項目、共同負擔與版本紀錄。",
   },
   sales: {
-    title: "銷售價格情境將承接可售面積與成本",
-    description: "此模組未來會承接坪效結果、可售面積、成本總額、當地行情與預估銷售單價，作為分配合理性與損益平衡判斷基礎。目前正式銷售模型待確認。",
-    missing: "待坪效與成本結果補齊後，才能形成低 / 中 / 高銷售情境。",
+    title: "銷售價格情境",
+    description: "本模組將承接可售面積與成本結果，建立低 / 中 / 高銷售單價情境。",
+    missing: "下一階段建立行情輸入、總銷與損益平衡判斷。",
   },
   allocation: {
-    title: "實施方式與權利分配將承接權利與財務條件",
-    description: "此模組未來會承接土地 / 建物權利資料、坪效結果、成本結果、銷售情境與開發路徑；分配條件不是獨立輸入頁。目前正式分配模型待確認。",
-    missing: "待清冊、坪效、成本與銷售結果補齊後，才能進行合理分配判斷。",
+    title: "實施方式與權利分配",
+    description: "本模組將承接權利人清冊、坪效、成本、銷售與開發路徑，進行分配條件判斷。",
+    missing: "下一階段建立分配模式、共同負擔與地主 / 實施者分回摘要。",
   },
   cashflow: {
-    title: "現金流與資金需求將承接成本、銷售與期程",
-    description: "此模組未來會承接成本結果、銷售回收節點、開發期程、融資需求與利息假設，整理高峰資金缺口。目前正式金流模型待確認。",
-    missing: "待成本、銷售與期程假設補齊後，才能形成資金需求摘要。",
+    title: "現金流與資金需求",
+    description: "本模組將承接成本、銷售回收與開發期程，整理資金需求與高峰缺口。",
+    missing: "下一階段建立分期支出、回收節點與融資假設。",
   },
   "bank-report": {
-    title: "銀行融資報告將彙整全案資料",
-    description: "此模組未來會彙整案件基本資料、清冊摘要、基地資料、容積試算、坪效明細、成本與共同負擔、銷售價格情境、分配條件、現金流與資金需求、風險與待補資料。目前正式報告格式待確認。",
-    missing: "待前面模組結果補齊後，才能形成銀行融資報告摘要。",
+    title: "銀行融資報告",
+    description: "本模組將彙整案件、清冊、基地、容積、坪效、成本、銷售、分配與金流結果。",
+    missing: "下一階段建立報告章節、風險摘要與送件資料包。",
   },
 };
 
@@ -4722,7 +4703,7 @@ function DownstreamModuleNotice({ moduleId, currentCase, capacityResult, floorRe
         <p>{guidance.description}</p>
       </div>
       <DataSummaryGrid items={sourceItems} />
-      <p>{guidance.missing}</p>
+      <p className="eval-stage-note">{guidance.missing}</p>
     </section>
   );
 }
@@ -4733,7 +4714,7 @@ function RolePermissionPanel({ profile }) {
       <div className="eval-section-head">
         <h4>角色權限顯示規則</h4>
         <p>
-          目前以前端 mock role 切換示範 admin / user 的顯示差異。正式上線時，後端 API 與資料庫規則仍必須檢查角色、授權方案與設備綁定，不可只靠前端隱藏。
+          目前以前端角色切換示範 admin / user 的顯示差異。正式上線時，後端 API 與資料庫規則仍必須檢查角色、授權方案與設備綁定，不可只靠前端隱藏。
         </p>
       </div>
       <div className="eval-role-rule-grid">
@@ -4750,7 +4731,7 @@ function RolePermissionPanel({ profile }) {
           </article>
         ))}
         <article>
-          <strong>目前 mock</strong>
+          <strong>目前角色</strong>
           <p>
             {profile.roleLabel} / {profile.plan}：
             {profile.permissions.adminModules ? "可看管理端模組" : "隱藏管理端模組"}，
@@ -4772,7 +4753,7 @@ function ParameterAccessNotice({ profile }) {
     <section className="eval-module-section eval-parameter-access">
       <div className="eval-section-head">
         <h4>參數權限分層</h4>
-        <p>案件個別參數與全系統預設參數要分開控管；這裡先以前端 mock role 顯示後續正式權限規則。</p>
+        <p>案件個別參數與全系統預設參數要分開控管；這裡以角色切換呈現後續正式權限規則。</p>
       </div>
       <div className="eval-role-rule-grid">
         <article>
@@ -4913,7 +4894,13 @@ function ModuleContent({
   }
 
   if (module.type === "takeover") {
-    return <TakeoverEvaluationModule module={module} />;
+    return (
+      <TakeoverEvaluationModule
+        currentCase={currentCase}
+        currentCapacityResults={currentCapacityResults}
+        currentFloorEfficiencyResults={currentFloorEfficiencyResults}
+      />
+    );
   }
 
   if (module.type === "license") {
@@ -5009,12 +4996,17 @@ function ModuleContent({
     );
   }
 
+  if (DOWNSTREAM_PLACEHOLDER_MODULE_IDS.has(module.id)) {
+    return (
+      <div className="eval-module-stack">
+        <DownstreamModuleNotice moduleId={module.id} currentCase={currentCase} capacityResult={currentCapacityResults} floorResult={currentFloorEfficiencyResults} />
+      </div>
+    );
+  }
+
   return (
     <div className="eval-module-stack">
       {module.id === "parameters" && <ParameterAccessNotice profile={accessProfile} />}
-      {["costs", "sales", "allocation", "cashflow", "bank-report"].includes(module.id) && (
-        <DownstreamModuleNotice moduleId={module.id} currentCase={currentCase} capacityResult={currentCapacityResults} floorResult={currentFloorEfficiencyResults} />
-      )}
       <AssessmentModeCards modes={module.modeOptions} />
       {module.sections.map((section) => (
         module.id === "parameters" && section.access === "admin" && !accessProfile.permissions.systemParameters ? null : (
@@ -5055,9 +5047,9 @@ function EvaluationLanding({ onLogin }) {
         <aside className="eval-login-card" aria-label="登入提示">
           <LockKeyhole aria-hidden="true" size={34} />
           <h2>登入提示</h2>
-          <p>目前尚未串接正式帳號後端。第一階段先使用前端 mock 登入狀態，讓系統主畫面、模組導覽與欄位骨架可以先被檢視。</p>
+          <p>目前尚未串接正式帳號後端。第一階段先使用前端登入狀態，讓系統主畫面、模組導覽與欄位骨架可以先被檢視。</p>
           <button type="button" onClick={onLogin}>
-            使用 mock 身分登入
+            使用測試身分登入
           </button>
         </aside>
       </section>
@@ -5098,7 +5090,7 @@ function DashboardHome({ activeModule, cases, currentCase, visibleModuleCount })
         <article>
           <span>主模組</span>
           <strong>{visibleModuleCount}</strong>
-          <p>依目前 mock role 與授權方案顯示。</p>
+          <p>依目前角色與授權方案顯示。</p>
         </article>
       </div>
 
@@ -5706,7 +5698,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
           </div>
           <div className="eval-user-status">
             <span>{authState.email || accessProfile.label}</span>
-            <div className="eval-role-switch" aria-label="mock role 切換">
+            <div className="eval-role-switch" aria-label="角色切換">
               {Object.entries(mockAccessProfiles).map(([role, profile]) => (
                 <button
                   className={mockRole === role ? "is-active" : ""}

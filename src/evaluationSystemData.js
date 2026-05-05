@@ -304,7 +304,7 @@ export const evaluationModules = [
     eyebrow: "TAKEOVER",
     shortTitle: "承接評估",
     description:
-      "既有條件反推評估會輸入目前已存在的分配條件、成本假設、銷售假設、整合與送件狀態，反推案件是否仍具可行性，以及三策是否有介入、協助或承接空間。",
+      "承接既有條件、整合進度與分配假設，判斷案件是否適合承接、協助或讓出。",
     type: "takeover",
     modeOptions: assessmentModes,
     flows: assessmentFlows,
@@ -949,7 +949,7 @@ export const evaluationModules = [
     id: "bank-report",
     title: "銀行融資報告",
     eyebrow: "BANK",
-    description: "總結前面所有模組，彙整案件、基地、開發路徑、權利人、容積坪效、成本、銷售、分配、現金流與風險；目前先做前端報告架構，不接 PDF 匯出。",
+    description: "彙整案件、基地、清冊、容積、坪效、成本、銷售、分配、金流與風險，形成銀行評估摘要。",
     sections: [
       {
         title: "報告章節",

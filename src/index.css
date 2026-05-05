@@ -1541,14 +1541,48 @@ main {
 }
 
 .eval-module-flow-brief {
-  display: grid;
-  grid-template-columns: minmax(220px, 0.82fr) minmax(0, 1.5fr);
-  gap: 14px;
+  display: block;
   margin-bottom: 14px;
   border: 1px solid rgba(8, 59, 48, 0.1);
   border-radius: 16px;
   background: linear-gradient(135deg, rgba(19, 92, 73, 0.08), rgba(255, 255, 255, 0.94));
-  padding: 18px;
+  overflow: hidden;
+}
+
+.eval-module-flow-brief summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  cursor: pointer;
+  list-style: none;
+  padding: 12px 18px;
+}
+
+.eval-module-flow-brief summary::-webkit-details-marker,
+.eval-inline-details summary::-webkit-details-marker,
+.eval-collapsible-section summary::-webkit-details-marker {
+  display: none;
+}
+
+.eval-module-flow-brief summary strong {
+  color: var(--green-950);
+  font-size: 0.95rem;
+  font-weight: 900;
+}
+
+.eval-module-flow-brief summary span {
+  margin-left: auto;
+  border-radius: 999px;
+  background: #ffffffc7;
+  color: var(--green-900);
+  padding: 5px 10px;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.eval-module-flow-brief[open] summary {
+  border-bottom: 1px solid rgba(8, 59, 48, 0.08);
 }
 
 .eval-module-flow-brief__intro h3 {
@@ -1572,6 +1606,7 @@ main {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
+  padding: 14px;
 }
 
 .eval-flow-mini-card {
@@ -1614,6 +1649,89 @@ main {
   box-sizing: border-box;
   min-width: 0;
   padding: 18px;
+}
+
+.eval-inline-details {
+  margin-top: 12px;
+  border: 1px solid rgba(8, 59, 48, 0.08);
+  border-radius: 12px;
+  background: rgba(248, 251, 250, 0.86);
+  padding: 0;
+}
+
+.eval-inline-details summary,
+.eval-collapsible-section summary {
+  cursor: pointer;
+  list-style: none;
+  color: var(--green-950);
+  font-size: 0.84rem;
+  font-weight: 900;
+  line-height: 1.45;
+  padding: 11px 13px;
+}
+
+.eval-inline-details[open] summary,
+.eval-collapsible-section[open] summary {
+  border-bottom: 1px solid rgba(8, 59, 48, 0.08);
+}
+
+.eval-inline-details p,
+.eval-inline-details ul,
+.eval-inline-details dl,
+.eval-collapsible-section > p {
+  margin: 0;
+  padding: 12px 13px;
+  color: var(--gray-700);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.65;
+}
+
+.eval-inline-details dl {
+  display: grid;
+  gap: 8px;
+}
+
+.eval-inline-details ul {
+  padding-left: 30px;
+}
+
+.eval-inline-details .eval-reference-grid {
+  padding: 12px 13px;
+}
+
+.eval-inline-details dl div {
+  min-width: 0;
+}
+
+.eval-inline-details dt {
+  color: var(--gray-500);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.eval-inline-details dd {
+  margin: 2px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.eval-current-case-pill,
+.eval-stage-note {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  max-width: 100%;
+  border-radius: 999px;
+  background: rgba(19, 92, 73, 0.12);
+  color: var(--green-900);
+  padding: 7px 10px;
+  font-size: 0.76rem;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.eval-stage-note {
+  margin: 0;
 }
 
 .eval-current-case-card {
@@ -3193,14 +3311,13 @@ main {
   gap: 8px;
 }
 
-.eval-device-warning__actions button {
+.eval-device-warning__actions span {
   min-height: 36px;
   border: 1px solid rgba(123, 47, 32, 0.16);
   border-radius: 999px;
   background: #ffffff;
   color: #7b2f20;
   padding: 8px 13px;
-  font: inherit;
   font-size: 0.78rem;
   font-weight: 900;
 }
@@ -3492,10 +3609,6 @@ main {
 
   .eval-case-form {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .eval-module-flow-brief {
-    grid-template-columns: 1fr;
   }
 
   .hero {
@@ -3797,10 +3910,6 @@ main {
   .eval-module-panel,
   .eval-module-section,
   .eval-case-panel {
-    padding: 16px;
-  }
-
-  .eval-module-flow-brief {
     padding: 16px;
   }
 
