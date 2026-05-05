@@ -150,6 +150,32 @@ const defaultBaseInfo = {
   note: "",
 };
 
+const defaultTdrScoringInputs = {
+  roadWidthMeters: "",
+  minimumSideLengthBand: "",
+  interiorAnglesQualified: false,
+  adjacentRoadCondition: "",
+  boundarySetback: "",
+  publicFacilityArea: "",
+  todDistance: "",
+  connectedLandRatio: "",
+  publicFacilityRatio: "",
+  priorityPublicFacilityRatio: "",
+  announcedAcquisitionScore: "",
+  fullOwnershipOpenedRoad: false,
+  fullCashPayment: false,
+  plazaOpenSpaceRatio: "",
+  sidewalkOpenSpaceCondition: "",
+  donateSocialHousing: false,
+  donateChildcare: false,
+  donateElderlyCare: false,
+  publicFacilityImprovementLocation: "",
+  environmentImprovementScore: "",
+  greenTransportProvided: false,
+  greenTransportAddedCapacityOver6000: false,
+  greenTransportEstimatedCost: "",
+};
+
 const defaultCapacityInputs = {
   baseFloorAreaRatio: "",
   transferRatio: "",
@@ -178,6 +204,129 @@ const defaultCapacityInputs = {
   tdrCashPaymentAgencyFee: "",
   tdrCashPaymentStatus: "",
   otherCapacitySourceNote: "",
+  tdrScoring: defaultTdrScoringInputs,
+};
+
+const tdrScoringDocuments = {
+  road: ["接受基地之都市計畫圖", "都市計畫道路綜理表"],
+  siteCompleteness: [
+    "接受基地 500 公尺範圍內之都市計畫圖套繪地籍圖",
+    "接受基地土地登記謄本",
+    "接受基地地籍圖謄本",
+    "接受基地之都市計畫圖",
+    "都市計畫道路綜理表",
+  ],
+  surrounding: [
+    "接受基地 500 公尺範圍內之都市計畫圖套繪地籍圖或地形圖",
+    "公共設施用地土地使用分區證明書",
+    "公共設施用地土地登記謄本",
+    "公共設施用地已開闢證明文件",
+    "捷運車站或火車站出入口土地使用分區證明",
+    "必要時捷運車站結構體細部設計圖",
+  ],
+  sendingSite: [
+    "送出基地土地登記謄本",
+    "送出基地土地使用分區證明書",
+    "面積計算表",
+    "應優先取得公共設施用地證明文件",
+    "道路維管證明文件",
+    "依公告取得方式應檢附文件",
+  ],
+  openSpace: ["地面層增設開放空間平面配置圖", "剖面圖"],
+  welfare: ["建築物配置圖", "規劃設計圖", "相關機關同意文件"],
+  publicFacilityImprovement: [
+    "接受基地 500 公尺範圍內之都市計畫圖套繪地籍圖",
+    "公共設施土地登記謄本",
+    "公共設施土地使用分區證明書",
+    "相關機關同意文件",
+  ],
+  environmentPrice: ["接受基地土地登記謄本", "接受基地面積計算表", "環境改善價金計算式說明"],
+  greenTransport: ["地面層配置 UBIKE 位置圖", "相關機關同意設置文件"],
+};
+
+const tdrScoringMasterDocuments = [
+  "都市計畫圖",
+  "都市計畫道路綜理表",
+  "土地登記謄本",
+  "地籍圖謄本",
+  "地籍圖套繪都市計畫圖",
+  "土地使用分區證明",
+  "面積計算表",
+  "地面層配置圖",
+  "剖面圖",
+  "建築物配置圖",
+  "規劃設計圖",
+  "相關機關同意文件",
+  "道路維管證明文件",
+  "建築師簽證及大小章",
+  "影本文件註明「與正本相符」",
+  "申請人用印",
+  "建築師開業證書影本",
+  "一式兩份、裝訂成冊、側標籤",
+  "一項目一套圖，避免同一圖面說明多項評定項目",
+];
+
+const tdrScoreOptions = {
+  minimumSideLengthBand: [
+    ["", "待輸入"],
+    ["under8", "8 公尺以下：乙一"],
+    ["8to20", "8 公尺以上，未達 20 公尺：乙二"],
+    ["20plus", "20 公尺以上：乙三"],
+  ],
+  adjacentRoadCondition: [
+    ["", "依道路寬度自動初判"],
+    ["8to15", "道路寬度 8 公尺以上，未達 15 公尺：+1"],
+    ["15plus", "道路寬度 15 公尺以上：+2"],
+  ],
+  boundarySetback: [
+    ["", "待輸入"],
+    ["3to5", "3 公尺以上，未達 5 公尺：+2"],
+    ["5plus", "5 公尺以上：+3"],
+  ],
+  publicFacilityArea: [
+    ["", "待輸入"],
+    ["0.2to0.5", "0.2 公頃以上，未達 0.5 公頃：+1"],
+    ["0.5plus", "0.5 公頃以上：+2"],
+    ["0.5single", "0.5 公頃以上且單一公共設施達 0.5 公頃：+3"],
+  ],
+  todDistance: [
+    ["", "待輸入"],
+    ["under300", "距捷運車站或火車站未達 300 公尺：+2"],
+    ["300to500", "300 公尺以上，未達 500 公尺：+1"],
+  ],
+  ratioScore: [
+    ["", "待輸入"],
+    ["60to80", "60% 以上，未達 80%：+1"],
+    ["80to100", "80% 以上，未達 100%：+2"],
+    ["100", "100%：+3"],
+  ],
+  priorityRatioScore: [
+    ["", "待輸入"],
+    ["40to60", "40% 以上，未達 60%：+1"],
+    ["60to80", "60% 以上，未達 80%：+2"],
+    ["80plus", "80% 以上：+3"],
+  ],
+  plazaOpenSpaceRatio: [
+    ["", "待輸入"],
+    ["10to20", "10% 以上，未達 20% 法定空地面積：+2"],
+    ["20to30", "20% 以上，未達 30% 法定空地面積：+4"],
+    ["30to40", "30% 以上，未達 40% 法定空地面積：+6"],
+    ["40plus", "40% 以上法定空地面積：+8"],
+  ],
+  sidewalkOpenSpaceCondition: [
+    ["", "待輸入"],
+    ["1.5one", "1.5 公尺以上未達 4 公尺，單側臨路：+1"],
+    ["1.5two", "1.5 公尺以上未達 4 公尺，兩側臨路：+2"],
+    ["1.5three", "1.5 公尺以上未達 4 公尺，三側臨路：+3"],
+    ["4one", "4 公尺以上，單側臨路：+2"],
+    ["4two", "4 公尺以上，兩側臨路：+4"],
+    ["4three", "4 公尺以上，三側臨路：+6"],
+  ],
+  publicFacilityImprovementLocation: [
+    ["", "待輸入"],
+    ["around", "基地四周，且應鄰接接受基地：+4"],
+    ["within500", "基地外圍，且距接受基地 500 公尺範圍內：+2"],
+  ],
 };
 
 const defaultFloorEfficiencyParams = {
@@ -2630,6 +2779,10 @@ function getEffectiveCapacityInputs(capacityInputs, baseInfo) {
     ...capacityInputs,
     baseFloorAreaRatio: capacityInputs?.baseFloorAreaRatio || baseInfo?.baseFloorAreaRatio || "",
     tdrRecipientFloorAreaRatio: capacityInputs?.tdrRecipientFloorAreaRatio || capacityInputs?.baseFloorAreaRatio || baseInfo?.baseFloorAreaRatio || "",
+    tdrScoring: {
+      ...defaultTdrScoringInputs,
+      ...(isPlainRecord(capacityInputs?.tdrScoring) ? capacityInputs.tdrScoring : {}),
+    },
   };
 }
 
@@ -2651,6 +2804,177 @@ function parseRateInput(value, fallbackValue = null) {
 function parsePlainNumberInput(value, fallbackValue = null) {
   const parsedValue = parseNumericInput(value);
   return Number.isFinite(parsedValue) ? parsedValue : fallbackValue;
+}
+
+function clampScore(value, min, max, fallbackValue = 0) {
+  const parsedValue = parseNumericInput(value);
+  if (!Number.isFinite(parsedValue)) {
+    return fallbackValue;
+  }
+
+  return Math.min(Math.max(parsedValue, min), max);
+}
+
+function mapOptionScore(value, scoreMap, fallbackValue = 0) {
+  return Object.prototype.hasOwnProperty.call(scoreMap, value) ? scoreMap[value] : fallbackValue;
+}
+
+function classifyTdrSiteArea(landAreaSqm) {
+  if (!Number.isFinite(landAreaSqm)) {
+    return "待補資料";
+  }
+
+  if (landAreaSqm < 500) {
+    return "未達 500㎡";
+  }
+  if (landAreaSqm < 1500) {
+    return "500㎡以上，未達 1,500㎡：甲一";
+  }
+  if (landAreaSqm < 2000) {
+    return "1,500㎡以上，未達 2,000㎡：甲二";
+  }
+  if (landAreaSqm < 4000) {
+    return "2,000㎡以上，未達 4,000㎡：甲三";
+  }
+  if (landAreaSqm < 6000) {
+    return "4,000㎡以上，未達 6,000㎡：甲四";
+  }
+  if (landAreaSqm < 10000) {
+    return "6,000㎡以上，未達 10,000㎡：甲五";
+  }
+
+  return "10,000㎡以上：甲六";
+}
+
+function calculateTdrRoadPrecheck(roadWidthMeters, targetTransferRatio) {
+  if (!Number.isFinite(roadWidthMeters)) {
+    return {
+      score: null,
+      percentage: null,
+      status: "資料不足，請輸入接受基地連接道路寬度。",
+      targetNotice: "請先補齊道路寬度，再檢核目標容移比例。",
+      missing: true,
+    };
+  }
+
+  if (roadWidthMeters < 8) {
+    return {
+      score: 0,
+      percentage: 0,
+      status: "未達 8 公尺，需確認是否符合容積移轉接受基地條件。",
+      targetNotice: "臨路條件初判為 0%，是否可辦理容積移轉仍須主管機關審查確認。",
+      missing: false,
+    };
+  }
+
+  const score = roadWidthMeters < 20 ? roadWidthMeters : 20;
+  const status = roadWidthMeters < 20
+    ? "8 公尺以上未達 20 公尺者，最高可移入容積以道路寬度數值作為接受基地基準容積百分比；正式仍依審查確認。"
+    : "接受基地連接寬度 20 公尺以上道路者，可移入容積不得超過接受基地基準容積之 20%；正式仍依審查確認。";
+  const targetNotice = Number.isFinite(targetTransferRatio)
+    ? `目前容移比例 ${formatPercentValue(targetTransferRatio)} 為前期試算目標；臨路條件初判為 ${formatPercentValue(score)}，是否可達 ${formatPercentValue(targetTransferRatio)} 仍須搭配量體評點、接受基地條件及主管機關審查確認。`
+    : `臨路條件初判為 ${formatPercentValue(score)}；目標容移比例待補資料。`;
+
+  return {
+    score,
+    percentage: score,
+    status,
+    targetNotice,
+    missing: false,
+  };
+}
+
+function calculateTdrScoringSummary(baseInfo, capacityInputs, capacityResultSeed) {
+  const scoringInputs = {
+    ...defaultTdrScoringInputs,
+    ...(isPlainRecord(capacityInputs?.tdrScoring) ? capacityInputs.tdrScoring : {}),
+  };
+  const landAreaSqm = capacityResultSeed?.landAreaSqm;
+  const baseFloorAreaRatio = capacityResultSeed?.baseFloorAreaRatio;
+  const targetTransferRatio = capacityResultSeed?.transferRatio;
+  const roadWidthMeters = parseNumericInput(scoringInputs.roadWidthMeters)
+    ?? parseNumericInput(capacityInputs?.tdrRoadWidthStatus)
+    ?? parseNumericInput(baseInfo?.roadAccess);
+  const roadPrecheck = calculateTdrRoadPrecheck(roadWidthMeters, targetTransferRatio);
+  const adjacentRoadScore = scoringInputs.adjacentRoadCondition
+    ? mapOptionScore(scoringInputs.adjacentRoadCondition, { "8to15": 1, "15plus": 2 })
+    : (Number.isFinite(roadWidthMeters) && roadWidthMeters >= 15 ? 2 : Number.isFinite(roadWidthMeters) && roadWidthMeters >= 8 ? 1 : 0);
+  const siteCompletenessSubtotal = (scoringInputs.interiorAnglesQualified ? 1 : 0) + adjacentRoadScore;
+  const surroundingSubtotal =
+    mapOptionScore(scoringInputs.boundarySetback, { "3to5": 2, "5plus": 3 })
+    + mapOptionScore(scoringInputs.publicFacilityArea, { "0.2to0.5": 1, "0.5plus": 2, "0.5single": 3 })
+    + mapOptionScore(scoringInputs.todDistance, { under300: 2, "300to500": 1 });
+  const sendingSiteSubtotal = scoringInputs.fullCashPayment
+    ? 10
+    : mapOptionScore(scoringInputs.connectedLandRatio, { "60to80": 1, "80to100": 2, "100": 3 })
+      + mapOptionScore(scoringInputs.publicFacilityRatio, { "60to80": 1, "80to100": 2, "100": 3 })
+      + mapOptionScore(scoringInputs.priorityPublicFacilityRatio, { "40to60": 1, "60to80": 2, "80plus": 3 })
+      + clampScore(scoringInputs.announcedAcquisitionScore, 0, 3, 0)
+      + (scoringInputs.fullOwnershipOpenedRoad ? 1 : 0);
+  const openSpaceSubtotal =
+    mapOptionScore(scoringInputs.plazaOpenSpaceRatio, { "10to20": 2, "20to30": 4, "30to40": 6, "40plus": 8 })
+    + mapOptionScore(scoringInputs.sidewalkOpenSpaceCondition, { "1.5one": 1, "1.5two": 2, "1.5three": 3, "4one": 2, "4two": 4, "4three": 6 });
+  const welfareSubtotal =
+    (scoringInputs.donateSocialHousing ? 2 : 0)
+    + (scoringInputs.donateChildcare ? 2 : 0)
+    + (scoringInputs.donateElderlyCare ? 2 : 0);
+  const internalSubtotal = siteCompletenessSubtotal + surroundingSubtotal + sendingSiteSubtotal + openSpaceSubtotal + welfareSubtotal;
+  const publicFacilityImprovementSubtotal = mapOptionScore(scoringInputs.publicFacilityImprovementLocation, { around: 4, within500: 2 });
+  const environmentImprovementScore = clampScore(scoringInputs.environmentImprovementScore, 0, 8, 0);
+  const baseFarMultiplier = Number.isFinite(baseFloorAreaRatio) ? baseFloorAreaRatio / 100 : null;
+  const environmentImprovementPrice = Number.isFinite(landAreaSqm) && Number.isFinite(baseFarMultiplier) && environmentImprovementScore > 0
+    ? landAreaSqm * baseFarMultiplier * 1.31 * 20000 * environmentImprovementScore
+    : null;
+  const addedCapacityOutsideBase = Number.isFinite(capacityResultSeed?.totalCapacityAreaSqm) && Number.isFinite(capacityResultSeed?.baseCapacityAreaSqm)
+    ? capacityResultSeed.totalCapacityAreaSqm - capacityResultSeed.baseCapacityAreaSqm
+    : null;
+  const greenTransportNeedsDouble = Boolean(scoringInputs.greenTransportAddedCapacityOver6000)
+    || (Number.isFinite(addedCapacityOutsideBase) && addedCapacityOutsideBase >= 6000);
+  const greenTransportSubtotal = scoringInputs.greenTransportProvided ? 1 : 0;
+  const greenTransportEstimatedCost = scoringInputs.greenTransportProvided
+    ? (greenTransportNeedsDouble ? 4000000 : 2000000)
+    : null;
+  const externalRawSubtotal = publicFacilityImprovementSubtotal + environmentImprovementScore + greenTransportSubtotal;
+  const externalAdoptableLimit = internalSubtotal / 3;
+  const externalAdoptedScore = Math.min(externalRawSubtotal, externalAdoptableLimit);
+  const preliminaryTotalScore = (roadPrecheck.score ?? 0) + internalSubtotal + externalAdoptedScore;
+  const hasAnyDetailedScore = internalSubtotal > 0 || externalRawSubtotal > 0;
+  const hasCriticalMissing = roadPrecheck.missing || !Number.isFinite(targetTransferRatio) || !hasAnyDetailedScore;
+  const scoringStatus = hasCriticalMissing
+    ? "資料不足，僅供前期檢核"
+    : preliminaryTotalScore >= targetTransferRatio
+      ? "初步達標，仍須建築師簽證及主管機關審查確認"
+      : "評點初算不足，需補充基地條件、外部改善或重新檢討目標容移比例";
+
+  return roundRecordNumbers({
+    roadWidthMeters,
+    roadPrecheckScore: roadPrecheck.score,
+    roadPrecheckPercentage: roadPrecheck.percentage,
+    roadPrecheckStatus: roadPrecheck.status,
+    roadTargetNotice: roadPrecheck.targetNotice,
+    siteAreaBand: classifyTdrSiteArea(landAreaSqm),
+    minimumSideLengthBand: scoringInputs.minimumSideLengthBand,
+    siteCompletenessSubtotal,
+    surroundingSubtotal,
+    sendingSiteSubtotal,
+    openSpaceSubtotal,
+    welfareSubtotal,
+    internalSubtotal,
+    publicFacilityImprovementSubtotal,
+    environmentImprovementScore,
+    environmentImprovementPrice,
+    greenTransportSubtotal,
+    greenTransportNeedsDouble,
+    greenTransportEstimatedCost,
+    addedCapacityOutsideBase,
+    targetTransferAreaSqm: capacityResultSeed?.transferAreaSqm ?? null,
+    externalRawSubtotal,
+    externalAdoptableLimit,
+    externalAdoptedScore,
+    preliminaryTotalScore,
+    targetTransferRatio,
+    scoringStatus,
+  });
 }
 
 function getEffectiveFloorEfficiencyParams(floorParams, capacityResult) {
@@ -2739,6 +3063,15 @@ function calculateCapacityResult(rosterStaging, baseInfo, capacityInputs) {
   const tdrAssessedValueMultiplierCost = Number.isFinite(tdrDonorAssessedCurrentValueTotal) && Number.isFinite(marketPriceMultiplier)
     ? tdrDonorAssessedCurrentValueTotal * marketPriceMultiplier
     : null;
+  const capacityResultSeed = {
+    landAreaSqm,
+    baseFloorAreaRatio,
+    transferRatio,
+    baseCapacityAreaSqm,
+    transferAreaSqm,
+    totalCapacityAreaSqm,
+  };
+  const tdrScoringSummary = calculateTdrScoringSummary(baseInfo, capacityInputs, capacityResultSeed);
 
   return roundRecordNumbers({
     landAreaSqm,
@@ -2771,6 +3104,7 @@ function calculateCapacityResult(rosterStaging, baseInfo, capacityInputs) {
     missingItems,
     formulaStatus: "測試用簡化公式；正式公式待確認",
     tdrCostFormulaStatus: "容積移轉費用正式計算方式待確認",
+    tdrScoringSummary,
     // Future TDR cost calculations must use these raw numeric fields, not formatted display strings.
     tdrCostBasisFields: [
       "assessedCurrentValueTotal",
@@ -3421,6 +3755,43 @@ function DataSummaryGrid({ items }) {
   );
 }
 
+function DocumentChecklist({ title = "應檢附文件", items }) {
+  return (
+    <div className="eval-document-checklist">
+      <strong>{title}</strong>
+      <ul>
+        {items.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function CapacitySelectField({ label, value, options, onChange, wide = false }) {
+  return (
+    <label className={`eval-field${wide ? " eval-field--wide" : ""}`}>
+      <span>{label}</span>
+      <select value={value ?? ""} onChange={onChange}>
+        {options.map(([optionValue, optionLabel]) => (
+          <option key={optionValue} value={optionValue}>
+            {optionLabel}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function CapacityCheckboxField({ label, checked, onChange }) {
+  return (
+    <label className="eval-check-field">
+      <input type="checkbox" checked={Boolean(checked)} onChange={onChange} />
+      <span>{label}</span>
+    </label>
+  );
+}
+
 function MissingDataNotice({ missingItems }) {
   if (!missingItems?.length) {
     return null;
@@ -3539,6 +3910,7 @@ function CapacityModule({
     capacityResult.incrementalCapacityAreaSqm,
     capacityResult.otherBonusAreaSqm,
     capacityResult.calculationStatus,
+    JSON.stringify(capacityResult.tdrScoringSummary),
   ]);
 
   if (!currentCase) {
@@ -3558,8 +3930,37 @@ function CapacityModule({
     });
   };
 
+  const handleTdrScoringInputChange = (field) => (event) => {
+    onMarkUnsaved();
+    onCapacityInputsChange({
+      ...defaultCapacityInputs,
+      ...capacityInputs,
+      tdrScoring: {
+        ...defaultTdrScoringInputs,
+        ...(isPlainRecord(capacityInputs?.tdrScoring) ? capacityInputs.tdrScoring : {}),
+        [field]: event.target.value,
+      },
+    });
+  };
+
+  const handleTdrScoringCheckboxChange = (field) => (event) => {
+    onMarkUnsaved();
+    onCapacityInputsChange({
+      ...defaultCapacityInputs,
+      ...capacityInputs,
+      tdrScoring: {
+        ...defaultTdrScoringInputs,
+        ...(isPlainRecord(capacityInputs?.tdrScoring) ? capacityInputs.tdrScoring : {}),
+        [field]: event.target.checked,
+      },
+    });
+  };
+
   const rosterSummary = buildRosterBaseSummary(rosterStaging);
   const tdrCostBasis = capacityResult.tdrCostBasis ?? {};
+  const tdrScoring = effectiveInputs.tdrScoring ?? defaultTdrScoringInputs;
+  const tdrScoringSummary = capacityResult.tdrScoringSummary ?? {};
+  const effectiveRoadWidthValue = tdrScoring.roadWidthMeters || (Number.isFinite(tdrScoringSummary.roadWidthMeters) ? String(tdrScoringSummary.roadWidthMeters) : "");
   const totalCapacityBeforeTransferSqm = Number.isFinite(capacityResult.totalCapacityAreaSqm) && Number.isFinite(capacityResult.transferAreaSqm)
     ? capacityResult.totalCapacityAreaSqm - capacityResult.transferAreaSqm
     : null;
@@ -3633,6 +4034,69 @@ function CapacityModule({
     ["估價師估價費", formatInputCurrency(effectiveInputs.tdrAppraiserFee)],
     ["容積申請代辦費", formatInputCurrency(effectiveInputs.tdrCashPaymentAgencyFee)],
     ["容積移轉代金狀態", effectiveInputs.tdrCashPaymentStatus || "待主管機關估價與審議確認"],
+  ];
+  const tdrRoadPrecheckItems = [
+    ["接受基地連接道路寬度", Number.isFinite(tdrScoringSummary.roadWidthMeters) ? `${formatNumber(tdrScoringSummary.roadWidthMeters, 2)} 公尺` : "待補資料"],
+    ["臨路條件初判積分 / 初判可移入比例", Number.isFinite(tdrScoringSummary.roadPrecheckPercentage) ? formatPercentValue(tdrScoringSummary.roadPrecheckPercentage) : "待補資料"],
+    ["臨路條件狀態", tdrScoringSummary.roadPrecheckStatus],
+    ["目標容積移轉比例", formatPercentValue(capacityResult.transferRatio)],
+  ];
+  const tdrSiteCompletenessItems = [
+    ["基地面積級距", tdrScoringSummary.siteAreaBand],
+    ["基地最小邊長", tdrScoreOptions.minimumSideLengthBand.find(([value]) => value === tdrScoring.minimumSideLengthBand)?.[1] || "待輸入"],
+    ["內角是否介於 60 至 120 度", tdrScoring.interiorAnglesQualified ? "+1" : "未勾選"],
+    ["臨接道路條件", tdrScoring.adjacentRoadCondition ? tdrScoreOptions.adjacentRoadCondition.find(([value]) => value === tdrScoring.adjacentRoadCondition)?.[1] : "依道路寬度自動初判"],
+    ["小計", formatPercentValue(tdrScoringSummary.siteCompletenessSubtotal)],
+  ];
+  const tdrSurroundingItems = [
+    ["基地境界線最小退縮距離", tdrScoreOptions.boundarySetback.find(([value]) => value === tdrScoring.boundarySetback)?.[1] || "待輸入"],
+    ["現況公共設施面積", tdrScoreOptions.publicFacilityArea.find(([value]) => value === tdrScoring.publicFacilityArea)?.[1] || "待輸入"],
+    ["TOD 規劃距離", tdrScoreOptions.todDistance.find(([value]) => value === tdrScoring.todDistance)?.[1] || "待輸入"],
+    ["小計", formatPercentValue(tdrScoringSummary.surroundingSubtotal)],
+  ];
+  const tdrSendingSiteItems = [
+    ["連接接受基地面積占比", tdrScoreOptions.ratioScore.find(([value]) => value === tdrScoring.connectedLandRatio)?.[1] || "待輸入"],
+    ["公共設施面積占比", tdrScoreOptions.ratioScore.find(([value]) => value === tdrScoring.publicFacilityRatio)?.[1] || "待輸入"],
+    ["優先取得公共設施用地", tdrScoreOptions.priorityRatioScore.find(([value]) => value === tdrScoring.priorityPublicFacilityRatio)?.[1] || "待輸入"],
+    ["公告取得方式手動分數", formatPercentValue(clampScore(tdrScoring.announcedAcquisitionScore, 0, 3, 0))],
+    ["全持分已開闢道路", tdrScoring.fullOwnershipOpenedRoad ? "+1" : "未勾選"],
+    ["百分之百折繳代金", tdrScoring.fullCashPayment ? "+10，其他送出基地位置項目不適用" : "未勾選"],
+    ["小計", formatPercentValue(tdrScoringSummary.sendingSiteSubtotal)],
+  ];
+  const tdrOpenSpaceItems = [
+    ["廣場式開放空間比例", tdrScoreOptions.plazaOpenSpaceRatio.find(([value]) => value === tdrScoring.plazaOpenSpaceRatio)?.[1] || "待輸入"],
+    ["沿街步道式開放空間條件", tdrScoreOptions.sidewalkOpenSpaceCondition.find(([value]) => value === tdrScoring.sidewalkOpenSpaceCondition)?.[1] || "待輸入"],
+    ["小計", formatPercentValue(tdrScoringSummary.openSpaceSubtotal)],
+  ];
+  const tdrWelfareItems = [
+    ["捐贈社會住宅", tdrScoring.donateSocialHousing ? "+2" : "未勾選"],
+    ["捐贈公共托育設施", tdrScoring.donateChildcare ? "+2" : "未勾選"],
+    ["捐贈老人安養設施", tdrScoring.donateElderlyCare ? "+2" : "未勾選"],
+    ["小計", formatPercentValue(tdrScoringSummary.welfareSubtotal)],
+  ];
+  const tdrExternalItems = [
+    ["公共設施改善計畫小計", formatPercentValue(tdrScoringSummary.publicFacilityImprovementSubtotal)],
+    ["環境改善價金積分", formatPercentValue(tdrScoringSummary.environmentImprovementScore)],
+    ["環境改善價金試算", formatCurrencyTwd(tdrScoringSummary.environmentImprovementPrice)],
+    ["綠色交通小計", formatPercentValue(tdrScoringSummary.greenTransportSubtotal)],
+    ["預估設施建置及維護費用", formatCurrencyTwd(tdrScoringSummary.greenTransportEstimatedCost)],
+    ["是否需加倍留設", tdrScoringSummary.greenTransportNeedsDouble ? "是，暫以 4,000,000 元提示，待正式確認" : "否 / 尚未達加倍條件"],
+    ["外部環境改善原始小計", formatPercentValue(tdrScoringSummary.externalRawSubtotal)],
+    ["外部環境改善可採計上限", formatPercentValue(tdrScoringSummary.externalAdoptableLimit)],
+    ["外部環境改善採計分數", formatPercentValue(tdrScoringSummary.externalAdoptedScore)],
+  ];
+  const tdrScoringSummaryItems = [
+    ["臨路條件初判分數 / 比例", Number.isFinite(tdrScoringSummary.roadPrecheckPercentage) ? formatPercentValue(tdrScoringSummary.roadPrecheckPercentage) : "待補資料"],
+    ["接受基地內部條件小計", formatPercentValue(tdrScoringSummary.internalSubtotal)],
+    ["送出基地位置小計", formatPercentValue(tdrScoringSummary.sendingSiteSubtotal)],
+    ["地面層開放空間小計", formatPercentValue(tdrScoringSummary.openSpaceSubtotal)],
+    ["公益性設施小計", formatPercentValue(tdrScoringSummary.welfareSubtotal)],
+    ["接受基地外部環境改善原始小計", formatPercentValue(tdrScoringSummary.externalRawSubtotal)],
+    ["外部環境改善可採計上限", formatPercentValue(tdrScoringSummary.externalAdoptableLimit)],
+    ["外部環境改善實際採計", formatPercentValue(tdrScoringSummary.externalAdoptedScore)],
+    ["評點初算合計", formatPercentValue(tdrScoringSummary.preliminaryTotalScore)],
+    ["目標容積移轉比例", formatPercentValue(tdrScoringSummary.targetTransferRatio)],
+    ["評點狀態", tdrScoringSummary.scoringStatus],
   ];
   const resultItems = [
     ["基準容積量", formatSqmAndPing(capacityResult.baseCapacityAreaSqm)],
@@ -3838,6 +4302,131 @@ function CapacityModule({
             </div>
             <p className="eval-capacity-method-note">折繳代金需依主管機關估價與審議結果確認，目前不硬寫正式代金公式。</p>
           </article>
+        </div>
+        <div className="eval-capacity-subsection eval-tdr-scoring">
+          <h5>容積移轉量體評點檢核（112 年 1 月 1 日以後）</h5>
+          <p className="eval-capacity-method-note">來源：容積移轉申請移入容積量體評點項目查核表。本區為前期檢核工具，正式仍須建築師簽證及主管機關審查確認。</p>
+          <DataSummaryGrid items={tdrScoringSummaryItems} />
+          <div className="eval-capacity-subsection">
+            <h5>一、臨路條件初判</h5>
+            <div className="eval-field-grid eval-linked-input-grid">
+              <label className="eval-field">
+                <span>接受基地連接道路寬度（公尺）</span>
+                <input type="text" value={effectiveRoadWidthValue} onChange={handleTdrScoringInputChange("roadWidthMeters")} placeholder="例：15" />
+                <small>{tdrScoring.roadWidthMeters ? "來源：本模組評點檢核" : "未輸入時會嘗試由容積移轉道路欄位或基地基本資料的道路 / 臨路條件帶入"}</small>
+              </label>
+            </div>
+            <DataSummaryGrid items={tdrRoadPrecheckItems} />
+            <p className="eval-capacity-method-note">{tdrScoringSummary.roadTargetNotice}</p>
+            <DocumentChecklist items={tdrScoringDocuments.road} />
+          </div>
+          <div className="eval-capacity-subsection">
+            <h5>二、接受基地內部條件</h5>
+            <div className="eval-capacity-method-grid">
+              <article className="eval-capacity-method-card">
+                <h5>A. 基地大小及完整性</h5>
+                <div className="eval-field-grid eval-linked-input-grid">
+                  <CapacitySelectField label="基地最小邊長" value={tdrScoring.minimumSideLengthBand} options={tdrScoreOptions.minimumSideLengthBand} onChange={handleTdrScoringInputChange("minimumSideLengthBand")} />
+                  <CapacitySelectField label="臨接道路條件" value={tdrScoring.adjacentRoadCondition} options={tdrScoreOptions.adjacentRoadCondition} onChange={handleTdrScoringInputChange("adjacentRoadCondition")} />
+                </div>
+                <div className="eval-check-grid">
+                  <CapacityCheckboxField label="基地各內角介於 60 至 120 度：+1" checked={tdrScoring.interiorAnglesQualified} onChange={handleTdrScoringCheckboxChange("interiorAnglesQualified")} />
+                </div>
+                <DataSummaryGrid items={tdrSiteCompletenessItems} />
+                <p className="eval-capacity-method-note">甲一至甲六目前僅作基地面積級距分類，不硬寫正式分數。</p>
+                <DocumentChecklist items={tdrScoringDocuments.siteCompleteness} />
+              </article>
+              <article className="eval-capacity-method-card">
+                <h5>B. 周邊鄰地建築物現況與公共設施</h5>
+                <div className="eval-field-grid eval-linked-input-grid">
+                  <CapacitySelectField label="基地境界線最小退縮距離" value={tdrScoring.boundarySetback} options={tdrScoreOptions.boundarySetback} onChange={handleTdrScoringInputChange("boundarySetback")} />
+                  <CapacitySelectField label="現況公共設施面積" value={tdrScoring.publicFacilityArea} options={tdrScoreOptions.publicFacilityArea} onChange={handleTdrScoringInputChange("publicFacilityArea")} />
+                  <CapacitySelectField label="TOD 規劃距離" value={tdrScoring.todDistance} options={tdrScoreOptions.todDistance} onChange={handleTdrScoringInputChange("todDistance")} />
+                </div>
+                <DataSummaryGrid items={tdrSurroundingItems} />
+                <DocumentChecklist items={tdrScoringDocuments.surrounding} />
+              </article>
+              <article className="eval-capacity-method-card">
+                <h5>C. 送出基地位置</h5>
+                <div className="eval-field-grid eval-linked-input-grid">
+                  <CapacitySelectField label="連接接受基地面積占送出基地總面積比率" value={tdrScoring.connectedLandRatio} options={tdrScoreOptions.ratioScore} onChange={handleTdrScoringInputChange("connectedLandRatio")} />
+                  <CapacitySelectField label="公共設施面積占送出基地總面積比率" value={tdrScoring.publicFacilityRatio} options={tdrScoreOptions.ratioScore} onChange={handleTdrScoringInputChange("publicFacilityRatio")} />
+                  <CapacitySelectField label="本府公告應優先取得公共設施用地" value={tdrScoring.priorityPublicFacilityRatio} options={tdrScoreOptions.priorityRatioScore} onChange={handleTdrScoringInputChange("priorityPublicFacilityRatio")} />
+                  <label className="eval-field">
+                    <span>本府公告取得方式手動積分（1 至 3）</span>
+                    <input type="text" value={tdrScoring.announcedAcquisitionScore} onChange={handleTdrScoringInputChange("announcedAcquisitionScore")} placeholder="例：1、2 或 3" />
+                  </label>
+                </div>
+                <div className="eval-check-grid">
+                  <CapacityCheckboxField label="全持分已開闢道路，且達送出基地總面積 50% 以上：+1" checked={tdrScoring.fullOwnershipOpenedRoad} onChange={handleTdrScoringCheckboxChange("fullOwnershipOpenedRoad")} />
+                  <CapacityCheckboxField label="百分之百折繳代金方式辦理：+10" checked={tdrScoring.fullCashPayment} onChange={handleTdrScoringCheckboxChange("fullCashPayment")} />
+                </div>
+                <DataSummaryGrid items={tdrSendingSiteItems} />
+                <DocumentChecklist items={tdrScoringDocuments.sendingSite} />
+              </article>
+              <article className="eval-capacity-method-card">
+                <h5>D. 地面層開放空間</h5>
+                <div className="eval-field-grid eval-linked-input-grid">
+                  <CapacitySelectField label="廣場式開放空間比例" value={tdrScoring.plazaOpenSpaceRatio} options={tdrScoreOptions.plazaOpenSpaceRatio} onChange={handleTdrScoringInputChange("plazaOpenSpaceRatio")} />
+                  <CapacitySelectField label="沿街步道式開放空間條件" value={tdrScoring.sidewalkOpenSpaceCondition} options={tdrScoreOptions.sidewalkOpenSpaceCondition} onChange={handleTdrScoringInputChange("sidewalkOpenSpaceCondition")} />
+                </div>
+                <DataSummaryGrid items={tdrOpenSpaceItems} />
+                <p className="eval-capacity-method-note">開放空間不得與開放空間獎勵、法定退縮範圍重複計算；正式仍須建築師檢討與簽證。</p>
+                <DocumentChecklist items={tdrScoringDocuments.openSpace} />
+              </article>
+              <article className="eval-capacity-method-card">
+                <h5>E. 捐贈接受基地內部公益性設施</h5>
+                <div className="eval-check-grid">
+                  <CapacityCheckboxField label="捐贈社會住宅：+2" checked={tdrScoring.donateSocialHousing} onChange={handleTdrScoringCheckboxChange("donateSocialHousing")} />
+                  <CapacityCheckboxField label="捐贈公共托育設施：+2" checked={tdrScoring.donateChildcare} onChange={handleTdrScoringCheckboxChange("donateChildcare")} />
+                  <CapacityCheckboxField label="捐贈老人安養設施：+2" checked={tdrScoring.donateElderlyCare} onChange={handleTdrScoringCheckboxChange("donateElderlyCare")} />
+                </div>
+                <DataSummaryGrid items={tdrWelfareItems} />
+                <p className="eval-capacity-method-note">接受基地規模應達 3,000㎡ 以上；相關出入口、停車位、樓層高度、管理維護基金及接管機關同意，仍須依正式規定檢討。</p>
+                <DocumentChecklist items={tdrScoringDocuments.welfare} />
+              </article>
+            </div>
+          </div>
+          <div className="eval-capacity-subsection">
+            <h5>三、接受基地外部環境改善項目</h5>
+            <p className="eval-capacity-method-note">接受基地外部環境改善項目積分不可超過接受基地內部條件積分之 1/3。</p>
+            <div className="eval-capacity-method-grid">
+              <article className="eval-capacity-method-card">
+                <h5>A. 公共設施改善計畫</h5>
+                <div className="eval-field-grid eval-linked-input-grid">
+                  <CapacitySelectField label="協助開闢綠地、計畫道路等公共設施位置" value={tdrScoring.publicFacilityImprovementLocation} options={tdrScoreOptions.publicFacilityImprovementLocation} onChange={handleTdrScoringInputChange("publicFacilityImprovementLocation")} wide />
+                </div>
+                <p className="eval-capacity-method-note">開闢面積應大於 1/2 申請移入容積樓地板面積，且在 500㎡ 以上；正式仍須權管機關同意。</p>
+                <DocumentChecklist items={tdrScoringDocuments.publicFacilityImprovement} />
+              </article>
+              <article className="eval-capacity-method-card">
+                <h5>B. 提供環境改善價金</h5>
+                <div className="eval-field-grid eval-linked-input-grid">
+                  <label className="eval-field">
+                    <span>積分數（1 至 8，整數）</span>
+                    <input type="text" value={tdrScoring.environmentImprovementScore} onChange={handleTdrScoringInputChange("environmentImprovementScore")} placeholder="例：1" />
+                  </label>
+                </div>
+                <p className="eval-capacity-method-note">環境改善價金 = 接受基地面積（㎡）× 接受基地法定容積率 × 1.31 × 20,000 元 × 積分數。法定容積率 200% 會以 2.0 計算。</p>
+                <p className="eval-capacity-method-note">此為依檢核表公式之內部前期試算；正式金額仍以主管機關審查、建築師簽證及相關文件為準。</p>
+                <DocumentChecklist items={tdrScoringDocuments.environmentPrice} />
+              </article>
+              <article className="eval-capacity-method-card">
+                <h5>C. 綠色交通</h5>
+                <div className="eval-check-grid">
+                  <CapacityCheckboxField label="提供公共自行車或公車候車亭（智慧站牌）留設位置及相關設施設備：+1" checked={tdrScoring.greenTransportProvided} onChange={handleTdrScoringCheckboxChange("greenTransportProvided")} />
+                  <CapacityCheckboxField label="基準容積外增加容積樓地板面積達 6,000㎡ 以上，需加倍留設" checked={tdrScoring.greenTransportAddedCapacityOver6000} onChange={handleTdrScoringCheckboxChange("greenTransportAddedCapacityOver6000")} />
+                </div>
+                <p className="eval-capacity-method-note">設施建置及維護費用先顯示 2,000,000 元；若達 6,000㎡ 以上，暫以 4,000,000 元提示，待正式確認。</p>
+                <DocumentChecklist items={tdrScoringDocuments.greenTransport} />
+              </article>
+            </div>
+            <DataSummaryGrid items={tdrExternalItems} />
+          </div>
+          <details className="eval-document-total">
+            <summary>應檢附文件總表</summary>
+            <DocumentChecklist title="文件總表" items={tdrScoringMasterDocuments} />
+          </details>
         </div>
       </section>
       <MissingDataNotice missingItems={capacityResult.missingItems} />
