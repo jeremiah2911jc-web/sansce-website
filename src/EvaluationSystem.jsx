@@ -450,6 +450,14 @@ function formatCurrencyTwd(value) {
   return Number.isFinite(value) ? `${formatNumber(value, 0)} 元` : "清冊未提供";
 }
 
+function formatCurrencyTwdDecimal(value, digits = 2) {
+  return Number.isFinite(value) ? `${formatNumber(value, digits, digits)} 元` : "清冊未提供";
+}
+
+function formatCurrencyTwdPerSqm(value, digits = 2) {
+  return Number.isFinite(value) ? `${formatCurrencyTwdDecimal(value, digits)} / 平方公尺` : "清冊未提供";
+}
+
 function formatSqm(value) {
   return formatAreaSqm(value);
 }
@@ -2423,6 +2431,7 @@ function buildRosterBaseSummary(rosterStaging) {
     : null;
   const announcedCurrentValueCount = uniqueLandRows.filter((row) => normalizeCellValue(row.announcedCurrentValue)).length;
   const announcedLandValueCount = uniqueLandRows.filter((row) => normalizeCellValue(row.announcedLandValue)).length;
+  const assessedCurrentValueSummary = buildAssessedCurrentValueSummary(rosterStaging);
 
   return {
     hasRoster: Boolean(rosterStaging),
@@ -2436,13 +2445,99 @@ function buildRosterBaseSummary(rosterStaging) {
       : landNumbers.join("、") || "待清冊補齊",
     landAreaSqm: areaTotal,
     landAreaSummary: areaTotal === null ? "待清冊補齊" : formatAreaSummary(areaTotal),
-    announcedCurrentValueStatus: announcedCurrentValueCount
-      ? `清冊已提供 ${announcedCurrentValueCount} 筆地號資料`
-      : "清冊未提供",
+    assessedCurrentValueTotal: assessedCurrentValueSummary.assessedCurrentValueTotal,
+    assessedCurrentValueWeightedUnit: assessedCurrentValueSummary.assessedCurrentValueWeightedUnit,
+    assessedCurrentValueByLot: assessedCurrentValueSummary.assessedCurrentValueByLot,
+    assessedCurrentValueSourceStatus: assessedCurrentValueSummary.assessedCurrentValueSourceStatus,
+    announcedCurrentValueStatus: assessedCurrentValueSummary.assessedCurrentValueSourceStatus,
     announcedLandValueStatus: announcedLandValueCount
       ? `清冊已提供 ${announcedLandValueCount} 筆地號資料`
       : "清冊未提供",
   };
+}
+
+function buildAssessedCurrentValueSummary(rosterStaging) {
+  const landRows = getRosterLandRows(rosterStaging);
+  const landByNumber = new Map();
+  const conflictLandNumbers = new Set();
+
+  landRows.forEach((row) => {
+    const landNumber = normalizeCellValue(row.landNumber);
+    if (!landNumber) {
+      return;
+    }
+
+    const landAreaSqm = pickNumericValue(
+      row.landAreaSqm,
+      parseRosterNumber(row.landAreaRaw),
+      parseRosterNumber(row.landArea),
+    );
+    const assessedCurrentValueUnit = parseRosterNumber(row.announcedCurrentValue);
+    const existing = landByNumber.get(landNumber);
+
+    if (existing) {
+      const areaDiffers = Number.isFinite(existing.landAreaSqm)
+        && Number.isFinite(landAreaSqm)
+        && Math.abs(existing.landAreaSqm - landAreaSqm) > 0.000001;
+      const unitDiffers = Number.isFinite(existing.assessedCurrentValueUnit)
+        && Number.isFinite(assessedCurrentValueUnit)
+        && Math.abs(existing.assessedCurrentValueUnit - assessedCurrentValueUnit) > 0.000001;
+
+      if (areaDiffers || unitDiffers) {
+        conflictLandNumbers.add(landNumber);
+      }
+      return;
+    }
+
+    landByNumber.set(landNumber, {
+      landNumber,
+      landAreaSqm,
+      assessedCurrentValueUnit,
+    });
+  });
+
+  const assessedCurrentValueByLot = Array.from(landByNumber.values())
+    .map((lot) => ({
+      ...lot,
+      assessedCurrentValueSubtotal: Number.isFinite(lot.landAreaSqm) && Number.isFinite(lot.assessedCurrentValueUnit)
+        ? lot.landAreaSqm * lot.assessedCurrentValueUnit
+        : null,
+    }))
+    .sort((a, b) => Number(a.landNumber) - Number(b.landNumber));
+  const completeLotCount = assessedCurrentValueByLot.filter((lot) => (
+    Number.isFinite(lot.landAreaSqm) && Number.isFinite(lot.assessedCurrentValueUnit)
+  )).length;
+  const providedLotCount = assessedCurrentValueByLot.filter((lot) => Number.isFinite(lot.assessedCurrentValueUnit)).length;
+  const assessedCurrentValueTotal = completeLotCount
+    ? assessedCurrentValueByLot.reduce((total, lot) => (
+      total + (Number.isFinite(lot.assessedCurrentValueSubtotal) ? lot.assessedCurrentValueSubtotal : 0)
+    ), 0)
+    : null;
+  const landAreaTotal = assessedCurrentValueByLot.reduce((total, lot) => (
+    total + (Number.isFinite(lot.landAreaSqm) ? lot.landAreaSqm : 0)
+  ), 0);
+  const assessedCurrentValueWeightedUnit = Number.isFinite(assessedCurrentValueTotal) && landAreaTotal > 0
+    ? assessedCurrentValueTotal / landAreaTotal
+    : null;
+  const assessedCurrentValueSourceStatus = (() => {
+    if (!assessedCurrentValueByLot.length || !providedLotCount) {
+      return "清冊未提供";
+    }
+    if (conflictLandNumbers.size) {
+      return "需人工確認";
+    }
+    if (completeLotCount !== assessedCurrentValueByLot.length) {
+      return "部分地號缺漏";
+    }
+    return `清冊已提供 ${completeLotCount} 筆地號資料`;
+  })();
+
+  return roundRecordNumbers({
+    assessedCurrentValueTotal,
+    assessedCurrentValueWeightedUnit,
+    assessedCurrentValueByLot,
+    assessedCurrentValueSourceStatus,
+  }, INTERNAL_DECIMAL_DIGITS);
 }
 
 function getEffectiveCapacityInputs(capacityInputs, baseInfo) {
@@ -2494,6 +2589,7 @@ function getEffectiveFloorEfficiencyParams(floorParams, capacityResult) {
 
 function calculateCapacityResult(rosterStaging, baseInfo, capacityInputs) {
   const rosterSummary = buildRosterBaseSummary(rosterStaging);
+  const assessedCurrentValueSummary = buildAssessedCurrentValueSummary(rosterStaging);
   const landAreaSqm = rosterSummary.landAreaSqm;
   const baseFloorAreaRatio = parseNumericInput(capacityInputs.baseFloorAreaRatio);
   const transferRatio = parseNumericInput(capacityInputs.transferRatio) ?? 0;
@@ -2524,6 +2620,10 @@ function calculateCapacityResult(rosterStaging, baseInfo, capacityInputs) {
     landAreaSqm,
     landAreaPing: convertSqmToPing(landAreaSqm),
     landNumberCount: rosterSummary.landNumberCount,
+    assessedCurrentValueTotal: assessedCurrentValueSummary.assessedCurrentValueTotal,
+    assessedCurrentValueWeightedUnit: assessedCurrentValueSummary.assessedCurrentValueWeightedUnit,
+    assessedCurrentValueByLot: assessedCurrentValueSummary.assessedCurrentValueByLot,
+    assessedCurrentValueSourceStatus: assessedCurrentValueSummary.assessedCurrentValueSourceStatus,
     baseFloorAreaRatio,
     transferRatio,
     urbanRenewalBonusRatio,
@@ -2531,6 +2631,8 @@ function calculateCapacityResult(rosterStaging, baseInfo, capacityInputs) {
     otherBonusRatio,
     baseCapacityAreaSqm,
     transferAreaSqm,
+    tdrCapacityAreaSqm: transferAreaSqm,
+    tdrRate: transferRatio,
     urbanRenewalBonusAreaSqm,
     unsafeBuildingBonusAreaSqm,
     otherBonusAreaSqm,
@@ -2540,6 +2642,16 @@ function calculateCapacityResult(rosterStaging, baseInfo, capacityInputs) {
     calculationStatus: canCalculate ? "可進行前端測試初算" : `尚缺：${missingItems.join("、")}`,
     missingItems,
     formulaStatus: "測試用簡化公式；正式公式待確認",
+    tdrCostFormulaStatus: "容積移轉費用正式計算方式待確認",
+    // Future TDR cost calculations must use these raw numeric fields, not formatted display strings.
+    tdrCostBasisFields: [
+      "assessedCurrentValueTotal",
+      "assessedCurrentValueWeightedUnit",
+      "assessedCurrentValueByLot",
+      "tdrCapacityAreaSqm",
+      "tdrRate",
+      "officialTdrCostFormula",
+    ],
     source: {
       zoning: baseInfo?.zoning || "",
       buildingCoverageRatio: baseInfo?.buildingCoverageRatio || "",
@@ -2552,6 +2664,7 @@ function calculateCapacityResult(rosterStaging, baseInfo, capacityInputs) {
 
 function calculateFloorEfficiencyResult(rosterStaging, baseInfo, capacityResult, floorParams) {
   const rosterSummary = buildRosterBaseSummary(rosterStaging);
+  const assessedCurrentValueSummary = buildAssessedCurrentValueSummary(rosterStaging);
   const landAreaSqm = pickNumericValue(capacityResult?.landAreaSqm, rosterSummary.landAreaSqm);
   const landAreaPing = convertSqmToPing(landAreaSqm);
   const coverageRate = parseRateInput(baseInfo?.buildingCoverageRatio);
@@ -2576,15 +2689,19 @@ function calculateFloorEfficiencyResult(rosterStaging, baseInfo, capacityResult,
   const bikeParkingCount = parsePlainNumberInput(floorParams.bikeParkingCount, 0);
   const saleableAdjustmentRatio = parseRateInput(floorParams.saleableAdjustmentRatio);
   const targetPublicAreaRatio = parseRateInput(floorParams.publicAreaRatio);
-  const currentValuePerSqmValues = getRosterLandRows(rosterStaging)
-    .map((row) => parseRosterNumber(row.announcedCurrentValue))
-    .filter(Number.isFinite);
-  const currentValuePerSqm = currentValuePerSqmValues.length
-    ? currentValuePerSqmValues.reduce((total, value) => total + value, 0) / currentValuePerSqmValues.length
-    : null;
-  const currentValueTotal = Number.isFinite(currentValuePerSqm) && Number.isFinite(landAreaSqm)
-    ? currentValuePerSqm * landAreaSqm
-    : null;
+  const assessedCurrentValueTotal = pickNumericValue(
+    capacityResult?.assessedCurrentValueTotal,
+    assessedCurrentValueSummary.assessedCurrentValueTotal,
+  );
+  const assessedCurrentValueWeightedUnit = pickNumericValue(
+    capacityResult?.assessedCurrentValueWeightedUnit,
+    assessedCurrentValueSummary.assessedCurrentValueWeightedUnit,
+  );
+  const assessedCurrentValueByLot = Array.isArray(capacityResult?.assessedCurrentValueByLot)
+    ? capacityResult.assessedCurrentValueByLot
+    : assessedCurrentValueSummary.assessedCurrentValueByLot;
+  const assessedCurrentValueSourceStatus = capacityResult?.assessedCurrentValueSourceStatus
+    || assessedCurrentValueSummary.assessedCurrentValueSourceStatus;
   const missingItems = [];
 
   if (!Number.isFinite(landAreaSqm)) {
@@ -2682,8 +2799,12 @@ function calculateFloorEfficiencyResult(rosterStaging, baseInfo, capacityResult,
     landAreaPing,
     landNumberCount: rosterSummary.landNumberCount,
     landNumberDisplay: rosterSummary.landNumberDisplay,
-    currentValueTotal,
-    currentValuePerSqm,
+    assessedCurrentValueTotal,
+    assessedCurrentValueWeightedUnit,
+    assessedCurrentValueByLot,
+    assessedCurrentValueSourceStatus,
+    currentValueTotal: assessedCurrentValueTotal,
+    currentValuePerSqm: assessedCurrentValueWeightedUnit,
     coverageRate,
     baseFarRate,
     baseFloorAreaRatio: baseFarRate,
@@ -3032,6 +3153,8 @@ function BaseRosterSummary({ rosterStaging }) {
     ["土地權利列數", rosterSummary.landRightCount],
     ["土地面積合計", rosterSummary.landAreaSummary],
     ["公告現值狀態", rosterSummary.announcedCurrentValueStatus],
+    ["公告現值總額", formatCurrencyTwd(rosterSummary.assessedCurrentValueTotal)],
+    ["公告現值加權平均單價", formatCurrencyTwdPerSqm(rosterSummary.assessedCurrentValueWeightedUnit)],
     ["公告地價狀態", rosterSummary.announcedLandValueStatus],
     ["來源檔案名稱", rosterSummary.fileName],
     ["匯入時間", rosterSummary.importedAt],
@@ -3053,6 +3176,9 @@ function BaseRosterSummary({ rosterStaging }) {
       </div>
       <p className="eval-base-summary-note">
         土地面積以唯一地號為基準彙整；同一地號若出現在多筆權利列，只計算一次。畫面數字為四捨五入顯示；系統內部以較高精度試算，坪數換算統一使用 1 坪 = 3.305785 平方公尺。
+      </p>
+      <p className="eval-base-summary-note">
+        公告現值總額依各地號面積與公告現值逐筆加總；單價為加權平均，畫面四捨五入顯示。後續容積移轉費用、成本與分配若引用公告現值，應引用系統內部原始數值，不使用格式化後字串或整數顯示值。
       </p>
     </section>
   );
@@ -3204,6 +3330,10 @@ function CapacityModule({
     capacityResult.otherBonusRatio,
     capacityResult.totalFloorAreaRatio,
     capacityResult.totalCapacityAreaSqm,
+    capacityResult.assessedCurrentValueTotal,
+    capacityResult.assessedCurrentValueWeightedUnit,
+    capacityResult.assessedCurrentValueSourceStatus,
+    capacityResult.transferAreaSqm,
     capacityResult.calculationStatus,
   ]);
 
@@ -3245,6 +3375,15 @@ function CapacityModule({
     ["總容積率", formatPercentValue(capacityResult.totalFloorAreaRatio)],
     ["總容積量", formatSqmAndPing(capacityResult.totalCapacityAreaSqm)],
     ["計算狀態", capacityResult.calculationStatus],
+  ];
+  const tdrCostBasisItems = [
+    ["土地面積合計", formatSqmAndPing(capacityResult.landAreaSqm)],
+    ["公告現值總額", formatCurrencyTwd(capacityResult.assessedCurrentValueTotal)],
+    ["公告現值加權平均單價", formatCurrencyTwdPerSqm(capacityResult.assessedCurrentValueWeightedUnit)],
+    ["公告現值來源狀態", capacityResult.assessedCurrentValueSourceStatus],
+    ["容積移轉比例", formatPercentValue(capacityResult.transferRatio)],
+    ["容積移轉量", formatSqmAndPing(capacityResult.transferAreaSqm)],
+    ["容積移轉費用公式狀態", capacityResult.tdrCostFormulaStatus],
   ];
 
   return (
@@ -3298,6 +3437,13 @@ function CapacityModule({
         </div>
         <DataSummaryGrid items={resultItems} />
       </section>
+      <section className="eval-module-section eval-linked-module">
+        <div className="eval-section-head">
+          <h4>容積移轉費用計算基礎</h4>
+          <p>本區目前僅建立容積移轉費用的計算基礎資料。正式費用仍需依實際容積移轉規定、申請條件、容積取得方式與主管機關核定公式確認。</p>
+        </div>
+        <DataSummaryGrid items={tdrCostBasisItems} />
+      </section>
       <section className="eval-module-section eval-formula-note">
         <h4>測試用簡化公式 / 正式公式待確認</h4>
         <p>基準容積量 = 土地面積合計 × 基準容積率 / 100；各項增加量 = 土地面積合計 × 該比例 / 100；總容積率 = 基準容積率 + 容積移轉比例 + 都更獎勵比例 + 危老獎勵比例 + 其他獎勵比例；總容積量 = 土地面積合計 × 總容積率 / 100。</p>
@@ -3340,6 +3486,9 @@ function FloorEfficiencyModule({
     floorResult.publicAreaSqm,
     floorResult.buildPingPerLandPing,
     floorResult.saleablePingPerLandPing,
+    floorResult.assessedCurrentValueTotal,
+    floorResult.assessedCurrentValueWeightedUnit,
+    floorResult.assessedCurrentValueSourceStatus,
     floorResult.calculationStatus,
   ]);
 
@@ -3388,8 +3537,9 @@ function FloorEfficiencyModule({
     ["地號筆數", floorResult.landNumberCount || "待清冊補齊"],
     ["地號清單", floorResult.landNumberDisplay],
     ["土地面積合計", formatSqmAndPing(floorResult.landAreaSqm)],
-    ["公告現值總額", formatCurrencyTwd(floorResult.currentValueTotal)],
-    ["公告現值單價", Number.isFinite(floorResult.currentValuePerSqm) ? `${formatCurrencyTwd(floorResult.currentValuePerSqm)} / 平方公尺` : "清冊未提供"],
+    ["公告現值總額", formatCurrencyTwd(floorResult.assessedCurrentValueTotal)],
+    ["公告現值加權平均單價", formatCurrencyTwdPerSqm(floorResult.assessedCurrentValueWeightedUnit)],
+    ["公告現值來源狀態", floorResult.assessedCurrentValueSourceStatus],
     ["使用分區", baseInfo.zoning || "尚未輸入"],
     ["建蔽率", formatPercentValue(floorResult.coverageRate)],
     ["基準容積率", formatPercentValue(floorResult.baseFarRate)],
@@ -3453,6 +3603,9 @@ function FloorEfficiencyModule({
           <p>坪效明細承接清冊土地面積、公告現值、基地基本資料與道路 / 法規限制；缺漏處會列入提醒。</p>
         </div>
         <DataSummaryGrid items={sourceItems} />
+        <p className="eval-base-summary-note">
+          公告現值總額依唯一地號逐筆加總；加權平均單價僅供判讀來源基準。坪效與後續成本模組若需引用公告現值，應使用高精度原始數值，不使用畫面四捨五入後的數字。
+        </p>
       </section>
       <section className="eval-module-section eval-linked-module">
         <div className="eval-section-head">
@@ -3525,7 +3678,7 @@ function FloorEfficiencyModule({
 const downstreamModuleGuidance = {
   costs: {
     title: "成本與共同負擔將承接前面模組結果",
-    description: "此模組未來會承接坪效明細結果、可建樓地板面積、可售面積、開發期程、開發路徑，以及都市更新 / 危老 / 合建等適用成本項目。目前正式成本公式待確認。",
+    description: "此模組未來會承接坪效明細結果、可建樓地板面積、可售面積、公告現值總額、公告現值加權平均單價、開發期程、開發路徑，以及都市更新 / 危老 / 合建等適用成本項目。目前正式成本公式待確認。",
     missing: "待坪效結果與成本參數補齊後，才能形成成本總額與共同負擔摘要。",
   },
   sales: {
