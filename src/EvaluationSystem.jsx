@@ -153,9 +153,30 @@ const defaultBaseInfo = {
 const defaultCapacityInputs = {
   baseFloorAreaRatio: "",
   transferRatio: "",
+  urbanRenewalCentralBonusRatio: "",
+  urbanRenewalLocalBonusRatio: "",
   urbanRenewalBonusRatio: "",
+  unsafeBuildingApplicable: "",
   unsafeBuildingBonusRatio: "",
   otherBonusRatio: "",
+  incrementalCapacityApplicable: "",
+  incrementalCapacityRatio: "",
+  incrementalCapacityPriceStatus: "",
+  incrementalCapacityFeedback: "",
+  tdrRoadWidthStatus: "",
+  tdrSiteScoreStatus: "",
+  tdrDonorAssessedCurrentValue: "",
+  tdrRecipientAssessedCurrentValue: "",
+  tdrRecipientFloorAreaRatio: "",
+  tdrMarketUnitPricePerPing: "",
+  tdrMarketPriceMultiplier: "",
+  tdrScrivenerFee: "",
+  tdrDonationAgencyFee: "",
+  tdrOtherFee: "",
+  tdrAppraisalMethodNote: "",
+  tdrAppraiserFee: "",
+  tdrCashPaymentAgencyFee: "",
+  tdrCashPaymentStatus: "",
   otherCapacitySourceNote: "",
 };
 
@@ -2608,6 +2629,7 @@ function getEffectiveCapacityInputs(capacityInputs, baseInfo) {
     ...defaultCapacityInputs,
     ...capacityInputs,
     baseFloorAreaRatio: capacityInputs?.baseFloorAreaRatio || baseInfo?.baseFloorAreaRatio || "",
+    tdrRecipientFloorAreaRatio: capacityInputs?.tdrRecipientFloorAreaRatio || capacityInputs?.baseFloorAreaRatio || baseInfo?.baseFloorAreaRatio || "",
   };
 }
 
@@ -2656,9 +2678,21 @@ function calculateCapacityResult(rosterStaging, baseInfo, capacityInputs) {
   const landAreaSqm = rosterSummary.landAreaSqm;
   const baseFloorAreaRatio = parseNumericInput(capacityInputs.baseFloorAreaRatio);
   const transferRatio = parseNumericInput(capacityInputs.transferRatio) ?? 0;
-  const urbanRenewalBonusRatio = parseNumericInput(capacityInputs.urbanRenewalBonusRatio) ?? 0;
+  const urbanRenewalCentralBonusRatio = parseNumericInput(capacityInputs.urbanRenewalCentralBonusRatio);
+  const urbanRenewalLocalBonusRatio = parseNumericInput(capacityInputs.urbanRenewalLocalBonusRatio);
+  const urbanRenewalBonusRatio = Number.isFinite(urbanRenewalCentralBonusRatio) || Number.isFinite(urbanRenewalLocalBonusRatio)
+    ? (urbanRenewalCentralBonusRatio ?? 0) + (urbanRenewalLocalBonusRatio ?? 0)
+    : parseNumericInput(capacityInputs.urbanRenewalBonusRatio) ?? 0;
   const unsafeBuildingBonusRatio = parseNumericInput(capacityInputs.unsafeBuildingBonusRatio) ?? 0;
   const otherBonusRatio = parseNumericInput(capacityInputs.otherBonusRatio) ?? 0;
+  const incrementalCapacityRatio = parseNumericInput(capacityInputs.incrementalCapacityRatio) ?? 0;
+  const donorAssessedCurrentValue = parseNumericInput(capacityInputs.tdrDonorAssessedCurrentValue);
+  const recipientAssessedCurrentValue = parseNumericInput(capacityInputs.tdrRecipientAssessedCurrentValue)
+    ?? assessedCurrentValueSummary.assessedCurrentValueWeightedUnit;
+  const recipientFloorAreaRatio = parseNumericInput(capacityInputs.tdrRecipientFloorAreaRatio)
+    ?? baseFloorAreaRatio;
+  const marketUnitPricePerPing = parseNumericInput(capacityInputs.tdrMarketUnitPricePerPing);
+  const marketPriceMultiplier = parseNumericInput(capacityInputs.tdrMarketPriceMultiplier);
   const missingItems = [];
 
   if (!Number.isFinite(landAreaSqm)) {
@@ -2674,15 +2708,36 @@ function calculateCapacityResult(rosterStaging, baseInfo, capacityInputs) {
   const urbanRenewalBonusAreaSqm = Number.isFinite(baseCapacityAreaSqm) ? baseCapacityAreaSqm * urbanRenewalBonusRatio / 100 : null;
   const unsafeBuildingBonusAreaSqm = Number.isFinite(baseCapacityAreaSqm) ? baseCapacityAreaSqm * unsafeBuildingBonusRatio / 100 : null;
   const otherBonusAreaSqm = Number.isFinite(baseCapacityAreaSqm) ? baseCapacityAreaSqm * otherBonusRatio / 100 : null;
+  const incrementalCapacityAreaSqm = Number.isFinite(baseCapacityAreaSqm) ? baseCapacityAreaSqm * incrementalCapacityRatio / 100 : null;
   const totalCapacityAreaSqm = canCalculate
     ? baseCapacityAreaSqm
       + transferAreaSqm
       + urbanRenewalBonusAreaSqm
       + unsafeBuildingBonusAreaSqm
+      + incrementalCapacityAreaSqm
       + otherBonusAreaSqm
     : null;
   const totalFloorAreaRatio = Number.isFinite(totalCapacityAreaSqm) && Number.isFinite(landAreaSqm) && landAreaSqm !== 0
     ? totalCapacityAreaSqm / landAreaSqm * 100
+    : null;
+  const tdrDonationFactor = Number.isFinite(donorAssessedCurrentValue)
+    && Number.isFinite(recipientAssessedCurrentValue)
+    && recipientAssessedCurrentValue > 0
+    && Number.isFinite(recipientFloorAreaRatio)
+    ? donorAssessedCurrentValue / recipientAssessedCurrentValue * recipientFloorAreaRatio / 100
+    : null;
+  const tdrRequiredDonorLandAreaSqm = Number.isFinite(transferAreaSqm) && Number.isFinite(tdrDonationFactor) && tdrDonationFactor > 0
+    ? transferAreaSqm / tdrDonationFactor
+    : null;
+  const tdrRequiredDonorLandAreaPing = convertSqmToPing(tdrRequiredDonorLandAreaSqm);
+  const tdrDonorAssessedCurrentValueTotal = Number.isFinite(tdrRequiredDonorLandAreaSqm) && Number.isFinite(donorAssessedCurrentValue)
+    ? tdrRequiredDonorLandAreaSqm * donorAssessedCurrentValue
+    : null;
+  const tdrMarketPriceCost = Number.isFinite(tdrRequiredDonorLandAreaPing) && Number.isFinite(marketUnitPricePerPing)
+    ? tdrRequiredDonorLandAreaPing * marketUnitPricePerPing
+    : null;
+  const tdrAssessedValueMultiplierCost = Number.isFinite(tdrDonorAssessedCurrentValueTotal) && Number.isFinite(marketPriceMultiplier)
+    ? tdrDonorAssessedCurrentValueTotal * marketPriceMultiplier
     : null;
 
   return roundRecordNumbers({
@@ -2695,15 +2750,19 @@ function calculateCapacityResult(rosterStaging, baseInfo, capacityInputs) {
     assessedCurrentValueSourceStatus: assessedCurrentValueSummary.assessedCurrentValueSourceStatus,
     baseFloorAreaRatio,
     transferRatio,
+    urbanRenewalCentralBonusRatio,
+    urbanRenewalLocalBonusRatio,
     urbanRenewalBonusRatio,
     unsafeBuildingBonusRatio,
     otherBonusRatio,
+    incrementalCapacityRatio,
     baseCapacityAreaSqm,
     transferAreaSqm,
     tdrCapacityAreaSqm: transferAreaSqm,
     tdrRate: transferRatio,
     urbanRenewalBonusAreaSqm,
     unsafeBuildingBonusAreaSqm,
+    incrementalCapacityAreaSqm,
     otherBonusAreaSqm,
     totalFloorAreaRatio,
     totalCapacityAreaSqm,
@@ -2719,8 +2778,23 @@ function calculateCapacityResult(rosterStaging, baseInfo, capacityInputs) {
       "assessedCurrentValueByLot",
       "tdrCapacityAreaSqm",
       "tdrRate",
+      "tdrRequiredDonorLandAreaSqm",
       "officialTdrCostFormula",
     ],
+    tdrCostBasis: {
+      targetTransferAreaSqm: transferAreaSqm,
+      donorAssessedCurrentValue,
+      recipientAssessedCurrentValue,
+      recipientFloorAreaRatio,
+      tdrDonationFactor,
+      requiredDonorLandAreaSqm: tdrRequiredDonorLandAreaSqm,
+      requiredDonorLandAreaPing: tdrRequiredDonorLandAreaPing,
+      donorAssessedCurrentValueTotal: tdrDonorAssessedCurrentValueTotal,
+      marketUnitPricePerPing,
+      marketPriceCost: tdrMarketPriceCost,
+      marketPriceMultiplier,
+      assessedValueMultiplierCost: tdrAssessedValueMultiplierCost,
+    },
     source: {
       zoning: baseInfo?.zoning || "",
       buildingCoverageRatio: baseInfo?.buildingCoverageRatio || "",
@@ -3447,8 +3521,11 @@ function CapacityModule({
     capacityResult.landAreaSqm,
     capacityResult.baseFloorAreaRatio,
     capacityResult.transferRatio,
+    capacityResult.urbanRenewalCentralBonusRatio,
+    capacityResult.urbanRenewalLocalBonusRatio,
     capacityResult.urbanRenewalBonusRatio,
     capacityResult.unsafeBuildingBonusRatio,
+    capacityResult.incrementalCapacityRatio,
     capacityResult.otherBonusRatio,
     capacityResult.totalFloorAreaRatio,
     capacityResult.totalCapacityAreaSqm,
@@ -3459,6 +3536,7 @@ function CapacityModule({
     capacityResult.transferAreaSqm,
     capacityResult.urbanRenewalBonusAreaSqm,
     capacityResult.unsafeBuildingBonusAreaSqm,
+    capacityResult.incrementalCapacityAreaSqm,
     capacityResult.otherBonusAreaSqm,
     capacityResult.calculationStatus,
   ]);
@@ -3481,6 +3559,15 @@ function CapacityModule({
   };
 
   const rosterSummary = buildRosterBaseSummary(rosterStaging);
+  const tdrCostBasis = capacityResult.tdrCostBasis ?? {};
+  const totalCapacityBeforeTransferSqm = Number.isFinite(capacityResult.totalCapacityAreaSqm) && Number.isFinite(capacityResult.transferAreaSqm)
+    ? capacityResult.totalCapacityAreaSqm - capacityResult.transferAreaSqm
+    : null;
+  const formatInputCurrency = (value) => {
+    const parsedValue = parseNumericInput(value);
+    return Number.isFinite(parsedValue) ? formatCurrencyTwd(parsedValue) : "待補資料";
+  };
+  const capacityFormulaNote = "各項獎勵、增額容積與容積移轉皆以基準容積量為計算基礎；畫面最後才格式化顯示。";
   const sourceItems = [
     ["地號筆數", rosterSummary.hasRoster ? rosterSummary.landNumberCount : "尚未上傳清冊"],
     ["土地面積合計", rosterSummary.landAreaSqm === null ? "待補資料" : formatSqmAndPing(rosterSummary.landAreaSqm)],
@@ -3491,28 +3578,73 @@ function CapacityModule({
     ["基地限制", baseInfo.siteRestrictions || "尚未輸入"],
     ["法規限制", baseInfo.legalRestrictions || "尚未輸入"],
   ];
-  const resultItems = [
+  const baseCapacityItems = [
     ["土地面積合計", formatSqmAndPing(capacityResult.landAreaSqm)],
     ["基準容積率", formatPercentValue(capacityResult.baseFloorAreaRatio)],
     ["基準容積量", formatSqmAndPing(capacityResult.baseCapacityAreaSqm)],
-    ["危老獎勵增加量", formatSqmAndPing(capacityResult.unsafeBuildingBonusAreaSqm)],
-    ["都市更新獎勵增加量", formatSqmAndPing(capacityResult.urbanRenewalBonusAreaSqm)],
-    ["容積移轉增加量", formatSqmAndPing(capacityResult.transferAreaSqm)],
-    ["其他獎勵增加量", formatSqmAndPing(capacityResult.otherBonusAreaSqm)],
+  ];
+  const urbanRenewalItems = [
+    ["中央獎勵", Number.isFinite(capacityResult.urbanRenewalCentralBonusRatio) ? formatPercentValue(capacityResult.urbanRenewalCentralBonusRatio) : "未拆分"],
+    ["地方獎勵", Number.isFinite(capacityResult.urbanRenewalLocalBonusRatio) ? formatPercentValue(capacityResult.urbanRenewalLocalBonusRatio) : "未拆分"],
+    ["合計比例", formatPercentValue(capacityResult.urbanRenewalBonusRatio)],
+    ["增加量", formatSqmAndPing(capacityResult.urbanRenewalBonusAreaSqm)],
+  ];
+  const unsafeBuildingItems = [
+    ["是否適用", effectiveInputs.unsafeBuildingApplicable || (capacityResult.unsafeBuildingBonusRatio > 0 ? "是" : "待確認 / 目前未列入")],
+    ["獎勵比例", formatPercentValue(capacityResult.unsafeBuildingBonusRatio)],
+    ["增加量", formatSqmAndPing(capacityResult.unsafeBuildingBonusAreaSqm)],
+  ];
+  const otherBonusItems = [
+    ["獎勵比例", formatPercentValue(capacityResult.otherBonusRatio)],
+    ["增加量", formatSqmAndPing(capacityResult.otherBonusAreaSqm)],
+    ["說明", effectiveInputs.otherCapacitySourceNote || "待補資料"],
+  ];
+  const incrementalCapacityItems = [
+    ["是否適用", effectiveInputs.incrementalCapacityApplicable || (capacityResult.incrementalCapacityRatio > 0 ? "是" : "待確認 / 目前未列入")],
+    ["增額比例", formatPercentValue(capacityResult.incrementalCapacityRatio)],
+    ["增額容積量", formatSqmAndPing(capacityResult.incrementalCapacityAreaSqm)],
+    ["增額價金狀態", effectiveInputs.incrementalCapacityPriceStatus || "待主管機關估價與審議確認"],
+    ["回饋事項", effectiveInputs.incrementalCapacityFeedback || "待補資料"],
+  ];
+  const tdrLimitItems = [
+    ["接受基地道路寬度", effectiveInputs.tdrRoadWidthStatus || "待評點 / 待確認"],
+    ["基地評點狀態", effectiveInputs.tdrSiteScoreStatus || "可移入上限待評點 / 待審查確認"],
+    ["目標容移比例", formatPercentValue(capacityResult.transferRatio)],
+    ["目標容移量", formatSqmAndPing(capacityResult.transferAreaSqm)],
+  ];
+  const tdrDonationItems = [
+    ["送出基地公告土地現值", Number.isFinite(tdrCostBasis.donorAssessedCurrentValue) ? formatCurrencyTwdPerSqm(tdrCostBasis.donorAssessedCurrentValue) : "待補資料"],
+    ["接受基地公告土地現值", Number.isFinite(tdrCostBasis.recipientAssessedCurrentValue) ? formatCurrencyTwdPerSqm(tdrCostBasis.recipientAssessedCurrentValue) : "待補資料"],
+    ["接受基地容積率", formatPercentValue(tdrCostBasis.recipientFloorAreaRatio)],
+    ["目標移入容積", formatSqmAndPing(capacityResult.transferAreaSqm)],
+    ["反推所需送出基地面積", formatSqmAndPing(tdrCostBasis.requiredDonorLandAreaSqm)],
+    ["所需送出基地坪數", Number.isFinite(tdrCostBasis.requiredDonorLandAreaPing) ? `${formatPing(tdrCostBasis.requiredDonorLandAreaPing)} 坪` : "待補資料"],
+    ["購地成本：坪數 × 市場行情單價", formatCurrencyTwd(tdrCostBasis.marketPriceCost)],
+    ["購地成本：公告現值總額 × 行情係數", formatCurrencyTwd(tdrCostBasis.assessedValueMultiplierCost)],
+    ["代書費", formatInputCurrency(effectiveInputs.tdrScrivenerFee)],
+    ["容移申請 / 捐贈代辦費", formatInputCurrency(effectiveInputs.tdrDonationAgencyFee)],
+    ["其他費用", formatInputCurrency(effectiveInputs.tdrOtherFee)],
+  ];
+  const tdrCashPaymentItems = [
+    ["目標移入容積", formatSqmAndPing(capacityResult.transferAreaSqm)],
+    ["容移前總樓地板面積", formatSqmAndPing(totalCapacityBeforeTransferSqm)],
+    ["容移後總樓地板面積", formatSqmAndPing(capacityResult.totalCapacityAreaSqm)],
+    ["估價方式", effectiveInputs.tdrAppraisalMethodNote || "土地開發分析法為主；比較法參酌；收益法暫不列入正式計算"],
+    ["估價師估價費", formatInputCurrency(effectiveInputs.tdrAppraiserFee)],
+    ["容積申請代辦費", formatInputCurrency(effectiveInputs.tdrCashPaymentAgencyFee)],
+    ["容積移轉代金狀態", effectiveInputs.tdrCashPaymentStatus || "待主管機關估價與審議確認"],
+  ];
+  const resultItems = [
+    ["基準容積量", formatSqmAndPing(capacityResult.baseCapacityAreaSqm)],
+    ["都市更新獎勵量", formatSqmAndPing(capacityResult.urbanRenewalBonusAreaSqm)],
+    ["危老獎勵量", formatSqmAndPing(capacityResult.unsafeBuildingBonusAreaSqm)],
+    ["增額容積量", formatSqmAndPing(capacityResult.incrementalCapacityAreaSqm)],
+    ["容積移轉量", formatSqmAndPing(capacityResult.transferAreaSqm)],
+    ["其他獎勵量", formatSqmAndPing(capacityResult.otherBonusAreaSqm)],
     ["總容積量", formatSqmAndPing(capacityResult.totalCapacityAreaSqm)],
     ["總容積率", formatPercentValue(capacityResult.totalFloorAreaRatio)],
     ["計算狀態", capacityResult.calculationStatus],
   ];
-  const tdrCostBasisItems = [
-    ["土地面積合計", formatSqmAndPing(capacityResult.landAreaSqm)],
-    ["公告現值總額", formatCurrencyTwd(capacityResult.assessedCurrentValueTotal)],
-    ["公告現值加權平均單價", formatCurrencyTwdPerSqm(capacityResult.assessedCurrentValueWeightedUnit)],
-    ["公告現值來源狀態", capacityResult.assessedCurrentValueSourceStatus],
-    ["容積移轉比例", formatPercentValue(capacityResult.transferRatio)],
-    ["容積移轉量", formatSqmAndPing(capacityResult.transferAreaSqm)],
-    ["容積移轉費用公式狀態", capacityResult.tdrCostFormulaStatus],
-  ];
-
   return (
     <div className="eval-module-stack">
       <CurrentCaseSummary currentCase={currentCase} />
@@ -3526,56 +3658,200 @@ function CapacityModule({
       </section>
       <section className="eval-module-section eval-linked-module">
         <div className="eval-section-head">
-          <h4>容積條件輸入</h4>
-          <p>基準容積率可由基地基本資料帶入，也可在本模組依目前案件另行調整；單位皆為百分比。</p>
+          <h4>一、基準容積</h4>
+          <p>基準容積量由土地面積與基準容積率推得，作為後續都市更新、危老、增額、容積移轉與其他獎勵的共同計算基礎。</p>
         </div>
         <div className="eval-field-grid eval-linked-input-grid">
           <label className="eval-field">
             <span>基準容積率（%）</span>
-            <input type="text" value={effectiveInputs.baseFloorAreaRatio} onChange={handleCapacityInputChange("baseFloorAreaRatio")} placeholder="例：225%" />
+            <input type="text" value={effectiveInputs.baseFloorAreaRatio} onChange={handleCapacityInputChange("baseFloorAreaRatio")} placeholder="例：200%" />
             <small>{capacityInputs?.baseFloorAreaRatio ? "來源：本模組調整值" : "來源：基地基本資料，可在此調整"}</small>
           </label>
+        </div>
+        <DataSummaryGrid items={baseCapacityItems} />
+      </section>
+      <section className="eval-module-section eval-linked-module">
+        <div className="eval-section-head">
+          <h4>二、獎勵容積</h4>
+          <p>{capacityFormulaNote}</p>
+        </div>
+        <div className="eval-capacity-subsection">
+          <h5>都市更新獎勵</h5>
+          <div className="eval-field-grid eval-linked-input-grid">
+            <label className="eval-field">
+              <span>中央獎勵（%）</span>
+              <input type="text" value={effectiveInputs.urbanRenewalCentralBonusRatio} onChange={handleCapacityInputChange("urbanRenewalCentralBonusRatio")} placeholder="例：30%" />
+            </label>
+            <label className="eval-field">
+              <span>地方獎勵（%）</span>
+              <input type="text" value={effectiveInputs.urbanRenewalLocalBonusRatio} onChange={handleCapacityInputChange("urbanRenewalLocalBonusRatio")} placeholder="例：20%" />
+            </label>
+            <label className="eval-field">
+              <span>合計比例（未拆分時使用，%）</span>
+              <input type="text" value={effectiveInputs.urbanRenewalBonusRatio} onChange={handleCapacityInputChange("urbanRenewalBonusRatio")} placeholder="例：50%" />
+            </label>
+          </div>
+          <DataSummaryGrid items={urbanRenewalItems} />
+        </div>
+        <div className="eval-capacity-subsection">
+          <h5>危老獎勵</h5>
+          <div className="eval-field-grid eval-linked-input-grid">
+            <label className="eval-field">
+              <span>是否適用</span>
+              <input type="text" value={effectiveInputs.unsafeBuildingApplicable} onChange={handleCapacityInputChange("unsafeBuildingApplicable")} placeholder="例：否 / 待確認" />
+            </label>
+            <label className="eval-field">
+              <span>獎勵比例（%）</span>
+              <input type="text" value={effectiveInputs.unsafeBuildingBonusRatio} onChange={handleCapacityInputChange("unsafeBuildingBonusRatio")} placeholder="例：0%" />
+            </label>
+          </div>
+          <DataSummaryGrid items={unsafeBuildingItems} />
+        </div>
+        <div className="eval-capacity-subsection">
+          <h5>其他 / 規模獎勵</h5>
+          <div className="eval-field-grid eval-linked-input-grid">
+            <label className="eval-field">
+              <span>獎勵比例（%）</span>
+              <input type="text" value={effectiveInputs.otherBonusRatio} onChange={handleCapacityInputChange("otherBonusRatio")} placeholder="例：0%" />
+            </label>
+            <label className="eval-field eval-field--wide">
+              <span>其他容積來源說明</span>
+              <input type="text" value={effectiveInputs.otherCapacitySourceNote} onChange={handleCapacityInputChange("otherCapacitySourceNote")} placeholder="補充容積來源、限制或待確認事項" />
+            </label>
+          </div>
+          <DataSummaryGrid items={otherBonusItems} />
+        </div>
+      </section>
+      <section className="eval-module-section eval-linked-module">
+        <div className="eval-section-head">
+          <h4>三、增額容積</h4>
+          <p>增額容積價金需依主管機關估價與審議結果確認，目前僅作前期試算。</p>
+        </div>
+        <div className="eval-field-grid eval-linked-input-grid">
           <label className="eval-field">
-            <span>容積移轉比例（%）</span>
-            <input type="text" value={effectiveInputs.transferRatio} onChange={handleCapacityInputChange("transferRatio")} placeholder="例：30%" />
+            <span>是否適用</span>
+            <input type="text" value={effectiveInputs.incrementalCapacityApplicable} onChange={handleCapacityInputChange("incrementalCapacityApplicable")} placeholder="例：否 / 待確認" />
           </label>
           <label className="eval-field">
-            <span>都市更新獎勵比例（%）</span>
-            <input type="text" value={effectiveInputs.urbanRenewalBonusRatio} onChange={handleCapacityInputChange("urbanRenewalBonusRatio")} placeholder="例：20%" />
+            <span>增額比例（%）</span>
+            <input type="text" value={effectiveInputs.incrementalCapacityRatio} onChange={handleCapacityInputChange("incrementalCapacityRatio")} placeholder="例：0%" />
           </label>
           <label className="eval-field">
-            <span>危老獎勵比例（%）</span>
-            <input type="text" value={effectiveInputs.unsafeBuildingBonusRatio} onChange={handleCapacityInputChange("unsafeBuildingBonusRatio")} placeholder="例：10%" />
-          </label>
-          <label className="eval-field">
-            <span>其他獎勵比例（%）</span>
-            <input type="text" value={effectiveInputs.otherBonusRatio} onChange={handleCapacityInputChange("otherBonusRatio")} placeholder="例：5%" />
+            <span>增額價金狀態</span>
+            <input type="text" value={effectiveInputs.incrementalCapacityPriceStatus} onChange={handleCapacityInputChange("incrementalCapacityPriceStatus")} placeholder="例：待主管機關估價" />
           </label>
           <label className="eval-field eval-field--wide">
-            <span>其他容積來源說明</span>
-            <input type="text" value={effectiveInputs.otherCapacitySourceNote} onChange={handleCapacityInputChange("otherCapacitySourceNote")} placeholder="補充容積來源、限制或待確認事項" />
+            <span>回饋事項</span>
+            <input type="text" value={effectiveInputs.incrementalCapacityFeedback} onChange={handleCapacityInputChange("incrementalCapacityFeedback")} placeholder="補充回饋項目、估價或審議待確認事項" />
           </label>
+        </div>
+        <DataSummaryGrid items={incrementalCapacityItems} />
+      </section>
+      <section className="eval-module-section eval-linked-module">
+        <div className="eval-section-head">
+          <h4>四、容積移轉</h4>
+          <p>容積移轉比例為前期試算目標；實際可移入上限仍須依接受基地條件、道路寬度、容積量體評定及主管機關審查確認。</p>
+        </div>
+        <div className="eval-capacity-subsection">
+          <h5>第一層：可移入上限與目標容移量</h5>
+          <div className="eval-field-grid eval-linked-input-grid">
+            <label className="eval-field">
+              <span>接受基地道路寬度</span>
+              <input type="text" value={effectiveInputs.tdrRoadWidthStatus} onChange={handleCapacityInputChange("tdrRoadWidthStatus")} placeholder="例：待評點" />
+            </label>
+            <label className="eval-field">
+              <span>基地評點狀態</span>
+              <input type="text" value={effectiveInputs.tdrSiteScoreStatus} onChange={handleCapacityInputChange("tdrSiteScoreStatus")} placeholder="例：可移入上限待評點 / 待審查確認" />
+            </label>
+            <label className="eval-field">
+              <span>目標容移比例（%）</span>
+              <input type="text" value={effectiveInputs.transferRatio} onChange={handleCapacityInputChange("transferRatio")} placeholder="例：30%" />
+            </label>
+          </div>
+          <DataSummaryGrid items={tdrLimitItems} />
+        </div>
+        <div className="eval-capacity-method-grid">
+          <article className="eval-capacity-method-card">
+            <h5>A. 捐贈公設地方式</h5>
+            <div className="eval-field-grid eval-linked-input-grid">
+              <label className="eval-field">
+                <span>送出基地公告土地現值</span>
+                <input type="text" value={effectiveInputs.tdrDonorAssessedCurrentValue} onChange={handleCapacityInputChange("tdrDonorAssessedCurrentValue")} placeholder="例：100000" />
+              </label>
+              <label className="eval-field">
+                <span>接受基地公告土地現值</span>
+                <input type="text" value={effectiveInputs.tdrRecipientAssessedCurrentValue} onChange={handleCapacityInputChange("tdrRecipientAssessedCurrentValue")} placeholder="預設引用本案加權平均單價" />
+              </label>
+              <label className="eval-field">
+                <span>接受基地容積率（%）</span>
+                <input type="text" value={effectiveInputs.tdrRecipientFloorAreaRatio} onChange={handleCapacityInputChange("tdrRecipientFloorAreaRatio")} placeholder="例：200%" />
+              </label>
+              <label className="eval-field">
+                <span>市場行情單價（元 / 坪）</span>
+                <input type="text" value={effectiveInputs.tdrMarketUnitPricePerPing} onChange={handleCapacityInputChange("tdrMarketUnitPricePerPing")} placeholder="估算方式一" />
+              </label>
+              <label className="eval-field">
+                <span>行情係數</span>
+                <input type="text" value={effectiveInputs.tdrMarketPriceMultiplier} onChange={handleCapacityInputChange("tdrMarketPriceMultiplier")} placeholder="估算方式二" />
+              </label>
+              <label className="eval-field">
+                <span>代書費</span>
+                <input type="text" value={effectiveInputs.tdrScrivenerFee} onChange={handleCapacityInputChange("tdrScrivenerFee")} placeholder="例：50000" />
+              </label>
+              <label className="eval-field">
+                <span>容移申請 / 捐贈代辦費</span>
+                <input type="text" value={effectiveInputs.tdrDonationAgencyFee} onChange={handleCapacityInputChange("tdrDonationAgencyFee")} placeholder="例：300000" />
+              </label>
+              <label className="eval-field">
+                <span>其他費用</span>
+                <input type="text" value={effectiveInputs.tdrOtherFee} onChange={handleCapacityInputChange("tdrOtherFee")} placeholder="例：0" />
+              </label>
+            </div>
+            <DataSummaryGrid items={tdrDonationItems} />
+            <p className="eval-capacity-method-note">接受基地移入容積 = 送出基地土地面積 ×（送出基地公告土地現值 ÷ 接受基地公告土地現值）× 接受基地容積率。此為內部快速估算，正式仍以實際送出基地、公告現值、成交條件與容移審查結果為準。</p>
+          </article>
+          <article className="eval-capacity-method-card">
+            <h5>B. 折繳代金方式</h5>
+            <div className="eval-field-grid eval-linked-input-grid">
+              <label className="eval-field eval-field--wide">
+                <span>估價方式備註</span>
+                <input type="text" value={effectiveInputs.tdrAppraisalMethodNote} onChange={handleCapacityInputChange("tdrAppraisalMethodNote")} placeholder="土地開發分析法為主；比較法參酌；收益法暫不列入正式計算" />
+              </label>
+              <label className="eval-field">
+                <span>估價師估價費</span>
+                <input type="text" value={effectiveInputs.tdrAppraiserFee} onChange={handleCapacityInputChange("tdrAppraiserFee")} placeholder="例：0" />
+              </label>
+              <label className="eval-field">
+                <span>容積申請代辦費</span>
+                <input type="text" value={effectiveInputs.tdrCashPaymentAgencyFee} onChange={handleCapacityInputChange("tdrCashPaymentAgencyFee")} placeholder="例：0" />
+              </label>
+              <label className="eval-field">
+                <span>容積移轉代金狀態</span>
+                <input type="text" value={effectiveInputs.tdrCashPaymentStatus} onChange={handleCapacityInputChange("tdrCashPaymentStatus")} placeholder="待主管機關估價與審議確認" />
+              </label>
+            </div>
+            <DataSummaryGrid items={tdrCashPaymentItems} />
+            <div className="eval-reference-grid">
+              <span>土地開發分析法：主要</span>
+              <span>比較法：參酌</span>
+              <span>收益法：暫不列入正式計算，可保留備註</span>
+            </div>
+            <p className="eval-capacity-method-note">折繳代金需依主管機關估價與審議結果確認，目前不硬寫正式代金公式。</p>
+          </article>
         </div>
       </section>
       <MissingDataNotice missingItems={capacityResult.missingItems} />
       <section className="eval-module-section eval-linked-module">
         <div className="eval-section-head">
-          <h4>初步試算結果</h4>
+          <h4>五、總容積結果</h4>
           <p>此為前端測試用初步試算，正式公式與法規適用仍待確認。</p>
         </div>
         <DataSummaryGrid items={resultItems} />
       </section>
-      <section className="eval-module-section eval-linked-module">
-        <div className="eval-section-head">
-          <h4>容積移轉費用計算基礎</h4>
-          <p>本區目前僅建立容積移轉費用的計算基礎資料。正式費用仍需依實際容積移轉規定、申請條件、容積取得方式與主管機關核定公式確認。</p>
-        </div>
-        <DataSummaryGrid items={tdrCostBasisItems} />
-      </section>
       <section className="eval-module-section eval-formula-note">
         <h4>測試用簡化公式 / 正式公式待確認</h4>
-        <p>基準容積量 = 土地面積合計 × 基準容積率 / 100；危老獎勵、都市更新獎勵、容積移轉與其他獎勵增加量 = 基準容積量 × 該比例 / 100；總容積量 = 基準容積量 + 各項獎勵 / 移轉增加量；總容積率 = 總容積量 ÷ 土地面積合計 × 100。</p>
-        <p>下游影響：坪效明細計算會承接總容積量、總容積率、基準容積量與各項獎勵 / 移轉增加量。</p>
+        <p>基準容積量 = 土地面積合計 × 基準容積率 / 100；都市更新獎勵、危老獎勵、增額容積、容積移轉與其他獎勵量 = 基準容積量 × 該比例 / 100；總容積量 = 基準容積量 + 各項獎勵 / 增額 / 容移量；總容積率 = 總容積量 ÷ 土地面積合計 × 100。</p>
+        <p>本模組結果將提供坪效明細、成本與共同負擔、銷售情境、權利分配、現金流與銀行融資報告引用。</p>
       </section>
     </div>
   );
