@@ -293,11 +293,26 @@ function buildLocalTestDataExport({
   floorEfficiencyParamsByCaseId,
   floorEfficiencyResultsByCaseId,
 }) {
+  const normalizedCases = Array.isArray(cases) ? cases : [];
+  const normalizedRosterStaging = isPlainRecord(rosterStagingByCaseId) ? rosterStagingByCaseId : {};
+  const normalizedBaseInfo = isPlainRecord(baseInfoByCaseId) ? baseInfoByCaseId : {};
+  const normalizedCapacityInputs = isPlainRecord(capacityInputsByCaseId) ? capacityInputsByCaseId : {};
+  const normalizedFloorEfficiencyParams = isPlainRecord(floorEfficiencyParamsByCaseId) ? floorEfficiencyParamsByCaseId : {};
+  const {
+    capacityResultsByCaseId: recalculatedCapacityResults,
+    floorEfficiencyResultsByCaseId: recalculatedFloorEfficiencyResults,
+  } = recalculateImportedEvaluationResults({
+    cases: normalizedCases,
+    rosterStagingByCaseId: normalizedRosterStaging,
+    baseInfoByCaseId: normalizedBaseInfo,
+    capacityInputsByCaseId: normalizedCapacityInputs,
+    floorEfficiencyParamsByCaseId: normalizedFloorEfficiencyParams,
+  });
   const recordData = {
-    capacityInputsByCaseId,
-    capacityResultsByCaseId,
-    floorEfficiencyParamsByCaseId,
-    floorEfficiencyResultsByCaseId,
+    capacityInputsByCaseId: normalizedCapacityInputs,
+    capacityResultsByCaseId: recalculatedCapacityResults,
+    floorEfficiencyParamsByCaseId: normalizedFloorEfficiencyParams,
+    floorEfficiencyResultsByCaseId: recalculatedFloorEfficiencyResults,
   };
 
   LOCAL_TEST_DATA_RECORD_FIELDS.forEach(({ dataKey, storageKey }) => {
@@ -316,10 +331,10 @@ function buildLocalTestDataExport({
       commitHint: LOCAL_TEST_DATA_COMMIT_HINT,
     },
     data: {
-      cases: Array.isArray(cases) ? cases : [],
+      cases: normalizedCases,
       currentCaseId: currentCaseId || "",
-      rosterStagingByCaseId: isPlainRecord(rosterStagingByCaseId) ? rosterStagingByCaseId : {},
-      baseInfoByCaseId: isPlainRecord(baseInfoByCaseId) ? baseInfoByCaseId : {},
+      rosterStagingByCaseId: normalizedRosterStaging,
+      baseInfoByCaseId: normalizedBaseInfo,
       ...Object.fromEntries(
         LOCAL_TEST_DATA_RECORD_FIELDS.map(({ dataKey }) => [
           dataKey,
@@ -2588,18 +2603,18 @@ function getEffectiveFloorEfficiencyParams(floorParams, capacityResult) {
   return {
     ...defaultFloorEfficiencyParams,
     ...floorParams,
-    landUseBonusRate: floorParams?.landUseBonusRate || (
-      Number.isFinite(capacityResult?.otherBonusRatio) ? formatPercentValue(capacityResult.otherBonusRatio) : defaultFloorEfficiencyParams.landUseBonusRate
-    ),
-    tdrRate: floorParams?.tdrRate || (
-      Number.isFinite(capacityResult?.transferRatio) ? formatPercentValue(capacityResult.transferRatio) : defaultFloorEfficiencyParams.tdrRate
-    ),
-    urbanRenewalBonusRate: floorParams?.urbanRenewalBonusRate || (
-      Number.isFinite(capacityResult?.urbanRenewalBonusRatio) ? formatPercentValue(capacityResult.urbanRenewalBonusRatio) : defaultFloorEfficiencyParams.urbanRenewalBonusRate
-    ),
-    dangerousOldBuildingBonusRate: floorParams?.dangerousOldBuildingBonusRate || (
-      Number.isFinite(capacityResult?.unsafeBuildingBonusRatio) ? formatPercentValue(capacityResult.unsafeBuildingBonusRatio) : defaultFloorEfficiencyParams.dangerousOldBuildingBonusRate
-    ),
+    landUseBonusRate: Number.isFinite(capacityResult?.otherBonusRatio)
+      ? formatPercentValue(capacityResult.otherBonusRatio)
+      : floorParams?.landUseBonusRate || defaultFloorEfficiencyParams.landUseBonusRate,
+    tdrRate: Number.isFinite(capacityResult?.transferRatio)
+      ? formatPercentValue(capacityResult.transferRatio)
+      : floorParams?.tdrRate || defaultFloorEfficiencyParams.tdrRate,
+    urbanRenewalBonusRate: Number.isFinite(capacityResult?.urbanRenewalBonusRatio)
+      ? formatPercentValue(capacityResult.urbanRenewalBonusRatio)
+      : floorParams?.urbanRenewalBonusRate || defaultFloorEfficiencyParams.urbanRenewalBonusRate,
+    dangerousOldBuildingBonusRate: Number.isFinite(capacityResult?.unsafeBuildingBonusRatio)
+      ? formatPercentValue(capacityResult.unsafeBuildingBonusRatio)
+      : floorParams?.dangerousOldBuildingBonusRate || defaultFloorEfficiencyParams.dangerousOldBuildingBonusRate,
   };
 }
 
@@ -2623,14 +2638,20 @@ function calculateCapacityResult(rosterStaging, baseInfo, capacityInputs) {
 
   const canCalculate = !missingItems.length;
   const baseCapacityAreaSqm = canCalculate ? landAreaSqm * baseFloorAreaRatio / 100 : null;
-  const transferAreaSqm = Number.isFinite(landAreaSqm) ? landAreaSqm * transferRatio / 100 : null;
-  const urbanRenewalBonusAreaSqm = Number.isFinite(landAreaSqm) ? landAreaSqm * urbanRenewalBonusRatio / 100 : null;
-  const unsafeBuildingBonusAreaSqm = Number.isFinite(landAreaSqm) ? landAreaSqm * unsafeBuildingBonusRatio / 100 : null;
-  const otherBonusAreaSqm = Number.isFinite(landAreaSqm) ? landAreaSqm * otherBonusRatio / 100 : null;
-  const totalFloorAreaRatio = Number.isFinite(baseFloorAreaRatio)
-    ? baseFloorAreaRatio + transferRatio + urbanRenewalBonusRatio + unsafeBuildingBonusRatio + otherBonusRatio
+  const transferAreaSqm = Number.isFinite(baseCapacityAreaSqm) ? baseCapacityAreaSqm * transferRatio / 100 : null;
+  const urbanRenewalBonusAreaSqm = Number.isFinite(baseCapacityAreaSqm) ? baseCapacityAreaSqm * urbanRenewalBonusRatio / 100 : null;
+  const unsafeBuildingBonusAreaSqm = Number.isFinite(baseCapacityAreaSqm) ? baseCapacityAreaSqm * unsafeBuildingBonusRatio / 100 : null;
+  const otherBonusAreaSqm = Number.isFinite(baseCapacityAreaSqm) ? baseCapacityAreaSqm * otherBonusRatio / 100 : null;
+  const totalCapacityAreaSqm = canCalculate
+    ? baseCapacityAreaSqm
+      + transferAreaSqm
+      + urbanRenewalBonusAreaSqm
+      + unsafeBuildingBonusAreaSqm
+      + otherBonusAreaSqm
     : null;
-  const totalCapacityAreaSqm = canCalculate ? landAreaSqm * totalFloorAreaRatio / 100 : null;
+  const totalFloorAreaRatio = Number.isFinite(totalCapacityAreaSqm) && Number.isFinite(landAreaSqm) && landAreaSqm !== 0
+    ? totalCapacityAreaSqm / landAreaSqm * 100
+    : null;
 
   return roundRecordNumbers({
     landAreaSqm,
@@ -2684,8 +2705,11 @@ function calculateFloorEfficiencyResult(rosterStaging, baseInfo, capacityResult,
   const landAreaSqm = pickNumericValue(capacityResult?.landAreaSqm, rosterSummary.landAreaSqm);
   const landAreaPing = convertSqmToPing(landAreaSqm);
   const coverageRate = parseRateInput(baseInfo?.buildingCoverageRatio);
-  const baseFarRate = parseRateInput(baseInfo?.baseFloorAreaRatio, capacityResult?.baseFloorAreaRatio ?? null);
-  const simpleUrbanRenewalBonusRate = parseRateInput(floorParams.simpleUrbanRenewalBonusRate, 0);
+  const hasCapacityModuleResult = Number.isFinite(capacityResult?.totalCapacityAreaSqm);
+  const baseFarRate = Number.isFinite(capacityResult?.baseFloorAreaRatio)
+    ? capacityResult.baseFloorAreaRatio
+    : parseRateInput(baseInfo?.baseFloorAreaRatio);
+  const simpleUrbanRenewalBonusRate = hasCapacityModuleResult ? 0 : parseRateInput(floorParams.simpleUrbanRenewalBonusRate, 0);
   const landUseBonusRate = parseRateInput(floorParams.landUseBonusRate, capacityResult?.otherBonusRatio ?? 0);
   const tdrRate = parseRateInput(floorParams.tdrRate, capacityResult?.transferRatio ?? 0);
   const urbanRenewalBonusRate = parseRateInput(floorParams.urbanRenewalBonusRate, capacityResult?.urbanRenewalBonusRatio ?? 0);
@@ -2759,12 +2783,22 @@ function calculateFloorEfficiencyResult(rosterStaging, baseInfo, capacityResult,
 
   const canCalculate = !missingItems.length;
   const legalCoverageAreaSqm = canCalculate ? landAreaSqm * coverageRate / 100 : null;
-  const baseCapacityAreaSqm = canCalculate ? landAreaSqm * baseFarRate / 100 : null;
+  const baseCapacityAreaSqm = canCalculate
+    ? pickNumericValue(capacityResult?.baseCapacityAreaSqm, landAreaSqm * baseFarRate / 100)
+    : null;
   const simpleUrbanRenewalBonusAreaSqm = canCalculate ? baseCapacityAreaSqm * simpleUrbanRenewalBonusRate / 100 : null;
-  const landUseBonusAreaSqm = canCalculate ? baseCapacityAreaSqm * landUseBonusRate / 100 : null;
-  const tdrCapacityAreaSqm = canCalculate ? baseCapacityAreaSqm * tdrRate / 100 : null;
-  const urbanRenewalBonusAreaSqm = canCalculate ? baseCapacityAreaSqm * urbanRenewalBonusRate / 100 : null;
-  const dangerousOldBuildingBonusAreaSqm = canCalculate ? baseCapacityAreaSqm * dangerousOldBuildingBonusRate / 100 : null;
+  const landUseBonusAreaSqm = canCalculate
+    ? pickNumericValue(capacityResult?.otherBonusAreaSqm, baseCapacityAreaSqm * landUseBonusRate / 100)
+    : null;
+  const tdrCapacityAreaSqm = canCalculate
+    ? pickNumericValue(capacityResult?.tdrCapacityAreaSqm, capacityResult?.transferAreaSqm, baseCapacityAreaSqm * tdrRate / 100)
+    : null;
+  const urbanRenewalBonusAreaSqm = canCalculate
+    ? pickNumericValue(capacityResult?.urbanRenewalBonusAreaSqm, baseCapacityAreaSqm * urbanRenewalBonusRate / 100)
+    : null;
+  const dangerousOldBuildingBonusAreaSqm = canCalculate
+    ? pickNumericValue(capacityResult?.unsafeBuildingBonusAreaSqm, baseCapacityAreaSqm * dangerousOldBuildingBonusRate / 100)
+    : null;
   const rewardCapacityAreaSqm = canCalculate
     ? simpleUrbanRenewalBonusAreaSqm
       + landUseBonusAreaSqm
@@ -2772,8 +2806,17 @@ function calculateFloorEfficiencyResult(rosterStaging, baseInfo, capacityResult,
       + urbanRenewalBonusAreaSqm
       + dangerousOldBuildingBonusAreaSqm
     : null;
-  const totalRewardCapacityAreaSqm = canCalculate ? rewardCapacityAreaSqm : null;
-  const allowedCapacityAreaSqm = canCalculate ? baseCapacityAreaSqm + totalRewardCapacityAreaSqm : null;
+  const totalRewardCapacityAreaSqm = canCalculate
+    ? pickNumericValue(
+      Number.isFinite(capacityResult?.totalCapacityAreaSqm) && Number.isFinite(baseCapacityAreaSqm)
+        ? capacityResult.totalCapacityAreaSqm - baseCapacityAreaSqm
+        : null,
+      rewardCapacityAreaSqm,
+    )
+    : null;
+  const allowedCapacityAreaSqm = canCalculate
+    ? pickNumericValue(capacityResult?.totalCapacityAreaSqm, baseCapacityAreaSqm + totalRewardCapacityAreaSqm)
+    : null;
   const equipmentExemptionAreaSqm = canCalculate ? allowedCapacityAreaSqm * equipmentExemptionRate / 100 : null;
   const lobbyAreaSqm = canCalculate ? (allowedCapacityAreaSqm + equipmentExemptionAreaSqm) / 0.95 * lobbyRate / 100 : null;
   const balconyAreaSqm = canCalculate ? (allowedCapacityAreaSqm + equipmentExemptionAreaSqm + lobbyAreaSqm) * balconyRate / 100 : null;
@@ -3380,7 +3423,11 @@ function CapacityModule({
     capacityResult.assessedCurrentValueTotal,
     capacityResult.assessedCurrentValueWeightedUnit,
     capacityResult.assessedCurrentValueSourceStatus,
+    capacityResult.baseCapacityAreaSqm,
     capacityResult.transferAreaSqm,
+    capacityResult.urbanRenewalBonusAreaSqm,
+    capacityResult.unsafeBuildingBonusAreaSqm,
+    capacityResult.otherBonusAreaSqm,
     capacityResult.calculationStatus,
   ]);
 
@@ -3416,12 +3463,12 @@ function CapacityModule({
     ["土地面積合計", formatSqmAndPing(capacityResult.landAreaSqm)],
     ["基準容積率", formatPercentValue(capacityResult.baseFloorAreaRatio)],
     ["基準容積量", formatSqmAndPing(capacityResult.baseCapacityAreaSqm)],
-    ["容積移轉增加量", formatSqmAndPing(capacityResult.transferAreaSqm)],
-    ["都市更新獎勵增加量", formatSqmAndPing(capacityResult.urbanRenewalBonusAreaSqm)],
     ["危老獎勵增加量", formatSqmAndPing(capacityResult.unsafeBuildingBonusAreaSqm)],
+    ["都市更新獎勵增加量", formatSqmAndPing(capacityResult.urbanRenewalBonusAreaSqm)],
+    ["容積移轉增加量", formatSqmAndPing(capacityResult.transferAreaSqm)],
     ["其他獎勵增加量", formatSqmAndPing(capacityResult.otherBonusAreaSqm)],
-    ["總容積率", formatPercentValue(capacityResult.totalFloorAreaRatio)],
     ["總容積量", formatSqmAndPing(capacityResult.totalCapacityAreaSqm)],
+    ["總容積率", formatPercentValue(capacityResult.totalFloorAreaRatio)],
     ["計算狀態", capacityResult.calculationStatus],
   ];
   const tdrCostBasisItems = [
@@ -3495,7 +3542,7 @@ function CapacityModule({
       </section>
       <section className="eval-module-section eval-formula-note">
         <h4>測試用簡化公式 / 正式公式待確認</h4>
-        <p>基準容積量 = 土地面積合計 × 基準容積率 / 100；各項增加量 = 土地面積合計 × 該比例 / 100；總容積率 = 基準容積率 + 容積移轉比例 + 都更獎勵比例 + 危老獎勵比例 + 其他獎勵比例；總容積量 = 土地面積合計 × 總容積率 / 100。</p>
+        <p>基準容積量 = 土地面積合計 × 基準容積率 / 100；危老獎勵、都市更新獎勵、容積移轉與其他獎勵增加量 = 基準容積量 × 該比例 / 100；總容積量 = 基準容積量 + 各項獎勵 / 移轉增加量；總容積率 = 總容積量 ÷ 土地面積合計 × 100。</p>
         <p>下游影響：坪效明細計算會承接總容積量、總容積率、基準容積量與各項獎勵 / 移轉增加量。</p>
       </section>
     </div>
@@ -3842,6 +3889,42 @@ function ParameterAccessNotice({ profile }) {
       </div>
     </section>
   );
+}
+
+function recalculateImportedEvaluationResults({
+  cases,
+  rosterStagingByCaseId,
+  baseInfoByCaseId,
+  capacityInputsByCaseId,
+  floorEfficiencyParamsByCaseId,
+}) {
+  const capacityResultsByCaseId = {};
+  const floorEfficiencyResultsByCaseId = {};
+
+  cases.forEach((caseItem) => {
+    const caseId = caseItem.id;
+    const rosterStaging = rosterStagingByCaseId[caseId] ?? null;
+    const baseInfo = baseInfoByCaseId[caseId] ?? defaultBaseInfo;
+    const capacityInputs = getEffectiveCapacityInputs(
+      capacityInputsByCaseId[caseId] ?? defaultCapacityInputs,
+      baseInfo,
+    );
+    const capacityResult = calculateCapacityResult(rosterStaging, baseInfo, capacityInputs);
+    const floorParams = getEffectiveFloorEfficiencyParams(
+      floorEfficiencyParamsByCaseId[caseId] ?? defaultFloorEfficiencyParams,
+      capacityResult,
+    );
+
+    capacityResultsByCaseId[caseId] = capacityResult;
+    floorEfficiencyResultsByCaseId[caseId] = calculateFloorEfficiencyResult(
+      rosterStaging,
+      baseInfo,
+      capacityResult,
+      floorParams,
+    );
+  });
+
+  return { capacityResultsByCaseId, floorEfficiencyResultsByCaseId };
 }
 
 function RosterCaseRequiredNotice({ onGoToCases }) {
@@ -4584,15 +4667,19 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     const importedCapacityInputs = isPlainRecord(importedData?.capacityInputsByCaseId)
       ? importedData.capacityInputsByCaseId
       : {};
-    const importedCapacityResults = isPlainRecord(importedData?.capacityResultsByCaseId)
-      ? importedData.capacityResultsByCaseId
-      : {};
     const importedFloorEfficiencyParams = isPlainRecord(importedData?.floorEfficiencyParamsByCaseId)
       ? importedData.floorEfficiencyParamsByCaseId
       : {};
-    const importedFloorEfficiencyResults = isPlainRecord(importedData?.floorEfficiencyResultsByCaseId)
-      ? importedData.floorEfficiencyResultsByCaseId
-      : {};
+    const {
+      capacityResultsByCaseId: recalculatedCapacityResults,
+      floorEfficiencyResultsByCaseId: recalculatedFloorEfficiencyResults,
+    } = recalculateImportedEvaluationResults({
+      cases: importedCases,
+      rosterStagingByCaseId: importedRosterStaging,
+      baseInfoByCaseId: importedBaseInfo,
+      capacityInputsByCaseId: importedCapacityInputs,
+      floorEfficiencyParamsByCaseId: importedFloorEfficiencyParams,
+    });
     const importedCurrentCaseId = typeof importedData?.currentCaseId === "string" ? importedData.currentCaseId : "";
     const nextCurrentCaseId = resolveImportedCurrentCaseId(importedCases, importedCurrentCaseId);
 
@@ -4600,9 +4687,9 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     writeStoredJson(ROSTER_STAGING_STORAGE_KEY, importedRosterStaging);
     writeStoredJson(BASE_INFO_STORAGE_KEY, importedBaseInfo);
     writeStoredJson(CAPACITY_INPUTS_STORAGE_KEY, importedCapacityInputs);
-    writeStoredJson(CAPACITY_RESULTS_STORAGE_KEY, importedCapacityResults);
+    writeStoredJson(CAPACITY_RESULTS_STORAGE_KEY, recalculatedCapacityResults);
     writeStoredJson(FLOOR_EFFICIENCY_PARAMS_STORAGE_KEY, importedFloorEfficiencyParams);
-    writeStoredJson(FLOOR_EFFICIENCY_RESULTS_STORAGE_KEY, importedFloorEfficiencyResults);
+    writeStoredJson(FLOOR_EFFICIENCY_RESULTS_STORAGE_KEY, recalculatedFloorEfficiencyResults);
     LOCAL_TEST_DATA_RECORD_FIELDS
       .filter(({ dataKey }) => ![
         "capacityInputsByCaseId",
@@ -4618,9 +4705,9 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     setRosterStagingByCaseId(importedRosterStaging);
     setBaseInfoByCaseId(importedBaseInfo);
     setCapacityInputsByCaseId(importedCapacityInputs);
-    setCapacityResultsByCaseId(importedCapacityResults);
+    setCapacityResultsByCaseId(recalculatedCapacityResults);
     setFloorEfficiencyParamsByCaseId(importedFloorEfficiencyParams);
-    setFloorEfficiencyResultsByCaseId(importedFloorEfficiencyResults);
+    setFloorEfficiencyResultsByCaseId(recalculatedFloorEfficiencyResults);
     setModuleSaveStatusByCaseId({});
   };
 
