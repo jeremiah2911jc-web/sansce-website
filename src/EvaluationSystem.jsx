@@ -102,7 +102,10 @@ const LOCAL_TEST_DATA_APP = "sanze-evaluation-system";
 const LOCAL_TEST_DATA_TYPE = "local-test-data";
 const LOCAL_TEST_DATA_SCHEMA_VERSION = 2;
 const SUPPORTED_LOCAL_TEST_DATA_SCHEMA_VERSIONS = new Set([1, 2]);
-const LOCAL_TEST_DATA_COMMIT_HINT = "cbddef4";
+const EVALUATION_SYSTEM_EXPORT_SOURCE_COMMIT = "15dc65064661ac854aeda821ed5225a8bd26c408";
+const EVALUATION_SYSTEM_BASE_COMMIT = "41c88d676fce9922847cc845354639f3a81734c1";
+const EVALUATION_SYSTEM_EXPORT_FEATURE_VERSION = "cost-defaults-export-v1";
+const EVALUATION_SYSTEM_BUILD_LABEL = "Ensure cost defaults in exported test data";
 const LOCAL_TEST_DATA_RECORD_FIELDS = [
   { dataKey: "capacityInputsByCaseId", storageKey: CAPACITY_INPUTS_STORAGE_KEY },
   { dataKey: "capacityResultsByCaseId", storageKey: CAPACITY_RESULTS_STORAGE_KEY },
@@ -920,25 +923,27 @@ function buildLocalTestDataExport({
     capacityInputsByCaseId: normalizedCapacityInputs,
     floorEfficiencyParamsByCaseId: normalizedFloorEfficiencyParams,
   });
-  const recalculatedCostResults = {
-    ...(isPlainRecord(costResultsByCaseId) ? costResultsByCaseId : {}),
-    ...recalculateCostResultsByCaseId({
-      cases: normalizedCases,
-      costInputsByCaseId: normalizedCostInputs,
-      rosterStagingByCaseId: normalizedRosterStaging,
-      baseInfoByCaseId: normalizedBaseInfo,
-      capacityResultsByCaseId: recalculatedCapacityResults,
-      floorEfficiencyResultsByCaseId: recalculatedFloorEfficiencyResults,
-    }),
-  };
+  const {
+    costInputsByCaseId: completeCostInputs,
+    costResultsByCaseId: completeCostResults,
+  } = buildCompleteCostRecordsByCaseId({
+    cases: normalizedCases,
+    costInputsByCaseId: normalizedCostInputs,
+    costResultsByCaseId,
+    rosterStagingByCaseId: normalizedRosterStaging,
+    baseInfoByCaseId: normalizedBaseInfo,
+    capacityResultsByCaseId: recalculatedCapacityResults,
+    floorEfficiencyResultsByCaseId: recalculatedFloorEfficiencyResults,
+  });
   const recordData = {
     capacityInputsByCaseId: normalizedCapacityInputs,
     capacityResultsByCaseId: recalculatedCapacityResults,
     floorEfficiencyParamsByCaseId: normalizedFloorEfficiencyParams,
     floorEfficiencyResultsByCaseId: recalculatedFloorEfficiencyResults,
-    costInputsByCaseId: normalizedCostInputs,
-    costResultsByCaseId: recalculatedCostResults,
+    costInputsByCaseId: completeCostInputs,
+    costResultsByCaseId: completeCostResults,
   };
+  const exportedAt = new Date().toISOString();
 
   LOCAL_TEST_DATA_RECORD_FIELDS.forEach(({ dataKey, storageKey }) => {
     if (recordData[dataKey] === undefined) {
@@ -950,10 +955,17 @@ function buildLocalTestDataExport({
     app: LOCAL_TEST_DATA_APP,
     type: LOCAL_TEST_DATA_TYPE,
     schemaVersion: LOCAL_TEST_DATA_SCHEMA_VERSION,
-    exportedAt: new Date().toISOString(),
+    exportedAt,
     source: {
+      app: LOCAL_TEST_DATA_APP,
+      schemaVersion: LOCAL_TEST_DATA_SCHEMA_VERSION,
+      exportedAt,
       origin: getSourceOrigin(),
-      commitHint: LOCAL_TEST_DATA_COMMIT_HINT,
+      commitHint: EVALUATION_SYSTEM_EXPORT_SOURCE_COMMIT,
+      exportSourceCommit: EVALUATION_SYSTEM_EXPORT_SOURCE_COMMIT,
+      baseCommit: EVALUATION_SYSTEM_BASE_COMMIT,
+      exportFeatureVersion: EVALUATION_SYSTEM_EXPORT_FEATURE_VERSION,
+      appBuildLabel: EVALUATION_SYSTEM_BUILD_LABEL,
     },
     data: {
       cases: normalizedCases,
@@ -3270,7 +3282,7 @@ function normalizeCostInputs(costInputs) {
     };
   });
 
-  return { commonItems, otherCostItems };
+  return { ...inputRecord, commonItems, otherCostItems };
 }
 
 function getCostSourceQuantity(quantitySource, context) {
@@ -3501,6 +3513,55 @@ function recalculateCostResultsByCaseId({
     );
   });
   return nextResults;
+}
+
+function buildCompleteCostInputsByCaseId(cases, costInputsByCaseId) {
+  const inputRecords = isPlainRecord(costInputsByCaseId) ? costInputsByCaseId : {};
+  const caseIds = new Set(Object.keys(inputRecords));
+
+  (Array.isArray(cases) ? cases : []).forEach((caseItem) => {
+    if (caseItem?.id) {
+      caseIds.add(caseItem.id);
+    }
+  });
+
+  const nextInputs = {};
+  caseIds.forEach((caseId) => {
+    nextInputs[caseId] = normalizeCostInputs(inputRecords[caseId]);
+  });
+  return nextInputs;
+}
+
+function buildCompleteCostRecordsByCaseId({
+  cases,
+  costInputsByCaseId,
+  costResultsByCaseId,
+  rosterStagingByCaseId,
+  baseInfoByCaseId,
+  capacityResultsByCaseId,
+  floorEfficiencyResultsByCaseId,
+}) {
+  const completeCostInputs = buildCompleteCostInputsByCaseId(cases, costInputsByCaseId);
+  const completeCostResults = {
+    ...(isPlainRecord(costResultsByCaseId) ? costResultsByCaseId : {}),
+    ...recalculateCostResultsByCaseId({
+      cases,
+      costInputsByCaseId: completeCostInputs,
+      rosterStagingByCaseId,
+      baseInfoByCaseId,
+      capacityResultsByCaseId,
+      floorEfficiencyResultsByCaseId,
+    }),
+  };
+
+  return {
+    costInputsByCaseId: completeCostInputs,
+    costResultsByCaseId: completeCostResults,
+  };
+}
+
+function recordsHaveSameData(leftRecord, rightRecord) {
+  return JSON.stringify(leftRecord ?? {}) === JSON.stringify(rightRecord ?? {});
 }
 
 function clampScore(value, min, max, fallbackValue = 0) {
@@ -6440,6 +6501,36 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   }, [costResultsByCaseId]);
 
   useEffect(() => {
+    const {
+      costInputsByCaseId: completeCostInputs,
+      costResultsByCaseId: completeCostResults,
+    } = buildCompleteCostRecordsByCaseId({
+      cases,
+      costInputsByCaseId,
+      costResultsByCaseId,
+      rosterStagingByCaseId,
+      baseInfoByCaseId,
+      capacityResultsByCaseId,
+      floorEfficiencyResultsByCaseId,
+    });
+
+    if (!recordsHaveSameData(costInputsByCaseId, completeCostInputs)) {
+      setCostInputsByCaseId(completeCostInputs);
+    }
+    if (!recordsHaveSameData(costResultsByCaseId, completeCostResults)) {
+      setCostResultsByCaseId(completeCostResults);
+    }
+  }, [
+    cases,
+    costInputsByCaseId,
+    costResultsByCaseId,
+    rosterStagingByCaseId,
+    baseInfoByCaseId,
+    capacityResultsByCaseId,
+    floorEfficiencyResultsByCaseId,
+  ]);
+
+  useEffect(() => {
     const resolvedCurrentCaseId = resolveImportedCurrentCaseId(cases, currentCaseId);
     if (resolvedCurrentCaseId !== currentCaseId) {
       setCurrentCaseId(resolvedCurrentCaseId);
@@ -6764,17 +6855,18 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
       capacityInputsByCaseId: importedCapacityInputs,
       floorEfficiencyParamsByCaseId: importedFloorEfficiencyParams,
     });
-    const recalculatedCostResults = {
-      ...(isPlainRecord(importedData?.costResultsByCaseId) ? importedData.costResultsByCaseId : {}),
-      ...recalculateCostResultsByCaseId({
-        cases: importedCases,
-        costInputsByCaseId: importedCostInputs,
-        rosterStagingByCaseId: importedRosterStaging,
-        baseInfoByCaseId: importedBaseInfo,
-        capacityResultsByCaseId: recalculatedCapacityResults,
-        floorEfficiencyResultsByCaseId: recalculatedFloorEfficiencyResults,
-      }),
-    };
+    const {
+      costInputsByCaseId: completeCostInputs,
+      costResultsByCaseId: recalculatedCostResults,
+    } = buildCompleteCostRecordsByCaseId({
+      cases: importedCases,
+      costInputsByCaseId: importedCostInputs,
+      costResultsByCaseId: importedData?.costResultsByCaseId,
+      rosterStagingByCaseId: importedRosterStaging,
+      baseInfoByCaseId: importedBaseInfo,
+      capacityResultsByCaseId: recalculatedCapacityResults,
+      floorEfficiencyResultsByCaseId: recalculatedFloorEfficiencyResults,
+    });
     const importedCurrentCaseId = typeof importedData?.currentCaseId === "string" ? importedData.currentCaseId : "";
     const nextCurrentCaseId = resolveImportedCurrentCaseId(importedCases, importedCurrentCaseId);
 
@@ -6790,7 +6882,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     writeStoredJson(CAPACITY_RESULTS_STORAGE_KEY, recalculatedCapacityResults);
     writeStoredJson(FLOOR_EFFICIENCY_PARAMS_STORAGE_KEY, importedFloorEfficiencyParams);
     writeStoredJson(FLOOR_EFFICIENCY_RESULTS_STORAGE_KEY, recalculatedFloorEfficiencyResults);
-    writeStoredJson(COST_INPUTS_STORAGE_KEY, importedCostInputs);
+    writeStoredJson(COST_INPUTS_STORAGE_KEY, completeCostInputs);
     writeStoredJson(COST_RESULTS_STORAGE_KEY, recalculatedCostResults);
     LOCAL_TEST_DATA_RECORD_FIELDS
       .filter(({ dataKey }) => ![
@@ -6812,7 +6904,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     setCapacityResultsByCaseId(recalculatedCapacityResults);
     setFloorEfficiencyParamsByCaseId(importedFloorEfficiencyParams);
     setFloorEfficiencyResultsByCaseId(recalculatedFloorEfficiencyResults);
-    setCostInputsByCaseId(importedCostInputs);
+    setCostInputsByCaseId(completeCostInputs);
     setCostResultsByCaseId(recalculatedCostResults);
     setModuleSaveStatusByCaseId({});
   };
