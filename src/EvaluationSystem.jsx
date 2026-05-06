@@ -1534,6 +1534,10 @@ function CaseManagementModule({
     setCaseForm(defaultCaseForm);
   };
 
+  const handleClearCaseForm = () => {
+    setCaseForm(defaultCaseForm);
+  };
+
   const handleRequestDelete = (caseItem) => {
     setDeleteConfirmation({ caseItem, step: 1 });
   };
@@ -1756,16 +1760,24 @@ function CaseManagementModule({
             <span>版本備註</span>
             <input type="text" value={caseForm.note} onChange={handleChange("note")} placeholder="初始建立" />
           </label>
-          <div className="eval-case-form-actions">
-            <button type="submit">{editingCase ? "儲存案件修改" : "新增案件"}</button>
-            {editingCase && (
-              <button type="button" className="eval-secondary-action" onClick={handleCancelEdit}>
-                取消編輯
+          <div className="eval-case-form-actions" aria-label={editingCase ? "案件編輯操作" : "案件新增操作"}>
+            <p className="eval-case-form-hint">
+              {editingCase ? "編輯儲存後會更新案件摘要與本機測試資料。" : "新增成功後會自動成為目前案件，並保留於本機測試資料。"}
+            </p>
+            <div className="eval-case-form-buttons">
+              <button type="submit" className="eval-case-form-primary case-form-primary-action">
+                {editingCase ? "儲存案件修改" : "新增案件"}
               </button>
-            )}
-            <span className="eval-case-form-status">
-              {editingCase ? "儲存後會更新案件列表與目前案件摘要。" : "新增成功後會自動成為目前案件，並保留於本機測試資料。"}
-            </span>
+              {editingCase ? (
+                <button type="button" className="eval-case-form-secondary case-form-secondary-action" onClick={handleCancelEdit}>
+                  取消編輯
+                </button>
+              ) : (
+                <button type="button" className="eval-case-form-secondary case-form-secondary-action" onClick={handleClearCaseForm}>
+                  清空表單
+                </button>
+              )}
+            </div>
           </div>
         </form>
 

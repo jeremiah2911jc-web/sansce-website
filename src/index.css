@@ -1839,23 +1839,101 @@ main {
   grid-column: 1 / -1;
   align-self: end;
   align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
   min-width: 0;
-  padding-top: 2px;
+  width: 100%;
+  margin-top: 2px;
+  border: 1px solid rgba(8, 59, 48, 0.1);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(248, 251, 250, 0.98), rgba(255, 255, 255, 0.98));
+  padding: 12px;
 }
 
-.eval-case-form-actions button {
-  align-self: end;
-  min-height: 38px;
-}
-
-.eval-case-form-status {
-  min-width: min(100%, 260px);
+.eval-case-form-hint {
+  flex: 1 1 280px;
+  min-width: 0;
+  margin: 0;
   color: var(--gray-700);
-  font-size: 0.78rem;
-  font-weight: 800;
+  font-size: 0.82rem;
+  font-weight: 850;
   line-height: 1.5;
+}
+
+.eval-case-form-buttons {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.eval-case-form-buttons button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 128px;
+  min-height: 38px;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.eval-case-form-primary,
+.case-form-primary-action {
+  border: 1px solid var(--green-900, #0b5242);
+  background: var(--green-900, #0b5242);
+  color: var(--white);
+  box-shadow: 0 10px 20px rgba(8, 59, 48, 0.18);
+}
+
+.eval-case-form-primary:hover,
+.eval-case-form-primary:focus-visible,
+.case-form-primary-action:hover,
+.case-form-primary-action:focus-visible {
+  border-color: var(--green-950, #06382f);
+  background: var(--green-950, #06382f);
+  box-shadow: 0 12px 24px rgba(8, 59, 48, 0.24);
+  transform: translateY(-1px);
+}
+
+.eval-case-form-primary:focus-visible,
+.case-form-primary-action:focus-visible {
+  outline: 3px solid rgba(200, 168, 98, 0.42);
+  outline-offset: 2px;
+}
+
+.eval-case-form-secondary,
+.case-form-secondary-action {
+  border: 1px solid rgba(8, 59, 48, 0.16);
+  background: #ffffff;
+  color: var(--green-900);
+  box-shadow: 0 8px 16px rgba(8, 59, 48, 0.08);
+}
+
+.eval-case-form-secondary:hover,
+.eval-case-form-secondary:focus-visible,
+.case-form-secondary-action:hover,
+.case-form-secondary-action:focus-visible {
+  border-color: rgba(8, 59, 48, 0.3);
+  background: rgba(8, 59, 48, 0.06);
+  box-shadow: 0 10px 18px rgba(8, 59, 48, 0.12);
+  transform: translateY(-1px);
+}
+
+.eval-case-form-secondary:focus-visible,
+.case-form-secondary-action:focus-visible {
+  outline: 3px solid rgba(200, 168, 98, 0.3);
+  outline-offset: 2px;
 }
 
 .eval-case-table-wrap {
@@ -4123,10 +4201,19 @@ main {
   }
 
   .eval-case-form-actions,
-  .eval-case-form-actions button,
+  .eval-case-form-buttons,
+  .eval-case-form-buttons button,
   .eval-confirm-actions,
   .eval-confirm-actions button {
     width: 100%;
+  }
+
+  .eval-case-form-actions {
+    align-items: stretch;
+  }
+
+  .eval-case-form-buttons {
+    justify-content: stretch;
   }
 
   .eval-confirm-actions {
