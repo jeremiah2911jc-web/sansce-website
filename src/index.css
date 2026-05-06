@@ -2994,6 +2994,10 @@ main {
   gap: 14px;
 }
 
+.eval-roster-official-flow--single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .eval-roster-flow-card {
   display: grid;
   gap: 12px;
@@ -3041,6 +3045,7 @@ main {
   background: var(--green-950);
 }
 
+.eval-roster-flow-actions button:disabled,
 .eval-roster-confirm-bar button:disabled,
 .eval-roster-maintenance-actions button:disabled {
   border-color: rgba(8, 59, 48, 0.12);
@@ -3059,6 +3064,25 @@ main {
 
 .eval-roster-helper {
   margin: 0;
+}
+
+.eval-roster-template-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.eval-roster-template-steps span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  border: 1px solid rgba(8, 59, 48, 0.12);
+  border-radius: 999px;
+  background: rgba(8, 59, 48, 0.05);
+  color: var(--green-950);
+  padding: 6px 10px;
+  font-size: 0.76rem;
+  font-weight: 900;
 }
 
 .eval-roster-gate-message,
@@ -3101,6 +3125,13 @@ main {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   margin-top: 12px;
+}
+
+.eval-roster-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
 }
 
 .eval-roster-import-mode {
@@ -4308,6 +4339,16 @@ main {
   .eval-roster-version-meta {
     justify-items: start;
     min-width: 0;
+  }
+
+  .eval-roster-confirm-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .eval-roster-confirm-actions button {
+    justify-content: center;
+    flex: 1 1 220px;
   }
 
   .eval-sidebar {

@@ -30,6 +30,7 @@ import {
   roundRecordNumbers,
   sqmToPing,
 } from "./evaluationPrecision.js";
+import { createRosterWorkbookBlob } from "./rosterXlsxExporter.js";
 
 const defaultCaseForm = {
   code: "",
@@ -988,6 +989,14 @@ function downloadJsonFile(payload, fileName) {
   }
 
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  downloadBlobFile(blob, fileName);
+}
+
+function downloadBlobFile(blob, fileName) {
+  if (typeof document === "undefined") {
+    return;
+  }
+
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
@@ -2426,47 +2435,6 @@ const rosterImportModeOptions = [
   },
 ];
 
-function bytesToBinaryText(bytes) {
-  const chunkSize = 0x8000;
-  let output = "";
-
-  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
-    output += String.fromCharCode(...bytes.subarray(offset, offset + chunkSize));
-  }
-
-  return output;
-}
-
-async function inspectPdfTextLayer(file) {
-  const bytes = new Uint8Array(await file.arrayBuffer());
-  const headerText = bytesToBinaryText(bytes.subarray(0, Math.min(bytes.length, 1024)));
-
-  if (!headerText.startsWith("%PDF")) {
-    return {
-      ok: false,
-      hasTextLayer: false,
-      message: "檔案不是可辨識的 PDF。",
-    };
-  }
-
-  const binaryText = bytesToBinaryText(bytes);
-  const fontSignalCount = (binaryText.match(/\/(?:Font|CIDFont|ToUnicode)\b/g) ?? []).length;
-  const textOperatorCount = (binaryText.match(/\b(?:BT|Tf|Tj|TJ|Tm|Td|TD)\b/g) ?? []).length;
-  const imageSignalCount = (binaryText.match(/\/Subtype\s*\/Image\b/g) ?? []).length;
-  const hasTextLayer = fontSignalCount > 0 && textOperatorCount > 0;
-
-  return {
-    ok: true,
-    hasTextLayer,
-    fontSignalCount,
-    textOperatorCount,
-    imageSignalCount,
-    message: hasTextLayer
-      ? "已偵測到文字層訊號，可進入電子謄本解析草稿流程。"
-      : "此 PDF 似乎為掃描影像或無文字層檔案，系統暫無法安全自動建立清冊。請改用空白清冊填寫後上傳。",
-  };
-}
-
 function formatSequence(prefix, index) {
   return `${prefix}-${String(index + 1).padStart(4, "0")}`;
 }
@@ -3351,6 +3319,104 @@ function buildRosterPreview(file, workbookData) {
       warningCount: issues.length,
     },
   };
+}
+
+function buildRosterPreviewFromPdfResult(parserResult) {
+  const importedAt = parserResult.importedAt || new Date().toLocaleString("zh-TW", { hour12: false });
+  const landRights = parserResult.landRights.map((row, index) => ({
+    ...normalizeRosterLandRightRow({
+      ...row,
+      sourceType: "readable-pdf",
+      importedAt,
+      updatedAt: row.updatedAt || importedAt,
+      rowStatus: row.rowStatus || "draft",
+    }, index),
+    rowStatus: row.rowStatus || "draft",
+  }));
+  const buildingRights = (parserResult.buildingRights ?? []).map((row, index) => normalizeRosterBuildingRightRow({
+    ...row,
+    sourceType: "readable-pdf",
+    importedAt,
+    updatedAt: row.updatedAt || importedAt,
+    rowStatus: row.rowStatus || "draft",
+  }, index));
+  const { partyRows, issues: partyIssues } = buildPartyPreview(landRights, buildingRights);
+  const shareTotalIssues = buildLandShareTotalIssues(landRights);
+  const parserIssues = (parserResult.issues ?? []).map((issue, index) => ({
+    id: issue.id || `pdf-parser-${index}`,
+    type: issue.type || "PDF 解析提示",
+    severity: issue.severity || "中",
+    message: issue.message || "PDF 解析結果需人工確認。",
+    rows: issue.rows ?? [],
+  }));
+  const issues = [...parserIssues, ...partyIssues, ...shareTotalIssues];
+  const landNumbers = new Set(landRights.map((row) => row.landNumber).filter(Boolean));
+  const buildingNumbers = new Set(buildingRights.map((row) => row.buildingNumber).filter(Boolean));
+  const batchId = `PDF-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${String(Date.now()).slice(-4)}`;
+  const rosterSummary = buildRosterBaseSummary({ landRights, landRows: landRights, buildingRights, buildingRows: buildingRights });
+
+  return {
+    batchId,
+    importBatchId: batchId,
+    version: "PDF-DRAFT-V001",
+    fileName: parserResult.sourceFiles.join(" + "),
+    importedAt,
+    sourceType: "readable-pdf",
+    sourceRecords: parserResult.sources.map((source) => ({
+      sourceType: "readable-pdf",
+      sourceFilename: source.sourceFilename,
+      importedAt,
+      action: "pdf-draft-preview",
+      pageCount: source.pageCount,
+      textCharCount: source.textCharCount,
+      parcelCount: source.parcelCount,
+      landRightCount: source.landRightCount,
+    })),
+    changeLog: [
+      {
+        action: "pdf-draft-preview",
+        sourceFilename: parserResult.sourceFiles.join(" + "),
+        createdAt: importedAt,
+      },
+    ],
+    availableSheets: [],
+    integrationFound: false,
+    allocationFound: false,
+    parcels: parserResult.parcels,
+    mortgages: parserResult.mortgages,
+    landRights,
+    landRows: landRights,
+    buildingRights,
+    buildingRows: buildingRights,
+    partyRows,
+    partyGroups: partyRows,
+    issues,
+    summary: {
+      landCount: landRights.length,
+      buildingCount: buildingRights.length,
+      partyCount: partyRows.length,
+      landNumberCount: landNumbers.size,
+      buildingNumberCount: buildingNumbers.size,
+      cadastralLocationDisplay: rosterSummary.cadastralLocationDisplay,
+      sameNameMultiLandCount: partyRows.filter((party) => party.landNumbers.length > 1).length,
+      sameNameMultiBuildingCount: partyRows.filter((party) => party.buildingNumbers.length > 1).length,
+      manualReviewCount: partyRows.filter((party) => !["已人工確認", "已完整資料確認"].includes(party.status)).length + issues.length,
+      warningCount: issues.length,
+    },
+  };
+}
+
+function buildGeneratedRosterFileName(currentCase, extension = "xlsx") {
+  const caseLabel = normalizeCellValue(currentCase?.code || currentCase?.id || "CASE")
+    .replace(/[\\/:*?"<>|\s]+/g, "-")
+    .replace(/-+/g, "-");
+  const timestamp = new Date().toISOString()
+    .replaceAll("-", "")
+    .replaceAll(":", "")
+    .replace("T", "")
+    .slice(0, 12);
+
+  return `sanze-roster-generated-${caseLabel}-${timestamp}.${extension}`;
 }
 
 function RosterPreviewTable({ title, description, emptyText, columns, rows }) {
@@ -4529,11 +4595,14 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
   const selectedImportMode = rosterImportModeOptions.find((option) => option.value === importMode);
 
   const handlePdfFileChange = async (event) => {
-    const file = event.target.files?.[0];
-    setPdfFileName(file?.name ?? "");
+    const files = Array.from(event.target.files ?? []);
+    const selectedFileNames = files.map((file) => file.name).join(" + ");
+    setPdfFileName(selectedFileNames);
     setPdfStatus(null);
+    setParseError("");
+    setRosterMessage("");
 
-    if (!file) {
+    if (!files.length) {
       setPdfStatus({
         type: "error",
         title: "尚未選擇 PDF",
@@ -4542,42 +4611,53 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
       return;
     }
 
-    if (!file.name.toLowerCase().endsWith(".pdf")) {
+    if (files.some((file) => !file.name.toLowerCase().endsWith(".pdf"))) {
       setPdfStatus({
         type: "error",
         title: "檔案格式不支援",
-        message: "入口 A 只接受 PDF。掃描影像、照片或截圖請改用空白清冊填寫後上傳。",
+        message: "PDF 解析 MVP 只接受 .pdf 檔案；掃描影像、照片或截圖請改用三策 v7 清冊模板。",
       });
       event.target.value = "";
       return;
     }
 
+    setFileName(selectedFileNames);
+    setDraftPreview(null);
+    setImportMode(hasExistingRoster ? "" : "replace");
     setIsParsing(true);
-    try {
-      const inspection = await inspectPdfTextLayer(file);
-      if (!inspection.hasTextLayer) {
-        setPdfStatus({
-          type: "error",
-          title: "未偵測到文字層",
-          message: inspection.message,
-          details: `字型訊號 ${inspection.fontSignalCount ?? 0}、文字指令 ${inspection.textOperatorCount ?? 0}、影像訊號 ${inspection.imageSignalCount ?? 0}`,
-        });
-        return;
-      }
+    setPdfStatus({
+      type: "notice",
+      title: "檢查 PDF 文字層",
+      message: "正在讀取 PDF 文字層並解析謄本資料，尚未寫入案件清冊。",
+    });
 
+    try {
+      const { parseReadableLandRegisterPdfs } = await import("./rosterPdfParser.js");
+      const parsedPdf = await parseReadableLandRegisterPdfs(files);
+      const rosterPreview = buildRosterPreviewFromPdfResult(parsedPdf);
+      setDraftPreview({
+        ...rosterPreview,
+        sourceFlow: "readable-pdf",
+        pendingConfirmation: true,
+      });
       setPdfStatus({
         type: "notice",
-        title: "PDF 文字層檢查通過，解析器尚未完成串接",
-        message: "系統已完成文字層安全檢查，但電子謄本解析器尚未接上正式清冊草稿流程；請先使用空白清冊填寫後上傳。",
-        details: `字型訊號 ${inspection.fontSignalCount}、文字指令 ${inspection.textOperatorCount}、影像訊號 ${inspection.imageSignalCount}`,
+        title: "已建立 PDF 清冊草稿",
+        message: `已解析 ${parsedPdf.sources.length} 份 PDF、${rosterPreview.landRights.length} 筆土地權利列。請先預覽、下載清冊並人工確認後再匯入。`,
       });
-      setRosterMessage("PDF 檢查已結束，尚未寫入案件清冊。");
+      setRosterMessage(hasExistingRoster
+        ? "目前案件已有清冊，請先選擇匯入模式；確認前不會覆蓋既有案件清冊。"
+        : "PDF 已建立清冊草稿，確認前不會寫入案件清冊。");
     } catch (error) {
+      const isParserError = error?.name === "RosterPdfParserError";
       setPdfStatus({
         type: "error",
-        title: "PDF 檢查失敗",
-        message: error instanceof Error ? error.message : "無法檢查 PDF 文字層，請改用空白清冊填寫後上傳。",
+        title: isParserError && error.code === "NO_TEXT_LAYER" ? "不支援掃描 PDF" : "PDF 解析未完成",
+        message: error instanceof Error
+          ? error.message
+          : "無法解析 PDF 文字層，請改用三策 v7 清冊模板填寫後上傳。",
       });
+      setFileName("");
     } finally {
       setIsParsing(false);
       event.target.value = "";
@@ -4589,6 +4669,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
     setFileName(file?.name ?? "");
     setParseError("");
     setRosterMessage("");
+    setPdfStatus(null);
 
     if (!file) {
       setParseError("尚未選擇清冊檔案。");
@@ -4653,6 +4734,19 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
     setRosterMessage(`已確認匯入本案件清冊（${selectedImportMode?.label || "取代目前清冊"}）。`);
   };
 
+  const handleDownloadPreviewWorkbook = () => {
+    if (!activePreview) {
+      return;
+    }
+
+    try {
+      downloadBlobFile(createRosterWorkbookBlob(activePreview), buildGeneratedRosterFileName(currentCase, "xlsx"));
+    } catch (error) {
+      downloadJsonFile(activePreview, buildGeneratedRosterFileName(currentCase, "json"));
+      setRosterMessage("generated Excel 下載暫時失敗，已改下載 draft JSON。");
+    }
+  };
+
   const summaryCards = activePreview ? [
     ["狀態", draftPreview ? "待確認匯入" : "已寫入案件暫存"],
     ["匯入批次", activePreview.batchId],
@@ -4695,30 +4789,35 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
         <section className="eval-module-section eval-roster-flow-card">
           <div className="eval-section-head">
             <h4>上傳可讀電子謄本 PDF</h4>
-            <p>請上傳可複製文字的電子謄本 PDF。系統將協助解析土地標示、權利範圍、所有權人、信託委託人與他項權利資料，建立清冊草稿。</p>
+            <p>請上傳可複製文字的電子謄本 PDF。系統會解析文字層並建立清冊草稿；掃描影像 PDF 暫不支援。</p>
           </div>
           <input
             ref={pdfFileInputRef}
             id={pdfFileInputId}
             type="file"
             accept=".pdf,application/pdf"
+            multiple
             onChange={handlePdfFileChange}
             className="eval-roster-file-input"
           />
           <div className="eval-roster-flow-actions">
-            <button type="button" onClick={() => pdfFileInputRef.current?.click()}>
-              上傳可讀 PDF
+            <button type="button" onClick={() => pdfFileInputRef.current?.click()} disabled={isParsing}>
+              上傳並解析 PDF
             </button>
             <span>{pdfFileName || "尚未選擇 PDF"}</span>
           </div>
           <p className="eval-roster-helper">
-            掃描影像、照片、截圖或無文字層 PDF，暫不支援自動建立正式清冊。請改用空白清冊填寫方式。
+            僅支援有文字層的電子謄本；掃描 PDF、照片、截圖與 OCR 暫不進入正式清冊建立。
           </p>
+          <div className="eval-roster-template-steps" aria-label="PDF 清冊建立流程">
+            {["檢查 PDF 文字層", "解析謄本文字", "建立清冊草稿", "顯示預覽", "下載系統產生清冊 Excel", "確認匯入本案件清冊"].map((step) => (
+              <span key={step}>{step}</span>
+            ))}
+          </div>
           {pdfStatus && (
             <div className={`eval-roster-gate-message eval-roster-gate-message--${pdfStatus.type}`}>
               <strong>{pdfStatus.title}</strong>
               <p>{pdfStatus.message}</p>
-              {pdfStatus.details && <small>{pdfStatus.details}</small>}
             </div>
           )}
         </section>
@@ -4726,7 +4825,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
         <section className="eval-module-section eval-roster-flow-card">
           <div className="eval-section-head">
             <h4>下載空白清冊後填寫上傳</h4>
-            <p>請下載三策 v7 清冊模板，依欄位填寫土地與建物資料後上傳。</p>
+            <p>請下載三策 v7 清冊模板，依欄位填寫土地與建物資料後上傳。系統會先顯示清冊預覽與檢核摘要，確認後才寫入目前案件。</p>
           </div>
           <input
             ref={rosterFileInputRef}
@@ -4747,13 +4846,18 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
           <p className="eval-roster-helper">
             模板保留欄位字典、下拉選單與公式欄；上傳後先顯示預覽，確認後才寫入目前案件。
           </p>
+          <div className="eval-roster-template-steps" aria-label="清冊建立流程">
+            {["下載模板", "填寫清冊", "上傳清冊", "預覽與檢核", "確認匯入本案件清冊"].map((step) => (
+              <span key={step}>{step}</span>
+            ))}
+          </div>
         </section>
       </div>
 
       <section className="eval-module-section eval-roster-upload-card">
         <div className="eval-section-head">
           <h4>清冊建立狀態</h4>
-          <p>正式匯入請使用可讀電子謄本 PDF 或三策 v7 清冊模板；一般 Excel、Word、掃描 PDF 或照片目前僅供內部資料擷取測試。</p>
+          <p>可讀電子謄本 PDF 與三策 v7 清冊都會先建立草稿。上傳後系統會顯示預覽與檢核摘要，確認後才寫入案件資料。</p>
         </div>
         <div className="eval-roster-upload-controls">
           <div className="eval-roster-file-picker">
@@ -4776,7 +4880,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
         <section className="eval-module-section eval-roster-empty-state">
           <div className="eval-section-head">
             <h4>尚未建立清冊預覽</h4>
-            <p>請使用上方兩種正式方式建立目前案件的清冊草稿。</p>
+            <p>請使用三策 v7 空白清冊填寫後上傳，建立目前案件的清冊草稿。</p>
           </div>
         </section>
       )}
@@ -4830,9 +4934,14 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
                       ? "確認後依所選模式寫入案件清冊；未選擇模式前不會覆蓋既有資料。"
                       : `確認後將寫入 rosterStagingByCaseId[${currentCase.id}]。`}
                   </span>
-                  <button type="button" onClick={handleConfirmDraft} disabled={hasExistingRoster && !selectedImportMode?.enabled}>
-                    確認匯入本案件清冊
-                  </button>
+                  <div className="eval-roster-confirm-actions">
+                    <button type="button" onClick={handleDownloadPreviewWorkbook}>
+                      下載系統產生清冊 Excel
+                    </button>
+                    <button type="button" onClick={handleConfirmDraft} disabled={hasExistingRoster && !selectedImportMode?.enabled}>
+                      確認匯入本案件清冊
+                    </button>
+                  </div>
                 </div>
               </>
             )}
@@ -4848,6 +4957,10 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
               { key: "ownerReferenceId", label: "地主編號" },
               { key: "ownerName", label: "地主姓名" },
               { key: "maskedIdentityCode", label: "遮蔽證號 / 前碼" },
+              { key: "city", label: "縣市" },
+              { key: "district", label: "行政區" },
+              { key: "section", label: "段別" },
+              { key: "subsection", label: "小段" },
               { key: "landNumber", label: "地號" },
               { key: "shareText", label: "權利範圍 / 持分" },
               { key: "validationStatus", label: "檢核狀態" },
@@ -4993,7 +5106,7 @@ function RosterImportVersioning({ config }) {
         <p>{config.notice}</p>
         <ol>
           {[
-            "建立清冊草稿：可讀電子謄本 PDF 或三策 v7 清冊先進入草稿流程",
+            "建立清冊草稿：可讀電子謄本 PDF 與三策 v7 清冊上傳後先進入草稿",
             "預覽清冊：土地、建物、地籍定位、權利範圍與人工確認項目先呈現給使用者",
             "確認匯入：按下確認後才寫入目前案件清冊暫存",
             "後續維護：補件匯入、逐筆新增 / 修改、清冊版本與來源紀錄分階段開放",
