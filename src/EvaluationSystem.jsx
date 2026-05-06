@@ -1763,6 +1763,9 @@ function CaseManagementModule({
                 取消編輯
               </button>
             )}
+            <span className="eval-case-form-status">
+              {editingCase ? "儲存後會更新案件列表與目前案件摘要。" : "新增成功後會自動成為目前案件，並保留於本機測試資料。"}
+            </span>
           </div>
         </form>
 
@@ -2373,6 +2376,9 @@ const rosterImportSheets = {
   allocation: "分配條件_匯入",
 };
 
+const ROSTER_TEMPLATE_DOWNLOAD_PATH = "/sanze-roster-template-v7-protected.xlsx";
+const ROSTER_TEMPLATE_DOWNLOAD_FILENAME = "sanze-roster-template-v7-protected.xlsx";
+
 const rosterImportFieldAliases = {
   city: ["縣市", "市縣", "city", "county"],
   district: ["行政區", "鄉鎮市區", "區", "district", "town"],
@@ -2380,6 +2386,47 @@ const rosterImportFieldAliases = {
   subsection: ["小段", "小段別", "subsection"],
   lotNumber: ["地號", "土地地號", "地段地號", "lotNo", "lotNumber"],
 };
+
+function bytesToBinaryText(bytes) {
+  const chunkSize = 0x8000;
+  let output = "";
+
+  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+    output += String.fromCharCode(...bytes.subarray(offset, offset + chunkSize));
+  }
+
+  return output;
+}
+
+async function inspectPdfTextLayer(file) {
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const headerText = bytesToBinaryText(bytes.subarray(0, Math.min(bytes.length, 1024)));
+
+  if (!headerText.startsWith("%PDF")) {
+    return {
+      ok: false,
+      hasTextLayer: false,
+      message: "檔案不是可辨識的 PDF。",
+    };
+  }
+
+  const binaryText = bytesToBinaryText(bytes);
+  const fontSignalCount = (binaryText.match(/\/(?:Font|CIDFont|ToUnicode)\b/g) ?? []).length;
+  const textOperatorCount = (binaryText.match(/\b(?:BT|Tf|Tj|TJ|Tm|Td|TD)\b/g) ?? []).length;
+  const imageSignalCount = (binaryText.match(/\/Subtype\s*\/Image\b/g) ?? []).length;
+  const hasTextLayer = fontSignalCount > 0 && textOperatorCount > 0;
+
+  return {
+    ok: true,
+    hasTextLayer,
+    fontSignalCount,
+    textOperatorCount,
+    imageSignalCount,
+    message: hasTextLayer
+      ? "已偵測到文字層訊號，可進入電子謄本解析草稿流程。"
+      : "此 PDF 似乎為掃描影像或無文字層檔案，系統暫無法安全自動建立清冊。請改用空白清冊填寫後上傳。",
+  };
+}
 
 function formatSequence(prefix, index) {
   return `${prefix}-${String(index + 1).padStart(4, "0")}`;
@@ -2796,13 +2843,23 @@ function buildBuildingRightRows(rows) {
     const calculatedShareAreaSqm = calculateShareArea(buildingAreaSqm, shareNumerator, shareDenominator);
     const ownerName = getFirstMatchingValue(row, ["地主姓名", "所有權人", "姓名", "名稱"]);
     const buildingNumber = getFirstMatchingValue(row, ["建號"]);
+    const city = getRosterFieldValue(row, rosterImportFieldAliases.city);
+    const district = getRosterFieldValue(row, rosterImportFieldAliases.district);
+    const section = getRosterFieldValue(row, rosterImportFieldAliases.section);
+    const subsection = getRosterFieldValue(row, rosterImportFieldAliases.subsection);
+    const lotNumber = getRosterFieldValue(row, rosterImportFieldAliases.lotNumber, ["對應地號", "地號", "lotNo", "lotNumber"]);
 
     return {
       sourceRowNumber: row.__rowNumber,
       ownerReferenceId: getFirstMatchingValue(row, ["地主編號", "權利人編號", "所有權人編號", "參考編號"]),
       ownerName,
       maskedIdentityCode: getFirstMatchingValue(row, ["身分證", "統編", "統一編號", "證號", "識別碼", "前碼"]),
-      relatedLandNumber: getFirstMatchingValue(row, ["對應地號", "地號"]),
+      city,
+      district,
+      section,
+      subsection,
+      lotNumber,
+      relatedLandNumber: lotNumber,
       buildingNumber,
       address: getFirstMatchingValue(row, ["門牌", "地址"]),
       buildingAreaRaw,
@@ -4233,17 +4290,81 @@ function calculateFloorEfficiencyResult(rosterStaging, baseInfo, capacityResult,
   }, INTERNAL_DECIMAL_DIGITS);
 }
 
-function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview, onPreviewChange }) {
+function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
+  const pdfFileInputRef = useRef(null);
+  const rosterFileInputRef = useRef(null);
+  const [pdfFileName, setPdfFileName] = useState("");
+  const [pdfStatus, setPdfStatus] = useState(null);
   const [fileName, setFileName] = useState("");
+  const [draftPreview, setDraftPreview] = useState(null);
   const [isParsing, setIsParsing] = useState(false);
   const [parseError, setParseError] = useState("");
+  const [rosterMessage, setRosterMessage] = useState("");
+  const pdfFileInputId = `roster-pdf-file-${currentCase.id}`;
   const fileInputId = `roster-upload-file-${currentCase.id}`;
-  const displayFileName = fileName || preview?.fileName || "";
+  const activePreview = draftPreview || preview;
+  const displayFileName = fileName || activePreview?.fileName || "";
+
+  const handlePdfFileChange = async (event) => {
+    const file = event.target.files?.[0];
+    setPdfFileName(file?.name ?? "");
+    setPdfStatus(null);
+
+    if (!file) {
+      setPdfStatus({
+        type: "error",
+        title: "尚未選擇 PDF",
+        message: "請選擇可複製文字的電子謄本 PDF。",
+      });
+      return;
+    }
+
+    if (!file.name.toLowerCase().endsWith(".pdf")) {
+      setPdfStatus({
+        type: "error",
+        title: "檔案格式不支援",
+        message: "入口 A 只接受 PDF。掃描影像、照片或截圖請改用空白清冊填寫後上傳。",
+      });
+      event.target.value = "";
+      return;
+    }
+
+    setIsParsing(true);
+    try {
+      const inspection = await inspectPdfTextLayer(file);
+      if (!inspection.hasTextLayer) {
+        setPdfStatus({
+          type: "error",
+          title: "未偵測到文字層",
+          message: inspection.message,
+          details: `字型訊號 ${inspection.fontSignalCount ?? 0}、文字指令 ${inspection.textOperatorCount ?? 0}、影像訊號 ${inspection.imageSignalCount ?? 0}`,
+        });
+        return;
+      }
+
+      setPdfStatus({
+        type: "notice",
+        title: "PDF 文字層檢查通過",
+        message: "已通過安全 gate；正式電子謄本 parser 產出清冊草稿後，才會顯示清冊預覽與下載系統產生清冊 Excel。",
+        details: `字型訊號 ${inspection.fontSignalCount}、文字指令 ${inspection.textOperatorCount}、影像訊號 ${inspection.imageSignalCount}`,
+      });
+    } catch (error) {
+      setPdfStatus({
+        type: "error",
+        title: "PDF 檢查失敗",
+        message: error instanceof Error ? error.message : "無法檢查 PDF 文字層，請改用空白清冊填寫後上傳。",
+      });
+    } finally {
+      setIsParsing(false);
+      event.target.value = "";
+    }
+  };
 
   const handleFileChange = async (event) => {
     const file = event.target.files?.[0];
     setFileName(file?.name ?? "");
     setParseError("");
+    setRosterMessage("");
 
     if (!file) {
       setParseError("尚未選擇清冊檔案。");
@@ -4256,7 +4377,7 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview
       return;
     }
 
-    onPreviewChange(null);
+    setDraftPreview(null);
     setIsParsing(true);
     try {
       const workbookData = await parseRosterWorkbook(file);
@@ -4266,7 +4387,11 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview
       }
 
       const rosterPreview = buildRosterPreview(file, workbookData);
-      onPreviewChange(rosterPreview);
+      setDraftPreview({
+        ...rosterPreview,
+        sourceFlow: "template-upload",
+        pendingConfirmation: true,
+      });
       if (!rosterPreview.landRights.length) {
         setParseError("解析結果為 0 筆有效土地權利列，請確認「土地清冊_匯入」是否已填寫地號、地主姓名、持分或參考編號。");
       }
@@ -4278,68 +4403,135 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview
     }
   };
 
-  const summaryCards = preview ? [
-    ["匯入批次", preview.batchId],
-    ["檔案名稱", preview.fileName],
-    ["匯入時間", preview.importedAt],
-    ["土地清冊筆數", preview.summary.landCount],
-    ["建物清冊筆數", preview.summary.buildingCount],
-    ["疑似權利人群組數", preview.summary.partyCount],
-    ["涉及地號數", preview.summary.landNumberCount],
-    ["地籍定位", preview.summary.cadastralLocationDisplay || "待清冊補齊"],
-    ["涉及建號數", preview.summary.buildingNumberCount],
-    ["疑似同姓多地號群組", preview.summary.sameNameMultiLandCount],
-    ["疑似同姓多建號群組", preview.summary.sameNameMultiBuildingCount],
-    ["待人工確認筆數", preview.summary.manualReviewCount],
-    ["檢核警示數", preview.summary.warningCount],
+  const handleConfirmDraft = () => {
+    if (!draftPreview) {
+      return;
+    }
+
+    onPreviewChange({
+      ...draftPreview,
+      pendingConfirmation: false,
+      confirmedAt: new Date().toLocaleString("zh-TW", { hour12: false }),
+    });
+    setDraftPreview(null);
+    setRosterMessage("已確認匯入本案件清冊。");
+  };
+
+  const summaryCards = activePreview ? [
+    ["狀態", draftPreview ? "待確認匯入" : "已寫入案件暫存"],
+    ["匯入批次", activePreview.batchId],
+    ["檔案名稱", activePreview.fileName],
+    ["匯入時間", activePreview.importedAt],
+    ["土地清冊筆數", activePreview.summary.landCount],
+    ["建物清冊筆數", activePreview.summary.buildingCount],
+    ["疑似權利人群組數", activePreview.summary.partyCount],
+    ["涉及地號數", activePreview.summary.landNumberCount],
+    ["地籍定位", activePreview.summary.cadastralLocationDisplay || "待清冊補齊"],
+    ["涉及建號數", activePreview.summary.buildingNumberCount],
+    ["疑似同姓多地號群組", activePreview.summary.sameNameMultiLandCount],
+    ["疑似同姓多建號群組", activePreview.summary.sameNameMultiBuildingCount],
+    ["待人工確認筆數", activePreview.summary.manualReviewCount],
+    ["檢核警示數", activePreview.summary.warningCount],
   ] : [];
 
   return (
     <section className="eval-roster-upload-test">
+      <div className="eval-roster-official-flow">
+        <section className="eval-module-section eval-roster-flow-card">
+          <div className="eval-section-head">
+            <h4>上傳可讀電子謄本 PDF</h4>
+            <p>請上傳可複製文字的電子謄本 PDF。系統將協助解析土地標示、權利範圍、所有權人、信託委託人與他項權利資料，建立清冊草稿。</p>
+          </div>
+          <input
+            ref={pdfFileInputRef}
+            id={pdfFileInputId}
+            type="file"
+            accept=".pdf,application/pdf"
+            onChange={handlePdfFileChange}
+            className="eval-roster-file-input"
+          />
+          <div className="eval-roster-flow-actions">
+            <button type="button" onClick={() => pdfFileInputRef.current?.click()}>
+              上傳可讀 PDF
+            </button>
+            <span>{pdfFileName || "尚未選擇 PDF"}</span>
+          </div>
+          <p className="eval-roster-helper">
+            掃描影像、照片、截圖或無文字層 PDF，暫不支援自動建立正式清冊。請改用空白清冊填寫方式。
+          </p>
+          {pdfStatus && (
+            <div className={`eval-roster-gate-message eval-roster-gate-message--${pdfStatus.type}`}>
+              <strong>{pdfStatus.title}</strong>
+              <p>{pdfStatus.message}</p>
+              {pdfStatus.details && <small>{pdfStatus.details}</small>}
+            </div>
+          )}
+        </section>
+
+        <section className="eval-module-section eval-roster-flow-card">
+          <div className="eval-section-head">
+            <h4>下載空白清冊後填寫上傳</h4>
+            <p>請下載三策 v7 清冊模板，依欄位填寫土地與建物資料後上傳。</p>
+          </div>
+          <input
+            ref={rosterFileInputRef}
+            id={fileInputId}
+            type="file"
+            accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            onChange={handleFileChange}
+            className="eval-roster-file-input"
+          />
+          <div className="eval-roster-flow-actions">
+            <a href={ROSTER_TEMPLATE_DOWNLOAD_PATH} download={ROSTER_TEMPLATE_DOWNLOAD_FILENAME}>
+              下載三策 v7 空白清冊
+            </a>
+            <button type="button" onClick={() => rosterFileInputRef.current?.click()}>
+              上傳已填寫清冊
+            </button>
+          </div>
+          <p className="eval-roster-helper">
+            模板保留欄位字典、下拉選單與公式欄；上傳後先顯示預覽，確認後才寫入目前案件。
+          </p>
+        </section>
+      </div>
+
       <section className="eval-module-section eval-roster-upload-card">
         <div className="eval-section-head">
-          <h4>清冊匯入</h4>
-          <p>上傳 .xlsx 後建立目前案件的清冊暫存與疑似權利人群組；正式套用前仍需人工確認。</p>
+          <h4>清冊建立狀態</h4>
+          <p>正式匯入請使用可讀電子謄本 PDF 或三策 v7 清冊模板；一般 Excel、Word、掃描 PDF 或照片目前僅供內部資料擷取測試。</p>
         </div>
         <div className="eval-roster-upload-controls">
           <div className="eval-roster-file-picker">
-            <input
-              ref={fileInputRef}
-              id={fileInputId}
-              type="file"
-              accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-              onChange={handleFileChange}
-              className="eval-roster-file-input"
-            />
-            <label htmlFor={fileInputId}>清冊檔案上傳 .xlsx</label>
-            <button type="button" onClick={onRequestFile}>
-              選擇 .xlsx 檔案
+            <label htmlFor={fileInputId}>目前預覽檔案</label>
+            <button type="button" onClick={() => rosterFileInputRef.current?.click()}>
+              重新選擇清冊
             </button>
           </div>
           <article>
             <strong>{displayFileName || "尚未選擇檔案"}</strong>
-            <p>匯入結果將暫時歸屬於目前案件：{currentCase.code} / {currentCase.name}</p>
+            <p>{draftPreview ? "清冊預覽尚未寫入案件；請確認後再匯入。" : `目前案件：${currentCase.code} / ${currentCase.name}`}</p>
           </article>
         </div>
-        {isParsing && <p className="eval-roster-status">正在讀取清冊並建立疑似權利人群組...</p>}
+        {isParsing && <p className="eval-roster-status">正在讀取檔案並建立檢核摘要...</p>}
         {parseError && <p className="eval-auth-error">{parseError}</p>}
+        {rosterMessage && <p className="eval-roster-status">{rosterMessage}</p>}
       </section>
 
-      {!preview && !isParsing && (
+      {!activePreview && !isParsing && (
         <section className="eval-module-section eval-roster-empty-state">
           <div className="eval-section-head">
-            <h4>尚未上傳清冊檔案</h4>
-            <p>請選擇 .xlsx 清冊進行暫存預覽。</p>
+            <h4>尚未建立清冊預覽</h4>
+            <p>請使用上方兩種正式方式建立目前案件的清冊草稿。</p>
           </div>
         </section>
       )}
 
-      {preview && (
+      {activePreview && (
         <>
           <section className="eval-module-section">
             <div className="eval-section-head">
-              <h4>匯入摘要</h4>
-              <p>目前案件的清冊暫存解析結果。</p>
+              <h4>清冊預覽與檢核摘要</h4>
+              <p>{draftPreview ? "請先人工確認，下方按鈕確認後才會寫入本案件清冊暫存。" : "目前案件的清冊暫存解析結果。"}</p>
             </div>
             <div className="eval-roster-summary-grid eval-roster-summary-grid--wide">
               {summaryCards.map(([label, value]) => (
@@ -4349,6 +4541,14 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview
                 </article>
               ))}
             </div>
+            {draftPreview && (
+              <div className="eval-roster-confirm-bar">
+                <span>確認後將寫入 rosterStagingByCaseId[{currentCase.id}]。</span>
+                <button type="button" onClick={handleConfirmDraft}>
+                  確認匯入本案件清冊
+                </button>
+              </div>
+            )}
           </section>
 
           <RosterPreviewTable
@@ -4365,7 +4565,7 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview
               { key: "shareText", label: "權利範圍 / 持分" },
               { key: "validationStatus", label: "檢核狀態" },
             ]}
-            rows={preview.landRights}
+            rows={activePreview.landRights}
           />
 
           <RosterPreviewTable
@@ -4382,7 +4582,7 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview
               { key: "buildingNumber", label: "建號" },
               { key: "validationStatus", label: "檢核狀態" },
             ]}
-            rows={preview.buildingRights}
+            rows={activePreview.buildingRights}
           />
 
           <RosterPreviewTable
@@ -4399,7 +4599,7 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview
               { key: "confidence", label: "歸戶狀態" },
               { key: "reasons", label: "待確認原因" },
             ]}
-            rows={preview.partyRows}
+            rows={activePreview.partyRows}
           />
 
           <section className="eval-module-section">
@@ -4407,9 +4607,9 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview
               <h4>待人工確認清單</h4>
               <p>以下項目不阻擋匯入暫存，但正式套用前必須人工確認。</p>
             </div>
-            {preview.issues.length ? (
+            {activePreview.issues.length ? (
               <div className="eval-roster-issue-list eval-roster-issue-scroll">
-                {preview.issues.map((issue) => (
+                {activePreview.issues.map((issue) => (
                   <article key={issue.id}>
                     <span data-severity={issue.severity}>{issue.severity}</span>
                     <strong>{issue.type}</strong>
@@ -4444,10 +4644,10 @@ function RosterImportVersioning({ config }) {
         <p>{config.notice}</p>
         <ol>
           {[
-            "上傳 Excel 並建立目前案件的暫存批次",
-            "檢查必要工作表、欄位名稱與核心資料格式",
-            "產生差異比對與待人工確認清單",
-            "完成二次確認後才套用到正式案件清冊",
+            "可讀電子謄本 PDF 先通過文字層檢查，通過後才建立清冊草稿",
+            "已填寫三策 v7 清冊先解析成預覽與檢核摘要",
+            "使用者人工確認土地、建物、地籍定位與權利範圍",
+            "按下確認後才寫入目前案件清冊暫存",
           ].map((step) => (
             <li key={step}>{step}</li>
           ))}
@@ -6093,11 +6293,6 @@ function RosterCaseRequiredNotice({ onGoToCases }) {
 }
 
 function OwnershipModule({ module, currentCase, rosterStaging, onRosterStagingChange, onGoToCases }) {
-  const rosterFileInputRef = useRef(null);
-  const handleRosterFileRequest = () => {
-    rosterFileInputRef.current?.click();
-  };
-
   if (!currentCase) {
     return (
       <div className="eval-module-stack">
@@ -6111,8 +6306,6 @@ function OwnershipModule({ module, currentCase, rosterStaging, onRosterStagingCh
       <CurrentCaseSummary currentCase={currentCase} />
       <RosterUploadTesting
         currentCase={currentCase}
-        fileInputRef={rosterFileInputRef}
-        onRequestFile={handleRosterFileRequest}
         preview={rosterStaging}
         onPreviewChange={onRosterStagingChange}
       />
@@ -6724,7 +6917,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
 
   const handleAddCase = (createdCase) => {
     setCases((current) => [...current, createdCase]);
-    setCurrentCaseId((current) => current || createdCase.id);
+    setCurrentCaseId(createdCase.id);
   };
 
   const handleUpdateCase = (updatedCase) => {

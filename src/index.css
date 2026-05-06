@@ -1836,14 +1836,26 @@ main {
 
 .eval-case-form-actions {
   display: flex;
+  grid-column: 1 / -1;
   align-self: end;
+  align-items: center;
   flex-wrap: wrap;
   gap: 8px;
+  min-width: 0;
+  padding-top: 2px;
 }
 
 .eval-case-form-actions button {
   align-self: end;
   min-height: 38px;
+}
+
+.eval-case-form-status {
+  min-width: min(100%, 260px);
+  color: var(--gray-700);
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.5;
 }
 
 .eval-case-table-wrap {
@@ -2853,9 +2865,111 @@ main {
   gap: 14px;
 }
 
+.eval-roster-official-flow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.eval-roster-flow-card {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  border-color: rgba(8, 59, 48, 0.12);
+  background: #ffffff;
+}
+
 .eval-roster-upload-card {
   border-color: rgba(184, 135, 56, 0.2);
   background: linear-gradient(180deg, #fffdf8 0%, #f8fbfa 100%);
+}
+
+.eval-roster-flow-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.eval-roster-flow-actions button,
+.eval-roster-flow-actions a,
+.eval-roster-confirm-bar button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--green-900);
+  color: var(--white);
+  padding: 9px 13px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.eval-roster-flow-actions button:hover,
+.eval-roster-flow-actions button:focus-visible,
+.eval-roster-flow-actions a:hover,
+.eval-roster-flow-actions a:focus-visible,
+.eval-roster-confirm-bar button:hover,
+.eval-roster-confirm-bar button:focus-visible {
+  background: var(--green-950);
+}
+
+.eval-roster-flow-actions span,
+.eval-roster-helper {
+  color: var(--gray-700);
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1.55;
+}
+
+.eval-roster-helper {
+  margin: 0;
+}
+
+.eval-roster-gate-message,
+.eval-roster-confirm-bar {
+  display: grid;
+  gap: 6px;
+  border: 1px solid rgba(8, 59, 48, 0.1);
+  border-radius: 12px;
+  background: #fbfdfc;
+  padding: 11px 12px;
+}
+
+.eval-roster-gate-message--error {
+  border-color: rgba(167, 61, 40, 0.24);
+  background: rgba(167, 61, 40, 0.06);
+}
+
+.eval-roster-gate-message--notice {
+  border-color: rgba(184, 135, 56, 0.25);
+  background: rgba(184, 135, 56, 0.08);
+}
+
+.eval-roster-gate-message strong,
+.eval-roster-confirm-bar span {
+  color: var(--green-950);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.eval-roster-gate-message p,
+.eval-roster-gate-message small {
+  margin: 0;
+  color: var(--gray-700);
+  font-size: 0.76rem;
+  font-weight: 750;
+  line-height: 1.55;
+}
+
+.eval-roster-confirm-bar {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  margin-top: 12px;
 }
 
 .eval-roster-upload-controls {
@@ -3726,7 +3840,9 @@ main {
   }
 
   .eval-roster-hero,
+  .eval-roster-official-flow,
   .eval-roster-upload-controls,
+  .eval-roster-confirm-bar,
   .eval-roster-two-column {
     grid-template-columns: 1fr;
   }
@@ -3941,7 +4057,9 @@ main {
   .eval-capacity-method-grid,
   .eval-roster-rule-grid,
   .eval-roster-check-list,
+  .eval-roster-official-flow,
   .eval-roster-upload-controls,
+  .eval-roster-confirm-bar,
   .eval-roster-two-column,
   .eval-roster-impact-modules,
   .eval-module-nav {
