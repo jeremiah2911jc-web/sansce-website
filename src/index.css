@@ -2943,6 +2943,51 @@ main {
   gap: 14px;
 }
 
+.eval-roster-lifecycle {
+  border-color: rgba(8, 59, 48, 0.1);
+  background: #fbfdfc;
+}
+
+.eval-roster-lifecycle ol {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: roster-lifecycle;
+}
+
+.eval-roster-lifecycle li {
+  position: relative;
+  min-height: 58px;
+  border: 1px solid rgba(8, 59, 48, 0.09);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--green-950);
+  padding: 12px 10px 10px 34px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1.35;
+  counter-increment: roster-lifecycle;
+}
+
+.eval-roster-lifecycle li::before {
+  position: absolute;
+  top: 11px;
+  left: 10px;
+  display: inline-grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--green-900);
+  color: var(--white);
+  content: counter(roster-lifecycle);
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+
 .eval-roster-official-flow {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2994,6 +3039,14 @@ main {
 .eval-roster-confirm-bar button:hover,
 .eval-roster-confirm-bar button:focus-visible {
   background: var(--green-950);
+}
+
+.eval-roster-confirm-bar button:disabled,
+.eval-roster-maintenance-actions button:disabled {
+  border-color: rgba(8, 59, 48, 0.12);
+  background: rgba(8, 59, 48, 0.08);
+  color: rgba(8, 59, 48, 0.56);
+  cursor: not-allowed;
 }
 
 .eval-roster-flow-actions span,
@@ -3048,6 +3101,64 @@ main {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   margin-top: 12px;
+}
+
+.eval-roster-import-mode {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  border: 1px solid rgba(184, 135, 56, 0.25);
+  border-radius: 14px;
+  background: rgba(184, 135, 56, 0.08);
+  padding: 12px;
+}
+
+.eval-roster-import-mode strong {
+  color: var(--green-950);
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.eval-roster-import-mode p,
+.eval-roster-import-mode small {
+  margin: 0;
+  color: var(--gray-700);
+  font-size: 0.76rem;
+  font-weight: 750;
+  line-height: 1.5;
+}
+
+.eval-roster-import-mode-options {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.eval-roster-import-mode-options label {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  border: 1px solid rgba(8, 59, 48, 0.12);
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 10px;
+}
+
+.eval-roster-import-mode-options label.is-disabled {
+  background: rgba(8, 59, 48, 0.04);
+  color: rgba(8, 59, 48, 0.58);
+}
+
+.eval-roster-import-mode-options input {
+  margin-top: 3px;
+  accent-color: var(--green-900);
+}
+
+.eval-roster-import-mode-options b {
+  display: block;
+  color: var(--green-950);
+  font-size: 0.78rem;
+  font-weight: 900;
 }
 
 .eval-roster-upload-controls {
@@ -3270,6 +3381,29 @@ main {
 .eval-roster-empty-state {
   border-style: dashed;
   background: #fbfdfc;
+}
+
+.eval-roster-maintenance {
+  border-color: rgba(8, 59, 48, 0.1);
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbfa 100%);
+}
+
+.eval-roster-maintenance-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.eval-roster-maintenance-actions button {
+  border: 1px solid rgba(8, 59, 48, 0.12);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--green-950);
+  padding: 9px 12px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 900;
 }
 
 .eval-base-roster-summary {
@@ -3904,8 +4038,10 @@ main {
   .eval-security-status-grid,
   .eval-security-check-grid,
   .eval-role-rule-grid,
+  .eval-roster-lifecycle ol,
   .eval-roster-step-grid,
   .eval-roster-mode-grid,
+  .eval-roster-import-mode-options,
   .eval-roster-summary-grid,
   .eval-roster-summary-grid--wide,
   .eval-base-summary-grid,
@@ -4126,8 +4262,10 @@ main {
   .eval-security-status-grid,
   .eval-security-check-grid,
   .eval-role-rule-grid,
+  .eval-roster-lifecycle ol,
   .eval-roster-step-grid,
   .eval-roster-mode-grid,
+  .eval-roster-import-mode-options,
   .eval-roster-summary-grid,
   .eval-roster-summary-grid--wide,
   .eval-base-summary-grid,
@@ -4153,7 +4291,8 @@ main {
   }
 
   .eval-local-test-tools__body button,
-  .eval-import-summary button {
+  .eval-import-summary button,
+  .eval-roster-maintenance-actions button {
     width: 100%;
   }
 

@@ -2399,6 +2399,33 @@ const rosterImportFieldAliases = {
   lotNumber: ["地號", "土地地號", "地段地號", "lotNo", "lotNumber"],
 };
 
+const rosterImportModeOptions = [
+  {
+    value: "replace",
+    label: "取代目前清冊",
+    description: "以本次預覽內容更新案件清冊暫存。確認前不會寫入。",
+    enabled: true,
+  },
+  {
+    value: "merge",
+    label: "合併到目前清冊",
+    description: "保留既有列並加入補件資料，後續版本支援。",
+    enabled: false,
+  },
+  {
+    value: "new-version",
+    label: "建立新清冊版本",
+    description: "保留目前版本並建立新版清冊，後續版本支援。",
+    enabled: false,
+  },
+  {
+    value: "land-value-update",
+    label: "只更新公告現值 / 申報地價",
+    description: "依相同地籍定位比對年度地價，後續版本支援。",
+    enabled: false,
+  },
+];
+
 function bytesToBinaryText(bytes) {
   const chunkSize = 0x8000;
   let output = "";
@@ -2499,6 +2526,81 @@ function normalizeLandRightLocationFields(row) {
   };
 }
 
+function normalizeRosterLandRightRow(row, index = 0) {
+  const locationRow = normalizeLandRightLocationFields(row);
+  const shareRatio = pickNumericValue(
+    parseRosterNumber(locationRow.shareRatio),
+    parseRosterNumber(locationRow.calculatedShareRatio),
+    parseRatio(locationRow.shareNumerator, locationRow.shareDenominator),
+  );
+  const shareAreaSqm = pickNumericValue(
+    parseRosterNumber(locationRow.shareAreaSqm),
+    parseRosterNumber(locationRow.calculatedShareAreaSqm),
+  );
+  const shareAreaPing = pickNumericValue(
+    parseRosterNumber(locationRow.shareAreaPing),
+    parseRosterNumber(locationRow.calculatedShareAreaPing),
+    Number.isFinite(shareAreaSqm) ? sqmToPing(shareAreaSqm) : null,
+  );
+  const rowId = normalizeCellValue(locationRow.rowId || locationRow.landRightRowId) || formatSequence("LR", index);
+  const importedAt = normalizeCellValue(locationRow.importedAt);
+
+  return {
+    ...locationRow,
+    rowId,
+    landRightRowId: normalizeCellValue(locationRow.landRightRowId) || rowId,
+    registrationOrder: normalizeCellValue(locationRow.registrationOrder || locationRow["登記次序"]),
+    ownerName: normalizeCellValue(locationRow.ownerName || locationRow["地主姓名"] || locationRow["所有權人"]),
+    registeredOwnerName: normalizeCellValue(locationRow.registeredOwnerName || locationRow["登記名義人"] || locationRow["所有權人"]),
+    trusteeName: normalizeCellValue(locationRow.trusteeName || locationRow["受託人"]),
+    trustorName: normalizeCellValue(locationRow.trustorName || locationRow["委託人"]),
+    ownershipType: normalizeCellValue(locationRow.ownershipType || locationRow["權利型態"]),
+    shareRatio: Number.isFinite(shareRatio) ? roundForStorage(shareRatio, INTERNAL_DECIMAL_DIGITS) : "",
+    shareAreaSqm: Number.isFinite(shareAreaSqm) ? roundForStorage(shareAreaSqm, INTERNAL_DECIMAL_DIGITS) : "",
+    shareAreaPing: Number.isFinite(shareAreaPing) ? roundForStorage(shareAreaPing, INTERNAL_DECIMAL_DIGITS) : "",
+    announcedCurrentValue: normalizeCellValue(
+      locationRow.announcedCurrentValue
+        || locationRow.announcedLandValue
+        || locationRow["公告土地現值"]
+        || locationRow["公告現值"],
+    ),
+    announcedCurrentValueYear: normalizeCellValue(locationRow.announcedCurrentValueYear || locationRow["公告現值年度"] || locationRow["公告土地現值年度"]),
+    declaredLandValue: normalizeCellValue(locationRow.declaredLandValue || locationRow["申報地價"] || locationRow["當期申報地價"]),
+    declaredLandValueYear: normalizeCellValue(locationRow.declaredLandValueYear || locationRow["申報地價年度"]),
+    sourceType: normalizeCellValue(locationRow.sourceType),
+    sourceFilename: normalizeCellValue(locationRow.sourceFilename || locationRow.sourceFile || locationRow.fileName),
+    sourcePage: normalizeCellValue(locationRow.sourcePage),
+    importedAt,
+    updatedAt: normalizeCellValue(locationRow.updatedAt) || importedAt,
+    rowStatus: normalizeCellValue(locationRow.rowStatus) || "active",
+    notes: normalizeCellValue(locationRow.notes || locationRow.note),
+  };
+}
+
+function normalizeRosterBuildingRightRow(row, index = 0) {
+  const rowId = normalizeCellValue(row?.rowId || row?.buildingRightRowId) || formatSequence("BR", index);
+  const importedAt = normalizeCellValue(row?.importedAt);
+
+  return {
+    ...row,
+    rowId,
+    buildingRightRowId: normalizeCellValue(row?.buildingRightRowId) || rowId,
+    city: normalizeCellValue(row?.city || row?.["縣市"] || row?.county),
+    district: normalizeCellValue(row?.district || row?.["行政區"] || row?.town),
+    section: normalizeCellValue(row?.section || row?.["段別"] || row?.["地段"]),
+    subsection: normalizeCellValue(row?.subsection || row?.["小段"]),
+    lotNumber: normalizeCellValue(row?.lotNumber || row?.landNumber || row?.relatedLandNumber || row?.["地號"]),
+    buildingNumber: normalizeCellValue(row?.buildingNumber || row?.["建號"]),
+    sourceType: normalizeCellValue(row?.sourceType),
+    sourceFilename: normalizeCellValue(row?.sourceFilename || row?.sourceFile || row?.fileName),
+    sourcePage: normalizeCellValue(row?.sourcePage),
+    importedAt,
+    updatedAt: normalizeCellValue(row?.updatedAt) || importedAt,
+    rowStatus: normalizeCellValue(row?.rowStatus) || "active",
+    notes: normalizeCellValue(row?.notes || row?.note),
+  };
+}
+
 function normalizeRosterStaging(rosterStaging) {
   if (!isPlainRecord(rosterStaging)) {
     return rosterStaging;
@@ -2509,12 +2611,20 @@ function normalizeRosterStaging(rosterStaging) {
     : Array.isArray(rosterStaging.landRows)
       ? rosterStaging.landRows
       : [];
-  const normalizedLandRows = sourceLandRows.map(normalizeLandRightLocationFields);
+  const normalizedLandRows = sourceLandRows.map((row, index) => normalizeRosterLandRightRow(row, index));
+  const sourceBuildingRows = Array.isArray(rosterStaging.buildingRights)
+    ? rosterStaging.buildingRights
+    : Array.isArray(rosterStaging.buildingRows)
+      ? rosterStaging.buildingRows
+      : [];
+  const normalizedBuildingRows = sourceBuildingRows.map((row, index) => normalizeRosterBuildingRightRow(row, index));
 
   return {
     ...rosterStaging,
     landRights: normalizedLandRows,
     landRows: normalizedLandRows,
+    buildingRights: normalizedBuildingRows,
+    buildingRows: normalizedBuildingRows,
   };
 }
 
@@ -2763,7 +2873,7 @@ async function parseRosterWorkbook(file) {
   };
 }
 
-function buildLandRightRows(rows) {
+function buildLandRightRows(rows, sourceContext = {}) {
   const mappedRows = rows.map((row) => {
     const landAreaRaw = getHeaderValue(row, ["土地面積㎡", "土地面積"], ["土地面積", "面積"]);
     const landAreaSqm = parseRosterNumber(landAreaRaw);
@@ -2781,11 +2891,23 @@ function buildLandRightRows(rows) {
     const subsection = getRosterFieldValue(row, rosterImportFieldAliases.subsection);
     const lotNumber = getRosterFieldValue(row, rosterImportFieldAliases.lotNumber, ["地號", "lotNo", "lotNumber"]);
     const landNumber = lotNumber;
+    const announcedCurrentValue = getHeaderValue(row, ["公告土地現值", "公告現值"], ["公告土地現值", "公告現值"]);
+    const declaredLandValue = getHeaderValue(row, ["申報地價", "當期申報地價"], ["申報地價", "當期申報地價"]);
+    const registrationOrder = getHeaderValue(row, ["登記次序"], ["登記次序"]);
+    const registeredOwnerName = getHeaderValue(row, ["登記名義人", "所有權人"], ["登記名義人", "所有權人"]);
+    const trusteeName = getHeaderValue(row, ["受託人"], ["受託人"]);
+    const trustorName = getHeaderValue(row, ["委託人", "實際權利人"], ["委託人", "實際權利人"]);
+    const ownershipType = getHeaderValue(row, ["權利型態"], ["信託", "權利型態"]);
 
     return {
       sourceRowNumber: row.__rowNumber,
       ownerReferenceId: getFirstMatchingValue(row, ["地主編號", "權利人編號", "所有權人編號", "參考編號"]),
       ownerName,
+      registrationOrder,
+      registeredOwnerName,
+      trusteeName,
+      trustorName,
+      ownershipType,
       maskedIdentityCode: getFirstMatchingValue(row, ["身分證", "統編", "統一編號", "證號", "識別碼", "前碼"]),
       address: getFirstMatchingValue(row, ["地址", "通訊地址", "戶籍地址", "住址"]),
       city,
@@ -2804,8 +2926,14 @@ function buildLandRightRows(rows) {
       calculatedShareRatio: roundForStorage(calculatedShareRatio, INTERNAL_DECIMAL_DIGITS),
       calculatedShareAreaSqm: roundForStorage(calculatedShareAreaSqm, INTERNAL_DECIMAL_DIGITS),
       calculatedShareAreaPing: roundForStorage(sqmToPing(calculatedShareAreaSqm), INTERNAL_DECIMAL_DIGITS),
+      shareRatio: roundForStorage(calculatedShareRatio, INTERNAL_DECIMAL_DIGITS),
+      shareAreaSqm: roundForStorage(calculatedShareAreaSqm, INTERNAL_DECIMAL_DIGITS),
+      shareAreaPing: roundForStorage(sqmToPing(calculatedShareAreaSqm), INTERNAL_DECIMAL_DIGITS),
       landArea: getFirstMatchingValue(row, ["土地面積", "面積"]),
-      announcedCurrentValue: getFirstMatchingValue(row, ["公告現值"]),
+      announcedCurrentValue,
+      announcedCurrentValueYear: getHeaderValue(row, ["公告現值年度", "公告土地現值年度"], ["公告現值年度", "公告土地現值年度"]),
+      declaredLandValue,
+      declaredLandValueYear: getHeaderValue(row, ["申報地價年度"], ["申報地價年度"]),
       announcedLandValue: getFirstMatchingValue(row, ["公告地價"]),
       shareText: getFirstMatchingValue(row, ["權利範圍", "持分"]),
       convertedShare: getFirstMatchingValue(row, ["換算持分", "持分比例", "持分面積"]),
@@ -2813,6 +2941,13 @@ function buildLandRightRows(rows) {
       consentStatus: getFirstMatchingValue(row, ["同意狀態", "同意"]),
       contractStatus: getFirstMatchingValue(row, ["簽約狀態", "簽約"]),
       note: getFirstMatchingValue(row, ["備註", "說明"]),
+      notes: getFirstMatchingValue(row, ["備註", "說明"]),
+      sourceType: sourceContext.sourceType || "",
+      sourceFilename: sourceContext.sourceFilename || "",
+      sourcePage: "",
+      importedAt: sourceContext.importedAt || "",
+      updatedAt: sourceContext.updatedAt || sourceContext.importedAt || "",
+      rowStatus: "active",
       validationStatus: ownerName && landNumber ? "可建立疑似群組" : "待人工確認",
     };
   });
@@ -2838,11 +2973,12 @@ function buildLandRightRows(rows) {
     ].some(Boolean))
     .map((row, index) => ({
       ...row,
+      rowId: formatSequence("LR", index),
       landRightRowId: formatSequence("LR", index),
     }));
 }
 
-function buildBuildingRightRows(rows) {
+function buildBuildingRightRows(rows, sourceContext = {}) {
   const mappedRows = rows.map((row) => {
     const buildingAreaRaw = getHeaderValue(row, ["建物面積㎡", "建物面積"], ["建物面積", "面積"]);
     const buildingAreaSqm = parseRosterNumber(buildingAreaRaw);
@@ -2887,6 +3023,13 @@ function buildBuildingRightRows(rows) {
       buildingArea: getFirstMatchingValue(row, ["建物面積", "面積"]),
       shareText: getFirstMatchingValue(row, ["權利範圍", "持分"]),
       note: getFirstMatchingValue(row, ["備註", "說明"]),
+      notes: getFirstMatchingValue(row, ["備註", "說明"]),
+      sourceType: sourceContext.sourceType || "",
+      sourceFilename: sourceContext.sourceFilename || "",
+      sourcePage: "",
+      importedAt: sourceContext.importedAt || "",
+      updatedAt: sourceContext.updatedAt || sourceContext.importedAt || "",
+      rowStatus: "active",
       validationStatus: ownerName && buildingNumber ? "可建立疑似群組" : "待人工確認",
     };
   });
@@ -2910,6 +3053,7 @@ function buildBuildingRightRows(rows) {
     ].some(Boolean))
     .map((row, index) => ({
       ...row,
+      rowId: formatSequence("BR", index),
       buildingRightRowId: formatSequence("BR", index),
     }));
 }
@@ -3145,22 +3289,45 @@ function buildLandShareTotalIssues(landRights) {
 }
 
 function buildRosterPreview(file, workbookData) {
-  const landRights = buildLandRightRows(workbookData.landRows);
-  const buildingRights = buildBuildingRightRows(workbookData.buildingRows);
+  const importedAt = new Date().toLocaleString("zh-TW", { hour12: false });
+  const sourceContext = {
+    sourceType: "v7-template-xlsx",
+    sourceFilename: file.name,
+    importedAt,
+    updatedAt: importedAt,
+  };
+  const landRights = buildLandRightRows(workbookData.landRows, sourceContext);
+  const buildingRights = buildBuildingRightRows(workbookData.buildingRows, sourceContext);
   const { partyRows, issues: partyIssues } = buildPartyPreview(landRights, buildingRights);
   const shareTotalIssues = buildLandShareTotalIssues(landRights);
   const issues = [...partyIssues, ...shareTotalIssues];
   const landNumbers = new Set(landRights.map((row) => row.landNumber).filter(Boolean));
   const buildingNumbers = new Set(buildingRights.map((row) => row.buildingNumber).filter(Boolean));
   const batchId = `IMPORT-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${String(Date.now()).slice(-4)}`;
-  const rosterSummary = buildRosterBaseSummary({ landRights, landRows: landRights });
+  const rosterSummary = buildRosterBaseSummary({ landRights, landRows: landRights, buildingRights, buildingRows: buildingRights });
 
   return {
     batchId,
     importBatchId: batchId,
     version: "TEMP-V001",
     fileName: file.name,
-    importedAt: new Date().toLocaleString("zh-TW", { hour12: false }),
+    importedAt,
+    sourceType: sourceContext.sourceType,
+    sourceRecords: [
+      {
+        sourceType: sourceContext.sourceType,
+        sourceFilename: file.name,
+        importedAt,
+        action: "draft-preview",
+      },
+    ],
+    changeLog: [
+      {
+        action: "draft-preview",
+        sourceFilename: file.name,
+        createdAt: importedAt,
+      },
+    ],
     availableSheets: workbookData.availableSheets,
     integrationFound: workbookData.integrationFound,
     allocationFound: workbookData.allocationFound,
@@ -3223,7 +3390,12 @@ function RosterPreviewTable({ title, description, emptyText, columns, rows }) {
 
 function getRosterLandRows(rosterStaging) {
   const rows = rosterStaging?.landRights ?? rosterStaging?.landRows ?? [];
-  return Array.isArray(rows) ? rows.map(normalizeLandRightLocationFields) : [];
+  return Array.isArray(rows) ? rows.map((row, index) => normalizeRosterLandRightRow(row, index)) : [];
+}
+
+function getRosterBuildingRows(rosterStaging) {
+  const rows = rosterStaging?.buildingRights ?? rosterStaging?.buildingRows ?? [];
+  return Array.isArray(rows) ? rows.map((row, index) => normalizeRosterBuildingRightRow(row, index)) : [];
 }
 
 function parseRosterNumber(value) {
@@ -3263,8 +3435,38 @@ function buildCadastralLocationDisplay(landRows) {
   return Array.from(locations.values())[0] || "待清冊補齊";
 }
 
+function buildRosterYearDisplay(rows, fieldKey) {
+  const years = Array.from(new Set(rows
+    .map((row) => normalizeCellValue(row[fieldKey]))
+    .filter(Boolean)));
+
+  if (!years.length) {
+    return "待清冊補齊";
+  }
+
+  if (years.length > 1) {
+    return `多年度：${years.slice(0, 3).join("、")}${years.length > 3 ? "…" : ""}`;
+  }
+
+  return years[0];
+}
+
+function buildRosterLatestSourceDisplay(rosterStaging, landRows, buildingRows) {
+  const explicitSource = normalizeCellValue(rosterStaging?.fileName || rosterStaging?.sourceFilename);
+  if (explicitSource) {
+    return explicitSource;
+  }
+
+  const rowSource = [...landRows, ...buildingRows]
+    .map((row) => normalizeCellValue(row.sourceFilename || row.sourceFile))
+    .find(Boolean);
+
+  return rowSource || "尚未建立來源紀錄";
+}
+
 function buildRosterBaseSummary(rosterStaging) {
   const landRows = getRosterLandRows(rosterStaging);
+  const buildingRows = getRosterBuildingRows(rosterStaging);
   const landByNumber = new Map();
 
   landRows.forEach((row) => {
@@ -3294,6 +3496,7 @@ function buildRosterBaseSummary(rosterStaging) {
     fileName: rosterStaging?.fileName ?? "",
     importedAt: rosterStaging?.importedAt ?? "",
     landRightCount: landRows.length,
+    buildingRightCount: buildingRows.length,
     landNumberCount: landNumbers.length,
     landNumbers,
     landNumberDisplay: landNumbers.length > 5
@@ -3307,6 +3510,9 @@ function buildRosterBaseSummary(rosterStaging) {
     assessedCurrentValueByLot: assessedCurrentValueSummary.assessedCurrentValueByLot,
     assessedCurrentValueSourceStatus: assessedCurrentValueSummary.assessedCurrentValueSourceStatus,
     announcedCurrentValueStatus: assessedCurrentValueSummary.assessedCurrentValueSourceStatus,
+    announcedCurrentValueYear: buildRosterYearDisplay(uniqueLandRows, "announcedCurrentValueYear"),
+    declaredLandValueYear: buildRosterYearDisplay(uniqueLandRows, "declaredLandValueYear"),
+    latestSource: buildRosterLatestSourceDisplay(rosterStaging, landRows, buildingRows),
     announcedLandValueStatus: announcedLandValueCount
       ? `清冊已提供 ${announcedLandValueCount} 筆地號資料`
       : "清冊未提供",
@@ -4312,10 +4518,15 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
   const [isParsing, setIsParsing] = useState(false);
   const [parseError, setParseError] = useState("");
   const [rosterMessage, setRosterMessage] = useState("");
+  const [importMode, setImportMode] = useState("replace");
   const pdfFileInputId = `roster-pdf-file-${currentCase.id}`;
   const fileInputId = `roster-upload-file-${currentCase.id}`;
   const activePreview = draftPreview || preview;
   const displayFileName = fileName || activePreview?.fileName || "";
+  const existingLandRows = getRosterLandRows(preview);
+  const existingBuildingRows = getRosterBuildingRows(preview);
+  const hasExistingRoster = Boolean(preview) && (existingLandRows.length > 0 || existingBuildingRows.length > 0);
+  const selectedImportMode = rosterImportModeOptions.find((option) => option.value === importMode);
 
   const handlePdfFileChange = async (event) => {
     const file = event.target.files?.[0];
@@ -4356,10 +4567,11 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
 
       setPdfStatus({
         type: "notice",
-        title: "PDF 文字層檢查通過",
-        message: "已通過安全 gate；正式電子謄本 parser 產出清冊草稿後，才會顯示清冊預覽與下載系統產生清冊 Excel。",
+        title: "PDF 文字層檢查通過，解析器尚未完成串接",
+        message: "系統已完成文字層安全檢查，但電子謄本解析器尚未接上正式清冊草稿流程；請先使用空白清冊填寫後上傳。",
         details: `字型訊號 ${inspection.fontSignalCount}、文字指令 ${inspection.textOperatorCount}、影像訊號 ${inspection.imageSignalCount}`,
       });
+      setRosterMessage("PDF 檢查已結束，尚未寫入案件清冊。");
     } catch (error) {
       setPdfStatus({
         type: "error",
@@ -4390,6 +4602,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
     }
 
     setDraftPreview(null);
+    setImportMode(hasExistingRoster ? "" : "replace");
     setIsParsing(true);
     try {
       const workbookData = await parseRosterWorkbook(file);
@@ -4404,6 +4617,9 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
         sourceFlow: "template-upload",
         pendingConfirmation: true,
       });
+      if (hasExistingRoster) {
+        setRosterMessage("目前案件已有清冊，請先選擇匯入模式；確認前不會覆蓋既有案件清冊。");
+      }
       if (!rosterPreview.landRights.length) {
         setParseError("解析結果為 0 筆有效土地權利列，請確認「土地清冊_匯入」是否已填寫地號、地主姓名、持分或參考編號。");
       }
@@ -4420,13 +4636,21 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
       return;
     }
 
+    if (hasExistingRoster && !selectedImportMode?.enabled) {
+      setParseError("目前案件已有清冊，請先選擇可用的匯入模式後再確認。");
+      return;
+    }
+
     onPreviewChange({
       ...draftPreview,
       pendingConfirmation: false,
       confirmedAt: new Date().toLocaleString("zh-TW", { hour12: false }),
+      importMode: selectedImportMode?.value || "replace",
+      importModeLabel: selectedImportMode?.label || "取代目前清冊",
     });
     setDraftPreview(null);
-    setRosterMessage("已確認匯入本案件清冊。");
+    setImportMode("replace");
+    setRosterMessage(`已確認匯入本案件清冊（${selectedImportMode?.label || "取代目前清冊"}）。`);
   };
 
   const summaryCards = activePreview ? [
@@ -4448,6 +4672,25 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
 
   return (
     <section className="eval-roster-upload-test">
+      <section className="eval-module-section eval-roster-lifecycle">
+        <div className="eval-section-head">
+          <h4>清冊建立與維護流程</h4>
+          <p>清冊先建立草稿並人工確認，後續補件、年度地價更新與版本紀錄會接續保留來源脈絡。</p>
+        </div>
+        <ol>
+          {[
+            "建立清冊草稿",
+            "預覽清冊與檢核摘要",
+            "人工確認後寫入案件清冊",
+            "後續新增、修改、補件更新",
+            "年度公告現值 / 申報地價更新",
+            "版本紀錄與來源紀錄",
+          ].map((step) => (
+            <li key={step}>{step}</li>
+          ))}
+        </ol>
+      </section>
+
       <div className="eval-roster-official-flow">
         <section className="eval-module-section eval-roster-flow-card">
           <div className="eval-section-head">
@@ -4554,12 +4797,44 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
               ))}
             </div>
             {draftPreview && (
-              <div className="eval-roster-confirm-bar">
-                <span>確認後將寫入 rosterStagingByCaseId[{currentCase.id}]。</span>
-                <button type="button" onClick={handleConfirmDraft}>
-                  確認匯入本案件清冊
-                </button>
-              </div>
+              <>
+                {hasExistingRoster && (
+                  <div className="eval-roster-import-mode">
+                    <div>
+                      <strong>再次匯入模式</strong>
+                      <p>目前案件已有清冊，本次預覽不會直接覆蓋。請先選擇匯入策略。</p>
+                    </div>
+                    <div className="eval-roster-import-mode-options">
+                      {rosterImportModeOptions.map((option) => (
+                        <label key={option.value} className={!option.enabled ? "is-disabled" : ""}>
+                          <input
+                            type="radio"
+                            name={`roster-import-mode-${currentCase.id}`}
+                            value={option.value}
+                            checked={importMode === option.value}
+                            disabled={!option.enabled}
+                            onChange={() => setImportMode(option.value)}
+                          />
+                          <span>
+                            <b>{option.label}{!option.enabled ? "（建置中）" : ""}</b>
+                            <small>{option.description}</small>
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <div className="eval-roster-confirm-bar">
+                  <span>
+                    {hasExistingRoster
+                      ? "確認後依所選模式寫入案件清冊；未選擇模式前不會覆蓋既有資料。"
+                      : `確認後將寫入 rosterStagingByCaseId[${currentCase.id}]。`}
+                  </span>
+                  <button type="button" onClick={handleConfirmDraft} disabled={hasExistingRoster && !selectedImportMode?.enabled}>
+                    確認匯入本案件清冊
+                  </button>
+                </div>
+              </>
             )}
           </section>
 
@@ -4641,6 +4916,68 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
   );
 }
 
+function RosterMaintenancePanel({ rosterStaging }) {
+  const rosterSummary = buildRosterBaseSummary(rosterStaging);
+
+  if (!rosterSummary.hasRoster || (!rosterSummary.landRightCount && !rosterSummary.buildingRightCount)) {
+    return (
+      <section className="eval-module-section eval-roster-maintenance">
+        <div className="eval-section-head">
+          <h4>清冊維護</h4>
+          <p>目前案件尚未寫入清冊。建立並確認清冊後，這裡會顯示後續補件、修改與年度地價維護入口。</p>
+        </div>
+      </section>
+    );
+  }
+
+  const maintenanceSummary = [
+    ["土地權利列數", rosterSummary.landRightCount],
+    ["建物權利列數", rosterSummary.buildingRightCount],
+    ["地號數", rosterSummary.landNumberCount],
+    ["公告現值年度", rosterSummary.announcedCurrentValueYear],
+    ["最近匯入時間", rosterSummary.importedAt || "尚未建立"],
+    ["最近資料來源", rosterSummary.latestSource],
+  ];
+  const maintenanceActions = [
+    "新增土地權利列",
+    "新增建物權利列",
+    "匯入補充資料",
+    "更新公告現值 / 申報地價",
+    "下載目前案件清冊",
+    "重新匯入清冊",
+  ];
+
+  return (
+    <section className="eval-module-section eval-roster-maintenance">
+      <div className="eval-section-head">
+        <h4>清冊維護</h4>
+        <p>已寫入案件的清冊會保留來源與列狀態。逐筆新增、修改、補件合併與年度地價更新將依清冊版本控管逐步開放。</p>
+      </div>
+      <div className="eval-roster-summary-grid eval-roster-summary-grid--wide">
+        {maintenanceSummary.map(([label, value]) => (
+          <article key={label}>
+            <span>{label}</span>
+            <strong>{value || "待清冊補齊"}</strong>
+          </article>
+        ))}
+      </div>
+      <div className="eval-roster-maintenance-actions">
+        {maintenanceActions.map((action) => (
+          <button type="button" key={action} disabled>
+            {action}（建置中）
+          </button>
+        ))}
+      </div>
+      <div className="eval-roster-gate-message eval-roster-gate-message--notice">
+        <strong>年度地價維護架構</strong>
+        <p>
+          後續上傳新年度謄本或清冊時，系統會以縣市、行政區、段別、小段與地號比對；若僅公告現值或申報地價不同，將標示為地價年度更新並要求人工確認。
+        </p>
+      </div>
+    </section>
+  );
+}
+
 function RosterImportVersioning({ config }) {
   if (!config) {
     return null;
@@ -4656,10 +4993,11 @@ function RosterImportVersioning({ config }) {
         <p>{config.notice}</p>
         <ol>
           {[
-            "可讀電子謄本 PDF 先通過文字層檢查，通過後才建立清冊草稿",
-            "已填寫三策 v7 清冊先解析成預覽與檢核摘要",
-            "使用者人工確認土地、建物、地籍定位與權利範圍",
-            "按下確認後才寫入目前案件清冊暫存",
+            "建立清冊草稿：可讀電子謄本 PDF 或三策 v7 清冊先進入草稿流程",
+            "預覽清冊：土地、建物、地籍定位、權利範圍與人工確認項目先呈現給使用者",
+            "確認匯入：按下確認後才寫入目前案件清冊暫存",
+            "後續維護：補件匯入、逐筆新增 / 修改、清冊版本與來源紀錄分階段開放",
+            "年度地價：公告現值與申報地價更新需比對地籍定位並由使用者確認",
           ].map((step) => (
             <li key={step}>{step}</li>
           ))}
@@ -4704,8 +5042,11 @@ function BaseRosterSummary({ rosterStaging }) {
   const summaryItems = [
     ["地號筆數", rosterSummary.landNumberCount],
     ["土地權利列數", rosterSummary.landRightCount],
+    ["建物權利列數", rosterSummary.buildingRightCount],
     ["地籍定位", rosterSummary.cadastralLocationDisplay],
     ["土地面積合計", rosterSummary.landAreaSummary],
+    ["公告現值年度", rosterSummary.announcedCurrentValueYear],
+    ["申報地價年度", rosterSummary.declaredLandValueYear],
     ["公告現值總額", formatCurrencyTwd(rosterSummary.assessedCurrentValueTotal)],
     ["公告現值加權平均單價", formatCurrencyTwdPerSqm(rosterSummary.assessedCurrentValueWeightedUnit)],
     ["公告現值狀態", rosterSummary.announcedCurrentValueStatus],
@@ -6321,6 +6662,7 @@ function OwnershipModule({ module, currentCase, rosterStaging, onRosterStagingCh
         preview={rosterStaging}
         onPreviewChange={onRosterStagingChange}
       />
+      <RosterMaintenancePanel rosterStaging={rosterStaging} />
       <RosterImportVersioning
         config={module.rosterImportVersioning}
       />
