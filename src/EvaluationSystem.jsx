@@ -908,7 +908,7 @@ function buildLocalTestDataExport({
 }) {
   const normalizedCases = Array.isArray(cases) ? cases : [];
   const normalizedCurrentCaseId = resolveImportedCurrentCaseId(normalizedCases, currentCaseId);
-  const normalizedRosterStaging = isPlainRecord(rosterStagingByCaseId) ? rosterStagingByCaseId : {};
+  const normalizedRosterStaging = normalizeRosterStagingByCaseId(rosterStagingByCaseId);
   const normalizedBaseInfo = isPlainRecord(baseInfoByCaseId) ? baseInfoByCaseId : {};
   const normalizedCapacityInputs = isPlainRecord(capacityInputsByCaseId) ? capacityInputsByCaseId : {};
   const normalizedFloorEfficiencyParams = isPlainRecord(floorEfficiencyParamsByCaseId) ? floorEfficiencyParamsByCaseId : {};
@@ -1057,7 +1057,7 @@ function validateLocalTestDataPayload(payload) {
     data: {
       cases,
       currentCaseId,
-      rosterStagingByCaseId: payload.data.rosterStagingByCaseId,
+      rosterStagingByCaseId: normalizeRosterStagingByCaseId(payload.data.rosterStagingByCaseId),
       baseInfoByCaseId: payload.data.baseInfoByCaseId,
       ...recordData,
     },
@@ -2373,6 +2373,14 @@ const rosterImportSheets = {
   allocation: "分配條件_匯入",
 };
 
+const rosterImportFieldAliases = {
+  city: ["縣市", "市縣", "city", "county"],
+  district: ["行政區", "鄉鎮市區", "區", "district", "town"],
+  section: ["段別", "地段", "段名", "section"],
+  subsection: ["小段", "小段別", "subsection"],
+  lotNumber: ["地號", "土地地號", "地段地號", "lotNo", "lotNumber"],
+};
+
 function formatSequence(prefix, index) {
   return `${prefix}-${String(index + 1).padStart(4, "0")}`;
 }
@@ -2407,6 +2415,61 @@ function getFirstExactHeaderValue(row, headers) {
 
 function getHeaderValue(row, exactHeaders, fallbackKeywords = exactHeaders) {
   return getFirstExactHeaderValue(row, exactHeaders) || getFirstMatchingValue(row, fallbackKeywords);
+}
+
+function getRosterFieldValue(row, aliases, fallbackKeywords = []) {
+  return getFirstExactHeaderValue(row, aliases) || getFirstMatchingValue(row, fallbackKeywords);
+}
+
+function normalizeLandRightLocationFields(row) {
+  const city = normalizeCellValue(row?.city || row?.["縣市"] || row?.county);
+  const district = normalizeCellValue(row?.district || row?.["行政區"] || row?.town);
+  const section = normalizeCellValue(row?.section || row?.["段別"] || row?.["地段"]);
+  const subsection = normalizeCellValue(row?.subsection || row?.["小段"]);
+  const lotNumber = normalizeCellValue(row?.lotNumber || row?.landNumber || row?.["地號"]);
+  const landNumber = normalizeCellValue(row?.landNumber || row?.lotNumber || row?.["地號"]);
+
+  return {
+    ...row,
+    city,
+    district,
+    section,
+    subsection,
+    lotNumber,
+    landNumber,
+  };
+}
+
+function normalizeRosterStaging(rosterStaging) {
+  if (!isPlainRecord(rosterStaging)) {
+    return rosterStaging;
+  }
+
+  const sourceLandRows = Array.isArray(rosterStaging.landRights)
+    ? rosterStaging.landRights
+    : Array.isArray(rosterStaging.landRows)
+      ? rosterStaging.landRows
+      : [];
+  const normalizedLandRows = sourceLandRows.map(normalizeLandRightLocationFields);
+
+  return {
+    ...rosterStaging,
+    landRights: normalizedLandRows,
+    landRows: normalizedLandRows,
+  };
+}
+
+function normalizeRosterStagingByCaseId(rosterStagingByCaseId) {
+  if (!isPlainRecord(rosterStagingByCaseId)) {
+    return {};
+  }
+
+  return Object.fromEntries(
+    Object.entries(rosterStagingByCaseId).map(([caseId, rosterStaging]) => [
+      caseId,
+      normalizeRosterStaging(rosterStaging),
+    ]),
+  );
 }
 
 function formatShareText(numerator, denominator, fallbackValue = "") {
@@ -2653,7 +2716,12 @@ function buildLandRightRows(rows) {
     const calculatedShareRatio = parseRatio(shareNumerator, shareDenominator);
     const calculatedShareAreaSqm = calculateShareArea(landAreaSqm, shareNumerator, shareDenominator);
     const ownerName = getFirstMatchingValue(row, ["地主姓名", "所有權人", "姓名", "名稱"]);
-    const landNumber = getFirstMatchingValue(row, ["地號"]);
+    const city = getRosterFieldValue(row, rosterImportFieldAliases.city);
+    const district = getRosterFieldValue(row, rosterImportFieldAliases.district);
+    const section = getRosterFieldValue(row, rosterImportFieldAliases.section);
+    const subsection = getRosterFieldValue(row, rosterImportFieldAliases.subsection);
+    const lotNumber = getRosterFieldValue(row, rosterImportFieldAliases.lotNumber, ["地號", "lotNo", "lotNumber"]);
+    const landNumber = lotNumber;
 
     return {
       sourceRowNumber: row.__rowNumber,
@@ -2661,6 +2729,11 @@ function buildLandRightRows(rows) {
       ownerName,
       maskedIdentityCode: getFirstMatchingValue(row, ["身分證", "統編", "統一編號", "證號", "識別碼", "前碼"]),
       address: getFirstMatchingValue(row, ["地址", "通訊地址", "戶籍地址", "住址"]),
+      city,
+      district,
+      section,
+      subsection,
+      lotNumber,
       landNumber,
       landAreaRaw,
       landAreaSqm: roundForStorage(landAreaSqm, INTERNAL_DECIMAL_DIGITS),
@@ -3011,6 +3084,7 @@ function buildRosterPreview(file, workbookData) {
   const landNumbers = new Set(landRights.map((row) => row.landNumber).filter(Boolean));
   const buildingNumbers = new Set(buildingRights.map((row) => row.buildingNumber).filter(Boolean));
   const batchId = `IMPORT-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${String(Date.now()).slice(-4)}`;
+  const rosterSummary = buildRosterBaseSummary({ landRights, landRows: landRights });
 
   return {
     batchId,
@@ -3034,6 +3108,7 @@ function buildRosterPreview(file, workbookData) {
       partyCount: partyRows.length,
       landNumberCount: landNumbers.size,
       buildingNumberCount: buildingNumbers.size,
+      cadastralLocationDisplay: rosterSummary.cadastralLocationDisplay,
       sameNameMultiLandCount: partyRows.filter((party) => party.landNumbers.length > 1).length,
       sameNameMultiBuildingCount: partyRows.filter((party) => party.buildingNumbers.length > 1).length,
       manualReviewCount: partyRows.filter((party) => !["已人工確認", "已完整資料確認"].includes(party.status)).length + issues.length,
@@ -3078,7 +3153,8 @@ function RosterPreviewTable({ title, description, emptyText, columns, rows }) {
 }
 
 function getRosterLandRows(rosterStaging) {
-  return rosterStaging?.landRights ?? rosterStaging?.landRows ?? [];
+  const rows = rosterStaging?.landRights ?? rosterStaging?.landRows ?? [];
+  return Array.isArray(rows) ? rows.map(normalizeLandRightLocationFields) : [];
 }
 
 function parseRosterNumber(value) {
@@ -3087,6 +3163,35 @@ function parseRosterNumber(value) {
 
 function formatAreaSummary(value) {
   return formatSqmAndPing(value);
+}
+
+function buildCadastralLocationDisplay(landRows) {
+  const locations = new Map();
+
+  landRows.forEach((row) => {
+    const parts = [
+      normalizeCellValue(row.city),
+      normalizeCellValue(row.district),
+      normalizeCellValue(row.section),
+      normalizeCellValue(row.subsection),
+    ];
+
+    if (!parts.some(Boolean)) {
+      return;
+    }
+
+    locations.set(parts.join("|"), parts.filter(Boolean).join(" "));
+  });
+
+  if (!locations.size) {
+    return "待清冊補齊";
+  }
+
+  if (locations.size > 1) {
+    return "多筆地籍定位，請查看清冊明細";
+  }
+
+  return Array.from(locations.values())[0] || "待清冊補齊";
 }
 
 function buildRosterBaseSummary(rosterStaging) {
@@ -3125,6 +3230,7 @@ function buildRosterBaseSummary(rosterStaging) {
     landNumberDisplay: landNumbers.length > 5
       ? `${landNumbers.slice(0, 5).join("、")}…共 ${landNumbers.length} 筆`
       : landNumbers.join("、") || "待清冊補齊",
+    cadastralLocationDisplay: buildCadastralLocationDisplay(uniqueLandRows),
     landAreaSqm: areaTotal,
     landAreaSummary: areaTotal === null ? "待清冊補齊" : formatAreaSummary(areaTotal),
     assessedCurrentValueTotal: assessedCurrentValueSummary.assessedCurrentValueTotal,
@@ -4180,6 +4286,7 @@ function RosterUploadTesting({ currentCase, fileInputRef, onRequestFile, preview
     ["建物清冊筆數", preview.summary.buildingCount],
     ["疑似權利人群組數", preview.summary.partyCount],
     ["涉及地號數", preview.summary.landNumberCount],
+    ["地籍定位", preview.summary.cadastralLocationDisplay || "待清冊補齊"],
     ["涉及建號數", preview.summary.buildingNumberCount],
     ["疑似同姓多地號群組", preview.summary.sameNameMultiLandCount],
     ["疑似同姓多建號群組", preview.summary.sameNameMultiBuildingCount],
@@ -4385,6 +4492,7 @@ function BaseRosterSummary({ rosterStaging }) {
   const summaryItems = [
     ["地號筆數", rosterSummary.landNumberCount],
     ["土地權利列數", rosterSummary.landRightCount],
+    ["地籍定位", rosterSummary.cadastralLocationDisplay],
     ["土地面積合計", rosterSummary.landAreaSummary],
     ["公告現值總額", formatCurrencyTwd(rosterSummary.assessedCurrentValueTotal)],
     ["公告現值加權平均單價", formatCurrencyTwdPerSqm(rosterSummary.assessedCurrentValueWeightedUnit)],
@@ -6418,7 +6526,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   const [activeModuleId, setActiveModuleId] = useState(evaluationModules[0].id);
   const [cases, setCases] = useState(loadStoredCases);
   const [currentCaseId, setCurrentCaseId] = useState(loadStoredCurrentCaseId);
-  const [rosterStagingByCaseId, setRosterStagingByCaseId] = useState(() => loadStoredRecord(ROSTER_STAGING_STORAGE_KEY));
+  const [rosterStagingByCaseId, setRosterStagingByCaseId] = useState(() => normalizeRosterStagingByCaseId(loadStoredRecord(ROSTER_STAGING_STORAGE_KEY)));
   const [baseInfoByCaseId, setBaseInfoByCaseId] = useState(() => loadStoredRecord(BASE_INFO_STORAGE_KEY));
   const [capacityInputsByCaseId, setCapacityInputsByCaseId] = useState(() => loadStoredRecord(CAPACITY_INPUTS_STORAGE_KEY));
   const [capacityResultsByCaseId, setCapacityResultsByCaseId] = useState(() => loadStoredRecord(CAPACITY_RESULTS_STORAGE_KEY));
@@ -6434,7 +6542,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     () => cases.find((item) => item.id === currentCaseId) ?? null,
     [cases, currentCaseId],
   );
-  const currentRosterStaging = currentCase ? rosterStagingByCaseId[currentCase.id] ?? null : null;
+  const currentRosterStaging = currentCase ? normalizeRosterStaging(rosterStagingByCaseId[currentCase.id]) ?? null : null;
   const currentBaseInfo = currentCase ? baseInfoByCaseId[currentCase.id] ?? defaultBaseInfo : defaultBaseInfo;
   const currentCapacityInputs = currentCase ? capacityInputsByCaseId[currentCase.id] ?? defaultCapacityInputs : defaultCapacityInputs;
   const currentCapacityResults = currentCase ? capacityResultsByCaseId[currentCase.id] ?? null : null;
@@ -6728,7 +6836,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     setRosterStagingByCaseId((current) => {
       const next = { ...current };
       if (preview) {
-        next[currentCase.id] = preview;
+        next[currentCase.id] = normalizeRosterStaging(preview);
       } else {
         delete next[currentCase.id];
       }
@@ -6830,9 +6938,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
 
   const handleImportLocalTestData = (importedData) => {
     const importedCases = Array.isArray(importedData?.cases) ? importedData.cases : [];
-    const importedRosterStaging = isPlainRecord(importedData?.rosterStagingByCaseId)
-      ? importedData.rosterStagingByCaseId
-      : {};
+    const importedRosterStaging = normalizeRosterStagingByCaseId(importedData?.rosterStagingByCaseId);
     const importedBaseInfo = isPlainRecord(importedData?.baseInfoByCaseId)
       ? importedData.baseInfoByCaseId
       : {};
