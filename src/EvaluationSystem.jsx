@@ -103,10 +103,20 @@ const LOCAL_TEST_DATA_APP = "sanze-evaluation-system";
 const LOCAL_TEST_DATA_TYPE = "local-test-data";
 const LOCAL_TEST_DATA_SCHEMA_VERSION = 2;
 const SUPPORTED_LOCAL_TEST_DATA_SCHEMA_VERSIONS = new Set([1, 2]);
-const EVALUATION_SYSTEM_EXPORT_SOURCE_COMMIT = "15dc65064661ac854aeda821ed5225a8bd26c408";
+const UNKNOWN_BUILD_COMMIT = "unknown-build-commit";
+const EVALUATION_SYSTEM_EXPORT_FORMAT_VERSION = "evaluation-json-v2";
 const EVALUATION_SYSTEM_BASE_COMMIT = "41c88d676fce9922847cc845354639f3a81734c1";
-const EVALUATION_SYSTEM_EXPORT_FEATURE_VERSION = "cost-defaults-export-v1";
-const EVALUATION_SYSTEM_BUILD_LABEL = "Ensure cost defaults in exported test data";
+const EVALUATION_SYSTEM_EXPORT_FEATURE_VERSION = "evaluation-json-v2";
+const EVALUATION_SYSTEM_BUILD_LABEL = "browser-pdf-parser-and-roster-reimport";
+const EVALUATION_SYSTEM_BUILD_COMMIT = normalizeBuildCommit(
+  typeof __SANZE_BUILD_COMMIT__ === "undefined" ? "" : __SANZE_BUILD_COMMIT__,
+);
+const EVALUATION_SYSTEM_BUILD_COMMIT_SOURCE =
+  EVALUATION_SYSTEM_BUILD_COMMIT === UNKNOWN_BUILD_COMMIT
+    ? "fallback-unknown"
+    : normalizeBuildCommitSource(
+        typeof __SANZE_BUILD_COMMIT_SOURCE__ === "undefined" ? "" : __SANZE_BUILD_COMMIT_SOURCE__,
+      );
 const LOCAL_TEST_DATA_RECORD_FIELDS = [
   { dataKey: "capacityInputsByCaseId", storageKey: CAPACITY_INPUTS_STORAGE_KEY },
   { dataKey: "capacityResultsByCaseId", storageKey: CAPACITY_RESULTS_STORAGE_KEY },
@@ -895,6 +905,16 @@ function getSourceOrigin() {
   return typeof window === "undefined" ? "unknown" : window.location.origin;
 }
 
+function normalizeBuildCommit(value) {
+  const commit = String(value || "").trim();
+  return /^[0-9a-f]{7,40}$/i.test(commit) ? commit.toLowerCase() : UNKNOWN_BUILD_COMMIT;
+}
+
+function normalizeBuildCommitSource(value) {
+  const source = String(value || "").trim();
+  return source || "fallback-unknown";
+}
+
 function buildLocalTestDataExport({
   cases,
   currentCaseId,
@@ -962,8 +982,10 @@ function buildLocalTestDataExport({
       schemaVersion: LOCAL_TEST_DATA_SCHEMA_VERSION,
       exportedAt,
       origin: getSourceOrigin(),
-      commitHint: EVALUATION_SYSTEM_EXPORT_SOURCE_COMMIT,
-      exportSourceCommit: EVALUATION_SYSTEM_EXPORT_SOURCE_COMMIT,
+      exportFormatVersion: EVALUATION_SYSTEM_EXPORT_FORMAT_VERSION,
+      commitHint: EVALUATION_SYSTEM_BUILD_COMMIT,
+      exportSourceCommit: EVALUATION_SYSTEM_BUILD_COMMIT,
+      commitSource: EVALUATION_SYSTEM_BUILD_COMMIT_SOURCE,
       baseCommit: EVALUATION_SYSTEM_BASE_COMMIT,
       exportFeatureVersion: EVALUATION_SYSTEM_EXPORT_FEATURE_VERSION,
       appBuildLabel: EVALUATION_SYSTEM_BUILD_LABEL,
