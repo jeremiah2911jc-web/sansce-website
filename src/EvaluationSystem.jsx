@@ -2412,26 +2412,26 @@ const rosterImportModeOptions = [
   {
     value: "replace",
     label: "取代目前清冊",
-    description: "以本次預覽內容更新案件清冊暫存。確認前不會寫入。",
+    description: "以本次預覽清冊取代目前案件清冊。會保留舊清冊到版本紀錄，需二次確認。",
     enabled: true,
   },
   {
     value: "merge",
     label: "合併到目前清冊",
-    description: "保留既有列並加入補件資料，後續版本支援。",
-    enabled: false,
+    description: "將本次預覽清冊合併到目前清冊；相同資料不重複新增，差異資料列入人工確認。",
+    enabled: true,
   },
   {
     value: "new-version",
     label: "建立新清冊版本",
-    description: "保留目前版本並建立新版清冊，後續版本支援。",
-    enabled: false,
+    description: "不覆蓋目前清冊，將本次預覽清冊保存為新版本，日後可套用或比對。",
+    enabled: true,
   },
   {
     value: "land-value-update",
     label: "只更新公告現值 / 申報地價",
-    description: "依相同地籍定位比對年度地價，後續版本支援。",
-    enabled: false,
+    description: "只依相同地籍定位更新公告現值、申報地價與年度，不變更權利人、面積與持分。",
+    enabled: true,
   },
 ];
 
@@ -2589,6 +2589,8 @@ function normalizeRosterStaging(rosterStaging) {
 
   return {
     ...rosterStaging,
+    versionHistory: Array.isArray(rosterStaging.versionHistory) ? rosterStaging.versionHistory : [],
+    priceUpdateHistory: Array.isArray(rosterStaging.priceUpdateHistory) ? rosterStaging.priceUpdateHistory : [],
     landRights: normalizedLandRows,
     landRows: normalizedLandRows,
     buildingRights: normalizedBuildingRows,
@@ -3445,6 +3447,7 @@ function createEmptyRosterRecord(sourceLabel = "manual") {
     sourceRecords: [],
     changeLog: [],
     versionHistory: [],
+    priceUpdateHistory: [],
     availableSheets: [],
     integrationFound: false,
     allocationFound: false,
@@ -3484,12 +3487,18 @@ function createRosterVersionSnapshot(rosterStaging, reason) {
     versionId: `RV-${Date.now()}`,
     createdAt,
     reason,
+    action: "snapshot",
+    sourceFilename: normalized.fileName || "",
     fileName: normalized.fileName || "",
     importedAt: normalized.importedAt || "",
     landRightCount: getRosterLandRows(normalized).length,
     buildingRightCount: getRosterBuildingRows(normalized).length,
+    lotCount: new Set(getRosterLandRows(normalized).map((row) => row.lotNumber || row.landNumber).filter(Boolean)).size,
+    summary: normalized.summary || {},
     landRows: getRosterLandRows(normalized),
     buildingRows: getRosterBuildingRows(normalized),
+    landRowsSnapshot: getRosterLandRows(normalized),
+    buildingRowsSnapshot: getRosterBuildingRows(normalized),
   };
 }
 
@@ -3501,6 +3510,7 @@ function createRosterStagingFromRows({
   sourceFilename = "",
   fileName = "",
   versionHistory,
+  priceUpdateHistory,
   extraIssues = [],
 }) {
   const now = new Date().toLocaleString("zh-TW", { hour12: false });
@@ -3522,6 +3532,11 @@ function createRosterStagingFromRows({
     ? versionHistory
     : Array.isArray(baseRoster?.versionHistory)
       ? baseRoster.versionHistory
+      : [];
+  const nextPriceUpdateHistory = Array.isArray(priceUpdateHistory)
+    ? priceUpdateHistory
+    : Array.isArray(baseRoster?.priceUpdateHistory)
+      ? baseRoster.priceUpdateHistory
       : [];
   const nextChangeLog = [
     ...(Array.isArray(baseRoster?.changeLog) ? baseRoster.changeLog : []),
@@ -3552,6 +3567,7 @@ function createRosterStagingFromRows({
     sourceRecords: nextSourceRecords,
     changeLog: nextChangeLog,
     versionHistory: nextVersionHistory,
+    priceUpdateHistory: nextPriceUpdateHistory,
     landRights: normalizedLandRows,
     landRows: normalizedLandRows,
     buildingRights: normalizedBuildingRows,
@@ -3574,8 +3590,8 @@ function createRosterStagingFromRows({
   });
 }
 
-function buildLandMergeKey(row) {
-  return [
+function buildLandMergeKey(row, includeRegistrationOrder = true) {
+  const parts = [
     row.city,
     row.district,
     row.section,
@@ -3584,8 +3600,12 @@ function buildLandMergeKey(row) {
     row.ownerName,
     row.shareNumerator,
     row.shareDenominator,
-    row.registrationOrder,
-  ].map(normalizeCellValue).join("|");
+  ].map(normalizeCellValue);
+  const registrationOrder = normalizeCellValue(row.registrationOrder);
+  if (includeRegistrationOrder && registrationOrder) {
+    parts.push(registrationOrder);
+  }
+  return parts.join("|");
 }
 
 function buildBuildingMergeKey(row) {
@@ -3639,6 +3659,514 @@ function hasCompleteBuildingMergeKey(row) {
     row.buildingNumber,
     row.ownerName,
   ].every((value) => normalizeCellValue(value));
+}
+
+const landRosterMergeCompareFields = [
+  "city",
+  "district",
+  "section",
+  "subsection",
+  "lotNumber",
+  "landNumber",
+  "registrationOrder",
+  "ownerName",
+  "registeredOwnerName",
+  "trusteeName",
+  "trustorName",
+  "ownershipType",
+  "landAreaSqm",
+  "shareNumerator",
+  "shareDenominator",
+  "shareRatio",
+  "shareAreaSqm",
+  "shareAreaPing",
+  "registrationDate",
+  "registrationReason",
+  "causeDate",
+  "titleNumber",
+];
+
+const landRosterPriceFields = [
+  "announcedCurrentValue",
+  "announcedCurrentValueYear",
+  "declaredLandValue",
+  "declaredLandValueYear",
+];
+
+const buildingRosterMergeCompareFields = [
+  "city",
+  "district",
+  "section",
+  "subsection",
+  "lotNumber",
+  "buildingNumber",
+  "ownerName",
+  "registeredOwnerName",
+  "ownershipType",
+  "buildingShareNumerator",
+  "buildingShareDenominator",
+  "buildingShareRatio",
+  "buildingShareAreaSqm",
+  "mainBuildingAreaSqm",
+  "attachedBuildingAreaSqm",
+  "commonAreaSqm",
+  "commonShareNumerator",
+  "commonShareDenominator",
+  "commonShareAreaSqm",
+  "registrationDate",
+  "registrationReason",
+  "titleNumber",
+];
+
+function buildLandMergeKeyCandidates(row) {
+  const keys = [buildLandMergeKey(row, true), buildLandMergeKey(row, false)].filter(Boolean);
+  return [...new Set(keys)];
+}
+
+function buildExistingLandMergeIndex(rows) {
+  const index = new Map();
+  rows.forEach((row, rowIndex) => {
+    buildLandMergeKeyCandidates(row).forEach((key) => {
+      if (!index.has(key)) {
+        index.set(key, []);
+      }
+      index.get(key).push(rowIndex);
+    });
+  });
+  return index;
+}
+
+function findMatchingLandRowIndex(rows, index, incomingRow) {
+  for (const key of buildLandMergeKeyCandidates(incomingRow)) {
+    const matches = index.get(key);
+    if (matches?.length === 1) {
+      return matches[0];
+    }
+  }
+  return -1;
+}
+
+function normalizeRosterComparableValue(value) {
+  const normalized = normalizeCellValue(value);
+  if (!normalized) {
+    return "";
+  }
+  const numeric = parseRosterNumber(normalized);
+  return Number.isFinite(numeric) ? String(roundForStorage(numeric, INTERNAL_DECIMAL_DIGITS)) : normalized;
+}
+
+function rosterFieldsEqual(leftRow, rightRow, fields) {
+  return fields.every((field) => normalizeRosterComparableValue(leftRow?.[field]) === normalizeRosterComparableValue(rightRow?.[field]));
+}
+
+function rosterFieldsDiffer(leftRow, rightRow, fields) {
+  return fields.some((field) => normalizeRosterComparableValue(leftRow?.[field]) !== normalizeRosterComparableValue(rightRow?.[field]));
+}
+
+function summarizeRosterReimportAnalysis(analysis) {
+  return {
+    addedLandCount: analysis.newLandRows.length,
+    addedBuildingCount: analysis.newBuildingRows.length,
+    skippedDuplicateCount: analysis.duplicateLandRows.length + analysis.duplicateBuildingRows.length,
+    conflictCount: analysis.conflictLandRows.length + analysis.conflictBuildingRows.length,
+    manualReviewCount: analysis.reviewLandRows.length + analysis.reviewBuildingRows.length + analysis.conflictLandRows.length + analysis.conflictBuildingRows.length,
+    priceUpdateCandidateCount: analysis.priceUpdateCandidates.length,
+  };
+}
+
+function getRosterPreviewSourceType(preview) {
+  return preview?.sourceFlow === "readable-pdf" || preview?.sourceType === "readable-pdf"
+    ? "readable-pdf"
+    : "roster-excel";
+}
+
+function createRosterActionHistoryEntry(action, fields = {}) {
+  const now = new Date().toLocaleString("zh-TW", { hour12: false });
+  return {
+    versionId: `RV-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    action,
+    createdAt: now,
+    ...fields,
+  };
+}
+
+function analyzeRosterReimport(existingRoster, incomingPreview) {
+  const normalizedExisting = normalizeRosterStaging(existingRoster) || createEmptyRosterRecord();
+  const normalizedIncoming = normalizeRosterStaging(incomingPreview) || createEmptyRosterRecord();
+  const existingLandRows = getRosterLandRows(normalizedExisting);
+  const existingBuildingRows = getRosterBuildingRows(normalizedExisting);
+  const incomingLandRows = getRosterLandRows(normalizedIncoming);
+  const incomingBuildingRows = getRosterBuildingRows(normalizedIncoming);
+  const existingLandIndex = buildExistingLandMergeIndex(existingLandRows);
+  const existingBuildingIndex = new Map(existingBuildingRows.map((row, index) => [buildBuildingMergeKey(row), index]));
+  const analysis = {
+    incomingLandRows,
+    incomingBuildingRows,
+    newLandRows: [],
+    newBuildingRows: [],
+    duplicateLandRows: [],
+    duplicateBuildingRows: [],
+    conflictLandRows: [],
+    conflictBuildingRows: [],
+    reviewLandRows: [],
+    reviewBuildingRows: [],
+    priceUpdateCandidates: [],
+  };
+
+  incomingLandRows.forEach((row) => {
+    if (!hasCompleteLandMergeKey(row)) {
+      analysis.reviewLandRows.push(row);
+      return;
+    }
+    const existingIndex = findMatchingLandRowIndex(existingLandRows, existingLandIndex, row);
+    if (existingIndex < 0) {
+      analysis.newLandRows.push(row);
+      return;
+    }
+    const existingRow = existingLandRows[existingIndex];
+    const businessFieldsMatch = rosterFieldsEqual(existingRow, row, landRosterMergeCompareFields);
+    const priceFieldsDiffer = rosterFieldsDiffer(existingRow, row, landRosterPriceFields);
+    if (businessFieldsMatch && !priceFieldsDiffer) {
+      analysis.duplicateLandRows.push(row);
+      return;
+    }
+    if (businessFieldsMatch && priceFieldsDiffer) {
+      analysis.priceUpdateCandidates.push({ existingRow, incomingRow: row });
+      return;
+    }
+    analysis.conflictLandRows.push({ existingRow, incomingRow: row });
+  });
+
+  incomingBuildingRows.forEach((row) => {
+    if (!hasCompleteBuildingMergeKey(row)) {
+      analysis.reviewBuildingRows.push(row);
+      return;
+    }
+    const existingIndex = existingBuildingIndex.get(buildBuildingMergeKey(row));
+    if (!Number.isInteger(existingIndex)) {
+      analysis.newBuildingRows.push(row);
+      return;
+    }
+    const existingRow = existingBuildingRows[existingIndex];
+    if (rosterFieldsEqual(existingRow, row, buildingRosterMergeCompareFields)) {
+      analysis.duplicateBuildingRows.push(row);
+      return;
+    }
+    analysis.conflictBuildingRows.push({ existingRow, incomingRow: row });
+  });
+
+  return {
+    ...analysis,
+    summary: summarizeRosterReimportAnalysis(analysis),
+  };
+}
+
+function createReimportConflictIssues(analysis) {
+  const issues = [];
+  if (analysis.reviewLandRows.length || analysis.reviewBuildingRows.length) {
+    issues.push(createRosterIssue(
+      "重新匯入資料缺少比對 key",
+      "中",
+      `有 ${analysis.reviewLandRows.length} 筆土地、${analysis.reviewBuildingRows.length} 筆建物缺少必要比對欄位，已保留人工確認。`,
+    ));
+  }
+  if (analysis.conflictLandRows.length || analysis.conflictBuildingRows.length) {
+    issues.push(createRosterIssue(
+      "重新匯入資料衝突",
+      "中",
+      `有 ${analysis.conflictLandRows.length} 筆土地、${analysis.conflictBuildingRows.length} 筆建物與既有 key 相同但內容不同，未自動套用。`,
+    ));
+  }
+  if (analysis.priceUpdateCandidates.length) {
+    issues.push(createRosterIssue(
+      "重新匯入地價差異待確認",
+      "低",
+      `有 ${analysis.priceUpdateCandidates.length} 筆土地僅公告現值或申報地價不同；合併模式不自動更新地價，請改用「只更新公告現值 / 申報地價」。`,
+    ));
+  }
+  return issues;
+}
+
+function buildPriceUpdatePlan(existingRoster, incomingPreview) {
+  const normalizedExisting = normalizeRosterStaging(existingRoster) || createEmptyRosterRecord();
+  const normalizedIncoming = normalizeRosterStaging(incomingPreview) || createEmptyRosterRecord();
+  const existingLandRows = getRosterLandRows(normalizedExisting);
+  const incomingLandRows = getRosterLandRows(normalizedIncoming);
+  const existingRowsByLot = new Map();
+  const incomingRowsByLot = new Map();
+
+  existingLandRows.forEach((row) => {
+    const key = buildLotValueKey(row);
+    if (!key) return;
+    if (!existingRowsByLot.has(key)) {
+      existingRowsByLot.set(key, []);
+    }
+    existingRowsByLot.get(key).push(row);
+  });
+  incomingLandRows.forEach((row) => {
+    const key = buildLotValueKey(row);
+    if (!key || incomingRowsByLot.has(key)) return;
+    incomingRowsByLot.set(key, row);
+  });
+
+  const updatedLots = [];
+  const skippedNoPriceData = [];
+  const unmatchedLots = [];
+  incomingRowsByLot.forEach((incomingRow, lotKey) => {
+    const existingRows = existingRowsByLot.get(lotKey);
+    if (!existingRows?.length) {
+      unmatchedLots.push(incomingRow);
+      return;
+    }
+    const hasAnyPriceData = landRosterPriceFields.some((field) => normalizeCellValue(incomingRow[field]));
+    if (!hasAnyPriceData) {
+      skippedNoPriceData.push(incomingRow);
+      return;
+    }
+    const existingRow = existingRows[0];
+    const priceDiffers = rosterFieldsDiffer(existingRow, incomingRow, landRosterPriceFields);
+    if (priceDiffers) {
+      updatedLots.push({
+        lotKey,
+        existingRow,
+        incomingRow,
+        existingRows,
+      });
+    }
+  });
+
+  return {
+    updatedLots,
+    skippedNoPriceData,
+    unmatchedLots,
+  };
+}
+
+function applyPriceUpdatesFromPreview(existingRoster, incomingPreview, sourceFilename = "") {
+  const now = new Date().toLocaleString("zh-TW", { hour12: false });
+  const normalizedExisting = normalizeRosterStaging(existingRoster) || createEmptyRosterRecord();
+  const plan = buildPriceUpdatePlan(normalizedExisting, incomingPreview);
+  const updateByLotKey = new Map(plan.updatedLots.map((item) => [item.lotKey, item.incomingRow]));
+  const historyRows = plan.updatedLots.map(({ lotKey, existingRow, incomingRow }) => ({
+    lotKey,
+    city: existingRow.city,
+    district: existingRow.district,
+    section: existingRow.section,
+    subsection: existingRow.subsection,
+    lotNumber: existingRow.lotNumber || existingRow.landNumber,
+    oldAnnouncedCurrentValue: existingRow.announcedCurrentValue,
+    newAnnouncedCurrentValue: incomingRow.announcedCurrentValue,
+    oldAnnouncedCurrentValueYear: existingRow.announcedCurrentValueYear,
+    newAnnouncedCurrentValueYear: incomingRow.announcedCurrentValueYear,
+    oldDeclaredLandValue: existingRow.declaredLandValue,
+    newDeclaredLandValue: incomingRow.declaredLandValue,
+    oldDeclaredLandValueYear: existingRow.declaredLandValueYear,
+    newDeclaredLandValueYear: incomingRow.declaredLandValueYear,
+    updatedAt: now,
+    sourceFilename,
+  }));
+  const landRows = getRosterLandRows(normalizedExisting).map((row) => {
+    const update = updateByLotKey.get(buildLotValueKey(row));
+    if (!update) {
+      return row;
+    }
+    return {
+      ...row,
+      announcedCurrentValue: normalizeCellValue(update.announcedCurrentValue) || row.announcedCurrentValue,
+      announcedCurrentValueYear: normalizeCellValue(update.announcedCurrentValueYear) || row.announcedCurrentValueYear,
+      declaredLandValue: normalizeCellValue(update.declaredLandValue) || row.declaredLandValue,
+      declaredLandValueYear: normalizeCellValue(update.declaredLandValueYear) || row.declaredLandValueYear,
+      rowStatus: "edited",
+      updatedAt: now,
+      valueHistory: [
+        ...(Array.isArray(row.valueHistory) ? row.valueHistory : []),
+        ...historyRows
+          .filter((history) => history.lotKey === buildLotValueKey(row))
+          .map((history) => ({
+            updatedAt: now,
+            announcedCurrentValue: history.oldAnnouncedCurrentValue,
+            announcedCurrentValueYear: history.oldAnnouncedCurrentValueYear,
+            declaredLandValue: history.oldDeclaredLandValue,
+            declaredLandValueYear: history.oldDeclaredLandValueYear,
+            sourceFilename,
+          })),
+      ],
+    };
+  });
+  const priceUpdateHistoryEntry = {
+    action: "price-update",
+    updatedAt: now,
+    sourceFilename,
+    updatedLotCount: plan.updatedLots.length,
+    skippedNoPriceDataCount: plan.skippedNoPriceData.length,
+    unmatchedLotCount: plan.unmatchedLots.length,
+    updates: historyRows,
+    skippedNoPriceDataLots: plan.skippedNoPriceData.map((row) => row.lotNumber || row.landNumber),
+    unmatchedLots: plan.unmatchedLots.map((row) => row.lotNumber || row.landNumber),
+  };
+  const versionHistoryEntry = createRosterActionHistoryEntry("price-update", {
+    updatedAt: now,
+    sourceFilename,
+    updatedLotCount: plan.updatedLots.length,
+    skippedNoPriceDataCount: plan.skippedNoPriceData.length,
+    unmatchedLotCount: plan.unmatchedLots.length,
+  });
+
+  return {
+    roster: createRosterStagingFromRows({
+      baseRoster: normalizedExisting,
+      landRows,
+      buildingRows: getRosterBuildingRows(normalizedExisting),
+      action: "price-update",
+      sourceFilename,
+      versionHistory: [
+        ...(Array.isArray(normalizedExisting.versionHistory) ? normalizedExisting.versionHistory : []),
+        versionHistoryEntry,
+      ],
+      priceUpdateHistory: [
+        ...(Array.isArray(normalizedExisting.priceUpdateHistory) ? normalizedExisting.priceUpdateHistory : []),
+        priceUpdateHistoryEntry,
+      ],
+    }),
+    plan,
+    updatedLotCount: plan.updatedLots.length,
+  };
+}
+
+function applyRosterReimportMode(existingRoster, incomingPreview, mode, sourceFilename = "") {
+  const now = new Date().toLocaleString("zh-TW", { hour12: false });
+  const normalizedExisting = normalizeRosterStaging(existingRoster) || createEmptyRosterRecord();
+  const normalizedIncoming = normalizeRosterStaging(incomingPreview) || createEmptyRosterRecord();
+  const sourceType = getRosterPreviewSourceType(normalizedIncoming);
+  const existingVersionHistory = Array.isArray(normalizedExisting.versionHistory) ? normalizedExisting.versionHistory : [];
+  const previousLandCount = getRosterLandRows(normalizedExisting).length;
+  const previousBuildingCount = getRosterBuildingRows(normalizedExisting).length;
+  const newLandCount = getRosterLandRows(normalizedIncoming).length;
+  const newBuildingCount = getRosterBuildingRows(normalizedIncoming).length;
+
+  if (mode === "replace") {
+    const replaceEntry = createRosterActionHistoryEntry("replace", {
+      replacedAt: now,
+      sourceFilename,
+      previousLandCount,
+      previousBuildingCount,
+      newLandCount,
+      newBuildingCount,
+      previousRoster: createRosterVersionSnapshot(normalizedExisting, "取代目前清冊前備份"),
+    });
+    return {
+      roster: createRosterStagingFromRows({
+        baseRoster: normalizedIncoming,
+        landRows: getRosterLandRows(normalizedIncoming).map((row) => ({
+          ...row,
+          rowStatus: "imported",
+          sourceType: row.sourceType || sourceType,
+          sourceFilename: row.sourceFilename || sourceFilename,
+          importedAt: row.importedAt || now,
+          updatedAt: now,
+        })),
+        buildingRows: getRosterBuildingRows(normalizedIncoming).map((row) => ({
+          ...row,
+          rowStatus: "imported",
+          sourceType: row.sourceType || sourceType,
+          sourceFilename: row.sourceFilename || sourceFilename,
+          importedAt: row.importedAt || now,
+          updatedAt: now,
+        })),
+        action: "replace",
+        sourceFilename,
+        fileName: sourceFilename,
+        versionHistory: [...existingVersionHistory, replaceEntry],
+        priceUpdateHistory: Array.isArray(normalizedExisting.priceUpdateHistory) ? normalizedExisting.priceUpdateHistory : [],
+      }),
+      analysis: null,
+      message: `已取代目前清冊，舊清冊已保存到版本紀錄；新清冊包含 ${newLandCount} 筆土地、${newBuildingCount} 筆建物。`,
+    };
+  }
+
+  if (mode === "merge") {
+    const analysis = analyzeRosterReimport(normalizedExisting, normalizedIncoming);
+    const nextLandRows = getRosterLandRows(normalizedExisting).map((row) => ({ ...row }));
+    const nextBuildingRows = getRosterBuildingRows(normalizedExisting).map((row) => ({ ...row }));
+    analysis.newLandRows.forEach((row) => {
+      const rowId = nextRosterSequenceId(nextLandRows, "LR");
+      nextLandRows.push({
+        ...row,
+        rowId,
+        landRightRowId: rowId,
+        rowStatus: "added",
+        sourceType: "supplemental-import",
+        sourceFilename,
+        importedAt: row.importedAt || now,
+        updatedAt: now,
+      });
+    });
+    analysis.newBuildingRows.forEach((row) => {
+      const rowId = nextRosterSequenceId(nextBuildingRows, "BR");
+      nextBuildingRows.push({
+        ...row,
+        rowId,
+        buildingRightRowId: rowId,
+        rowStatus: "added",
+        sourceType: "supplemental-import",
+        sourceFilename,
+        importedAt: row.importedAt || now,
+        updatedAt: now,
+      });
+    });
+    const summary = summarizeRosterReimportAnalysis(analysis);
+    const mergeEntry = createRosterActionHistoryEntry("merge", {
+      mergedAt: now,
+      sourceFilename,
+      ...summary,
+    });
+    return {
+      roster: createRosterStagingFromRows({
+        baseRoster: normalizedExisting,
+        landRows: nextLandRows,
+        buildingRows: nextBuildingRows,
+        action: "merge",
+        sourceFilename,
+        versionHistory: [...existingVersionHistory, mergeEntry],
+        extraIssues: createReimportConflictIssues(analysis),
+      }),
+      analysis,
+      message: `已完成合併：新增土地 ${summary.addedLandCount} 筆、建物 ${summary.addedBuildingCount} 筆，跳過重複 ${summary.skippedDuplicateCount} 筆，衝突 ${summary.conflictCount} 筆保留人工確認。`,
+    };
+  }
+
+  if (mode === "new-version") {
+    const snapshot = createRosterActionHistoryEntry("create-version", {
+      versionId: `RV-${Date.now()}`,
+      createdAt: now,
+      sourceFilename,
+      landCount: newLandCount,
+      buildingCount: newBuildingCount,
+      lotCount: new Set(getRosterLandRows(normalizedIncoming).map((row) => row.lotNumber || row.landNumber).filter(Boolean)).size,
+      summary: normalizedIncoming.summary || {},
+      landRowsSnapshot: getRosterLandRows(normalizedIncoming),
+      buildingRowsSnapshot: getRosterBuildingRows(normalizedIncoming),
+    });
+    return {
+      roster: createRosterStagingFromRows({
+        baseRoster: normalizedExisting,
+        landRows: getRosterLandRows(normalizedExisting),
+        buildingRows: getRosterBuildingRows(normalizedExisting),
+        action: "create-version",
+        sourceFilename,
+        versionHistory: [...existingVersionHistory, snapshot],
+      }),
+      analysis: null,
+      message: "已建立新清冊版本，目前案件清冊未被取代。",
+    };
+  }
+
+  const priceResult = applyPriceUpdatesFromPreview(normalizedExisting, normalizedIncoming, sourceFilename);
+  return {
+    ...priceResult,
+    analysis: null,
+    message: `已更新 ${priceResult.updatedLotCount} 個地號的公告現值 / 申報地價；權利人、面積與持分未變更。`,
+  };
 }
 
 function analyzeRosterSupplement(existingRoster, incomingPreview) {
@@ -3778,6 +4306,7 @@ function applyValueUpdates(existingRoster, updates) {
   const normalizedExisting = normalizeRosterStaging(existingRoster) || createEmptyRosterRecord();
   const normalizedUpdates = updates.filter((item) => normalizeCellValue(item.lotNumber || item.landNumber));
   let updatedCount = 0;
+  const historyRows = [];
   const landRows = getRosterLandRows(normalizedExisting).map((row) => {
     const update = normalizedUpdates.find((item) => rosterLotMatches(row, item));
     if (!update) {
@@ -3785,6 +4314,19 @@ function applyValueUpdates(existingRoster, updates) {
     }
 
     updatedCount += 1;
+    historyRows.push({
+      lotNumber: row.lotNumber || row.landNumber,
+      oldAnnouncedCurrentValue: row.announcedCurrentValue,
+      newAnnouncedCurrentValue: normalizeCellValue(update.announcedCurrentValue) || row.announcedCurrentValue,
+      oldAnnouncedCurrentValueYear: row.announcedCurrentValueYear,
+      newAnnouncedCurrentValueYear: normalizeCellValue(update.announcedCurrentValueYear) || row.announcedCurrentValueYear,
+      oldDeclaredLandValue: row.declaredLandValue,
+      newDeclaredLandValue: normalizeCellValue(update.declaredLandValue) || row.declaredLandValue,
+      oldDeclaredLandValueYear: row.declaredLandValueYear,
+      newDeclaredLandValueYear: normalizeCellValue(update.declaredLandValueYear) || row.declaredLandValueYear,
+      updatedAt: now,
+      sourceFilename: updates[0]?.sourceFilename || "manual-value-update",
+    });
     const previousValueNote = [
       `前次公告現值：${normalizeCellValue(row.announcedCurrentValue) || "未填"}（${normalizeCellValue(row.announcedCurrentValueYear) || "未填年度"}）`,
       `前次申報地價：${normalizeCellValue(row.declaredLandValue) || "未填"}（${normalizeCellValue(row.declaredLandValueYear) || "未填年度"}）`,
@@ -3820,6 +4362,16 @@ function applyValueUpdates(existingRoster, updates) {
       buildingRows: getRosterBuildingRows(normalizedExisting),
       action: "land-value-update",
       sourceFilename: updates[0]?.sourceFilename || "manual-value-update",
+      priceUpdateHistory: [
+        ...(Array.isArray(normalizedExisting.priceUpdateHistory) ? normalizedExisting.priceUpdateHistory : []),
+        {
+          action: "manual-price-update",
+          updatedAt: now,
+          sourceFilename: updates[0]?.sourceFilename || "manual-value-update",
+          updatedRowCount: updatedCount,
+          updates: historyRows,
+        },
+      ],
     }),
     updatedCount,
   };
@@ -5123,21 +5675,59 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
       return;
     }
 
-    if (hasExistingRoster && !selectedImportMode?.enabled) {
-      setParseError("目前案件已有清冊，請先選擇可用的匯入模式後再確認。");
+    if (hasExistingRoster && !selectedImportMode) {
+      setParseError("目前案件已有清冊，請先選擇匯入模式後再確認。");
       return;
     }
 
+    if (hasExistingRoster && selectedImportMode?.value === "replace") {
+      const confirmed = window.confirm("此操作會以本次清冊取代目前案件清冊，原清冊會保留在版本紀錄中。是否確認取代？");
+      if (!confirmed) {
+        return;
+      }
+    }
+
+    const now = new Date().toLocaleString("zh-TW", { hour12: false });
+    const sourceFilename = draftPreview.fileName || fileName || displayFileName;
+    const sourceType = getRosterPreviewSourceType(draftPreview);
+    const result = hasExistingRoster
+      ? applyRosterReimportMode(preview, draftPreview, selectedImportMode.value, sourceFilename)
+      : {
+        roster: createRosterStagingFromRows({
+          baseRoster: draftPreview,
+          landRows: getRosterLandRows(draftPreview).map((row) => ({
+            ...row,
+            rowStatus: "imported",
+            sourceType: row.sourceType || sourceType,
+            sourceFilename: row.sourceFilename || sourceFilename,
+            importedAt: row.importedAt || now,
+            updatedAt: now,
+          })),
+          buildingRows: getRosterBuildingRows(draftPreview).map((row) => ({
+            ...row,
+            rowStatus: "imported",
+            sourceType: row.sourceType || sourceType,
+            sourceFilename: row.sourceFilename || sourceFilename,
+            importedAt: row.importedAt || now,
+            updatedAt: now,
+          })),
+          action: "initial-import",
+          sourceFilename,
+          fileName: sourceFilename,
+        }),
+        message: "已確認匯入本案件清冊。",
+      };
+
     onPreviewChange({
-      ...draftPreview,
+      ...result.roster,
       pendingConfirmation: false,
-      confirmedAt: new Date().toLocaleString("zh-TW", { hour12: false }),
+      confirmedAt: now,
       importMode: selectedImportMode?.value || "replace",
       importModeLabel: selectedImportMode?.label || "取代目前清冊",
     });
     setDraftPreview(null);
     setImportMode("replace");
-    setRosterMessage(`已確認匯入本案件清冊（${selectedImportMode?.label || "取代目前清冊"}）。`);
+    setRosterMessage(result.message || `已確認匯入本案件清冊（${selectedImportMode?.label || "取代目前清冊"}）。`);
   };
 
   const handleDownloadPreviewWorkbook = () => {
@@ -5316,22 +5906,29 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
                     </div>
                     <div className="eval-roster-import-mode-options">
                       {rosterImportModeOptions.map((option) => (
-                        <label key={option.value} className={!option.enabled ? "is-disabled" : ""}>
+                        <label key={option.value}>
                           <input
                             type="radio"
                             name={`roster-import-mode-${currentCase.id}`}
                             value={option.value}
                             checked={importMode === option.value}
-                            disabled={!option.enabled}
                             onChange={() => setImportMode(option.value)}
                           />
                           <span>
-                            <b>{option.label}{!option.enabled ? "（建置中）" : ""}</b>
+                            <b>{option.label}</b>
                             <small>{option.description}</small>
                           </span>
                         </label>
                       ))}
                     </div>
+                    {selectedImportMode && (
+                      <p className="eval-roster-import-mode-reminder">
+                        {selectedImportMode.value === "replace" && "將以本次預覽清冊取代目前案件清冊，原清冊會保留到版本紀錄。"}
+                        {selectedImportMode.value === "merge" && "將依地籍定位、權利人與持分比對資料，不重複新增相同列；衝突資料會保留人工確認。"}
+                        {selectedImportMode.value === "new-version" && "將本次預覽清冊保存為新版本，不影響目前案件清冊。"}
+                        {selectedImportMode.value === "land-value-update" && "只更新相同地號的公告現值、申報地價與年度，不變更權利人、面積與持分。"}
+                      </p>
+                    )}
                   </div>
                 )}
                 <div className="eval-roster-confirm-bar">
@@ -5344,7 +5941,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
                     <button type="button" onClick={handleDownloadPreviewWorkbook}>
                       下載系統產生清冊 Excel
                     </button>
-                    <button type="button" onClick={handleConfirmDraft} disabled={hasExistingRoster && !selectedImportMode?.enabled}>
+                    <button type="button" onClick={handleConfirmDraft} disabled={hasExistingRoster && !selectedImportMode}>
                       確認匯入本案件清冊
                     </button>
                   </div>
@@ -5790,7 +6387,7 @@ function RosterMaintenancePanel({ currentCase, rosterStaging, onRosterStagingCha
     setReimportState((current) => ({ ...current, fileName: file.name, status: "解析中...", error: "", preview: null, analysis: null }));
     try {
       const preview = await parseMaintenanceWorkbook(file);
-      const analysis = analyzeRosterSupplement(normalizedRoster, preview);
+      const analysis = analyzeRosterReimport(normalizedRoster, preview);
       setReimportState((current) => ({ ...current, fileName: file.name, preview, analysis, status: "已建立重新匯入比較", error: "" }));
     } catch (parseError) {
       setReimportState((current) => ({ ...current, status: "", error: parseError?.message || "重新匯入清冊解析失敗。" }));
@@ -5801,64 +6398,19 @@ function RosterMaintenancePanel({ currentCase, rosterStaging, onRosterStagingCha
       setError("請先選擇並解析新清冊。");
       return;
     }
-    const previousSnapshot = createRosterVersionSnapshot(normalizedRoster, `重新匯入前備份：${reimportState.mode}`);
     if (reimportState.mode === "replace") {
       if (!reimportState.replaceConfirmed) {
         setError("取代目前清冊前，請勾選二次確認。");
         return;
       }
-      commitRoster(createRosterStagingFromRows({
-        baseRoster: reimportState.preview,
-        landRows: getRosterLandRows(reimportState.preview).map((row) => ({ ...row, rowStatus: "active" })),
-        buildingRows: getRosterBuildingRows(reimportState.preview).map((row) => ({ ...row, rowStatus: "active" })),
-        action: "reimport-replace",
-        sourceFilename: reimportState.fileName,
-        fileName: reimportState.fileName,
-        versionHistory: [...(Array.isArray(normalizedRoster.versionHistory) ? normalizedRoster.versionHistory : []), previousSnapshot],
-      }), "已取代目前清冊，舊清冊已保存到版本紀錄。");
-      return;
+      const confirmed = window.confirm("此操作會以本次清冊取代目前案件清冊，原清冊會保留在版本紀錄中。是否確認取代？");
+      if (!confirmed) {
+        return;
+      }
     }
-    if (reimportState.mode === "merge") {
-      const { roster } = applySupplementalImport({
-        ...normalizedRoster,
-        versionHistory: [...(Array.isArray(normalizedRoster.versionHistory) ? normalizedRoster.versionHistory : []), previousSnapshot],
-      }, reimportState.preview, "merge-update");
-      commitRoster(roster, "已合併新清冊；相同 key 資料更新，不存在資料新增。");
-      return;
-    }
-    if (reimportState.mode === "new-version") {
-      const incomingSnapshot = createRosterVersionSnapshot(reimportState.preview, `新清冊版本：${reimportState.fileName}`);
-      commitRoster(createRosterStagingFromRows({
-        baseRoster: normalizedRoster,
-        landRows,
-        buildingRows,
-        action: "reimport-new-version",
-        sourceFilename: reimportState.fileName,
-        versionHistory: [
-          ...(Array.isArray(normalizedRoster.versionHistory) ? normalizedRoster.versionHistory : []),
-          incomingSnapshot,
-        ],
-      }), "已建立新清冊版本紀錄，未覆蓋目前清冊。");
-      return;
-    }
-    const updates = getRosterLandRows(reimportState.preview).map((row) => ({
-      city: row.city,
-      district: row.district,
-      section: row.section,
-      subsection: row.subsection,
-      lotNumber: row.lotNumber || row.landNumber,
-      announcedCurrentValue: row.announcedCurrentValue,
-      announcedCurrentValueYear: row.announcedCurrentValueYear,
-      declaredLandValue: row.declaredLandValue,
-      declaredLandValueYear: row.declaredLandValueYear,
-      sourceFilename: reimportState.fileName,
-      notes: "重新匯入清冊只更新地價",
-    }));
-    const { roster, updatedCount } = applyValueUpdates({
-      ...normalizedRoster,
-      versionHistory: [...(Array.isArray(normalizedRoster.versionHistory) ? normalizedRoster.versionHistory : []), previousSnapshot],
-    }, updates);
-    commitRoster(roster, `已依重新匯入清冊只更新地價 ${updatedCount} 筆，權利人與持分未變更。`);
+    const mode = reimportState.mode === "value-only" ? "land-value-update" : reimportState.mode;
+    const { roster, message } = applyRosterReimportMode(normalizedRoster, reimportState.preview, mode, reimportState.fileName);
+    commitRoster(roster, message);
   };
 
   return (
@@ -6043,10 +6595,10 @@ function RosterMaintenancePanel({ currentCase, rosterStaging, onRosterStagingCha
             value={reimportState.mode}
             onChange={(value) => setReimportState((current) => ({ ...current, mode: value, replaceConfirmed: false }))}
             options={[
-              ["replace", "取代目前清冊"],
-              ["merge", "合併到目前清冊"],
-              ["new-version", "建立新清冊版本"],
-              ["value-only", "只更新公告現值 / 申報地價"],
+              ["replace", "取代目前清冊", "以本次預覽清冊取代目前案件清冊。會保留舊清冊到版本紀錄，需二次確認。"],
+              ["merge", "合併到目前清冊", "相同資料不重複新增；差異資料列入衝突或人工確認，不直接覆蓋。"],
+              ["new-version", "建立新清冊版本", "不覆蓋目前清冊，將本次預覽清冊保存為新版本。"],
+              ["value-only", "只更新公告現值 / 申報地價", "只更新相同地號的公告現值、申報地價與年度，不改權利人、面積與持分。"],
             ]}
           />
           {reimportState.mode === "replace" && (
@@ -6121,7 +6673,7 @@ function RosterMaintenanceOptionGroup({ label, value, onChange, options }) {
   return (
     <fieldset className="eval-roster-maintenance-options">
       <legend>{label}</legend>
-      {options.map(([optionValue, optionLabel]) => (
+      {options.map(([optionValue, optionLabel, optionDescription]) => (
         <label key={optionValue}>
           <input
             type="radio"
@@ -6130,7 +6682,10 @@ function RosterMaintenanceOptionGroup({ label, value, onChange, options }) {
             checked={value === optionValue}
             onChange={() => onChange(optionValue)}
           />
-          {optionLabel}
+          <span>
+            <b>{optionLabel}</b>
+            {optionDescription && <small>{optionDescription}</small>}
+          </span>
         </label>
       ))}
     </fieldset>
@@ -6143,12 +6698,17 @@ function RosterMaintenanceAnalysis({ analysis }) {
   }
 
   const rows = [
-    ["可新增土地列", analysis.newLandRows.length],
-    ["可更新土地列", analysis.updateLandRows.length],
-    ["土地待人工確認", analysis.reviewLandRows.length],
-    ["可新增建物列", analysis.newBuildingRows.length],
-    ["可更新建物列", analysis.updateBuildingRows.length],
-    ["建物待人工確認", analysis.reviewBuildingRows.length],
+    ["可新增土地列", (analysis.newLandRows ?? []).length],
+    ["可更新土地列", (analysis.updateLandRows ?? []).length],
+    ["跳過重複土地列", (analysis.duplicateLandRows ?? []).length],
+    ["土地衝突列", (analysis.conflictLandRows ?? []).length],
+    ["土地待人工確認", (analysis.reviewLandRows ?? []).length],
+    ["地價更新候選", (analysis.priceUpdateCandidates ?? []).length],
+    ["可新增建物列", (analysis.newBuildingRows ?? []).length],
+    ["可更新建物列", (analysis.updateBuildingRows ?? []).length],
+    ["跳過重複建物列", (analysis.duplicateBuildingRows ?? []).length],
+    ["建物衝突列", (analysis.conflictBuildingRows ?? []).length],
+    ["建物待人工確認", (analysis.reviewBuildingRows ?? []).length],
   ];
 
   return (

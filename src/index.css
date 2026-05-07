@@ -3159,6 +3159,18 @@ main {
   line-height: 1.5;
 }
 
+.eval-roster-import-mode-reminder {
+  grid-column: 1 / -1;
+  margin: 0;
+  border: 1px solid rgba(211, 151, 18, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 248, 225, 0.7);
+  padding: 10px 12px;
+  color: var(--green-950);
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
 .eval-roster-import-mode-options {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -3562,12 +3574,27 @@ main {
 .eval-roster-maintenance-options label,
 .eval-roster-maintenance-check {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   color: var(--gray-700);
   font-size: 0.84rem;
   font-weight: 800;
   line-height: 1.5;
+}
+
+.eval-roster-maintenance-options label span {
+  display: grid;
+  gap: 2px;
+}
+
+.eval-roster-maintenance-options label b {
+  color: var(--green-950);
+}
+
+.eval-roster-maintenance-options label small {
+  color: var(--gray-600);
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 
 .eval-roster-maintenance-check {
