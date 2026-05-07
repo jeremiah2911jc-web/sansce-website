@@ -3435,6 +3435,216 @@ main {
   font: inherit;
   font-size: 0.78rem;
   font-weight: 900;
+  cursor: pointer;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.eval-roster-maintenance-actions button:hover,
+.eval-roster-maintenance-actions button:focus-visible {
+  border-color: rgba(8, 59, 48, 0.28);
+  background: rgba(8, 59, 48, 0.1);
+  transform: translateY(-1px);
+}
+
+.eval-roster-maintenance-hint {
+  margin: 10px 0 0;
+  color: var(--gray-700);
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.65;
+}
+
+.eval-inline-success,
+.eval-inline-error {
+  margin: 12px 0 0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 0.84rem;
+  font-weight: 900;
+  line-height: 1.6;
+}
+
+.eval-inline-success {
+  border: 1px solid rgba(19, 92, 73, 0.2);
+  background: rgba(19, 92, 73, 0.08);
+  color: var(--green-950);
+}
+
+.eval-inline-error {
+  border: 1px solid rgba(173, 58, 36, 0.22);
+  background: rgba(173, 58, 36, 0.08);
+  color: #8a2f1f;
+}
+
+.eval-roster-maintenance-dialog {
+  width: min(100%, 980px);
+  max-height: min(88vh, 820px);
+  overflow: auto;
+}
+
+.eval-roster-maintenance-dialog-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.eval-roster-maintenance-dialog-head h4 {
+  margin: 0;
+}
+
+.eval-roster-maintenance-dialog-head button {
+  border: 1px solid rgba(8, 59, 48, 0.14);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--green-950);
+  padding: 7px 11px;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.eval-roster-maintenance-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.eval-roster-maintenance-field {
+  display: grid;
+  gap: 6px;
+  color: var(--green-950);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.eval-roster-maintenance-field.is-wide {
+  grid-column: 1 / -1;
+}
+
+.eval-roster-maintenance-field input,
+.eval-roster-maintenance-field textarea,
+.eval-roster-maintenance-dialog input[type="file"] {
+  width: 100%;
+  border: 1px solid rgba(8, 59, 48, 0.16);
+  border-radius: 12px;
+  background: #fbfdfc;
+  color: var(--green-950);
+  padding: 10px 11px;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 750;
+}
+
+.eval-roster-maintenance-field textarea {
+  resize: vertical;
+}
+
+.eval-roster-maintenance-options {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0 0;
+  border: 1px solid rgba(8, 59, 48, 0.12);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.eval-roster-maintenance-options legend {
+  padding: 0 6px;
+  color: var(--green-950);
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.eval-roster-maintenance-options label,
+.eval-roster-maintenance-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--gray-700);
+  font-size: 0.84rem;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.eval-roster-maintenance-check {
+  margin-top: 14px;
+}
+
+.eval-roster-maintenance-analysis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0 0;
+}
+
+.eval-roster-maintenance-analysis div {
+  border: 1px solid rgba(8, 59, 48, 0.1);
+  border-radius: 12px;
+  background: #fbfdfc;
+  padding: 10px;
+}
+
+.eval-roster-maintenance-analysis dt {
+  color: var(--gray-500);
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.eval-roster-maintenance-analysis dd {
+  margin: 4px 0 0;
+  color: var(--green-950);
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.eval-roster-maintenance-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.eval-roster-maintenance-dialog-actions button {
+  border-radius: 999px;
+  padding: 10px 14px;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.eval-roster-maintenance-primary {
+  border: 1px solid rgba(8, 59, 48, 0.92);
+  background: var(--green-900);
+  color: #ffffff;
+}
+
+.eval-roster-maintenance-primary:hover,
+.eval-roster-maintenance-primary:focus-visible {
+  background: var(--green-950);
+}
+
+.eval-roster-maintenance-primary:disabled {
+  border-color: rgba(8, 59, 48, 0.12);
+  background: rgba(8, 59, 48, 0.08);
+  color: rgba(8, 59, 48, 0.56);
+  cursor: not-allowed;
+}
+
+.eval-roster-maintenance-secondary {
+  border: 1px solid rgba(8, 59, 48, 0.18);
+  background: #ffffff;
+  color: var(--green-950);
+}
+
+.eval-roster-maintenance-secondary:hover,
+.eval-roster-maintenance-secondary:focus-visible {
+  background: rgba(8, 59, 48, 0.08);
 }
 
 .eval-base-roster-summary {
@@ -4161,6 +4371,11 @@ main {
     grid-template-columns: 1fr;
   }
 
+  .eval-roster-maintenance-form-grid,
+  .eval-roster-maintenance-analysis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .eval-device-warning__actions {
     justify-content: flex-start;
   }
@@ -4324,6 +4539,16 @@ main {
   .eval-local-test-tools__body button,
   .eval-import-summary button,
   .eval-roster-maintenance-actions button {
+    width: 100%;
+  }
+
+  .eval-roster-maintenance-form-grid,
+  .eval-roster-maintenance-analysis {
+    grid-template-columns: 1fr;
+  }
+
+  .eval-roster-maintenance-dialog-actions,
+  .eval-roster-maintenance-dialog-actions button {
     width: 100%;
   }
 
