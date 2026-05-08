@@ -2138,6 +2138,54 @@ main {
   overflow-wrap: anywhere;
 }
 
+.eval-database-status {
+  border-color: rgba(19, 92, 73, 0.14);
+  background: linear-gradient(180deg, #fbfdfc 0%, #fffdfa 100%);
+}
+
+.eval-database-status__body {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.42fr) minmax(0, 1fr);
+  gap: 12px;
+}
+
+.eval-database-status__body article {
+  min-width: 0;
+  border: 1px solid rgba(8, 59, 48, 0.09);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.86);
+  padding: 12px 14px;
+}
+
+.eval-database-status__body span {
+  display: block;
+  color: var(--gray-500);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.eval-database-status__body strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--green-950);
+  font-size: 0.9rem;
+  font-weight: 950;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.eval-database-status__body article[data-status="not-configured"] strong {
+  color: #9a3412;
+}
+
+.eval-database-status__body article[data-status="connected"] strong {
+  color: var(--green-900);
+}
+
+.eval-database-status__body article[data-status="error"] strong {
+  color: #b42318;
+}
+
 .eval-empty-state {
   display: block;
   border-radius: 12px;
@@ -4551,6 +4599,7 @@ main {
   .eval-roster-confirm-bar,
   .eval-roster-two-column,
   .eval-roster-impact-modules,
+  .eval-database-status__body,
   .eval-module-nav {
     grid-template-columns: 1fr;
   }

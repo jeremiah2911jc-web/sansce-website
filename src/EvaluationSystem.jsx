@@ -17,6 +17,7 @@ import {
   roleVisibilityRules,
   workflowStages,
 } from "./evaluationSystemData.js";
+import { checkSupabaseConnection } from "./supabaseClient.js";
 import {
   INTERNAL_DECIMAL_DIGITS,
   SHARE_TOTAL_TOLERANCE,
@@ -1491,6 +1492,47 @@ function LocalDataImportConfirmModal({ importConfirmation, onCancel, onContinue,
   );
 }
 
+function DatabaseConnectionStatus() {
+  const [connectionState, setConnectionState] = useState({
+    status: "checking",
+    label: "檢查中",
+    detail: "目前仍使用本機測試資料。",
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+
+    checkSupabaseConnection().then((nextState) => {
+      if (isMounted) {
+        setConnectionState(nextState);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  return (
+    <section className="eval-module-section eval-database-status">
+      <div className="eval-section-head">
+        <h4>資料庫連線狀態</h4>
+        <p>第一階段僅檢查 Supabase Vite env 與 API 可達性，尚未啟用資料同步。</p>
+      </div>
+      <div className="eval-database-status__body">
+        <article data-status={connectionState.status}>
+          <span>狀態</span>
+          <strong>{connectionState.label}</strong>
+        </article>
+        <article>
+          <span>資料來源</span>
+          <strong>{connectionState.detail}</strong>
+        </article>
+      </div>
+    </section>
+  );
+}
+
 function CaseManagementModule({
   accessProfile,
   cases,
@@ -1931,6 +1973,8 @@ function CaseManagementModule({
           </div>
         )}
       </section>
+
+      <DatabaseConnectionStatus />
 
       <CaseDeleteConfirmModal
         deleteConfirmation={deleteConfirmation}
