@@ -9589,11 +9589,11 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     setActiveModuleId("case-management");
   };
 
-  if (!isLoggedIn) {
-    if (!isTestRoute) {
-      return <EvaluationAccessClosed isChecking={authState.status === "checking"} />;
-    }
+  if (!isTestRoute) {
+    return <EvaluationAccessClosed isChecking={authState.status === "checking"} />;
+  }
 
+  if (!isLoggedIn) {
     return (
       <EvaluationLogin
         errorMessage={loginError}

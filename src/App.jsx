@@ -237,15 +237,15 @@ export default function App() {
                 <span />
               </div>
               <div className="system-card__actions">
-                <button className="system-card__button system-card__button--primary is-disabled" type="button" disabled>
-                  <span>授權測試中</span>
+                <a className="system-card__button system-card__button--primary" href="#system-test">
+                  <span>授權測試申請</span>
                   <ArrowUpRight aria-hidden="true" size={17} />
-                </button>
+                </a>
                 <button className="system-card__button system-card__button--secondary is-disabled" type="button" disabled>
                   <span>暫不公開</span>
                 </button>
               </div>
-              <p className="system-card__status">目前僅開放三策指定管理者測試，正式販售前將接入授權與帳號管理。</p>
+              <p className="system-card__status">目前僅開放三策指定管理者測試，正式版將前端接入授權與帳號管理。</p>
             </article>
           </div>
         </section>

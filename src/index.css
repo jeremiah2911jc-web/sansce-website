@@ -768,15 +768,23 @@ main {
   gap: 8px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 999px;
+  cursor: pointer;
   padding: 10px 16px;
   font-size: 0.86rem;
   font-weight: 900;
   line-height: 1.1;
+  text-align: center;
+  text-decoration: none;
   transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
 }
 
-.system-card__button:hover {
+.system-card__button:hover:not(:disabled):not(.is-disabled) {
   transform: translateY(-1px);
+}
+
+.system-card__button:focus-visible {
+  outline: 3px solid rgba(232, 197, 129, 0.58);
+  outline-offset: 3px;
 }
 
 .system-card__button:disabled,
@@ -5352,12 +5360,12 @@ main {
   }
 
   .system-card__button {
-    width: 92px;
-    height: 30px;
-    min-height: 30px;
+    width: auto;
+    min-width: 132px;
+    min-height: 34px;
     box-sizing: border-box;
-    padding: 6px 10px;
-    font-size: 0.68rem;
+    padding: 7px 11px;
+    font-size: 0.72rem;
   }
 
   .site-footer {
