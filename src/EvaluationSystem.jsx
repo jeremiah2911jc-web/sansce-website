@@ -1513,6 +1513,35 @@ async function readApiJson(response) {
   }
 }
 
+function formatDatabaseApiDebug(payload) {
+  const parts = [];
+  const debug = isPlainRecord(payload?.debug) ? payload.debug : {};
+
+  if (typeof payload?.step === "string" && payload.step) {
+    parts.push(`step=${payload.step}`);
+  }
+
+  [
+    ["code", debug.supabaseCode],
+    ["message", debug.supabaseMessage],
+    ["details", debug.supabaseDetails],
+    ["hint", debug.supabaseHint],
+  ].forEach(([label, value]) => {
+    if (typeof value === "string" && value.trim()) {
+      parts.push(`${label}=${value.trim()}`);
+    }
+  });
+
+  return parts.join(" | ");
+}
+
+function buildDatabaseApiError(payload, fallbackMessage) {
+  return {
+    message: payload?.message || fallbackMessage,
+    debug: formatDatabaseApiDebug(payload),
+  };
+}
+
 function normalizeDatabaseLoadPayload(payload) {
   const cases = Array.isArray(payload?.cases) ? payload.cases : [];
   return {
@@ -1655,6 +1684,7 @@ function DatabaseSyncControls({
     status: "idle",
     message: "尚未同步。",
     error: "",
+    debug: "",
     backendConfigured: null,
     lastSyncedAt: "",
   });
@@ -1684,13 +1714,14 @@ function DatabaseSyncControls({
         status: "error",
         message: "",
         error: "請先建立或選取案件，再同步到資料庫。",
+        debug: "",
         backendConfigured: syncState.backendConfigured,
         lastSyncedAt: syncState.lastSyncedAt,
       });
       return;
     }
 
-    setSyncState((current) => ({ ...current, status: "syncing", message: "", error: "" }));
+    setSyncState((current) => ({ ...current, status: "syncing", message: "", error: "", debug: "" }));
 
     try {
       const response = await fetch("/api/sanze-db-sync-case", {
@@ -1715,10 +1746,12 @@ function DatabaseSyncControls({
 
       if (!response.ok || !payload.ok) {
         const isNotConfigured = payload.code === "DB_SYNC_NOT_CONFIGURED";
+        const apiError = buildDatabaseApiError(payload, "資料庫同步失敗，目前仍使用本機測試資料。");
         setSyncState({
           status: "error",
           message: "",
-          error: payload.message || "資料庫同步失敗，目前仍使用本機測試資料。",
+          error: apiError.message,
+          debug: apiError.debug,
           backendConfigured: isNotConfigured ? false : syncState.backendConfigured,
           lastSyncedAt: syncState.lastSyncedAt,
         });
@@ -1729,6 +1762,7 @@ function DatabaseSyncControls({
         status: "success",
         message: `同步成功：${payload.summary?.caseName || currentCase.name || "目前案件"} 已寫入 ${payload.syncedTables?.length ?? 0} 張核心資料表。`,
         error: "",
+        debug: "",
         backendConfigured: true,
         lastSyncedAt: payload.updatedAt || new Date().toISOString(),
       });
@@ -1737,6 +1771,7 @@ function DatabaseSyncControls({
         status: "error",
         message: "",
         error: "資料庫同步失敗，目前仍使用本機測試資料。",
+        debug: "",
         backendConfigured: syncState.backendConfigured,
         lastSyncedAt: syncState.lastSyncedAt,
       });
@@ -1744,7 +1779,7 @@ function DatabaseSyncControls({
   };
 
   const handleLoadDatabaseCases = async () => {
-    setSyncState((current) => ({ ...current, status: "loading", message: "", error: "" }));
+    setSyncState((current) => ({ ...current, status: "loading", message: "", error: "", debug: "" }));
 
     try {
       const response = await fetch("/api/sanze-db-load-cases", {
@@ -1755,10 +1790,12 @@ function DatabaseSyncControls({
 
       if (!response.ok || !payload.ok) {
         const isNotConfigured = payload.code === "DB_SYNC_NOT_CONFIGURED";
+        const apiError = buildDatabaseApiError(payload, "資料庫載入失敗，目前仍保留本機測試資料。");
         setSyncState({
           status: "error",
           message: "",
-          error: payload.message || "資料庫載入失敗，目前仍保留本機測試資料。",
+          error: apiError.message,
+          debug: apiError.debug,
           backendConfigured: isNotConfigured ? false : syncState.backendConfigured,
           lastSyncedAt: syncState.lastSyncedAt,
         });
@@ -1771,6 +1808,7 @@ function DatabaseSyncControls({
         status: "loaded",
         message: `已從資料庫載入 ${payload.cases?.length ?? 0} 筆案件，等待使用者確認合併或取代。`,
         error: "",
+        debug: "",
         backendConfigured: true,
         lastSyncedAt: syncState.lastSyncedAt,
       });
@@ -1779,6 +1817,7 @@ function DatabaseSyncControls({
         status: "error",
         message: "",
         error: "資料庫載入失敗，目前仍保留本機測試資料。",
+        debug: "",
         backendConfigured: syncState.backendConfigured,
         lastSyncedAt: syncState.lastSyncedAt,
       });
@@ -1796,6 +1835,7 @@ function DatabaseSyncControls({
       status: "awaiting-confirmation",
       message: "已顯示載入預覽，請確認合併或取代本機資料。",
       error: "",
+      debug: "",
     }));
   };
 
@@ -1806,6 +1846,7 @@ function DatabaseSyncControls({
         status: "awaiting-confirmation",
         message: "",
         error: "請先預覽載入結果，再確認合併或取代本機資料。",
+        debug: "",
       }));
       return;
     }
@@ -1825,6 +1866,7 @@ function DatabaseSyncControls({
         ? `已取代本機資料：套用 ${applied.caseCount} 筆資料庫案件。`
         : `已合併到本機資料：套用 ${applied.caseCount} 筆資料庫案件。`,
       error: "",
+      debug: "",
     }));
   };
 
@@ -1905,7 +1947,12 @@ function DatabaseSyncControls({
           確認取代本機資料
         </button>
       </div>
-      {syncState.error && <p className="eval-database-sync-message eval-database-sync-message--error">{syncState.error}</p>}
+      {syncState.error && (
+        <div className="eval-database-sync-message eval-database-sync-message--error">
+          <p>{syncState.error}</p>
+          {syncState.debug && <p className="eval-database-sync-debug">{syncState.debug}</p>}
+        </div>
+      )}
       {isPreviewVisible && loadPreviewSummary && (
         <div className="eval-database-sync-preview">
           <div>

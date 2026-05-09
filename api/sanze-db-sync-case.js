@@ -17,6 +17,70 @@ function asJsonRecord(value) {
   return isPlainRecord(value) ? value : {};
 }
 
+const DB_SYNC_FAILED_CODE = "DB_SYNC_FAILED";
+const DB_SYNC_FAILED_MESSAGE = "資料庫同步失敗，目前仍使用本機測試資料。";
+const MAX_DEBUG_FIELD_LENGTH = 500;
+
+function markSyncStep(context, step) {
+  context.step = step;
+}
+
+function sanitizeDebugText(value) {
+  if (value === undefined || value === null) {
+    return "";
+  }
+
+  let sanitized = String(value)
+    .replace(/\s+/g, " ")
+    .replace(/https?:\/\/[^\s,;]+/gi, "[redacted-url]")
+    .replace(/\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b/g, "[redacted-token]")
+    .replace(/\b(service_role|anon|apikey|authorization|bearer)(\s*[:=]\s*)([^\s,;]+)/gi, "$1$2[redacted]")
+    .replace(/\b(ownerName|owner_name|address|locationText|location_text)(\s*[:=]\s*)([^,;}]+)/gi, "$1$2[redacted]")
+    .trim();
+
+  if (/failing row contains/i.test(sanitized)) {
+    sanitized = sanitized.replace(/failing row contains.*$/i, "Failing row contains [redacted-row].");
+  }
+
+  return sanitized.slice(0, MAX_DEBUG_FIELD_LENGTH);
+}
+
+function buildSanitizedSupabaseDebug(error) {
+  const debug = {
+    supabaseCode: sanitizeDebugText(error?.code),
+    supabaseMessage: sanitizeDebugText(error?.message),
+    supabaseDetails: sanitizeDebugText(error?.details),
+    supabaseHint: sanitizeDebugText(error?.hint),
+  };
+
+  return Object.fromEntries(Object.entries(debug).filter(([, value]) => value));
+}
+
+function throwStepError(error, step) {
+  if (error && typeof error === "object") {
+    try {
+      error.syncStep ||= step;
+    } catch {
+      // Keep the original error if it cannot be annotated.
+    }
+    throw error;
+  }
+
+  const wrapped = new Error(sanitizeDebugText(error) || "Unknown database sync error");
+  wrapped.syncStep = step;
+  throw wrapped;
+}
+
+async function runSyncStep(context, step, operation) {
+  markSyncStep(context, step);
+
+  try {
+    return await operation();
+  } catch (error) {
+    throwStepError(error, step);
+  }
+}
+
 function normalizeCasePayload(caseItem) {
   const rawCase = isPlainRecord(caseItem) ? caseItem : {};
   const localCaseId = toText(rawCase.id) || toText(rawCase.caseId) || toText(rawCase.local_case_id);
@@ -154,111 +218,111 @@ function normalizeCostPayload(caseId, costInputs, costResults) {
   };
 }
 
-async function findExistingCaseByLocalId(supabase, localCaseId) {
+async function findExistingCaseByLocalId(supabase, localCaseId, syncContext) {
   if (!localCaseId) {
     return null;
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await runSyncStep(syncContext, "find-existing-case-by-local-id", () => supabase
     .from("sanze_cases")
     .select("id")
     .filter("raw_json->>local_case_id", "eq", localCaseId)
     .order("updated_at", { ascending: false })
     .limit(1)
-    .maybeSingle();
+    .maybeSingle());
 
   if (error) {
-    throw error;
+    throwStepError(error, "find-existing-case-by-local-id");
   }
 
   return data;
 }
 
-async function upsertCase(supabase, normalizedCase) {
+async function upsertCase(supabase, normalizedCase, syncContext) {
   let existingCase = null;
 
   if (normalizedCase.caseCode) {
-    const { data, error } = await supabase
+    const { data, error } = await runSyncStep(syncContext, "find-existing-case-by-code", () => supabase
       .from("sanze_cases")
       .select("id")
       .eq("case_code", normalizedCase.caseCode)
       .order("updated_at", { ascending: false })
       .limit(1)
-      .maybeSingle();
+      .maybeSingle());
 
     if (error) {
-      throw error;
+      throwStepError(error, "find-existing-case-by-code");
     }
 
     existingCase = data;
   }
 
   if (!existingCase?.id) {
-    existingCase = await findExistingCaseByLocalId(supabase, normalizedCase.localCaseId);
+    existingCase = await findExistingCaseByLocalId(supabase, normalizedCase.localCaseId, syncContext);
   }
 
   if (existingCase?.id) {
-    const { data, error } = await supabase
+    const { data, error } = await runSyncStep(syncContext, "update-sanze-cases", () => supabase
       .from("sanze_cases")
       .update(normalizedCase.row)
       .eq("id", existingCase.id)
       .select("id")
-      .single();
+      .single());
 
     if (error) {
-      throw error;
+      throwStepError(error, "update-sanze-cases");
     }
 
     return data.id;
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await runSyncStep(syncContext, "insert-sanze-cases", () => supabase
     .from("sanze_cases")
     .insert(normalizedCase.row)
     .select("id")
-    .single();
+    .single());
 
   if (error) {
-    throw error;
+    throwStepError(error, "insert-sanze-cases");
   }
 
   return data.id;
 }
 
-async function upsertByCaseId(supabase, table, row) {
-  const { data: existingRow, error: selectError } = await supabase
+async function upsertByCaseId(supabase, table, row, syncContext, step) {
+  const { data: existingRow, error: selectError } = await runSyncStep(syncContext, step, () => supabase
     .from(table)
     .select("id")
     .eq("case_id", row.case_id)
     .order("updated_at", { ascending: false })
     .limit(1)
-    .maybeSingle();
+    .maybeSingle());
 
   if (selectError) {
-    throw selectError;
+    throwStepError(selectError, step);
   }
 
   if (existingRow?.id) {
-    const { error } = await supabase
+    const { error } = await runSyncStep(syncContext, step, () => supabase
       .from(table)
       .update(row)
-      .eq("id", existingRow.id);
+      .eq("id", existingRow.id));
 
     if (error) {
-      throw error;
+      throwStepError(error, step);
     }
 
     return existingRow.id;
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await runSyncStep(syncContext, step, () => supabase
     .from(table)
     .insert(row)
     .select("id")
-    .single();
+    .single());
 
   if (error) {
-    throw error;
+    throwStepError(error, step);
   }
 
   return data.id;
@@ -286,36 +350,70 @@ export default async function handler(request, response) {
     return;
   }
 
-  const session = requireSanzeSession(request, response);
-  if (!session) {
-    return;
-  }
-
-  const supabase = requireSupabaseAdmin(response);
-  if (!supabase) {
-    return;
-  }
-
-  const body = await readJsonBody(request);
-  const normalizedCase = normalizeCasePayload(body.case);
-
-  if (!normalizedCase.localCaseId && !normalizedCase.caseCode) {
-    sendJson(response, 400, { ok: false, message: "缺少案件資料。" });
-    return;
-  }
+  const syncContext = { step: "validate-session" };
 
   try {
-    const caseId = await upsertCase(supabase, normalizedCase);
-    await upsertByCaseId(supabase, "sanze_roster_staging", normalizeRosterPayload(caseId, body.rosterStaging));
-    await upsertByCaseId(supabase, "sanze_base_info", normalizeBaseInfoPayload(caseId, body.baseInfo, body.rosterStaging));
-    await upsertByCaseId(supabase, "sanze_capacity_data", normalizeCapacityPayload(caseId, body.capacityInputs, body.capacityResults));
+    markSyncStep(syncContext, "validate-session");
+    const session = requireSanzeSession(request, response);
+    if (!session) {
+      return;
+    }
+
+    markSyncStep(syncContext, "validate-env");
+    const supabase = requireSupabaseAdmin(response);
+    if (!supabase) {
+      return;
+    }
+
+    markSyncStep(syncContext, "parse-body");
+    const body = await readJsonBody(request);
+
+    markSyncStep(syncContext, "resolve-case");
+    const normalizedCase = normalizeCasePayload(body.case);
+
+    if (!normalizedCase.localCaseId && !normalizedCase.caseCode) {
+      sendJson(response, 400, { ok: false, message: "缺少案件資料。" });
+      return;
+    }
+
+    const caseId = await upsertCase(supabase, normalizedCase, syncContext);
+    await upsertByCaseId(
+      supabase,
+      "sanze_roster_staging",
+      normalizeRosterPayload(caseId, body.rosterStaging),
+      syncContext,
+      "upsert-roster-staging",
+    );
+    await upsertByCaseId(
+      supabase,
+      "sanze_base_info",
+      normalizeBaseInfoPayload(caseId, body.baseInfo, body.rosterStaging),
+      syncContext,
+      "upsert-base-info",
+    );
+    await upsertByCaseId(
+      supabase,
+      "sanze_capacity_data",
+      normalizeCapacityPayload(caseId, body.capacityInputs, body.capacityResults),
+      syncContext,
+      "upsert-capacity-data",
+    );
     await upsertByCaseId(
       supabase,
       "sanze_floor_efficiency_data",
       normalizeFloorEfficiencyPayload(caseId, body.floorEfficiencyParams, body.floorEfficiencyResults),
+      syncContext,
+      "upsert-floor-efficiency-data",
     );
-    await upsertByCaseId(supabase, "sanze_cost_data", normalizeCostPayload(caseId, body.costInputs, body.costResults));
+    await upsertByCaseId(
+      supabase,
+      "sanze_cost_data",
+      normalizeCostPayload(caseId, body.costInputs, body.costResults),
+      syncContext,
+      "upsert-cost-data",
+    );
 
+    markSyncStep(syncContext, "done");
     sendJson(response, 200, {
       ok: true,
       caseId,
@@ -330,10 +428,21 @@ export default async function handler(request, response) {
       summary: buildSyncSummary(body),
       updatedAt: new Date().toISOString(),
     });
-  } catch {
+  } catch (error) {
+    const step = sanitizeDebugText(error?.syncStep || syncContext.step || "unknown");
+    const debug = buildSanitizedSupabaseDebug(error);
+
+    console.error("Sanze DB sync failed", {
+      step,
+      debug,
+    });
+
     sendJson(response, 500, {
       ok: false,
-      message: "資料庫同步失敗，目前仍使用本機測試資料。",
+      code: DB_SYNC_FAILED_CODE,
+      step,
+      message: DB_SYNC_FAILED_MESSAGE,
+      debug,
     });
   }
 }

@@ -2306,6 +2306,19 @@ main {
   color: #9a3412;
 }
 
+.eval-database-sync-message p {
+  margin: 0;
+}
+
+.eval-database-sync-debug {
+  margin-top: 6px !important;
+  color: #7c2d12;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
 .eval-database-sync-preview {
   display: grid;
   gap: 12px;
