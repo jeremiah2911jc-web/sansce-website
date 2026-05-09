@@ -36,6 +36,16 @@ export async function readJsonBody(request) {
 }
 
 export function requireSanzeSession(request, response) {
+  const cookies = parseCookies(request.headers.cookie ?? "");
+  if (!cookies[SESSION_COOKIE_NAME]) {
+    sendJson(response, 401, {
+      ok: false,
+      code: "UNAUTHORIZED",
+      message: "請先登入三策開發評估系統。",
+    });
+    return null;
+  }
+
   const config = getAuthConfig();
   if (!isConfigReady(config)) {
     sendJson(response, 503, {
@@ -46,7 +56,6 @@ export function requireSanzeSession(request, response) {
     return null;
   }
 
-  const cookies = parseCookies(request.headers.cookie ?? "");
   const session = verifySession(cookies[SESSION_COOKIE_NAME], config.authSecret);
 
   if (!session) {

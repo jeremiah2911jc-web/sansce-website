@@ -13,10 +13,15 @@ import {
   uniqueCount,
 } from "./_sanze-db-route-helpers.js";
 
+function asJsonRecord(value) {
+  return isPlainRecord(value) ? value : {};
+}
+
 function normalizeCasePayload(caseItem) {
   const rawCase = isPlainRecord(caseItem) ? caseItem : {};
-  const localCaseId = toText(rawCase.id) || toText(rawCase.caseId);
-  const caseCode = toText(rawCase.code) || toText(rawCase.case_code) || localCaseId;
+  const localCaseId = toText(rawCase.id) || toText(rawCase.caseId) || toText(rawCase.local_case_id);
+  const explicitCaseCode = toText(rawCase.code) || toText(rawCase.case_code);
+  const caseCode = explicitCaseCode || localCaseId;
 
   return {
     localCaseId,
@@ -70,7 +75,7 @@ function normalizeRosterPayload(caseId, rosterStaging) {
     land_rows: landRows,
     building_rows: buildingRows,
     pg_groups: getRosterPartyGroups(roster),
-    summary_json: isPlainRecord(roster.summary) ? roster.summary : {},
+    summary_json: asJsonRecord(roster.summary),
     version_history: asArray(roster.versionHistory || roster.version_history),
     price_update_history: asArray(roster.priceUpdateHistory || roster.price_update_history),
   };
@@ -85,7 +90,7 @@ function normalizeRosterPayload(caseId, rosterStaging) {
 function normalizeBaseInfoPayload(caseId, baseInfo, rosterStaging) {
   const base = isPlainRecord(baseInfo) ? baseInfo : {};
   const roster = isPlainRecord(rosterStaging) ? rosterStaging : {};
-  const summary = isPlainRecord(roster.summary) ? roster.summary : {};
+  const summary = asJsonRecord(roster.summary);
   const landRows = getRosterLandRows(roster);
   const buildingRows = getRosterBuildingRows(roster);
 
@@ -117,17 +122,79 @@ function normalizeBaseInfoPayload(caseId, baseInfo, rosterStaging) {
   };
 }
 
-async function upsertCase(supabase, normalizedCase) {
-  const { data: existingCase, error: selectError } = await supabase
+function normalizeCapacityPayload(caseId, capacityInputs, capacityResults) {
+  const inputs = asJsonRecord(capacityInputs);
+  const results = asJsonRecord(capacityResults);
+
+  return {
+    case_id: caseId,
+    inputs_json: inputs,
+    results_json: results,
+    tdr_scoring_json: asJsonRecord(inputs.tdrScoring),
+    tdr_scoring_summary_json: asJsonRecord(results.tdrScoringSummary),
+    updated_at: new Date().toISOString(),
+  };
+}
+
+function normalizeFloorEfficiencyPayload(caseId, floorEfficiencyParams, floorEfficiencyResults) {
+  return {
+    case_id: caseId,
+    params_json: asJsonRecord(floorEfficiencyParams),
+    results_json: asJsonRecord(floorEfficiencyResults),
+    updated_at: new Date().toISOString(),
+  };
+}
+
+function normalizeCostPayload(caseId, costInputs, costResults) {
+  return {
+    case_id: caseId,
+    inputs_json: asJsonRecord(costInputs),
+    results_json: asJsonRecord(costResults),
+    updated_at: new Date().toISOString(),
+  };
+}
+
+async function findExistingCaseByLocalId(supabase, localCaseId) {
+  if (!localCaseId) {
+    return null;
+  }
+
+  const { data, error } = await supabase
     .from("sanze_cases")
     .select("id")
-    .eq("case_code", normalizedCase.caseCode)
+    .filter("raw_json->>local_case_id", "eq", localCaseId)
     .order("updated_at", { ascending: false })
     .limit(1)
     .maybeSingle();
 
-  if (selectError) {
-    throw selectError;
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+async function upsertCase(supabase, normalizedCase) {
+  let existingCase = null;
+
+  if (normalizedCase.caseCode) {
+    const { data, error } = await supabase
+      .from("sanze_cases")
+      .select("id")
+      .eq("case_code", normalizedCase.caseCode)
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      throw error;
+    }
+
+    existingCase = data;
+  }
+
+  if (!existingCase?.id) {
+    existingCase = await findExistingCaseByLocalId(supabase, normalizedCase.localCaseId);
   }
 
   if (existingCase?.id) {
@@ -163,6 +230,7 @@ async function upsertByCaseId(supabase, table, row) {
     .from(table)
     .select("id")
     .eq("case_id", row.case_id)
+    .order("updated_at", { ascending: false })
     .limit(1)
     .maybeSingle();
 
@@ -196,6 +264,21 @@ async function upsertByCaseId(supabase, table, row) {
   return data.id;
 }
 
+function buildSyncSummary(body) {
+  const roster = isPlainRecord(body.rosterStaging) ? body.rosterStaging : {};
+  const landRows = getRosterLandRows(roster);
+  const buildingRows = getRosterBuildingRows(roster);
+
+  return {
+    caseName: toText(body.case?.name) || toText(body.case?.case_name) || "未命名案件",
+    landRowCount: landRows.length,
+    buildingRowCount: buildingRows.length,
+    hasCapacityData: isPlainRecord(body.capacityInputs) || isPlainRecord(body.capacityResults),
+    hasFloorEfficiencyData: isPlainRecord(body.floorEfficiencyParams) || isPlainRecord(body.floorEfficiencyResults),
+    hasCostData: isPlainRecord(body.costInputs) || isPlainRecord(body.costResults),
+  };
+}
+
 export default async function handler(request, response) {
   if (request.method !== "POST") {
     response.setHeader("Allow", "POST");
@@ -225,11 +308,26 @@ export default async function handler(request, response) {
     const caseId = await upsertCase(supabase, normalizedCase);
     await upsertByCaseId(supabase, "sanze_roster_staging", normalizeRosterPayload(caseId, body.rosterStaging));
     await upsertByCaseId(supabase, "sanze_base_info", normalizeBaseInfoPayload(caseId, body.baseInfo, body.rosterStaging));
+    await upsertByCaseId(supabase, "sanze_capacity_data", normalizeCapacityPayload(caseId, body.capacityInputs, body.capacityResults));
+    await upsertByCaseId(
+      supabase,
+      "sanze_floor_efficiency_data",
+      normalizeFloorEfficiencyPayload(caseId, body.floorEfficiencyParams, body.floorEfficiencyResults),
+    );
+    await upsertByCaseId(supabase, "sanze_cost_data", normalizeCostPayload(caseId, body.costInputs, body.costResults));
 
     sendJson(response, 200, {
       ok: true,
       caseId,
-      syncedTables: ["sanze_cases", "sanze_roster_staging", "sanze_base_info"],
+      syncedTables: [
+        "sanze_cases",
+        "sanze_roster_staging",
+        "sanze_base_info",
+        "sanze_capacity_data",
+        "sanze_floor_efficiency_data",
+        "sanze_cost_data",
+      ],
+      summary: buildSyncSummary(body),
       updatedAt: new Date().toISOString(),
     });
   } catch {

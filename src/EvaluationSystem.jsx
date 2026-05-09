@@ -132,6 +132,14 @@ const LOCAL_TEST_DATA_RECORD_FIELDS = [
   { dataKey: "cashflowResultsByCaseId", storageKey: CASHFLOW_RESULTS_STORAGE_KEY },
   { dataKey: "bankReportDataByCaseId", storageKey: BANK_REPORT_DATA_STORAGE_KEY },
 ];
+const DATABASE_SYNCED_RECORD_KEYS = new Set([
+  "capacityInputsByCaseId",
+  "capacityResultsByCaseId",
+  "floorEfficiencyParamsByCaseId",
+  "floorEfficiencyResultsByCaseId",
+  "costInputsByCaseId",
+  "costResultsByCaseId",
+]);
 const EVALUATION_STORAGE_KEYS = [
   CASES_STORAGE_KEY,
   CURRENT_CASE_ID_STORAGE_KEY,
@@ -1505,6 +1513,90 @@ async function readApiJson(response) {
   }
 }
 
+function normalizeDatabaseLoadPayload(payload) {
+  const cases = Array.isArray(payload?.cases) ? payload.cases : [];
+  return {
+    cases,
+    rosterStagingByCaseId: normalizeRosterStagingByCaseId(payload?.rosterStagingByCaseId),
+    baseInfoByCaseId: isPlainRecord(payload?.baseInfoByCaseId) ? payload.baseInfoByCaseId : {},
+    capacityInputsByCaseId: isPlainRecord(payload?.capacityInputsByCaseId) ? payload.capacityInputsByCaseId : {},
+    capacityResultsByCaseId: isPlainRecord(payload?.capacityResultsByCaseId) ? payload.capacityResultsByCaseId : {},
+    floorEfficiencyParamsByCaseId: isPlainRecord(payload?.floorEfficiencyParamsByCaseId) ? payload.floorEfficiencyParamsByCaseId : {},
+    floorEfficiencyResultsByCaseId: isPlainRecord(payload?.floorEfficiencyResultsByCaseId) ? payload.floorEfficiencyResultsByCaseId : {},
+    costInputsByCaseId: isPlainRecord(payload?.costInputsByCaseId) ? payload.costInputsByCaseId : {},
+    costResultsByCaseId: isPlainRecord(payload?.costResultsByCaseId) ? payload.costResultsByCaseId : {},
+    loadedAt: typeof payload?.loadedAt === "string" ? payload.loadedAt : "",
+  };
+}
+
+function hasMeaningfulRecord(value) {
+  return isPlainRecord(value) && Object.keys(value).length > 0;
+}
+
+function formatSyncPresence(value) {
+  return value ? "有" : "無";
+}
+
+function formatSyncTimestamp(value) {
+  if (!value) {
+    return "尚未同步";
+  }
+
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) {
+    return value;
+  }
+
+  return date.toLocaleString("zh-TW", { hour12: false });
+}
+
+function buildDatabaseCaseSummary({
+  caseItem,
+  rosterStaging,
+  capacityInputs,
+  capacityResults,
+  floorEfficiencyParams,
+  floorEfficiencyResults,
+  costInputs,
+  costResults,
+  syncedAt,
+}) {
+  const normalizedRoster = normalizeRosterStaging(rosterStaging) ?? {};
+  return {
+    caseName: caseItem?.name || caseItem?.case_name || "未命名案件",
+    landRowCount: getRosterLandRows(normalizedRoster).length,
+    buildingRowCount: getRosterBuildingRows(normalizedRoster).length,
+    hasCapacityData: hasMeaningfulRecord(capacityInputs) || hasMeaningfulRecord(capacityResults),
+    hasFloorEfficiencyData: hasMeaningfulRecord(floorEfficiencyParams) || hasMeaningfulRecord(floorEfficiencyResults),
+    hasCostData: hasMeaningfulRecord(costInputs) || hasMeaningfulRecord(costResults),
+    syncedAt: syncedAt || "",
+  };
+}
+
+function buildDatabaseLoadPreviewSummary(payload) {
+  const loaded = normalizeDatabaseLoadPayload(payload);
+  const rosterCaseCount = countCaseRecords(loaded.rosterStagingByCaseId);
+  const capacityCaseCount = countCaseRecords(loaded.capacityInputsByCaseId, loaded.capacityResultsByCaseId);
+  const floorCaseCount = countCaseRecords(loaded.floorEfficiencyParamsByCaseId, loaded.floorEfficiencyResultsByCaseId);
+  const costCaseCount = countCaseRecords(loaded.costInputsByCaseId, loaded.costResultsByCaseId);
+  const landRowCount = Object.values(loaded.rosterStagingByCaseId)
+    .reduce((total, roster) => total + getRosterLandRows(roster).length, 0);
+  const buildingRowCount = Object.values(loaded.rosterStagingByCaseId)
+    .reduce((total, roster) => total + getRosterBuildingRows(roster).length, 0);
+
+  return {
+    caseCount: loaded.cases.length,
+    rosterCaseCount,
+    capacityCaseCount,
+    floorCaseCount,
+    costCaseCount,
+    landRowCount,
+    buildingRowCount,
+    loadedAt: loaded.loadedAt,
+    cases: loaded.cases,
+  };
+}
+
 function DatabaseConnectionStatus() {
   const [connectionState, setConnectionState] = useState({
     status: "checking",
@@ -1551,16 +1643,40 @@ function DatabaseSyncControls({
   currentCase,
   rosterStagingByCaseId,
   baseInfoByCaseId,
-  onLoadDatabaseCases,
+  capacityInputsByCaseId,
+  capacityResultsByCaseId,
+  floorEfficiencyParamsByCaseId,
+  floorEfficiencyResultsByCaseId,
+  costInputsByCaseId,
+  costResultsByCaseId,
+  onApplyDatabaseCases,
 }) {
   const [syncState, setSyncState] = useState({
     status: "idle",
-    message: "",
+    message: "尚未同步。",
     error: "",
     backendConfigured: null,
+    lastSyncedAt: "",
   });
+  const [loadPreview, setLoadPreview] = useState(null);
+  const [isPreviewVisible, setIsPreviewVisible] = useState(false);
   const isBusy = syncState.status === "syncing" || syncState.status === "loading";
   const isBackendUnavailable = syncState.backendConfigured === false;
+  const currentCaseSummary = currentCase
+    ? buildDatabaseCaseSummary({
+      caseItem: currentCase,
+      rosterStaging: rosterStagingByCaseId[currentCase.id],
+      capacityInputs: capacityInputsByCaseId[currentCase.id],
+      capacityResults: capacityResultsByCaseId[currentCase.id],
+      floorEfficiencyParams: floorEfficiencyParamsByCaseId[currentCase.id],
+      floorEfficiencyResults: floorEfficiencyResultsByCaseId[currentCase.id],
+      costInputs: costInputsByCaseId[currentCase.id],
+      costResults: costResultsByCaseId[currentCase.id],
+      syncedAt: syncState.lastSyncedAt,
+    })
+    : null;
+  const loadPreviewSummary = loadPreview ? buildDatabaseLoadPreviewSummary(loadPreview) : null;
+  const canApplyPreview = Boolean(loadPreview && isPreviewVisible && !isBusy && !isBackendUnavailable);
 
   const handleSyncCurrentCase = async () => {
     if (!currentCase) {
@@ -1569,6 +1685,7 @@ function DatabaseSyncControls({
         message: "",
         error: "請先建立或選取案件，再同步到資料庫。",
         backendConfigured: syncState.backendConfigured,
+        lastSyncedAt: syncState.lastSyncedAt,
       });
       return;
     }
@@ -1586,6 +1703,12 @@ function DatabaseSyncControls({
           case: currentCase,
           rosterStaging: rosterStagingByCaseId[currentCase.id] ?? null,
           baseInfo: baseInfoByCaseId[currentCase.id] ?? {},
+          capacityInputs: capacityInputsByCaseId[currentCase.id] ?? {},
+          capacityResults: capacityResultsByCaseId[currentCase.id] ?? {},
+          floorEfficiencyParams: floorEfficiencyParamsByCaseId[currentCase.id] ?? {},
+          floorEfficiencyResults: floorEfficiencyResultsByCaseId[currentCase.id] ?? {},
+          costInputs: costInputsByCaseId[currentCase.id] ?? {},
+          costResults: costResultsByCaseId[currentCase.id] ?? {},
         }),
       });
       const payload = await readApiJson(response);
@@ -1597,15 +1720,17 @@ function DatabaseSyncControls({
           message: "",
           error: payload.message || "資料庫同步失敗，目前仍使用本機測試資料。",
           backendConfigured: isNotConfigured ? false : syncState.backendConfigured,
+          lastSyncedAt: syncState.lastSyncedAt,
         });
         return;
       }
 
       setSyncState({
         status: "success",
-        message: `已同步目前案件到資料庫：${payload.syncedTables?.join("、") || "核心資料表"}。`,
+        message: `同步成功：${payload.summary?.caseName || currentCase.name || "目前案件"} 已寫入 ${payload.syncedTables?.length ?? 0} 張核心資料表。`,
         error: "",
         backendConfigured: true,
+        lastSyncedAt: payload.updatedAt || new Date().toISOString(),
       });
     } catch {
       setSyncState({
@@ -1613,6 +1738,7 @@ function DatabaseSyncControls({
         message: "",
         error: "資料庫同步失敗，目前仍使用本機測試資料。",
         backendConfigured: syncState.backendConfigured,
+        lastSyncedAt: syncState.lastSyncedAt,
       });
     }
   };
@@ -1634,16 +1760,19 @@ function DatabaseSyncControls({
           message: "",
           error: payload.message || "資料庫載入失敗，目前仍保留本機測試資料。",
           backendConfigured: isNotConfigured ? false : syncState.backendConfigured,
+          lastSyncedAt: syncState.lastSyncedAt,
         });
         return;
       }
 
-      onLoadDatabaseCases(payload);
+      setLoadPreview(payload);
+      setIsPreviewVisible(false);
       setSyncState({
-        status: "success",
-        message: `已從資料庫載入 ${payload.cases?.length ?? 0} 筆案件，並合併到本機測試資料。`,
+        status: "loaded",
+        message: `已從資料庫載入 ${payload.cases?.length ?? 0} 筆案件，等待使用者確認合併或取代。`,
         error: "",
         backendConfigured: true,
+        lastSyncedAt: syncState.lastSyncedAt,
       });
     } catch {
       setSyncState({
@@ -1651,23 +1780,109 @@ function DatabaseSyncControls({
         message: "",
         error: "資料庫載入失敗，目前仍保留本機測試資料。",
         backendConfigured: syncState.backendConfigured,
+        lastSyncedAt: syncState.lastSyncedAt,
       });
     }
   };
 
+  const handlePreviewLoadedCases = () => {
+    if (!loadPreview) {
+      return;
+    }
+
+    setIsPreviewVisible(true);
+    setSyncState((current) => ({
+      ...current,
+      status: "awaiting-confirmation",
+      message: "已顯示載入預覽，請確認合併或取代本機資料。",
+      error: "",
+    }));
+  };
+
+  const handleApplyLoadedCases = (mode) => {
+    if (!loadPreview || !isPreviewVisible) {
+      setSyncState((current) => ({
+        ...current,
+        status: "awaiting-confirmation",
+        message: "",
+        error: "請先預覽載入結果，再確認合併或取代本機資料。",
+      }));
+      return;
+    }
+
+    if (mode === "replace") {
+      const confirmed = window.confirm("取代會以資料庫載入案件覆蓋目前本機測試資料，並清除尚未納入 DB 同步的後續模組暫存。是否確認取代？");
+      if (!confirmed) {
+        return;
+      }
+    }
+
+    const applied = onApplyDatabaseCases(loadPreview, mode);
+    setSyncState((current) => ({
+      ...current,
+      status: "success",
+      message: mode === "replace"
+        ? `已取代本機資料：套用 ${applied.caseCount} 筆資料庫案件。`
+        : `已合併到本機資料：套用 ${applied.caseCount} 筆資料庫案件。`,
+      error: "",
+    }));
+  };
+
+  const syncStatusLabel = {
+    idle: "尚未同步",
+    syncing: "同步中",
+    loading: "載入中",
+    loaded: "已從資料庫載入",
+    "awaiting-confirmation": "等待使用者確認合併 / 取代",
+    success: "同步成功",
+    error: "同步失敗",
+  }[syncState.status] || "尚未同步";
+
   return (
     <section className="eval-module-section eval-database-sync">
       <div className="eval-section-head">
-        <h4>資料庫同步測試</h4>
-        <p>資料庫同步目前為第一階段測試：目前仍以本機測試資料為主，可手動同步目前案件與清冊，或從資料庫載入案件列表。</p>
+        <h4>資料庫同步</h4>
+        <p>目前採 localStorage + Supabase 並行模式。操作時仍會先寫入本機測試資料；可手動同步到資料庫，或從資料庫載入案件資料。</p>
       </div>
       <ul className="eval-database-sync-notes">
-        <li>目前仍以本機測試資料為主。</li>
-        <li>可手動將目前案件與清冊同步到資料庫。</li>
-        <li>可從資料庫載入案件列表，並合併到本機測試資料。</li>
-        <li>尚未啟用完整多人權限與正式資料流程。</li>
-        <li>容積、坪效、成本同步將在下一階段開放。</li>
+        <li>目前仍以本機測試資料為主，同步失敗不會清空 localStorage。</li>
+        <li>本階段同步案件主檔、清冊 staging、基地、容積/TDR、坪效與成本資料。</li>
+        <li>實價登錄、銷售情境、權利分配、現金流與銀行報告將在下一階段開放。</li>
+        <li>正式多人權限、案件權限與稽核紀錄需在 Auth / RLS policy / user-case mapping 完成後啟用。</li>
       </ul>
+      <div className="eval-database-sync-state" data-status={syncState.status}>
+        <span>狀態</span>
+        <strong>{syncStatusLabel}</strong>
+        <p>{syncState.message || "目前仍使用本機測試資料。"}</p>
+      </div>
+      {currentCaseSummary && (
+        <div className="eval-database-sync-summary" aria-label="目前案件同步摘要">
+          <article>
+            <span>同步案件名稱</span>
+            <strong>{currentCaseSummary.caseName}</strong>
+          </article>
+          <article>
+            <span>土地 / 建物列數</span>
+            <strong>{currentCaseSummary.landRowCount} / {currentCaseSummary.buildingRowCount}</strong>
+          </article>
+          <article>
+            <span>容積資料</span>
+            <strong>{formatSyncPresence(currentCaseSummary.hasCapacityData)}</strong>
+          </article>
+          <article>
+            <span>坪效資料</span>
+            <strong>{formatSyncPresence(currentCaseSummary.hasFloorEfficiencyData)}</strong>
+          </article>
+          <article>
+            <span>成本資料</span>
+            <strong>{formatSyncPresence(currentCaseSummary.hasCostData)}</strong>
+          </article>
+          <article>
+            <span>最後同步時間</span>
+            <strong>{formatSyncTimestamp(currentCaseSummary.syncedAt)}</strong>
+          </article>
+        </div>
+      )}
       {isBackendUnavailable && (
         <p className="eval-database-sync-message eval-database-sync-message--error">
           後端資料庫同步尚未設定，請設定 SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY。
@@ -1680,9 +1895,57 @@ function DatabaseSyncControls({
         <button type="button" onClick={handleLoadDatabaseCases} disabled={isBusy || isBackendUnavailable}>
           從資料庫載入案件列表
         </button>
+        <button type="button" onClick={handlePreviewLoadedCases} disabled={isBusy || !loadPreview}>
+          預覽載入結果
+        </button>
+        <button type="button" onClick={() => handleApplyLoadedCases("merge")} disabled={!canApplyPreview}>
+          確認合併到本機資料
+        </button>
+        <button type="button" onClick={() => handleApplyLoadedCases("replace")} disabled={!canApplyPreview}>
+          確認取代本機資料
+        </button>
       </div>
-      {syncState.message && <p className="eval-database-sync-message">{syncState.message}</p>}
       {syncState.error && <p className="eval-database-sync-message eval-database-sync-message--error">{syncState.error}</p>}
+      {isPreviewVisible && loadPreviewSummary && (
+        <div className="eval-database-sync-preview">
+          <div>
+            <strong>資料庫載入預覽</strong>
+            <p>
+              載入 {loadPreviewSummary.caseCount} 筆案件、{loadPreviewSummary.landRowCount} 筆土地列、
+              {loadPreviewSummary.buildingRowCount} 筆建物列。確認前不會寫入 localStorage。
+            </p>
+          </div>
+          <dl>
+            <div>
+              <dt>清冊案件</dt>
+              <dd>{loadPreviewSummary.rosterCaseCount}</dd>
+            </div>
+            <div>
+              <dt>容積案件</dt>
+              <dd>{loadPreviewSummary.capacityCaseCount}</dd>
+            </div>
+            <div>
+              <dt>坪效案件</dt>
+              <dd>{loadPreviewSummary.floorCaseCount}</dd>
+            </div>
+            <div>
+              <dt>成本案件</dt>
+              <dd>{loadPreviewSummary.costCaseCount}</dd>
+            </div>
+            <div>
+              <dt>載入時間</dt>
+              <dd>{formatSyncTimestamp(loadPreviewSummary.loadedAt)}</dd>
+            </div>
+          </dl>
+          <ul>
+            {loadPreviewSummary.cases.slice(0, 5).map((caseItem) => (
+              <li key={caseItem.id || caseItem.code || caseItem.name}>
+                {caseItem.code ? `${caseItem.code} / ` : ""}{caseItem.name || "未命名案件"}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </section>
   );
 }
@@ -2134,7 +2397,13 @@ function CaseManagementModule({
         currentCase={currentCase}
         rosterStagingByCaseId={rosterStagingByCaseId}
         baseInfoByCaseId={baseInfoByCaseId}
-        onLoadDatabaseCases={onLoadDatabaseCases}
+        capacityInputsByCaseId={capacityInputsByCaseId}
+        capacityResultsByCaseId={capacityResultsByCaseId}
+        floorEfficiencyParamsByCaseId={floorEfficiencyParamsByCaseId}
+        floorEfficiencyResultsByCaseId={floorEfficiencyResultsByCaseId}
+        costInputsByCaseId={costInputsByCaseId}
+        costResultsByCaseId={costResultsByCaseId}
+        onApplyDatabaseCases={onLoadDatabaseCases}
       />
 
       <CaseDeleteConfirmModal
@@ -9542,21 +9811,39 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     setModuleSaveStatusByCaseId({});
   };
 
-  const handleLoadDatabaseCases = (payload) => {
-    const loadedCases = Array.isArray(payload?.cases) ? payload.cases : [];
-    const loadedRosterStaging = normalizeRosterStagingByCaseId(payload?.rosterStagingByCaseId);
-    const loadedBaseInfo = isPlainRecord(payload?.baseInfoByCaseId)
-      ? payload.baseInfoByCaseId
-      : {};
+  const handleLoadDatabaseCases = (payload, mode = "merge") => {
+    const loaded = normalizeDatabaseLoadPayload(payload);
 
-    if (!loadedCases.length) {
-      return;
+    if (!loaded.cases.length) {
+      return { caseCount: 0 };
+    }
+
+    if (mode === "replace") {
+      const nextCurrentCaseId = loaded.cases.some((caseItem) => caseItem.id === currentCaseId)
+        ? currentCaseId
+        : loaded.cases[0]?.id || "";
+
+      LOCAL_TEST_DATA_RECORD_FIELDS
+        .filter(({ dataKey }) => !DATABASE_SYNCED_RECORD_KEYS.has(dataKey))
+        .forEach(({ storageKey }) => removeStoredJson(storageKey));
+      setCases(loaded.cases);
+      setRosterStagingByCaseId(loaded.rosterStagingByCaseId);
+      setBaseInfoByCaseId(loaded.baseInfoByCaseId);
+      setCapacityInputsByCaseId(loaded.capacityInputsByCaseId);
+      setCapacityResultsByCaseId(loaded.capacityResultsByCaseId);
+      setFloorEfficiencyParamsByCaseId(loaded.floorEfficiencyParamsByCaseId);
+      setFloorEfficiencyResultsByCaseId(loaded.floorEfficiencyResultsByCaseId);
+      setCostInputsByCaseId(loaded.costInputsByCaseId);
+      setCostResultsByCaseId(loaded.costResultsByCaseId);
+      setCurrentCaseId(nextCurrentCaseId);
+      setModuleSaveStatusByCaseId({});
+      return { caseCount: loaded.cases.length };
     }
 
     setCases((currentCases) => {
       const mergedCases = [...currentCases];
 
-      loadedCases.forEach((loadedCase) => {
+      loaded.cases.forEach((loadedCase) => {
         const existingIndex = mergedCases.findIndex((item) => (
           item.id === loadedCase.id || (item.code && loadedCase.code && item.code === loadedCase.code)
         ));
@@ -9574,15 +9861,16 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
 
       return mergedCases;
     });
-    setRosterStagingByCaseId((current) => ({
-      ...current,
-      ...loadedRosterStaging,
-    }));
-    setBaseInfoByCaseId((current) => ({
-      ...current,
-      ...loadedBaseInfo,
-    }));
-    setCurrentCaseId((current) => current || loadedCases[0]?.id || "");
+    setRosterStagingByCaseId((current) => ({ ...current, ...loaded.rosterStagingByCaseId }));
+    setBaseInfoByCaseId((current) => ({ ...current, ...loaded.baseInfoByCaseId }));
+    setCapacityInputsByCaseId((current) => ({ ...current, ...loaded.capacityInputsByCaseId }));
+    setCapacityResultsByCaseId((current) => ({ ...current, ...loaded.capacityResultsByCaseId }));
+    setFloorEfficiencyParamsByCaseId((current) => ({ ...current, ...loaded.floorEfficiencyParamsByCaseId }));
+    setFloorEfficiencyResultsByCaseId((current) => ({ ...current, ...loaded.floorEfficiencyResultsByCaseId }));
+    setCostInputsByCaseId((current) => ({ ...current, ...loaded.costInputsByCaseId }));
+    setCostResultsByCaseId((current) => ({ ...current, ...loaded.costResultsByCaseId }));
+    setCurrentCaseId((current) => current || loaded.cases[0]?.id || "");
+    return { caseCount: loaded.cases.length };
   };
 
   const handleGoToCases = () => {

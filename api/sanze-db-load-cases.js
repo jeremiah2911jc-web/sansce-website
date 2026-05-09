@@ -7,8 +7,12 @@ import {
   toText,
 } from "./_sanze-db-route-helpers.js";
 
+function asJsonRecord(value) {
+  return isPlainRecord(value) ? value : {};
+}
+
 function buildCaseFromRow(row) {
-  const rawJson = isPlainRecord(row.raw_json) ? row.raw_json : {};
+  const rawJson = asJsonRecord(row.raw_json);
   const localCaseId = toText(rawJson.id) || toText(rawJson.local_case_id) || `db-${row.id}`;
 
   return {
@@ -27,6 +31,10 @@ function buildCaseFromRow(row) {
 }
 
 function buildRosterFromRow(row) {
+  const landRows = asArray(row.land_rows);
+  const buildingRows = asArray(row.building_rows);
+  const partyGroups = asArray(row.pg_groups);
+
   return {
     dbRosterId: row.id,
     fileName: row.source_filename || "",
@@ -34,17 +42,20 @@ function buildRosterFromRow(row) {
     sourceType: row.source_type || "",
     importedAt: row.imported_at || "",
     updatedAt: row.updated_at || "",
-    landRights: asArray(row.land_rows),
-    buildingRights: asArray(row.building_rows),
-    partyGroups: asArray(row.pg_groups),
-    summary: isPlainRecord(row.summary_json) ? row.summary_json : {},
+    landRights: landRows,
+    landRows,
+    buildingRights: buildingRows,
+    buildingRows,
+    partyGroups,
+    pgGroups: partyGroups,
+    summary: asJsonRecord(row.summary_json),
     versionHistory: asArray(row.version_history),
     priceUpdateHistory: asArray(row.price_update_history),
   };
 }
 
 function buildBaseInfoFromRow(row) {
-  const rawJson = isPlainRecord(row.base_info_json) ? row.base_info_json : {};
+  const rawJson = asJsonRecord(row.base_info_json);
 
   return {
     ...rawJson,
@@ -55,6 +66,64 @@ function buildBaseInfoFromRow(row) {
     dbBaseInfoId: row.id,
     dbSyncedAt: row.updated_at || row.created_at || "",
   };
+}
+
+function buildCapacityFromRow(row) {
+  const inputs = asJsonRecord(row.inputs_json);
+  const results = asJsonRecord(row.results_json);
+  const tdrScoring = asJsonRecord(row.tdr_scoring_json);
+  const tdrScoringSummary = asJsonRecord(row.tdr_scoring_summary_json);
+
+  return {
+    inputs: {
+      ...inputs,
+      tdrScoring: isPlainRecord(inputs.tdrScoring) ? inputs.tdrScoring : tdrScoring,
+    },
+    results: {
+      ...results,
+      tdrScoringSummary: isPlainRecord(results.tdrScoringSummary)
+        ? results.tdrScoringSummary
+        : tdrScoringSummary,
+    },
+  };
+}
+
+function buildFloorEfficiencyFromRow(row) {
+  return {
+    params: asJsonRecord(row.params_json),
+    results: asJsonRecord(row.results_json),
+  };
+}
+
+function buildCostFromRow(row) {
+  return {
+    inputs: asJsonRecord(row.inputs_json),
+    results: asJsonRecord(row.results_json),
+  };
+}
+
+function mapRowsByLocalCaseId(rows, dbCaseIdToLocalId, buildValue) {
+  const entries = {};
+  asArray(rows).forEach((row) => {
+    const localCaseId = dbCaseIdToLocalId.get(row.case_id);
+    if (!localCaseId || entries[localCaseId] !== undefined) {
+      return;
+    }
+    entries[localCaseId] = buildValue(row);
+  });
+  return entries;
+}
+
+function splitPairedRows(rowsByCaseId, inputKey, resultKey) {
+  const inputsByCaseId = {};
+  const resultsByCaseId = {};
+
+  Object.entries(rowsByCaseId).forEach(([caseId, value]) => {
+    inputsByCaseId[caseId] = value[inputKey] ?? {};
+    resultsByCaseId[caseId] = value[resultKey] ?? {};
+  });
+
+  return { inputsByCaseId, resultsByCaseId };
 }
 
 export default async function handler(request, response) {
@@ -91,47 +160,85 @@ export default async function handler(request, response) {
 
     let rosterRows = [];
     let baseInfoRows = [];
+    let capacityRows = [];
+    let floorEfficiencyRows = [];
+    let costRows = [];
 
     if (dbCaseIds.length) {
-      const [{ data: loadedRosterRows, error: rosterError }, { data: loadedBaseInfoRows, error: baseInfoError }] = await Promise.all([
+      const [
+        { data: loadedRosterRows, error: rosterError },
+        { data: loadedBaseInfoRows, error: baseInfoError },
+        { data: loadedCapacityRows, error: capacityError },
+        { data: loadedFloorEfficiencyRows, error: floorEfficiencyError },
+        { data: loadedCostRows, error: costError },
+      ] = await Promise.all([
         supabase
           .from("sanze_roster_staging")
           .select("*")
-          .in("case_id", dbCaseIds),
+          .in("case_id", dbCaseIds)
+          .order("updated_at", { ascending: false }),
         supabase
           .from("sanze_base_info")
           .select("*")
-          .in("case_id", dbCaseIds),
+          .in("case_id", dbCaseIds)
+          .order("updated_at", { ascending: false }),
+        supabase
+          .from("sanze_capacity_data")
+          .select("*")
+          .in("case_id", dbCaseIds)
+          .order("updated_at", { ascending: false }),
+        supabase
+          .from("sanze_floor_efficiency_data")
+          .select("*")
+          .in("case_id", dbCaseIds)
+          .order("updated_at", { ascending: false }),
+        supabase
+          .from("sanze_cost_data")
+          .select("*")
+          .in("case_id", dbCaseIds)
+          .order("updated_at", { ascending: false }),
       ]);
 
-      if (rosterError) {
-        throw rosterError;
-      }
-
-      if (baseInfoError) {
-        throw baseInfoError;
+      if (rosterError || baseInfoError || capacityError || floorEfficiencyError || costError) {
+        throw rosterError || baseInfoError || capacityError || floorEfficiencyError || costError;
       }
 
       rosterRows = asArray(loadedRosterRows);
       baseInfoRows = asArray(loadedBaseInfoRows);
+      capacityRows = asArray(loadedCapacityRows);
+      floorEfficiencyRows = asArray(loadedFloorEfficiencyRows);
+      costRows = asArray(loadedCostRows);
     }
 
-    const rosterStagingByCaseId = Object.fromEntries(
-      rosterRows
-        .map((row) => [dbCaseIdToLocalId.get(row.case_id), buildRosterFromRow(row)])
-        .filter(([caseId]) => Boolean(caseId)),
-    );
-    const baseInfoByCaseId = Object.fromEntries(
-      baseInfoRows
-        .map((row) => [dbCaseIdToLocalId.get(row.case_id), buildBaseInfoFromRow(row)])
-        .filter(([caseId]) => Boolean(caseId)),
-    );
+    const rosterStagingByCaseId = mapRowsByLocalCaseId(rosterRows, dbCaseIdToLocalId, buildRosterFromRow);
+    const baseInfoByCaseId = mapRowsByLocalCaseId(baseInfoRows, dbCaseIdToLocalId, buildBaseInfoFromRow);
+    const capacityByCaseId = mapRowsByLocalCaseId(capacityRows, dbCaseIdToLocalId, buildCapacityFromRow);
+    const floorEfficiencyByCaseId = mapRowsByLocalCaseId(floorEfficiencyRows, dbCaseIdToLocalId, buildFloorEfficiencyFromRow);
+    const costByCaseId = mapRowsByLocalCaseId(costRows, dbCaseIdToLocalId, buildCostFromRow);
+    const {
+      inputsByCaseId: capacityInputsByCaseId,
+      resultsByCaseId: capacityResultsByCaseId,
+    } = splitPairedRows(capacityByCaseId, "inputs", "results");
+    const {
+      inputsByCaseId: floorEfficiencyParamsByCaseId,
+      resultsByCaseId: floorEfficiencyResultsByCaseId,
+    } = splitPairedRows(floorEfficiencyByCaseId, "params", "results");
+    const {
+      inputsByCaseId: costInputsByCaseId,
+      resultsByCaseId: costResultsByCaseId,
+    } = splitPairedRows(costByCaseId, "inputs", "results");
 
     sendJson(response, 200, {
       ok: true,
       cases,
       rosterStagingByCaseId,
       baseInfoByCaseId,
+      capacityInputsByCaseId,
+      capacityResultsByCaseId,
+      floorEfficiencyParamsByCaseId,
+      floorEfficiencyResultsByCaseId,
+      costInputsByCaseId,
+      costResultsByCaseId,
       loadedAt: new Date().toISOString(),
     });
   } catch {
