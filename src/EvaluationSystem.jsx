@@ -1497,6 +1497,7 @@ function DatabaseConnectionStatus() {
     status: "checking",
     label: "檢查中",
     detail: "目前仍使用本機測試資料。",
+    description: "第一階段僅檢查 Supabase Vite env 與 API 可達性，尚未啟用案件資料同步。",
   });
 
   useEffect(() => {
@@ -1517,7 +1518,7 @@ function DatabaseConnectionStatus() {
     <section className="eval-module-section eval-database-status">
       <div className="eval-section-head">
         <h4>資料庫連線狀態</h4>
-        <p>第一階段僅檢查 Supabase Vite env 與 API 可達性，尚未啟用資料同步。</p>
+        <p>{connectionState.description || "第一階段僅檢查 Supabase Vite env 與 API 可達性，尚未啟用案件資料同步。"}</p>
       </div>
       <div className="eval-database-status__body">
         <article data-status={connectionState.status}>

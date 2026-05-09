@@ -2182,6 +2182,10 @@ main {
   color: var(--green-900);
 }
 
+.eval-database-status__body article[data-status="rls-protected"] strong {
+  color: var(--green-900);
+}
+
 .eval-database-status__body article[data-status="error"] strong {
   color: #b42318;
 }
