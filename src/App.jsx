@@ -245,7 +245,6 @@ export default function App() {
                   <span>暫不公開</span>
                 </button>
               </div>
-              <p className="system-card__status">目前僅開放三策指定管理者測試，正式版將前端接入授權與帳號管理。</p>
             </article>
           </div>
         </section>
