@@ -2190,6 +2190,59 @@ main {
   color: #b42318;
 }
 
+.eval-database-sync {
+  border-color: rgba(19, 92, 73, 0.14);
+  background: linear-gradient(180deg, #fbfdfc 0%, #ffffff 100%);
+}
+
+.eval-database-sync-notes {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding-left: 18px;
+  color: var(--gray-700);
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+.eval-database-sync-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.eval-database-sync-actions button {
+  min-height: 38px;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.eval-database-sync-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.eval-database-sync-message {
+  margin: 12px 0 0;
+  border-radius: 12px;
+  background: rgba(19, 92, 73, 0.08);
+  color: var(--green-900);
+  padding: 10px 12px;
+  font-size: 0.8rem;
+  font-weight: 900;
+  line-height: 1.5;
+}
+
+.eval-database-sync-message--error {
+  background: rgba(154, 52, 18, 0.08);
+  color: #9a3412;
+}
+
 .eval-empty-state {
   display: block;
   border-radius: 12px;
@@ -4618,6 +4671,7 @@ main {
 
   .eval-local-test-tools__body button,
   .eval-import-summary button,
+  .eval-database-sync-actions button,
   .eval-roster-maintenance-actions button {
     width: 100%;
   }

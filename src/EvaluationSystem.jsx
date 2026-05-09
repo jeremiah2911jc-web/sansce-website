@@ -1492,6 +1492,19 @@ function LocalDataImportConfirmModal({ importConfirmation, onCancel, onContinue,
   );
 }
 
+async function readApiJson(response) {
+  const text = await response.text();
+  if (!text) {
+    return {};
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return {};
+  }
+}
+
 function DatabaseConnectionStatus() {
   const [connectionState, setConnectionState] = useState({
     status: "checking",
@@ -1534,6 +1547,146 @@ function DatabaseConnectionStatus() {
   );
 }
 
+function DatabaseSyncControls({
+  currentCase,
+  rosterStagingByCaseId,
+  baseInfoByCaseId,
+  onLoadDatabaseCases,
+}) {
+  const [syncState, setSyncState] = useState({
+    status: "idle",
+    message: "",
+    error: "",
+    backendConfigured: null,
+  });
+  const isBusy = syncState.status === "syncing" || syncState.status === "loading";
+  const isBackendUnavailable = syncState.backendConfigured === false;
+
+  const handleSyncCurrentCase = async () => {
+    if (!currentCase) {
+      setSyncState({
+        status: "error",
+        message: "",
+        error: "請先建立或選取案件，再同步到資料庫。",
+        backendConfigured: syncState.backendConfigured,
+      });
+      return;
+    }
+
+    setSyncState((current) => ({ ...current, status: "syncing", message: "", error: "" }));
+
+    try {
+      const response = await fetch("/api/sanze-db-sync-case", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          case: currentCase,
+          rosterStaging: rosterStagingByCaseId[currentCase.id] ?? null,
+          baseInfo: baseInfoByCaseId[currentCase.id] ?? {},
+        }),
+      });
+      const payload = await readApiJson(response);
+
+      if (!response.ok || !payload.ok) {
+        const isNotConfigured = payload.code === "DB_SYNC_NOT_CONFIGURED";
+        setSyncState({
+          status: "error",
+          message: "",
+          error: payload.message || "資料庫同步失敗，目前仍使用本機測試資料。",
+          backendConfigured: isNotConfigured ? false : syncState.backendConfigured,
+        });
+        return;
+      }
+
+      setSyncState({
+        status: "success",
+        message: `已同步目前案件到資料庫：${payload.syncedTables?.join("、") || "核心資料表"}。`,
+        error: "",
+        backendConfigured: true,
+      });
+    } catch {
+      setSyncState({
+        status: "error",
+        message: "",
+        error: "資料庫同步失敗，目前仍使用本機測試資料。",
+        backendConfigured: syncState.backendConfigured,
+      });
+    }
+  };
+
+  const handleLoadDatabaseCases = async () => {
+    setSyncState((current) => ({ ...current, status: "loading", message: "", error: "" }));
+
+    try {
+      const response = await fetch("/api/sanze-db-load-cases", {
+        method: "GET",
+        credentials: "include",
+      });
+      const payload = await readApiJson(response);
+
+      if (!response.ok || !payload.ok) {
+        const isNotConfigured = payload.code === "DB_SYNC_NOT_CONFIGURED";
+        setSyncState({
+          status: "error",
+          message: "",
+          error: payload.message || "資料庫載入失敗，目前仍保留本機測試資料。",
+          backendConfigured: isNotConfigured ? false : syncState.backendConfigured,
+        });
+        return;
+      }
+
+      onLoadDatabaseCases(payload);
+      setSyncState({
+        status: "success",
+        message: `已從資料庫載入 ${payload.cases?.length ?? 0} 筆案件，並合併到本機測試資料。`,
+        error: "",
+        backendConfigured: true,
+      });
+    } catch {
+      setSyncState({
+        status: "error",
+        message: "",
+        error: "資料庫載入失敗，目前仍保留本機測試資料。",
+        backendConfigured: syncState.backendConfigured,
+      });
+    }
+  };
+
+  return (
+    <section className="eval-module-section eval-database-sync">
+      <div className="eval-section-head">
+        <h4>資料庫同步測試</h4>
+        <p>資料庫同步目前為第一階段測試：目前仍以本機測試資料為主，可手動同步目前案件與清冊，或從資料庫載入案件列表。</p>
+      </div>
+      <ul className="eval-database-sync-notes">
+        <li>目前仍以本機測試資料為主。</li>
+        <li>可手動將目前案件與清冊同步到資料庫。</li>
+        <li>可從資料庫載入案件列表，並合併到本機測試資料。</li>
+        <li>尚未啟用完整多人權限與正式資料流程。</li>
+        <li>容積、坪效、成本同步將在下一階段開放。</li>
+      </ul>
+      {isBackendUnavailable && (
+        <p className="eval-database-sync-message eval-database-sync-message--error">
+          後端資料庫同步尚未設定，請設定 SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY。
+        </p>
+      )}
+      <div className="eval-database-sync-actions">
+        <button type="button" onClick={handleSyncCurrentCase} disabled={isBusy || isBackendUnavailable || !currentCase}>
+          同步目前案件到資料庫
+        </button>
+        <button type="button" onClick={handleLoadDatabaseCases} disabled={isBusy || isBackendUnavailable}>
+          從資料庫載入案件列表
+        </button>
+      </div>
+      {syncState.message && <p className="eval-database-sync-message">{syncState.message}</p>}
+      {syncState.error && <p className="eval-database-sync-message eval-database-sync-message--error">{syncState.error}</p>}
+    </section>
+  );
+}
+
 function CaseManagementModule({
   accessProfile,
   cases,
@@ -1553,6 +1706,7 @@ function CaseManagementModule({
   onSelectCase,
   onClearLocalTestData,
   onImportLocalTestData,
+  onLoadDatabaseCases,
 }) {
   const [caseForm, setCaseForm] = useState(defaultCaseForm);
   const [editingCaseId, setEditingCaseId] = useState("");
@@ -1976,6 +2130,12 @@ function CaseManagementModule({
       </section>
 
       <DatabaseConnectionStatus />
+      <DatabaseSyncControls
+        currentCase={currentCase}
+        rosterStagingByCaseId={rosterStagingByCaseId}
+        baseInfoByCaseId={baseInfoByCaseId}
+        onLoadDatabaseCases={onLoadDatabaseCases}
+      />
 
       <CaseDeleteConfirmModal
         deleteConfirmation={deleteConfirmation}
@@ -8526,6 +8686,7 @@ function ModuleContent({
   onSaveModuleData,
   onClearLocalTestData,
   onImportLocalTestData,
+  onLoadDatabaseCases,
   onGoToCases,
 }) {
   if (module.type === "paths") {
@@ -8571,6 +8732,7 @@ function ModuleContent({
         onSelectCase={onSelectCase}
         onClearLocalTestData={onClearLocalTestData}
         onImportLocalTestData={onImportLocalTestData}
+        onLoadDatabaseCases={onLoadDatabaseCases}
       />
     );
   }
@@ -9380,6 +9542,49 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     setModuleSaveStatusByCaseId({});
   };
 
+  const handleLoadDatabaseCases = (payload) => {
+    const loadedCases = Array.isArray(payload?.cases) ? payload.cases : [];
+    const loadedRosterStaging = normalizeRosterStagingByCaseId(payload?.rosterStagingByCaseId);
+    const loadedBaseInfo = isPlainRecord(payload?.baseInfoByCaseId)
+      ? payload.baseInfoByCaseId
+      : {};
+
+    if (!loadedCases.length) {
+      return;
+    }
+
+    setCases((currentCases) => {
+      const mergedCases = [...currentCases];
+
+      loadedCases.forEach((loadedCase) => {
+        const existingIndex = mergedCases.findIndex((item) => (
+          item.id === loadedCase.id || (item.code && loadedCase.code && item.code === loadedCase.code)
+        ));
+
+        if (existingIndex >= 0) {
+          mergedCases[existingIndex] = {
+            ...mergedCases[existingIndex],
+            ...loadedCase,
+          };
+          return;
+        }
+
+        mergedCases.push(loadedCase);
+      });
+
+      return mergedCases;
+    });
+    setRosterStagingByCaseId((current) => ({
+      ...current,
+      ...loadedRosterStaging,
+    }));
+    setBaseInfoByCaseId((current) => ({
+      ...current,
+      ...loadedBaseInfo,
+    }));
+    setCurrentCaseId((current) => current || loadedCases[0]?.id || "");
+  };
+
   const handleGoToCases = () => {
     setActiveModuleId("case-management");
   };
@@ -9535,6 +9740,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
             onSaveModuleData={handleSaveModuleData}
             onClearLocalTestData={handleClearLocalTestData}
             onImportLocalTestData={handleImportLocalTestData}
+            onLoadDatabaseCases={handleLoadDatabaseCases}
             onGoToCases={handleGoToCases}
           />
         </section>
