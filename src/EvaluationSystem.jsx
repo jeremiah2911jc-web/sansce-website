@@ -9296,17 +9296,16 @@ function EvaluationLogin({ errorMessage, isChecking, isSubmitting, onSubmit }) {
           <p className="eval-kicker">SANZE SYSTEM TEST</p>
           <h1>開發評估系統</h1>
           <p>
-            本系統目前為三策內部授權測試，未開放公開使用。指定管理者可使用核發的 email 與測試密碼登入，正式販售前仍需接入正式 Auth、帳號授權資料庫、單一設備綁定、session 紀錄、audit log、API 權限驗證、customer data isolation 與 RLS 或後端權限檢查。
+            本系統目前為三策內部授權測試，未開放公開使用。
           </p>
         </div>
 
         <aside className="eval-login-card" aria-label="三策管理者測試登入">
           <LockKeyhole aria-hidden="true" size={34} />
           <h2>管理者測試登入</h2>
-          <p>密碼不會寫在前端程式碼中；測試帳號、密碼雜湊、salt 與 session secret 需在 Vercel Environment Variables 設定。</p>
           <form className="eval-auth-form" onSubmit={handleSubmit}>
             <label>
-              <span>Email</span>
+              <span>EMAIL</span>
               <input
                 autoComplete="username"
                 inputMode="email"
@@ -9319,12 +9318,12 @@ function EvaluationLogin({ errorMessage, isChecking, isSubmitting, onSubmit }) {
               />
             </label>
             <label>
-              <span>Password</span>
+              <span>PASSWORD</span>
               <input
                 autoComplete="current-password"
                 name="password"
                 onChange={(event) => setPassword(event.target.value)}
-                placeholder="請輸入測試密碼"
+                placeholder="請輸入密碼"
                 type="password"
                 value={password}
                 required
