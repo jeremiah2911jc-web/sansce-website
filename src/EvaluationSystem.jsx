@@ -31,6 +31,14 @@ import {
   roundRecordNumbers,
   sqmToPing,
 } from "./evaluationPrecision.js";
+import {
+  buildAssessedCurrentValueSummaryFromLandRows,
+  buildLandIdentity,
+  buildLotIdentityKey,
+  buildUniqueLandRows,
+  getLandDisplayLabel,
+  normalizeLandKeyPart,
+} from "./landIdentity.js";
 import { createRosterWorkbookBlob } from "./rosterXlsxExporter.js";
 
 const defaultCaseForm = {
@@ -3019,14 +3027,13 @@ function getRosterFieldValue(row, aliases, fallbackKeywords = []) {
 }
 
 function normalizeLandRightLocationFields(row) {
-  const city = normalizeCellValue(row?.city || row?.["縣市"] || row?.county);
-  const district = normalizeCellValue(row?.district || row?.["行政區"] || row?.town);
-  const section = normalizeCellValue(row?.section || row?.["段別"] || row?.["地段"]);
-  const subsection = normalizeCellValue(row?.subsection || row?.["小段"]);
-  const lotNumber = normalizeCellValue(row?.lotNumber || row?.landNumber || row?.["地號"]);
-  const landNumber = normalizeCellValue(row?.landNumber || row?.lotNumber || row?.["地號"]);
-
-  return {
+  const city = normalizeLandKeyPart(row?.city || row?.["縣市"] || row?.county);
+  const district = normalizeLandKeyPart(row?.district || row?.["行政區"] || row?.town);
+  const section = normalizeLandKeyPart(row?.section || row?.["段別"] || row?.["地段"]);
+  const subsection = normalizeLandKeyPart(row?.subsection || row?.["小段"]);
+  const lotNumber = normalizeLandKeyPart(row?.lotNumber || row?.landNumber || row?.parcelNumber || row?.["地號"]);
+  const landNumber = normalizeLandKeyPart(row?.landNumber || row?.lotNumber || row?.parcelNumber || row?.["地號"]);
+  const normalizedRow = {
     ...row,
     city,
     district,
@@ -3034,6 +3041,16 @@ function normalizeLandRightLocationFields(row) {
     subsection,
     lotNumber,
     landNumber,
+  };
+  const identity = buildLandIdentity(normalizedRow);
+
+  return {
+    ...normalizedRow,
+    landIdentityKey: identity.key,
+    lotIdentityKey: identity.key,
+    landDisplayLabel: identity.displayLabel,
+    landIdentityMissingParts: identity.missingParts,
+    landIdentityFallback: identity.hasFallbackRisk,
   };
 }
 
@@ -3096,12 +3113,29 @@ function normalizeRosterBuildingRightRow(row, index = 0) {
     ...row,
     rowId,
     buildingRightRowId: normalizeCellValue(row?.buildingRightRowId) || rowId,
-    city: normalizeCellValue(row?.city || row?.["縣市"] || row?.county),
-    district: normalizeCellValue(row?.district || row?.["行政區"] || row?.town),
-    section: normalizeCellValue(row?.section || row?.["段別"] || row?.["地段"]),
-    subsection: normalizeCellValue(row?.subsection || row?.["小段"]),
-    lotNumber: normalizeCellValue(row?.lotNumber || row?.landNumber || row?.relatedLandNumber || row?.["地號"]),
+    city: normalizeLandKeyPart(row?.city || row?.["縣市"] || row?.county),
+    district: normalizeLandKeyPart(row?.district || row?.["行政區"] || row?.town),
+    section: normalizeLandKeyPart(row?.section || row?.["段別"] || row?.["地段"]),
+    subsection: normalizeLandKeyPart(row?.subsection || row?.["小段"]),
+    lotNumber: normalizeLandKeyPart(row?.lotNumber || row?.landNumber || row?.relatedLandNumber || row?.parcelNumber || row?.["地號"]),
+    relatedLandNumber: normalizeLandKeyPart(row?.relatedLandNumber || row?.lotNumber || row?.landNumber || row?.parcelNumber || row?.["地號"]),
     buildingNumber: normalizeCellValue(row?.buildingNumber || row?.["建號"]),
+    relatedLandIdentityKey: buildLotIdentityKey({
+      ...row,
+      city: row?.city || row?.["縣市"] || row?.county,
+      district: row?.district || row?.["行政區"] || row?.town,
+      section: row?.section || row?.["段別"] || row?.["地段"],
+      subsection: row?.subsection || row?.["小段"],
+      lotNumber: row?.lotNumber || row?.landNumber || row?.relatedLandNumber || row?.parcelNumber || row?.["地號"],
+    }),
+    landDisplayLabel: getLandDisplayLabel({
+      ...row,
+      city: row?.city || row?.["縣市"] || row?.county,
+      district: row?.district || row?.["行政區"] || row?.town,
+      section: row?.section || row?.["段別"] || row?.["地段"],
+      subsection: row?.subsection || row?.["小段"],
+      lotNumber: row?.lotNumber || row?.landNumber || row?.relatedLandNumber || row?.parcelNumber || row?.["地號"],
+    }),
     sourceType: normalizeCellValue(row?.sourceType),
     sourceFilename: normalizeCellValue(row?.sourceFilename || row?.sourceFile || row?.fileName),
     sourcePage: normalizeCellValue(row?.sourcePage),
@@ -3583,7 +3617,7 @@ function createRosterIssue(type, severity, message, rows = []) {
 
 function buildPartyPreview(landRights, buildingRights) {
   const issues = [];
-  const landNumbers = new Set(landRights.map((row) => row.landNumber).filter(Boolean));
+  const landIdentityKeys = new Set(landRights.map((row) => buildLotIdentityKey(row)).filter(Boolean));
   const suspectedGroups = new Map();
   const namesByReference = new Map();
   const rowsByIdentity = new Map();
@@ -3612,7 +3646,7 @@ function buildPartyPreview(landRights, buildingRights) {
     if (referenceId) nameGroup.references.add(referenceId);
     if (row.landRightRowId) {
       nameGroup.landRows.push(row.landRightRowId);
-      if (row.landNumber) nameGroup.landNumbers.add(row.landNumber);
+      if (buildLotIdentityKey(row)) nameGroup.landNumbers.add(getLandDisplayLabel(row));
     }
     if (row.buildingRightRowId) {
       nameGroup.buildingRows.push(row.buildingRightRowId);
@@ -3644,7 +3678,7 @@ function buildPartyPreview(landRights, buildingRights) {
     group.maskedNames.add(row.ownerName);
     if (row.landRightRowId) {
       group.landRows.push(row.landRightRowId);
-      if (row.landNumber) group.landNumbers.add(row.landNumber);
+      if (buildLotIdentityKey(row)) group.landNumbers.add(getLandDisplayLabel(row));
     }
     if (row.buildingRightRowId) {
       group.buildingRows.push(row.buildingRightRowId);
@@ -3707,8 +3741,8 @@ function buildPartyPreview(landRights, buildingRights) {
     if (row.buildingNumber && !row.relatedLandNumber) {
       issues.push(createRosterIssue("建物缺對應地號", "中", "建物缺少對應地號，後續土地 / 建物串接可能失敗。", [row.buildingRightRowId]));
     }
-    if (row.relatedLandNumber && !landNumbers.has(row.relatedLandNumber)) {
-      issues.push(createRosterIssue("建物地號未匹配", "中", "建物對應地號未出現在土地清冊。", [row.buildingRightRowId]));
+    if (row.relatedLandNumber && !landIdentityKeys.has(buildLotIdentityKey(row))) {
+      issues.push(createRosterIssue("建物地籍未匹配", "中", "建物對應地籍定位未出現在土地清冊，請確認縣市、行政區、段別、小段與地號。", [row.buildingRightRowId]));
     }
   });
 
@@ -3765,27 +3799,28 @@ function buildPartyPreview(landRights, buildingRights) {
 }
 
 function buildLandShareTotalIssues(landRights) {
-  const sharesByLandNumber = new Map();
+  const sharesByLandIdentity = new Map();
 
   landRights.forEach((row) => {
-    const landNumber = normalizeCellValue(row.landNumber);
+    const landIdentityKey = buildLotIdentityKey(row);
     const shareRatio = parseRatio(row.shareNumerator, row.shareDenominator);
 
-    if (!landNumber || !Number.isFinite(shareRatio)) {
+    if (!landIdentityKey || !Number.isFinite(shareRatio)) {
       return;
     }
 
-    const group = sharesByLandNumber.get(landNumber) ?? {
+    const group = sharesByLandIdentity.get(landIdentityKey) ?? {
+      landDisplayLabel: getLandDisplayLabel(row),
       totalShareRatio: 0,
       rowIds: [],
     };
 
     group.totalShareRatio += shareRatio;
     group.rowIds.push(row.landRightRowId);
-    sharesByLandNumber.set(landNumber, group);
+    sharesByLandIdentity.set(landIdentityKey, group);
   });
 
-  return Array.from(sharesByLandNumber.entries()).flatMap(([landNumber, group]) => {
+  return Array.from(sharesByLandIdentity.values()).flatMap((group) => {
     const difference = Math.abs(group.totalShareRatio - 1);
 
     if (difference <= SHARE_TOTAL_TOLERANCE) {
@@ -3795,7 +3830,7 @@ function buildLandShareTotalIssues(landRights) {
     return createRosterIssue(
       "地號持分合計待確認",
       "中",
-      `地號「${landNumber}」持分合計為 ${formatNumber(group.totalShareRatio, 6)}，與 1 的差距超過 ${SHARE_TOTAL_TOLERANCE}，請人工確認原始分子 / 分母。`,
+      `地籍「${group.landDisplayLabel}」持分合計為 ${formatNumber(group.totalShareRatio, 6)}，與 1 的差距超過 ${SHARE_TOTAL_TOLERANCE}，請人工確認原始分子 / 分母。`,
       group.rowIds.filter(Boolean),
     );
   });
@@ -3814,7 +3849,7 @@ function buildRosterPreview(file, workbookData) {
   const { partyRows, issues: partyIssues } = buildPartyPreview(landRights, buildingRights);
   const shareTotalIssues = buildLandShareTotalIssues(landRights);
   const issues = [...partyIssues, ...shareTotalIssues];
-  const landNumbers = new Set(landRights.map((row) => row.landNumber).filter(Boolean));
+  const landNumbers = new Set(landRights.map((row) => buildLotIdentityKey(row)).filter(Boolean));
   const buildingNumbers = new Set(buildingRights.map((row) => row.buildingNumber).filter(Boolean));
   const batchId = `IMPORT-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${String(Date.now()).slice(-4)}`;
   const rosterSummary = buildRosterBaseSummary({ landRights, landRows: landRights, buildingRights, buildingRows: buildingRights });
@@ -3895,7 +3930,7 @@ function buildRosterPreviewFromPdfResult(parserResult) {
     rows: issue.rows ?? [],
   }));
   const issues = [...parserIssues, ...partyIssues, ...shareTotalIssues];
-  const landNumbers = new Set(landRights.map((row) => row.landNumber).filter(Boolean));
+  const landNumbers = new Set(landRights.map((row) => buildLotIdentityKey(row)).filter(Boolean));
   const buildingNumbers = new Set(buildingRights.map((row) => row.buildingNumber).filter(Boolean));
   const batchId = `PDF-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${String(Date.now()).slice(-4)}`;
   const rosterSummary = buildRosterBaseSummary({ landRights, landRows: landRights, buildingRights, buildingRows: buildingRights });
@@ -4036,7 +4071,7 @@ function createRosterVersionSnapshot(rosterStaging, reason) {
     importedAt: normalized.importedAt || "",
     landRightCount: getRosterLandRows(normalized).length,
     buildingRightCount: getRosterBuildingRows(normalized).length,
-    lotCount: new Set(getRosterLandRows(normalized).map((row) => row.lotNumber || row.landNumber).filter(Boolean)).size,
+    lotCount: new Set(getRosterLandRows(normalized).map((row) => buildLotIdentityKey(row)).filter(Boolean)).size,
     summary: normalized.summary || {},
     landRows: getRosterLandRows(normalized),
     buildingRows: getRosterBuildingRows(normalized),
@@ -4062,7 +4097,7 @@ function createRosterStagingFromRows({
   const { partyRows, issues: partyIssues } = buildPartyPreview(normalizedLandRows, normalizedBuildingRows);
   const shareTotalIssues = buildLandShareTotalIssues(normalizedLandRows);
   const issues = [...(baseRoster?.issues ?? []), ...extraIssues, ...partyIssues, ...shareTotalIssues];
-  const landNumbers = new Set(normalizedLandRows.map((row) => row.landNumber).filter(Boolean));
+  const landNumbers = new Set(normalizedLandRows.map((row) => buildLotIdentityKey(row)).filter(Boolean));
   const buildingNumbers = new Set(normalizedBuildingRows.map((row) => row.buildingNumber).filter(Boolean));
   const rosterSummary = buildRosterBaseSummary({
     ...baseRoster,
@@ -4135,11 +4170,7 @@ function createRosterStagingFromRows({
 
 function buildLandMergeKey(row, includeRegistrationOrder = true) {
   const parts = [
-    row.city,
-    row.district,
-    row.section,
-    row.subsection,
-    row.lotNumber || row.landNumber,
+    buildLotIdentityKey(row),
     row.ownerName,
     row.shareNumerator,
     row.shareDenominator,
@@ -4153,43 +4184,26 @@ function buildLandMergeKey(row, includeRegistrationOrder = true) {
 
 function buildBuildingMergeKey(row) {
   return [
-    row.city,
-    row.district,
-    row.section,
-    row.subsection,
-    row.lotNumber || row.relatedLandNumber,
+    buildLotIdentityKey(row),
     row.buildingNumber,
     row.ownerName,
   ].map(normalizeCellValue).join("|");
 }
 
 function buildLotValueKey(row) {
-  return [
-    row.city,
-    row.district,
-    row.section,
-    row.subsection,
-    row.lotNumber || row.landNumber,
-  ].map(normalizeCellValue).join("|");
+  return buildLotIdentityKey(row);
 }
 
 function rosterLotMatches(row, update) {
-  const rowLot = normalizeCellValue(row.lotNumber || row.landNumber);
-  const updateLot = normalizeCellValue(update.lotNumber || update.landNumber);
+  const rowKey = buildLotIdentityKey(row);
+  const updateKey = buildLotIdentityKey(update);
 
-  if (!rowLot || !updateLot || rowLot !== updateLot) {
-    return false;
-  }
-
-  return ["city", "district", "section", "subsection"].every((field) => {
-    const updateValue = normalizeCellValue(update[field]);
-    return !updateValue || normalizeCellValue(row[field]) === updateValue;
-  });
+  return Boolean(rowKey && updateKey && rowKey === updateKey);
 }
 
 function hasCompleteLandMergeKey(row) {
   return [
-    row.lotNumber || row.landNumber,
+    buildLotIdentityKey(row),
     row.ownerName,
     row.shareNumerator,
     row.shareDenominator,
@@ -4198,7 +4212,7 @@ function hasCompleteLandMergeKey(row) {
 
 function hasCompleteBuildingMergeKey(row) {
   return [
-    row.lotNumber || row.relatedLandNumber,
+    buildLotIdentityKey(row),
     row.buildingNumber,
     row.ownerName,
   ].every((value) => normalizeCellValue(value));
@@ -4544,8 +4558,8 @@ function applyPriceUpdatesFromPreview(existingRoster, incomingPreview, sourceFil
     skippedNoPriceDataCount: plan.skippedNoPriceData.length,
     unmatchedLotCount: plan.unmatchedLots.length,
     updates: historyRows,
-    skippedNoPriceDataLots: plan.skippedNoPriceData.map((row) => row.lotNumber || row.landNumber),
-    unmatchedLots: plan.unmatchedLots.map((row) => row.lotNumber || row.landNumber),
+    skippedNoPriceDataLots: plan.skippedNoPriceData.map((row) => getLandDisplayLabel(row)),
+    unmatchedLots: plan.unmatchedLots.map((row) => getLandDisplayLabel(row)),
   };
   const versionHistoryEntry = createRosterActionHistoryEntry("price-update", {
     updatedAt: now,
@@ -4685,7 +4699,7 @@ function applyRosterReimportMode(existingRoster, incomingPreview, mode, sourceFi
       sourceFilename,
       landCount: newLandCount,
       buildingCount: newBuildingCount,
-      lotCount: new Set(getRosterLandRows(normalizedIncoming).map((row) => row.lotNumber || row.landNumber).filter(Boolean)).size,
+      lotCount: new Set(getRosterLandRows(normalizedIncoming).map((row) => buildLotIdentityKey(row)).filter(Boolean)).size,
       summary: normalizedIncoming.summary || {},
       landRowsSnapshot: getRosterLandRows(normalizedIncoming),
       buildingRowsSnapshot: getRosterBuildingRows(normalizedIncoming),
@@ -4708,7 +4722,7 @@ function applyRosterReimportMode(existingRoster, incomingPreview, mode, sourceFi
   return {
     ...priceResult,
     analysis: null,
-    message: `已更新 ${priceResult.updatedLotCount} 個地號的公告現值 / 申報地價；權利人、面積與持分未變更。`,
+    message: `已更新 ${priceResult.updatedLotCount} 筆地籍資料的公告現值 / 申報地價；權利人、面積與持分未變更。`,
   };
 }
 
@@ -4847,7 +4861,7 @@ function applySupplementalImport(existingRoster, incomingPreview, mode) {
 function applyValueUpdates(existingRoster, updates) {
   const now = new Date().toLocaleString("zh-TW", { hour12: false });
   const normalizedExisting = normalizeRosterStaging(existingRoster) || createEmptyRosterRecord();
-  const normalizedUpdates = updates.filter((item) => normalizeCellValue(item.lotNumber || item.landNumber));
+  const normalizedUpdates = updates.filter((item) => buildLotIdentityKey(item));
   let updatedCount = 0;
   const historyRows = [];
   const landRows = getRosterLandRows(normalizedExisting).map((row) => {
@@ -4858,6 +4872,8 @@ function applyValueUpdates(existingRoster, updates) {
 
     updatedCount += 1;
     historyRows.push({
+      lotIdentityKey: buildLotIdentityKey(row),
+      landDisplayLabel: getLandDisplayLabel(row),
       lotNumber: row.lotNumber || row.landNumber,
       oldAnnouncedCurrentValue: row.announcedCurrentValue,
       newAnnouncedCurrentValue: normalizeCellValue(update.announcedCurrentValue) || row.announcedCurrentValue,
@@ -5034,17 +5050,8 @@ function buildRosterLatestSourceDisplay(rosterStaging, landRows, buildingRows) {
 function buildRosterBaseSummary(rosterStaging) {
   const landRows = getRosterLandRows(rosterStaging);
   const buildingRows = getRosterBuildingRows(rosterStaging);
-  const landByNumber = new Map();
-
-  landRows.forEach((row) => {
-    const landNumber = normalizeCellValue(row.landNumber);
-    if (landNumber && !landByNumber.has(landNumber)) {
-      landByNumber.set(landNumber, row);
-    }
-  });
-
-  const uniqueLandRows = Array.from(landByNumber.values());
-  const landNumbers = Array.from(landByNumber.keys());
+  const uniqueLandRows = buildUniqueLandRows(landRows);
+  const landNumbers = uniqueLandRows.map((row) => row.landDisplayLabel || getLandDisplayLabel(row));
   const areaValues = uniqueLandRows.map((row) => pickNumericValue(
     row.landAreaSqm,
     parseRosterNumber(row.landAreaRaw),
@@ -5081,93 +5088,14 @@ function buildRosterBaseSummary(rosterStaging) {
     declaredLandValueYear: buildRosterYearDisplay(uniqueLandRows, "declaredLandValueYear"),
     latestSource: buildRosterLatestSourceDisplay(rosterStaging, landRows, buildingRows),
     announcedLandValueStatus: announcedLandValueCount
-      ? `清冊已提供 ${announcedLandValueCount} 筆地號資料`
+      ? `清冊已提供 ${announcedLandValueCount} 筆地籍資料`
       : "清冊未提供",
   };
 }
 
 function buildAssessedCurrentValueSummary(rosterStaging) {
   const landRows = getRosterLandRows(rosterStaging);
-  const landByNumber = new Map();
-  const conflictLandNumbers = new Set();
-
-  landRows.forEach((row) => {
-    const landNumber = normalizeCellValue(row.landNumber);
-    if (!landNumber) {
-      return;
-    }
-
-    const landAreaSqm = pickNumericValue(
-      row.landAreaSqm,
-      parseRosterNumber(row.landAreaRaw),
-      parseRosterNumber(row.landArea),
-    );
-    const assessedCurrentValueUnit = parseRosterNumber(row.announcedCurrentValue);
-    const existing = landByNumber.get(landNumber);
-
-    if (existing) {
-      const areaDiffers = Number.isFinite(existing.landAreaSqm)
-        && Number.isFinite(landAreaSqm)
-        && Math.abs(existing.landAreaSqm - landAreaSqm) > 0.000001;
-      const unitDiffers = Number.isFinite(existing.assessedCurrentValueUnit)
-        && Number.isFinite(assessedCurrentValueUnit)
-        && Math.abs(existing.assessedCurrentValueUnit - assessedCurrentValueUnit) > 0.000001;
-
-      if (areaDiffers || unitDiffers) {
-        conflictLandNumbers.add(landNumber);
-      }
-      return;
-    }
-
-    landByNumber.set(landNumber, {
-      landNumber,
-      landAreaSqm,
-      assessedCurrentValueUnit,
-    });
-  });
-
-  const assessedCurrentValueByLot = Array.from(landByNumber.values())
-    .map((lot) => ({
-      ...lot,
-      assessedCurrentValueSubtotal: Number.isFinite(lot.landAreaSqm) && Number.isFinite(lot.assessedCurrentValueUnit)
-        ? lot.landAreaSqm * lot.assessedCurrentValueUnit
-        : null,
-    }))
-    .sort((a, b) => Number(a.landNumber) - Number(b.landNumber));
-  const completeLotCount = assessedCurrentValueByLot.filter((lot) => (
-    Number.isFinite(lot.landAreaSqm) && Number.isFinite(lot.assessedCurrentValueUnit)
-  )).length;
-  const providedLotCount = assessedCurrentValueByLot.filter((lot) => Number.isFinite(lot.assessedCurrentValueUnit)).length;
-  const assessedCurrentValueTotal = completeLotCount
-    ? assessedCurrentValueByLot.reduce((total, lot) => (
-      total + (Number.isFinite(lot.assessedCurrentValueSubtotal) ? lot.assessedCurrentValueSubtotal : 0)
-    ), 0)
-    : null;
-  const landAreaTotal = assessedCurrentValueByLot.reduce((total, lot) => (
-    total + (Number.isFinite(lot.landAreaSqm) ? lot.landAreaSqm : 0)
-  ), 0);
-  const assessedCurrentValueWeightedUnit = Number.isFinite(assessedCurrentValueTotal) && landAreaTotal > 0
-    ? assessedCurrentValueTotal / landAreaTotal
-    : null;
-  const assessedCurrentValueSourceStatus = (() => {
-    if (!assessedCurrentValueByLot.length || !providedLotCount) {
-      return "清冊未提供";
-    }
-    if (conflictLandNumbers.size) {
-      return "需人工確認";
-    }
-    if (completeLotCount !== assessedCurrentValueByLot.length) {
-      return "部分地號缺漏";
-    }
-    return `清冊已提供 ${completeLotCount} 筆地號資料`;
-  })();
-
-  return roundRecordNumbers({
-    assessedCurrentValueTotal,
-    assessedCurrentValueWeightedUnit,
-    assessedCurrentValueByLot,
-    assessedCurrentValueSourceStatus,
-  }, INTERNAL_DECIMAL_DIGITS);
+  return buildAssessedCurrentValueSummaryFromLandRows(landRows);
 }
 
 function getEffectiveCapacityInputs(capacityInputs, baseInfo) {
@@ -6469,7 +6397,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
                         {selectedImportMode.value === "replace" && "將以本次預覽清冊取代目前案件清冊，原清冊會保留到版本紀錄。"}
                         {selectedImportMode.value === "merge" && "將依地籍定位、權利人與持分比對資料，不重複新增相同列；衝突資料會保留人工確認。"}
                         {selectedImportMode.value === "new-version" && "將本次預覽清冊保存為新版本，不影響目前案件清冊。"}
-                        {selectedImportMode.value === "land-value-update" && "只更新相同地號的公告現值、申報地價與年度，不變更權利人、面積與持分。"}
+                        {selectedImportMode.value === "land-value-update" && "只更新相同地籍定位的公告現值、申報地價與年度，不變更權利人、面積與持分。"}
                       </p>
                     )}
                   </div>
@@ -6672,20 +6600,20 @@ function RosterMaintenancePanel({ currentCase, rosterStaging, onRosterStagingCha
   const updateBuildingForm = (field, value) => setBuildingForm((current) => ({ ...current, [field]: value }));
   const updateValueForm = (field, value) => setValueForm((current) => ({ ...current, [field]: value }));
   const landFormReady = Boolean(
-    normalizeCellValue(landForm.lotNumber)
+    buildLotIdentityKey(landForm)
       && parseRosterNumber(landForm.landAreaSqm) > 0
       && normalizeCellValue(landForm.ownerName)
       && parseRosterNumber(landForm.shareNumerator) > 0
       && parseRosterNumber(landForm.shareDenominator) > 0,
   );
   const buildingFormReady = Boolean(
-    normalizeCellValue(buildingForm.lotNumber)
+    buildLotIdentityKey(buildingForm)
       && normalizeCellValue(buildingForm.buildingNumber)
       && normalizeCellValue(buildingForm.ownerName)
       && parseRosterNumber(buildingForm.buildingShareDenominator) > 0,
   );
   const valueFormReady = Boolean(
-    normalizeCellValue(valueForm.lotNumber)
+    buildLotIdentityKey(valueForm)
       && (
         normalizeCellValue(valueForm.announcedCurrentValue)
         || normalizeCellValue(valueForm.declaredLandValue)
@@ -6764,12 +6692,12 @@ function RosterMaintenancePanel({ currentCase, rosterStaging, onRosterStagingCha
         trusteeName: normalizeCellValue(landForm.trusteeName),
         trustorName: normalizeCellValue(landForm.trustorName),
         ownershipType: normalizeCellValue(landForm.ownershipType) || "manual",
-        city: normalizeCellValue(landForm.city),
-        district: normalizeCellValue(landForm.district),
-        section: normalizeCellValue(landForm.section),
-        subsection: normalizeCellValue(landForm.subsection),
-        lotNumber: normalizeCellValue(landForm.lotNumber),
-        landNumber: normalizeCellValue(landForm.lotNumber),
+        city: normalizeLandKeyPart(landForm.city),
+        district: normalizeLandKeyPart(landForm.district),
+        section: normalizeLandKeyPart(landForm.section),
+        subsection: normalizeLandKeyPart(landForm.subsection),
+        lotNumber: normalizeLandKeyPart(landForm.lotNumber),
+        landNumber: normalizeLandKeyPart(landForm.lotNumber),
         landAreaSqm: roundForStorage(landAreaSqm, INTERNAL_DECIMAL_DIGITS),
         announcedCurrentValue: normalizeCellValue(landForm.announcedCurrentValue),
         announcedCurrentValueYear: normalizeCellValue(landForm.announcedCurrentValueYear),
@@ -6814,12 +6742,12 @@ function RosterMaintenancePanel({ currentCase, rosterStaging, onRosterStagingCha
       {
         rowId,
         buildingRightRowId: rowId,
-        city: normalizeCellValue(buildingForm.city),
-        district: normalizeCellValue(buildingForm.district),
-        section: normalizeCellValue(buildingForm.section),
-        subsection: normalizeCellValue(buildingForm.subsection),
-        lotNumber: normalizeCellValue(buildingForm.lotNumber),
-        relatedLandNumber: normalizeCellValue(buildingForm.lotNumber),
+        city: normalizeLandKeyPart(buildingForm.city),
+        district: normalizeLandKeyPart(buildingForm.district),
+        section: normalizeLandKeyPart(buildingForm.section),
+        subsection: normalizeLandKeyPart(buildingForm.subsection),
+        lotNumber: normalizeLandKeyPart(buildingForm.lotNumber),
+        relatedLandNumber: normalizeLandKeyPart(buildingForm.lotNumber),
         buildingNumber: normalizeCellValue(buildingForm.buildingNumber),
         buildingAddress: normalizeCellValue(buildingForm.buildingAddress),
         ownerName: normalizeCellValue(buildingForm.ownerName),
@@ -6888,6 +6816,8 @@ function RosterMaintenancePanel({ currentCase, rosterStaging, onRosterStagingCha
           section: row.section,
           subsection: row.subsection,
           lotNumber: row.lotNumber || row.landNumber,
+          lotIdentityKey: buildLotIdentityKey(row),
+          landDisplayLabel: getLandDisplayLabel(row),
           announcedCurrentValue: row.announcedCurrentValue,
           announcedCurrentValueYear: row.announcedCurrentValueYear,
           declaredLandValue: row.declaredLandValue,
@@ -6895,7 +6825,7 @@ function RosterMaintenancePanel({ currentCase, rosterStaging, onRosterStagingCha
           sourceFilename: file.name,
           notes: "由新版清冊比對地價更新",
         }))
-        .filter((row) => normalizeCellValue(row.lotNumber) && (
+        .filter((row) => buildLotIdentityKey(row) && (
           normalizeCellValue(row.announcedCurrentValue)
           || normalizeCellValue(row.announcedCurrentValueYear)
           || normalizeCellValue(row.declaredLandValue)
@@ -6911,6 +6841,8 @@ function RosterMaintenancePanel({ currentCase, rosterStaging, onRosterStagingCha
       ? valueState.updates
       : [{
         ...valueForm,
+        lotIdentityKey: buildLotIdentityKey(valueForm),
+        landDisplayLabel: getLandDisplayLabel(valueForm),
         sourceFilename: "manual-value-update",
       }];
     if (valueState.mode === "manual" && !valueFormReady) {
@@ -7071,7 +7003,7 @@ function RosterMaintenancePanel({ currentCase, rosterStaging, onRosterStagingCha
             onChange={(value) => setSupplementState((current) => ({ ...current, mode: value }))}
             options={[
               ["add-new", "只新增不存在資料"],
-              ["merge-update", "更新相同地號 / 相同權利人資料"],
+              ["merge-update", "更新相同地籍定位 / 相同權利人資料"],
               ["review-only", "全部列入人工確認，不寫入"],
             ]}
           />
@@ -7141,7 +7073,7 @@ function RosterMaintenancePanel({ currentCase, rosterStaging, onRosterStagingCha
               ["replace", "取代目前清冊", "以本次預覽清冊取代目前案件清冊。會保留舊清冊到版本紀錄，需二次確認。"],
               ["merge", "合併到目前清冊", "相同資料不重複新增；差異資料列入衝突或人工確認，不直接覆蓋。"],
               ["new-version", "建立新清冊版本", "不覆蓋目前清冊，將本次預覽清冊保存為新版本。"],
-              ["value-only", "只更新公告現值 / 申報地價", "只更新相同地號的公告現值、申報地價與年度，不改權利人、面積與持分。"],
+              ["value-only", "只更新公告現值 / 申報地價", "只更新相同地籍定位的公告現值、申報地價與年度，不改權利人、面積與持分。"],
             ]}
           />
           {reimportState.mode === "replace" && (
@@ -7357,7 +7289,7 @@ function BaseRosterSummary({ rosterStaging }) {
       <details className="eval-inline-details">
         <summary>計算方式說明</summary>
         <p>
-          土地面積以唯一地號彙整，同一地號只計算一次。公告現值總額依各地號面積與公告現值逐筆加總，單價為加權平均；系統內部保留原始精度試算。
+          土地面積以唯一地籍定位彙整，同一筆土地只計算一次。公告現值總額依各地籍資料面積與公告現值逐筆加總，單價為加權平均；系統內部保留原始精度試算。
         </p>
         <dl>
           <div>
@@ -8296,7 +8228,7 @@ function FloorEfficiencyModule({
         <DataSummaryGrid items={sourceItems} />
         <details className="eval-inline-details">
           <summary>公告現值計算方式</summary>
-          <p>公告現值總額依唯一地號逐筆加總；加權平均單價僅供判讀來源基準。後續模組引用時使用內部原始數值。</p>
+          <p>公告現值總額依唯一地籍定位逐筆加總；加權平均單價僅供判讀來源基準。後續模組引用時使用內部原始數值。</p>
         </details>
       </section>
       <section className="eval-module-section eval-linked-module">
