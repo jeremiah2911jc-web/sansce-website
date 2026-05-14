@@ -62,6 +62,43 @@ assert.equal(lowConfidence.needsManualMapping, true, "low confidence sheets shou
 assert.ok(lowConfidence.requiredMissing.includes("shareNumerator"), "missing share numerator should be reported");
 assert.ok(lowConfidence.requiredMissing.includes("shareDenominator"), "missing share denominator should be reported");
 
+function normalizeText(value) {
+  return String(value ?? "").normalize("NFKC").replace(/\s+/g, " ").trim();
+}
+
+function normalizeNumberText(value) {
+  return normalizeText(value).replace(/,/g, "");
+}
+
+function isSlashOnly(value) {
+  return /^[/／]+$/.test(normalizeText(value));
+}
+
+function parseNumber(value) {
+  const match = normalizeNumberText(value).match(/-?\d+(?:\.\d+)?/);
+  return match ? Number(match[0]) : null;
+}
+
+function numbersAreClose(value, expected, tolerance = 0.000001) {
+  const parsed = parseNumber(value);
+  return Number.isFinite(parsed) && Math.abs(parsed - expected) <= tolerance;
+}
+
+function hasShare(rows, numerator, denominator) {
+  return rows.some((row) => (
+    normalizeNumberText(row.shareNumerator) === String(numerator)
+    && normalizeNumberText(row.shareDenominator) === String(denominator)
+  ));
+}
+
+function countBadSharePartRows(rows) {
+  return rows.filter((row) => (
+    isSlashOnly(row.shareNumerator)
+    || isSlashOnly(row.shareDenominator)
+    || (normalizeText(row.shareNumerator) && !normalizeText(row.shareDenominator))
+  )).length;
+}
+
 function readUInt16(buffer, offset) {
   return buffer.readUInt16LE(offset);
 }
@@ -198,13 +235,56 @@ if (existsSync(realWorkbookPath)) {
   const realBuildingRows = applyRosterColumnMapping(realSelection.building).rows;
   assert.ok(realLandRows.length > 0, "real workbook should create land preview rows");
   assert.ok(realBuildingRows.length > 0, "real workbook should create building preview rows");
+  assert.equal(realSelection.land.name, "土地權屬清冊", "real workbook land sheet should be selected");
+  assert.equal(realSelection.building.name, "合法建物權屬清冊", "real workbook building sheet should be selected");
+
+  assert.equal(realSelection.land.mapping.section, 1, "real land section should map to the actual section column");
+  assert.equal(realSelection.land.mapping.lotNumber, 2, "real land lot number should map to the actual lot column");
+  assert.equal(realSelection.land.mapping.landAreaSqm, 3, "real land area should map to the actual area column");
+  assert.equal(realSelection.land.mapping.shareNumerator, 7, "real land share numerator should map to the split numerator column");
+  assert.equal(realSelection.land.mapping.shareDenominator, 9, "real land share denominator should skip the slash column");
+  assert.equal(realSelection.land.mapping.shareAreaSqm, 10, "real land share area should map to the ownership share area column");
+  assert.notEqual(realSelection.land.mapping.ownerName, realSelection.land.mapping.otherRightsHolder, "land ownership owner must not map to other-rights holder");
+
+  const land474Rows = realLandRows.filter((row) => normalizeText(row.section) === "丹鳳段" && normalizeNumberText(row.lotNumber) === "474");
+  assert.ok(land474Rows.length > 1, "lot 474 should carry forward to multiple ownership rows");
+  assert.ok(land474Rows.every((row) => normalizeText(row.section) === "丹鳳段"), "lot 474 rows should keep the section by carry-forward");
+  assert.ok(realLandRows.some((row) => normalizeText(row.section) === "丹鳳段" && normalizeNumberText(row.lotNumber) === "475"), "lot 475 should be parsed after lot 474");
+  assert.ok(
+    realLandRows.some((row) => normalizeNumberText(row.lotNumber) === "475" && numbersAreClose(row.landAreaSqm, 131.78)),
+    "lot 475 area should parse as 131.78 sqm",
+  );
+  assert.ok(hasShare(realLandRows, 655, 20000), "655 / 20,000 should parse to numerator 655 denominator 20000");
+  assert.ok(hasShare(realLandRows, 1, 4), "1 / 4 should parse to numerator 1 denominator 4");
+  assert.ok(
+    realLandRows.some((row) => normalizeNumberText(row.shareDenominator) === "40000" && normalizeNumberText(row.shareNumerator)),
+    "40,000 denominator rows should keep the numeric denominator instead of the slash column",
+  );
+  assert.equal(countBadSharePartRows(realLandRows), 0, "land rows should not contain missing or slash-only share parts");
+
+  assert.equal(realSelection.building.mapping.buildingNumber, 1, "real building number should map to the actual building-number column");
+  assert.equal(realSelection.building.mapping.buildingAddress, 2, "real building address should map to the actual address column");
+  assert.equal(realSelection.building.mapping.relatedLandNumber, 6, "real building related land number should map to the actual related-land column");
+  assert.equal(realSelection.building.mapping.shareNumerator, 10, "real building share numerator should map to the split numerator column");
+  assert.equal(realSelection.building.mapping.shareDenominator, 12, "real building share denominator should skip the slash column");
+  assert.equal(realSelection.building.mapping.shareAreaSqm, 13, "real building share area should map to the ownership share area column");
+  assert.notEqual(realSelection.building.mapping.ownerName, realSelection.building.mapping.otherRightsHolder, "building ownership owner must not map to other-rights holder");
+  assert.ok(realBuildingRows.some((row) => normalizeText(row.buildingNumber) && normalizeText(row.relatedLandNumber)), "building rows should include carried building number and related land number");
+  assert.ok(realBuildingRows.some((row) => normalizeText(row.shareNumerator) && normalizeText(row.shareDenominator) && normalizeText(row.shareAreaSqm)), "building rows should include share numerator, denominator, and share area");
+  assert.equal(countBadSharePartRows(realBuildingRows), 0, "building rows should not contain missing or slash-only share parts");
+
   realWorkbookSummary = {
     landSheet: realSelection.land.name,
     landMissing: realSelection.land.requiredMissing,
+    landMapping: realSelection.land.mapping,
     landPreviewRows: realLandRows.length,
+    landLot474CarryForwardRows: land474Rows.length,
+    landBadSharePartRows: countBadSharePartRows(realLandRows),
     buildingSheet: realSelection.building.name,
     buildingMissing: realSelection.building.requiredMissing,
+    buildingMapping: realSelection.building.mapping,
     buildingPreviewRows: realBuildingRows.length,
+    buildingBadSharePartRows: countBadSharePartRows(realBuildingRows),
   };
 }
 

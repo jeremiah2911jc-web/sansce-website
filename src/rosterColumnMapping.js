@@ -234,7 +234,149 @@ function buildHeaderDescriptors(rows, startIndex, endIndex) {
   return descriptors;
 }
 
-function mapFieldsFromDescriptors(descriptors, sheetType) {
+function getColumnSampleValues(rows, dataStartIndex, columnIndex, limit = 80) {
+  return (rows ?? [])
+    .slice(dataStartIndex, dataStartIndex + limit)
+    .map((row) => normalizeDisplayText(row.values?.[columnIndex]))
+    .filter(Boolean);
+}
+
+function isSlashOnly(value) {
+  return /^[/／]+$/.test(normalizeDisplayText(value));
+}
+
+function isNumericText(value) {
+  return /^-?\d[\d,]*(?:\.\d+)?$/.test(normalizeDisplayText(value));
+}
+
+function isIntegerText(value) {
+  return /^-?\d[\d,]*$/.test(normalizeDisplayText(value));
+}
+
+function hasCjkText(value) {
+  return /[\u4e00-\u9fff]/.test(normalizeDisplayText(value));
+}
+
+function ratio(count, total) {
+  return total ? count / total : 0;
+}
+
+function isMostly(values, predicate, threshold = 0.6) {
+  return ratio(values.filter(predicate).length, values.length) >= threshold;
+}
+
+function looksLikeSmallSequence(values) {
+  const numbers = values
+    .filter(isIntegerText)
+    .map((value) => Number(normalizeDisplayText(value).replace(/,/g, "")))
+    .filter((value) => Number.isFinite(value))
+    .slice(0, 12);
+
+  if (numbers.length < 4) {
+    return false;
+  }
+
+  const smallNumbers = numbers.filter((value) => value > 0 && value <= 80).length;
+  const increasingPairs = numbers.slice(1).filter((value, index) => value >= numbers[index]).length;
+  return smallNumbers / numbers.length >= 0.8 && increasingPairs / (numbers.length - 1) >= 0.8;
+}
+
+function hasNeighborShareTriplet(rows, dataStartIndex, columnIndex, direction) {
+  const slashColumn = direction === "numerator" ? columnIndex + 1 : columnIndex - 1;
+  const pairedColumn = direction === "numerator" ? columnIndex + 2 : columnIndex - 2;
+  const slashValues = getColumnSampleValues(rows, dataStartIndex, slashColumn);
+  const pairedValues = getColumnSampleValues(rows, dataStartIndex, pairedColumn);
+  return isMostly(slashValues, isSlashOnly, 0.4) && isMostly(pairedValues, isNumericText, 0.4);
+}
+
+function scoreColumnDataForField(descriptor, field, rows, dataStartIndex) {
+  const values = getColumnSampleValues(rows, dataStartIndex, descriptor.columnIndex);
+  if (!values.length) {
+    return 0;
+  }
+
+  const numericRatio = ratio(values.filter(isNumericText).length, values.length);
+  const integerRatio = ratio(values.filter(isIntegerText).length, values.length);
+  const slashRatio = ratio(values.filter(isSlashOnly).length, values.length);
+  const cjkRatio = ratio(values.filter(hasCjkText).length, values.length);
+  const decimalRatio = ratio(values.filter((value) => isNumericText(value) && normalizeDisplayText(value).includes(".")).length, values.length);
+  const sectionRatio = ratio(values.filter((value) => /段/.test(normalizeDisplayText(value))).length, values.length);
+  const averageDigitLength = values
+    .filter(isIntegerText)
+    .map((value) => normalizeDisplayText(value).replace(/[^\d]/g, "").length)
+    .reduce((total, length, _index, all) => total + length / all.length, 0);
+
+  switch (field.id) {
+    case "section":
+      return (sectionRatio >= 0.4 ? 95 : 0)
+        + (cjkRatio >= 0.4 ? 40 : 0)
+        + (numericRatio >= 0.5 ? -120 : 0);
+    case "subsection":
+      return (sectionRatio >= 0.4 ? 55 : 0) + (numericRatio >= 0.5 ? -60 : 0);
+    case "lotNumber":
+    case "relatedLandNumber":
+      return (integerRatio >= 0.5 ? 70 : 0)
+        + (looksLikeSmallSequence(values) ? -100 : 0)
+        + (decimalRatio >= 0.25 ? -90 : 0)
+        + (cjkRatio >= 0.25 ? -60 : 0);
+    case "buildingNumber":
+      return (integerRatio >= 0.5 ? 35 : 0)
+        + (averageDigitLength >= 3 ? 75 : 0)
+        + (looksLikeSmallSequence(values) ? -100 : 0)
+        + (decimalRatio >= 0.25 ? -90 : 0);
+    case "landAreaSqm":
+    case "buildingAreaSqm":
+    case "mainBuildingAreaSqm":
+    case "accessoryBuildingAreaSqm":
+    case "shareAreaSqm":
+      return (numericRatio >= 0.5 ? 70 : 0)
+        + (decimalRatio >= 0.25 ? 25 : 0)
+        + (slashRatio >= 0.3 ? -120 : 0);
+    case "ownerName":
+      return (cjkRatio >= 0.4 ? 35 : 0) + (numericRatio >= 0.4 ? -80 : 0);
+    case "shareNumerator":
+      return (numericRatio >= 0.5 ? 40 : 0)
+        + (hasNeighborShareTriplet(rows, dataStartIndex, descriptor.columnIndex, "numerator") ? 90 : 0)
+        + (slashRatio >= 0.2 ? -120 : 0);
+    case "shareDenominator":
+      return (numericRatio >= 0.5 ? 40 : 0)
+        + (hasNeighborShareTriplet(rows, dataStartIndex, descriptor.columnIndex, "denominator") ? 90 : 0)
+        + (slashRatio >= 0.2 ? -120 : 0);
+    case "shareText":
+      return (values.filter((value) => /[/／]/.test(normalizeDisplayText(value)) && !isSlashOnly(value)).length / values.length >= 0.4 ? 65 : 0)
+        + (slashRatio >= 0.3 ? -140 : 0)
+        + (numericRatio >= 0.5 ? -20 : 0);
+    default:
+      return 0;
+  }
+}
+
+function refineShareTripletMapping(mapping, fieldScores, rows, dataStartIndex) {
+  const numeratorColumn = Number(mapping.shareNumerator);
+  if (!Number.isFinite(numeratorColumn)) {
+    return;
+  }
+
+  const slashColumn = numeratorColumn + 1;
+  const denominatorColumn = numeratorColumn + 2;
+  const shareAreaColumn = numeratorColumn + 3;
+  const slashValues = getColumnSampleValues(rows, dataStartIndex, slashColumn);
+  const denominatorValues = getColumnSampleValues(rows, dataStartIndex, denominatorColumn);
+  const shareAreaValues = getColumnSampleValues(rows, dataStartIndex, shareAreaColumn);
+
+  if (isMostly(slashValues, isSlashOnly, 0.4) && isMostly(denominatorValues, isNumericText, 0.4)) {
+    mapping.shareDenominator = denominatorColumn;
+    fieldScores.shareDenominator = Math.max(fieldScores.shareDenominator ?? 0, 120);
+    delete mapping.shareText;
+    delete fieldScores.shareText;
+    if ((mapping.shareAreaSqm === undefined || mapping.shareAreaSqm === "") && isMostly(shareAreaValues, isNumericText, 0.4)) {
+      mapping.shareAreaSqm = shareAreaColumn;
+      fieldScores.shareAreaSqm = Math.max(fieldScores.shareAreaSqm ?? 0, 90);
+    }
+  }
+}
+
+function mapFieldsFromDescriptors(descriptors, sheetType, rows, dataStartIndex) {
   const group = FIELD_GROUPS[sheetType];
   const usedColumns = new Set();
   const mapping = {};
@@ -248,10 +390,12 @@ function mapFieldsFromDescriptors(descriptors, sheetType) {
   orderedFields.forEach((field) => {
     let best = { score: 0, descriptor: null };
     descriptors.forEach((descriptor) => {
-      if (!descriptor.label || usedColumns.has(descriptor.columnIndex)) {
+      if (usedColumns.has(descriptor.columnIndex)) {
         return;
       }
-      const score = scoreHeaderForField(descriptor.label, field);
+      const headerScore = scoreHeaderForField(descriptor.label, field);
+      const dataScore = scoreColumnDataForField(descriptor, field, rows, dataStartIndex);
+      const score = headerScore + dataScore;
       if (score > best.score) {
         best = { score, descriptor };
       }
@@ -263,6 +407,8 @@ function mapFieldsFromDescriptors(descriptors, sheetType) {
       usedColumns.add(best.descriptor.columnIndex);
     }
   });
+
+  refineShareTripletMapping(mapping, fieldScores, rows, dataStartIndex);
 
   return { mapping, fieldScores };
 }
@@ -280,7 +426,8 @@ function calculateMappingCoverage(mapping, sheetType) {
 
 function scoreHeaderBlock(rows, startIndex, endIndex, sheetType) {
   const descriptors = buildHeaderDescriptors(rows, startIndex, endIndex);
-  const { mapping, fieldScores } = mapFieldsFromDescriptors(descriptors, sheetType);
+  const dataStartIndex = endIndex + 1;
+  const { mapping, fieldScores } = mapFieldsFromDescriptors(descriptors, sheetType, rows, dataStartIndex);
   const coverage = calculateMappingCoverage(mapping, sheetType);
   const requiredScore = FIELD_GROUPS[sheetType].requiredFieldIds
     .reduce((total, fieldId) => total + (fieldScores[fieldId] ?? 0), 0);
@@ -291,7 +438,7 @@ function scoreHeaderBlock(rows, startIndex, endIndex, sheetType) {
   return {
     startIndex,
     endIndex,
-    dataStartIndex: endIndex + 1,
+    dataStartIndex,
     descriptors,
     mapping,
     fieldScores,
@@ -415,9 +562,13 @@ function splitShareText(value) {
     return { numerator: "", denominator: "" };
   }
   return {
-    numerator: normalizeDisplayText(match[1]),
-    denominator: normalizeDisplayText(match[2]),
+    numerator: normalizeShareNumber(match[1]),
+    denominator: normalizeShareNumber(match[2]),
   };
+}
+
+function normalizeShareNumber(value) {
+  return normalizeDisplayText(value).replace(/,/g, "");
 }
 
 function assignMappedValue(target, sheetType, fieldId, value) {
@@ -425,7 +576,12 @@ function assignMappedValue(target, sheetType, fieldId, value) {
   if (!field) {
     return;
   }
-  const normalizedValue = normalizeDisplayText(value);
+  if (["shareText", "shareNumerator", "shareDenominator"].includes(fieldId) && isSlashOnly(value)) {
+    return;
+  }
+  const normalizedValue = ["shareNumerator", "shareDenominator"].includes(fieldId)
+    ? normalizeShareNumber(value)
+    : normalizeDisplayText(value);
   field.outputHeaders.forEach((header) => {
     target[header] = normalizedValue;
   });
@@ -453,6 +609,53 @@ function rowHasOwnershipSignal(mappedRow, sheetType) {
   return group.ownershipSignalFieldIds.some((fieldId) => normalizeDisplayText(mappedRow[fieldId]));
 }
 
+function buildOwnershipDedupeKey(mappedRow, sheetType) {
+  const locationParts = sheetType === "land"
+    ? [mappedRow.city, mappedRow.district, mappedRow.section, mappedRow.subsection, mappedRow.lotNumber]
+    : [mappedRow.city, mappedRow.district, mappedRow.section, mappedRow.subsection, mappedRow.relatedLandNumber, mappedRow.buildingNumber];
+  const ownerParts = [
+    mappedRow.registrationOrder,
+    mappedRow.ownerReferenceId,
+    mappedRow.ownerName,
+    mappedRow.maskedIdentityCode,
+    mappedRow.shareNumerator,
+    mappedRow.shareDenominator,
+  ];
+  const key = [...locationParts, ...ownerParts]
+    .map((value) => normalizeDisplayText(value))
+    .join("|");
+  return key.replace(/\|/g, "") ? key : "";
+}
+
+function rowHasOtherRightsData(mappedRow) {
+  return [
+    mappedRow.otherRightsType,
+    mappedRow.otherRightsHolder,
+    mappedRow.debtor,
+    mappedRow.obligor,
+    mappedRow.amount,
+  ].some((value) => normalizeDisplayText(value));
+}
+
+function mergeSupplementalMappedRow(target, supplemental) {
+  Object.entries(supplemental).forEach(([key, value]) => {
+    if (key === "__rowNumber") {
+      return;
+    }
+    const normalizedValue = normalizeDisplayText(value);
+    if (!normalizedValue) {
+      return;
+    }
+    if (!normalizeDisplayText(target[key])) {
+      target[key] = value;
+      return;
+    }
+    if (["note", "notes"].includes(key) && !String(target[key]).includes(normalizedValue)) {
+      target[key] = `${target[key]}；${normalizedValue}`;
+    }
+  });
+}
+
 export function applyRosterColumnMapping(sheetAnalysis, mappingOverride = null) {
   if (!sheetAnalysis) {
     return { rows: [], summary: null };
@@ -467,6 +670,7 @@ export function applyRosterColumnMapping(sheetAnalysis, mappingOverride = null) 
   const dataRows = (sheetAnalysis.rows ?? []).slice(sheetAnalysis.dataStartIndex ?? 0);
   const carryForward = {};
   const mappedRows = [];
+  const rowsByOwnershipKey = new Map();
 
   dataRows.forEach((row) => {
     if (!rowHasAnyValue(row)) {
@@ -492,7 +696,16 @@ export function applyRosterColumnMapping(sheetAnalysis, mappingOverride = null) 
       return;
     }
 
+    const dedupeKey = buildOwnershipDedupeKey(mappedRow, sheetType);
+    if (dedupeKey && rowsByOwnershipKey.has(dedupeKey) && rowHasOtherRightsData(mappedRow)) {
+      mergeSupplementalMappedRow(rowsByOwnershipKey.get(dedupeKey), mappedRow);
+      return;
+    }
+
     mappedRows.push(mappedRow);
+    if (dedupeKey) {
+      rowsByOwnershipKey.set(dedupeKey, mappedRow);
+    }
   });
 
   return {

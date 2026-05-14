@@ -3210,6 +3210,49 @@ function formatShareText(numerator, denominator, fallbackValue = "") {
   return `${normalizedNumerator || "待補"} / ${normalizedDenominator || "待補"}`;
 }
 
+function isMissingSharePart(value) {
+  const text = normalizeCellValue(value);
+  return !text || text === "/" || text === "／";
+}
+
+function buildRosterRowValidationStatus({
+  rowType,
+  ownerName,
+  numberLabel,
+  numberValue,
+  section,
+  shareNumerator,
+  shareDenominator,
+  baseAreaSqm,
+  shareAreaSqm,
+  city,
+  district,
+  relatedLandNumber,
+}) {
+  const missing = [];
+  if (rowType === "land" && !normalizeCellValue(section)) missing.push("地段");
+  if (!normalizeCellValue(numberValue)) missing.push(numberLabel);
+  if (!normalizeCellValue(ownerName)) missing.push("所有權人");
+  if (isMissingSharePart(shareNumerator)) missing.push("權利範圍分子");
+  if (isMissingSharePart(shareDenominator)) missing.push("權利範圍分母");
+  if (!Number.isFinite(baseAreaSqm) && !Number.isFinite(shareAreaSqm)) {
+    missing.push(rowType === "land" ? "土地面積或持分面積" : "建物面積或持分面積");
+  }
+  if (rowType === "building" && !normalizeCellValue(relatedLandNumber)) {
+    missing.push("座落地號");
+  }
+
+  if (missing.length) {
+    return `待確認：${missing.join("、")}`;
+  }
+
+  if (!normalizeCellValue(city) || !normalizeCellValue(district)) {
+    return "待補地籍：原檔未提供縣市 / 行政區";
+  }
+
+  return "可建立疑似群組";
+}
+
 function calculateShareArea(areaSqm, numerator, denominator) {
   const ratio = parseRatio(numerator, denominator);
   return Number.isFinite(areaSqm) && Number.isFinite(ratio) ? areaSqm * ratio : null;
@@ -3572,7 +3615,19 @@ function buildLandRightRows(rows, sourceContext = {}) {
       importedAt: sourceContext.importedAt || "",
       updatedAt: sourceContext.updatedAt || sourceContext.importedAt || "",
       rowStatus: "active",
-      validationStatus: ownerName && landNumber ? "可建立疑似群組" : "待人工確認",
+      validationStatus: buildRosterRowValidationStatus({
+        rowType: "land",
+        ownerName,
+        numberLabel: "地號",
+        numberValue: landNumber,
+        section,
+        shareNumerator,
+        shareDenominator,
+        baseAreaSqm: landAreaSqm,
+        shareAreaSqm: calculatedShareAreaSqm,
+        city,
+        district,
+      }),
     };
   });
 
@@ -3672,7 +3727,20 @@ function buildBuildingRightRows(rows, sourceContext = {}) {
       importedAt: sourceContext.importedAt || "",
       updatedAt: sourceContext.updatedAt || sourceContext.importedAt || "",
       rowStatus: "active",
-      validationStatus: ownerName && buildingNumber ? "可建立疑似群組" : "待人工確認",
+      validationStatus: buildRosterRowValidationStatus({
+        rowType: "building",
+        ownerName,
+        numberLabel: "建號",
+        numberValue: buildingNumber,
+        section,
+        shareNumerator,
+        shareDenominator,
+        baseAreaSqm: buildingAreaSqm,
+        shareAreaSqm: calculatedShareAreaSqm,
+        city,
+        district,
+        relatedLandNumber: lotNumber,
+      }),
     };
   });
 
@@ -3938,6 +4006,26 @@ function countLandIdentityFallbackRows(landRows) {
   }).length;
 }
 
+function buildMissingCadastralLocationIssues(landRows) {
+  const affectedRows = landRows
+    .filter((row) => !normalizeCellValue(row.city) || !normalizeCellValue(row.district))
+    .map((row) => row.landRightRowId)
+    .filter(Boolean);
+
+  if (!affectedRows.length) {
+    return [];
+  }
+
+  return [
+    createRosterIssue(
+      "原檔未提供縣市行政區",
+      "低",
+      "此清冊未提供縣市 / 行政區欄位，系統先保留空值，不影響預覽；若需完整地籍 key，請於基地或清冊資料中補齊。",
+      affectedRows.slice(0, 20),
+    ),
+  ];
+}
+
 function buildRosterPreview(file, workbookData) {
   const importedAt = new Date().toLocaleString("zh-TW", { hour12: false });
   const sourceContext = {
@@ -3950,7 +4038,8 @@ function buildRosterPreview(file, workbookData) {
   const buildingRights = buildBuildingRightRows(workbookData.buildingRows, sourceContext);
   const { partyRows, issues: partyIssues } = buildPartyPreview(landRights, buildingRights);
   const shareTotalIssues = buildLandShareTotalIssues(landRights);
-  const issues = [...partyIssues, ...shareTotalIssues];
+  const locationIssues = buildMissingCadastralLocationIssues(landRights);
+  const issues = [...partyIssues, ...shareTotalIssues, ...locationIssues];
   const landNumbers = new Set(landRights.map((row) => buildLotIdentityKey(row)).filter(Boolean));
   const buildingNumbers = new Set(buildingRights.map((row) => row.buildingNumber).filter(Boolean));
   const fallbackLandIdentityCount = countLandIdentityFallbackRows(landRights);
@@ -5180,6 +5269,17 @@ function applyValueUpdates(existingRoster, updates) {
   };
 }
 
+function formatRosterPreviewCell(row, column) {
+  const value = row[column.key];
+  if (Array.isArray(value)) {
+    return value.join("、") || "未填";
+  }
+  if (normalizeCellValue(value)) {
+    return value;
+  }
+  return ["city", "district"].includes(column.key) ? "原檔未提供" : "未填";
+}
+
 function RosterPreviewTable({ title, description, emptyText, columns, rows }) {
   return (
     <section className="eval-module-section">
@@ -5201,7 +5301,7 @@ function RosterPreviewTable({ title, description, emptyText, columns, rows }) {
               {rows.map((row, index) => (
                 <tr key={`${title}-${row[columns[0].key] || index}`}>
                   {columns.map((column) => (
-                    <td key={column.key}>{Array.isArray(row[column.key]) ? row[column.key].join("、") || "未填" : row[column.key] || "未填"}</td>
+                    <td key={column.key}>{formatRosterPreviewCell(row, column)}</td>
                   ))}
                 </tr>
               ))}
@@ -6789,8 +6889,8 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
             </div>
             {activePreview.issues.length ? (
               <div className="eval-roster-issue-list eval-roster-issue-scroll">
-                {activePreview.issues.map((issue) => (
-                  <article key={issue.id}>
+                {activePreview.issues.map((issue, issueIndex) => (
+                  <article key={`${issue.id}-${issueIndex}`}>
                     <span data-severity={issue.severity}>{issue.severity}</span>
                     <strong>{issue.type}</strong>
                     <p>{issue.message}</p>
