@@ -47,6 +47,10 @@ import {
   getRosterColumnRequiredFieldIds,
   selectRosterSheets,
 } from "./rosterColumnMapping.js";
+import {
+  buildShareAreaQualitySummary,
+  evaluateLandShareArea,
+} from "./rosterShareAreaValidation.js";
 import { createRosterWorkbookBlob } from "./rosterXlsxExporter.js";
 
 const defaultCaseForm = {
@@ -3067,17 +3071,28 @@ function normalizeLandRightLocationFields(row) {
 
 function normalizeRosterLandRightRow(row, index = 0) {
   const locationRow = normalizeLandRightLocationFields(row);
+  const landAreaSqm = parseRosterNumber(locationRow.landAreaSqm || locationRow.landAreaRaw || locationRow["土地面積㎡"] || locationRow["土地面積"]);
+  const shareNumerator = normalizeCellValue(locationRow.shareNumerator || locationRow["持分分子"]);
+  const shareDenominator = normalizeCellValue(locationRow.shareDenominator || locationRow["持分分母"]);
+  const originalShareAreaSqm = pickNumericValue(
+    parseRosterNumber(locationRow.originalShareAreaSqm),
+    parseRosterNumber(locationRow.excelShareAreaSqm),
+  );
+  const shareAreaQuality = evaluateLandShareArea({
+    landAreaSqm,
+    shareNumerator,
+    shareDenominator,
+    originalShareAreaSqm,
+    existingShareAreaSqm: locationRow.shareAreaSqm,
+  });
   const shareRatio = pickNumericValue(
-    parseRosterNumber(locationRow.shareRatio),
-    parseRosterNumber(locationRow.calculatedShareRatio),
     parseRatio(locationRow.shareNumerator, locationRow.shareDenominator),
+    parseRosterNumber(locationRow.calculatedShareRatio),
+    parseRosterNumber(locationRow.shareRatio),
   );
-  const shareAreaSqm = pickNumericValue(
-    parseRosterNumber(locationRow.shareAreaSqm),
-    parseRosterNumber(locationRow.calculatedShareAreaSqm),
-  );
+  const shareAreaSqm = pickNumericValue(shareAreaQuality.shareAreaSqm, parseRosterNumber(locationRow.calculatedShareAreaSqm));
   const shareAreaPing = pickNumericValue(
-    parseRosterNumber(locationRow.shareAreaPing),
+    shareAreaQuality.shareAreaPing,
     parseRosterNumber(locationRow.calculatedShareAreaPing),
     Number.isFinite(shareAreaSqm) ? sqmToPing(shareAreaSqm) : null,
   );
@@ -3094,9 +3109,38 @@ function normalizeRosterLandRightRow(row, index = 0) {
     trusteeName: normalizeCellValue(locationRow.trusteeName || locationRow["受託人"]),
     trustorName: normalizeCellValue(locationRow.trustorName || locationRow["委託人"]),
     ownershipType: normalizeCellValue(locationRow.ownershipType || locationRow["權利型態"]),
+    landAreaSqm: Number.isFinite(landAreaSqm) ? roundForStorage(landAreaSqm, INTERNAL_DECIMAL_DIGITS) : "",
+    shareNumerator,
+    shareDenominator,
     shareRatio: Number.isFinite(shareRatio) ? roundForStorage(shareRatio, INTERNAL_DECIMAL_DIGITS) : "",
+    originalShareAreaSqm: Number.isFinite(shareAreaQuality.originalShareAreaSqm) ? shareAreaQuality.originalShareAreaSqm : "",
+    calculatedShareAreaSqm: Number.isFinite(shareAreaQuality.calculatedShareAreaSqm) ? shareAreaQuality.calculatedShareAreaSqm : "",
+    calculatedShareAreaPing: Number.isFinite(shareAreaQuality.calculatedShareAreaPing) ? shareAreaQuality.calculatedShareAreaPing : "",
     shareAreaSqm: Number.isFinite(shareAreaSqm) ? roundForStorage(shareAreaSqm, INTERNAL_DECIMAL_DIGITS) : "",
     shareAreaPing: Number.isFinite(shareAreaPing) ? roundForStorage(shareAreaPing, INTERNAL_DECIMAL_DIGITS) : "",
+    shareAreaSource: shareAreaQuality.shareAreaSource,
+    shareAreaValidationStatus: shareAreaQuality.shareAreaValidationStatus,
+    shareAreaDifferenceSqm: Number.isFinite(shareAreaQuality.shareAreaDifferenceSqm) ? shareAreaQuality.shareAreaDifferenceSqm : "",
+    shareAreaValidationMessages: shareAreaQuality.shareAreaValidationMessages,
+    shareAreaCanCalculate: shareAreaQuality.shareAreaCanCalculate,
+    shareAreaWithinTolerance: shareAreaQuality.shareAreaWithinTolerance,
+    shareAreaSuspectedColumnMisalignment: shareAreaQuality.shareAreaSuspectedColumnMisalignment,
+    parseStatus: normalizeCellValue(locationRow.parseStatus) || (shareAreaQuality.shareAreaValidationMessages.length ? "needs-review" : "parsed"),
+    validationMessages: Array.isArray(locationRow.validationMessages)
+      ? [...new Set([...locationRow.validationMessages, ...shareAreaQuality.shareAreaValidationMessages])]
+      : shareAreaQuality.shareAreaValidationMessages,
+    originalFields: locationRow.originalFields ?? {
+      landAreaSqm: locationRow.landAreaSqm || locationRow.landAreaRaw || locationRow["土地面積㎡"] || locationRow["土地面積"],
+      shareNumerator,
+      shareDenominator,
+      shareAreaSqm: originalShareAreaSqm,
+    },
+    computedFields: {
+      ...(locationRow.computedFields ?? {}),
+      shareRatio: Number.isFinite(shareRatio) ? roundForStorage(shareRatio, INTERNAL_DECIMAL_DIGITS) : "",
+      shareAreaSqm: shareAreaQuality.calculatedShareAreaSqm,
+      shareAreaPing: shareAreaQuality.calculatedShareAreaPing,
+    },
     announcedCurrentValue: normalizeCellValue(
       locationRow.announcedCurrentValue
         || locationRow.announcedLandValue
@@ -3537,10 +3581,14 @@ function buildLandRightRows(rows, sourceContext = {}) {
     const excelShareAreaPing = getFirstExactHeaderValue(row, ["持分面積坪"]);
     const excelShareAreaSqm = getFirstExactHeaderValue(row, ["土地持分面積㎡", "持分面積㎡"]);
     const calculatedShareRatio = parseRatio(shareNumerator, shareDenominator);
-    const calculatedShareAreaSqm = pickNumericValue(
-      parseRosterNumber(excelShareAreaSqm),
-      calculateShareArea(landAreaSqm, shareNumerator, shareDenominator),
-    );
+    const shareAreaQuality = evaluateLandShareArea({
+      landAreaSqm,
+      shareNumerator,
+      shareDenominator,
+      originalShareAreaSqm: excelShareAreaSqm,
+      existingShareAreaSqm: row.shareAreaSqm,
+    });
+    const calculatedShareAreaSqm = shareAreaQuality.calculatedShareAreaSqm;
     const ownerName = getFirstMatchingValue(row, ["地主姓名", "所有權人", "姓名", "名稱"]);
     const city = getRosterFieldValue(row, rosterImportFieldAliases.city);
     const district = getRosterFieldValue(row, rosterImportFieldAliases.district);
@@ -3582,11 +3630,19 @@ function buildLandRightRows(rows, sourceContext = {}) {
       excelShareAreaSqm,
       excelShareAreaPing,
       calculatedShareRatio: roundForStorage(calculatedShareRatio, INTERNAL_DECIMAL_DIGITS),
-      calculatedShareAreaSqm: roundForStorage(calculatedShareAreaSqm, INTERNAL_DECIMAL_DIGITS),
-      calculatedShareAreaPing: roundForStorage(sqmToPing(calculatedShareAreaSqm), INTERNAL_DECIMAL_DIGITS),
+      originalShareAreaSqm: Number.isFinite(shareAreaQuality.originalShareAreaSqm) ? shareAreaQuality.originalShareAreaSqm : "",
+      calculatedShareAreaSqm,
+      calculatedShareAreaPing: shareAreaQuality.calculatedShareAreaPing,
       shareRatio: roundForStorage(calculatedShareRatio, INTERNAL_DECIMAL_DIGITS),
-      shareAreaSqm: roundForStorage(calculatedShareAreaSqm, INTERNAL_DECIMAL_DIGITS),
-      shareAreaPing: roundForStorage(sqmToPing(calculatedShareAreaSqm), INTERNAL_DECIMAL_DIGITS),
+      shareAreaSqm: shareAreaQuality.shareAreaSqm,
+      shareAreaPing: shareAreaQuality.shareAreaPing,
+      shareAreaSource: shareAreaQuality.shareAreaSource,
+      shareAreaValidationStatus: shareAreaQuality.shareAreaValidationStatus,
+      shareAreaDifferenceSqm: Number.isFinite(shareAreaQuality.shareAreaDifferenceSqm) ? shareAreaQuality.shareAreaDifferenceSqm : "",
+      shareAreaValidationMessages: shareAreaQuality.shareAreaValidationMessages,
+      shareAreaCanCalculate: shareAreaQuality.shareAreaCanCalculate,
+      shareAreaWithinTolerance: shareAreaQuality.shareAreaWithinTolerance,
+      shareAreaSuspectedColumnMisalignment: shareAreaQuality.shareAreaSuspectedColumnMisalignment,
       landArea: getFirstMatchingValue(row, ["土地面積", "面積"]),
       announcedCurrentValue,
       announcedCurrentValueYear: getHeaderValue(row, ["公告現值年度", "公告土地現值年度"], ["公告現值年度", "公告土地現值年度"]),
@@ -3609,6 +3665,20 @@ function buildLandRightRows(rows, sourceContext = {}) {
         getFirstMatchingValue(row, ["他項權利種類", "他項權利"]),
         getFirstMatchingValue(row, ["他項權利人"]),
       ].filter(Boolean).join("；"),
+      parseStatus: shareAreaQuality.shareAreaValidationMessages.length ? "needs-review" : "parsed",
+      validationMessages: shareAreaQuality.shareAreaValidationMessages,
+      sourceSheetName: row.__sheetName || sourceContext.sourceSheetName || "",
+      originalFields: {
+        landAreaSqm: landAreaRaw,
+        shareNumerator,
+        shareDenominator,
+        shareAreaSqm: excelShareAreaSqm,
+      },
+      computedFields: {
+        shareRatio: roundForStorage(calculatedShareRatio, INTERNAL_DECIMAL_DIGITS),
+        shareAreaSqm: shareAreaQuality.calculatedShareAreaSqm,
+        shareAreaPing: shareAreaQuality.calculatedShareAreaPing,
+      },
       sourceType: sourceContext.sourceType || "",
       sourceFilename: sourceContext.sourceFilename || "",
       sourcePage: "",
@@ -3624,7 +3694,7 @@ function buildLandRightRows(rows, sourceContext = {}) {
         shareNumerator,
         shareDenominator,
         baseAreaSqm: landAreaSqm,
-        shareAreaSqm: calculatedShareAreaSqm,
+        shareAreaSqm: shareAreaQuality.shareAreaSqm,
         city,
         district,
       }),
@@ -4026,6 +4096,40 @@ function buildMissingCadastralLocationIssues(landRows) {
   ];
 }
 
+function buildShareAreaQualityIssues(landRows) {
+  const affectedRows = landRows
+    .filter((row) => Array.isArray(row.shareAreaValidationMessages) && row.shareAreaValidationMessages.length)
+    .map((row) => row.landRightRowId)
+    .filter(Boolean);
+
+  if (!affectedRows.length) {
+    return [];
+  }
+
+  return [
+    createRosterIssue(
+      "持分面積需確認",
+      "高",
+      "部分持分面積與土地面積、權利範圍驗算不一致，請確認欄位對應或原始資料。",
+      affectedRows.slice(0, 20),
+    ),
+  ];
+}
+
+function getRosterPreviewShareAreaMessage(rosterPreview, fallbackMessage = "") {
+  const summary = rosterPreview?.summary ?? {};
+
+  if (summary.shareAreaWarningRows > 0) {
+    return "部分持分面積與土地面積、權利範圍驗算不一致，請確認欄位對應或原始資料。";
+  }
+
+  if (summary.landCount > 0) {
+    return "清冊欄位與持分面積檢核通過，請確認預覽後再寫入案件。";
+  }
+
+  return fallbackMessage;
+}
+
 function buildRosterPreview(file, workbookData) {
   const importedAt = new Date().toLocaleString("zh-TW", { hour12: false });
   const sourceContext = {
@@ -4039,12 +4143,14 @@ function buildRosterPreview(file, workbookData) {
   const { partyRows, issues: partyIssues } = buildPartyPreview(landRights, buildingRights);
   const shareTotalIssues = buildLandShareTotalIssues(landRights);
   const locationIssues = buildMissingCadastralLocationIssues(landRights);
-  const issues = [...partyIssues, ...shareTotalIssues, ...locationIssues];
+  const shareAreaIssues = buildShareAreaQualityIssues(landRights);
+  const issues = [...partyIssues, ...shareTotalIssues, ...locationIssues, ...shareAreaIssues];
   const landNumbers = new Set(landRights.map((row) => buildLotIdentityKey(row)).filter(Boolean));
   const buildingNumbers = new Set(buildingRights.map((row) => row.buildingNumber).filter(Boolean));
   const fallbackLandIdentityCount = countLandIdentityFallbackRows(landRights);
   const batchId = `IMPORT-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${String(Date.now()).slice(-4)}`;
   const rosterSummary = buildRosterBaseSummary({ landRights, landRows: landRights, buildingRights, buildingRows: buildingRights });
+  const shareAreaQualitySummary = buildShareAreaQualitySummary(landRights);
 
   return {
     batchId,
@@ -4087,6 +4193,7 @@ function buildRosterPreview(file, workbookData) {
       landNumberCount: landNumbers.size,
       buildingNumberCount: buildingNumbers.size,
       fallbackLandIdentityCount,
+      ...shareAreaQualitySummary,
       cadastralLocationDisplay: rosterSummary.cadastralLocationDisplay,
       sameNameMultiLandCount: partyRows.filter((party) => party.landNumbers.length > 1).length,
       sameNameMultiBuildingCount: partyRows.filter((party) => party.buildingNumbers.length > 1).length,
@@ -6484,9 +6591,10 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
         sourceFlow: "xlsx-upload",
         pendingConfirmation: true,
       });
-      if (hasExistingRoster) {
-        setRosterMessage("目前案件已有清冊，請先選擇匯入模式；確認前不會覆蓋既有案件清冊。");
-      }
+      const shareAreaMessage = getRosterPreviewShareAreaMessage(rosterPreview);
+      setRosterMessage(hasExistingRoster
+        ? [shareAreaMessage, "目前案件已有清冊，請先選擇匯入模式；確認前不會覆蓋既有案件清冊。"].filter(Boolean).join(" ")
+        : shareAreaMessage);
       if (!rosterPreview.landRights.length) {
         setParseError("解析結果為 0 筆有效土地權利列。這份清冊可能需要確認欄位對應，或檢查是否已填寫地號、所有權人與權利範圍。");
       }
@@ -6522,7 +6630,10 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
       pendingConfirmation: true,
     });
     setColumnMappingDraft(null);
-    setRosterMessage("已依確認的欄位對應建立清冊預覽；確認匯入前不會寫入案件資料。");
+    setRosterMessage(getRosterPreviewShareAreaMessage(
+      rosterPreview,
+      "已依確認的欄位對應建立清冊預覽；確認匯入前不會寫入案件資料。",
+    ));
     if (!rosterPreview.landRights.length) {
       setParseError("解析結果為 0 筆有效土地權利列，請再確認欄位對應或原始清冊內容。");
     }
@@ -6612,6 +6723,12 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
     ["涉及地號數", activePreview.summary.landNumberCount],
     ["定位不足 / 待補地籍", activePreview.summary.fallbackLandIdentityCount ?? 0],
     ["地籍定位", activePreview.summary.cadastralLocationDisplay || "待清冊補齊"],
+    ["權利範圍完整列數", activePreview.summary.completeShareRows ?? 0],
+    ["持分面積可驗算列數", activePreview.summary.verifiableShareAreaRows ?? 0],
+    ["持分面積一致列數", activePreview.summary.consistentShareAreaRows ?? 0],
+    ["持分面積警告列數", activePreview.summary.shareAreaWarningRows ?? 0],
+    ["分母缺漏列數", activePreview.summary.missingShareDenominatorRows ?? 0],
+    ["疑似欄位錯置列數", activePreview.summary.suspectedMisalignedShareAreaRows ?? 0],
     ["涉及建號數", activePreview.summary.buildingNumberCount],
     ["疑似同姓多地號群組", activePreview.summary.sameNameMultiLandCount],
     ["疑似同姓多建號群組", activePreview.summary.sameNameMultiBuildingCount],
@@ -6842,7 +6959,11 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
               { key: "section", label: "段別" },
               { key: "subsection", label: "小段" },
               { key: "landNumber", label: "地號" },
+              { key: "landAreaSqm", label: "土地面積㎡" },
               { key: "shareText", label: "權利範圍 / 持分" },
+              { key: "shareAreaSqm", label: "持分面積㎡" },
+              { key: "shareAreaPing", label: "持分面積坪" },
+              { key: "shareAreaValidationStatus", label: "持分檢核" },
               { key: "validationStatus", label: "檢核狀態" },
             ]}
             rows={activePreview.landRights}

@@ -331,6 +331,7 @@ function scoreColumnDataForField(descriptor, field, rows, dataStartIndex) {
     case "shareAreaSqm":
       return (numericRatio >= 0.5 ? 70 : 0)
         + (decimalRatio >= 0.25 ? 25 : 0)
+        + (looksLikeSmallSequence(values) ? -110 : 0)
         + (slashRatio >= 0.3 ? -120 : 0);
     case "ownerName":
       return (cjkRatio >= 0.4 ? 35 : 0) + (numericRatio >= 0.4 ? -80 : 0);
@@ -677,7 +678,7 @@ export function applyRosterColumnMapping(sheetAnalysis, mappingOverride = null) 
       return;
     }
 
-    const mappedRow = { __rowNumber: row.excelRowNumber };
+    const mappedRow = { __rowNumber: row.excelRowNumber, __sheetName: sheetAnalysis.name || "" };
     Object.entries(mapping).forEach(([fieldId, columnIndex]) => {
       assignMappedValue(mappedRow, sheetType, fieldId, row.values?.[columnIndex]);
     });

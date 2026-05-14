@@ -1,3 +1,5 @@
+import { evaluateLandShareArea } from "./rosterShareAreaValidation.js";
+
 const XLSX_CONTENT_TYPES = {
   workbook: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml",
   worksheet: "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml",
@@ -21,6 +23,10 @@ const LAND_HEADERS = [
   "持分比例",
   "持分面積㎡",
   "持分面積坪",
+  "原始持分面積㎡",
+  "計算持分面積㎡",
+  "持分面積差異㎡",
+  "持分面積檢核",
   "登記次序",
   "登記名義人",
   "受託人",
@@ -256,44 +262,61 @@ function zipStore(files) {
 }
 
 function safeNumber(value) {
-  const number = Number(value);
+  if (value === "" || value === null || value === undefined) {
+    return "";
+  }
+  const number = Number(String(value).replace(/,/g, ""));
   return Number.isFinite(number) ? number : "";
 }
 
 function landRowsForSheet(preview) {
   const rows = preview?.landRights ?? preview?.landRows ?? [];
-  return rows.map((row) => [
-    row.ownerReferenceId || row.landRightRowId || row.rowId || "",
-    row.ownerName || "",
-    row.city || "",
-    row.district || "",
-    row.section || "",
-    row.subsection || "",
-    row.lotNumber || row.landNumber || "",
-    safeNumber(row.landAreaSqm),
-    safeNumber(row.landAreaPing),
-    row.shareNumerator || "",
-    row.shareDenominator || "",
-    safeNumber(row.shareRatio),
-    safeNumber(row.shareAreaSqm),
-    safeNumber(row.shareAreaPing),
-    row.registrationOrder || "",
-    row.registeredOwnerName || "",
-    row.trusteeName || "",
-    row.trustorName || "",
-    row.ownershipType || "",
-    safeNumber(row.announcedCurrentValue),
-    row.announcedCurrentValueYear || "",
-    safeNumber(row.declaredLandValue),
-    row.declaredLandValueYear || "",
-    row.registrationDate || "",
-    row.registrationReason || "",
-    row.causeDate || "",
-    row.titleNumber || "",
-    row.sourceFilename || "",
-    row.sourcePage || "",
-    row.notes || row.note || "",
-  ]);
+  return rows.map((row) => {
+    const shareAreaQuality = evaluateLandShareArea({
+      landAreaSqm: row.landAreaSqm,
+      shareNumerator: row.shareNumerator,
+      shareDenominator: row.shareDenominator,
+      originalShareAreaSqm: row.originalShareAreaSqm || row.excelShareAreaSqm,
+      existingShareAreaSqm: row.shareAreaSqm,
+    });
+
+    return [
+      row.ownerReferenceId || row.landRightRowId || row.rowId || "",
+      row.ownerName || "",
+      row.city || "",
+      row.district || "",
+      row.section || "",
+      row.subsection || "",
+      row.lotNumber || row.landNumber || "",
+      safeNumber(row.landAreaSqm),
+      safeNumber(row.landAreaPing),
+      row.shareNumerator || "",
+      row.shareDenominator || "",
+      safeNumber(shareAreaQuality.shareRatio ?? row.shareRatio),
+      safeNumber(shareAreaQuality.shareAreaSqm),
+      safeNumber(shareAreaQuality.shareAreaPing),
+      safeNumber(shareAreaQuality.originalShareAreaSqm),
+      safeNumber(shareAreaQuality.calculatedShareAreaSqm),
+      safeNumber(shareAreaQuality.shareAreaDifferenceSqm),
+      shareAreaQuality.shareAreaValidationStatus || row.shareAreaValidationStatus || "",
+      row.registrationOrder || "",
+      row.registeredOwnerName || "",
+      row.trusteeName || "",
+      row.trustorName || "",
+      row.ownershipType || "",
+      safeNumber(row.announcedCurrentValue),
+      row.announcedCurrentValueYear || "",
+      safeNumber(row.declaredLandValue),
+      row.declaredLandValueYear || "",
+      row.registrationDate || "",
+      row.registrationReason || "",
+      row.causeDate || "",
+      row.titleNumber || "",
+      row.sourceFilename || "",
+      row.sourcePage || "",
+      row.notes || row.note || "",
+    ];
+  });
 }
 
 function buildingRowsForSheet(preview) {

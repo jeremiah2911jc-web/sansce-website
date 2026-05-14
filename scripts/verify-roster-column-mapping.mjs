@@ -6,6 +6,8 @@ import {
   detectRosterColumnMapping,
   selectRosterSheets,
 } from "../src/rosterColumnMapping.js";
+import { evaluateLandShareArea } from "../src/rosterShareAreaValidation.js";
+import { createRosterWorkbookBlob } from "../src/rosterXlsxExporter.js";
 
 function row(excelRowNumber, values) {
   return { excelRowNumber, values };
@@ -84,6 +86,17 @@ function numbersAreClose(value, expected, tolerance = 0.000001) {
   return Number.isFinite(parsed) && Math.abs(parsed - expected) <= tolerance;
 }
 
+function assertClose(value, expected, message, tolerance = 0.000001) {
+  const parsed = parseNumber(value);
+  assert.ok(Number.isFinite(parsed), `${message}: value should be numeric`);
+  assert.ok(Math.abs(parsed - expected) <= tolerance, `${message}: expected ${expected}, got ${parsed}`);
+}
+
+function assertNumericNotClose(value, unexpected, message, tolerance = 0.000001) {
+  const parsed = parseNumber(value);
+  assert.ok(!Number.isFinite(parsed) || Math.abs(parsed - unexpected) > tolerance, message);
+}
+
 function hasShare(rows, numerator, denominator) {
   return rows.some((row) => (
     normalizeNumberText(row.shareNumerator) === String(numerator)
@@ -97,6 +110,37 @@ function countBadSharePartRows(rows) {
     || isSlashOnly(row.shareDenominator)
     || (normalizeText(row.shareNumerator) && !normalizeText(row.shareDenominator))
   )).length;
+}
+
+function evaluateMappedLandRow(row) {
+  return evaluateLandShareArea({
+    landAreaSqm: row.landAreaSqm,
+    shareNumerator: row.shareNumerator,
+    shareDenominator: row.shareDenominator,
+    originalShareAreaSqm: row.shareAreaSqm,
+    existingShareAreaSqm: row.shareAreaSqm,
+  });
+}
+
+function findLandRow(rows, lotNumber, numerator, denominator) {
+  return rows.find((row) => (
+    normalizeNumberText(row.lotNumber) === String(lotNumber)
+    && normalizeNumberText(row.shareNumerator) === String(numerator)
+    && normalizeNumberText(row.shareDenominator) === String(denominator)
+  ));
+}
+
+function parseGeneratedWorkbookFirstSheetRows(buffer) {
+  const entries = readZipEntriesFromBuffer(buffer);
+  return parseSheetRows(entries.get("xl/worksheets/sheet1.xml") ?? "", []);
+}
+
+function getGeneratedCellByHeader(rows, headerName) {
+  const headers = rows[0]?.values ?? [];
+  const normalizedHeaderName = normalizeText(headerName);
+  const headerIndex = headers.findIndex((header) => normalizeText(header) === normalizedHeaderName);
+  assert.notEqual(headerIndex, -1, `generated workbook should include ${headerName}`);
+  return rows[1]?.values?.[headerIndex];
 }
 
 function readUInt16(buffer, offset) {
@@ -126,8 +170,7 @@ function getRowNumber(cellReference = "") {
   return match ? Number(match[0]) : 0;
 }
 
-function readZipEntries(filePath) {
-  const buffer = readFileSync(filePath);
+function readZipEntriesFromBuffer(buffer) {
   let eocdOffset = -1;
   for (let offset = buffer.length - 22; offset >= 0; offset -= 1) {
     if (readUInt32(buffer, offset) === 0x06054b50) {
@@ -163,6 +206,10 @@ function readZipEntries(filePath) {
   return entries;
 }
 
+function readZipEntries(filePath) {
+  return readZipEntriesFromBuffer(readFileSync(filePath));
+}
+
 function parseRelationships(xmlText = "") {
   return new Map([...xmlText.matchAll(/<Relationship\b[^>]*Id="([^"]+)"[^>]*Target="([^"]+)"/g)]
     .map((match) => [match[1], match[2]]));
@@ -190,8 +237,65 @@ function getCellText(cellXml, sharedStrings) {
   return type === "s" ? sharedStrings[Number(value)] ?? "" : decodeXml(value);
 }
 
+function parseCellReference(cellReference = "") {
+  return {
+    row: getRowNumber(cellReference),
+    column: getColumnIndex(cellReference),
+  };
+}
+
+function parseMergeRangesFromXmlText(xmlText = "") {
+  return [...xmlText.matchAll(/<mergeCell\b[^>]*ref="([^"]+)"/g)]
+    .map((match) => match[1])
+    .map((reference) => {
+      const [startReference, endReference] = reference.split(":");
+      if (!startReference || !endReference) {
+        return null;
+      }
+      return {
+        start: parseCellReference(startReference),
+        end: parseCellReference(endReference),
+      };
+    })
+    .filter(Boolean);
+}
+
+function fillMergedSheetValues(rows, mergeRanges) {
+  if (!mergeRanges.length) {
+    return rows;
+  }
+
+  const rowsByNumber = new Map(rows.map((sheetRow) => [sheetRow.excelRowNumber, sheetRow]));
+  const nextRows = rows.map((sheetRow) => ({
+    ...sheetRow,
+    values: [...sheetRow.values],
+  }));
+  const nextRowsByNumber = new Map(nextRows.map((sheetRow) => [sheetRow.excelRowNumber, sheetRow]));
+
+  mergeRanges.forEach((range) => {
+    const sourceValue = rowsByNumber.get(range.start.row)?.values?.[range.start.column];
+    if (!normalizeText(sourceValue)) {
+      return;
+    }
+
+    for (let rowNumber = range.start.row; rowNumber <= range.end.row; rowNumber += 1) {
+      const sheetRow = nextRowsByNumber.get(rowNumber);
+      if (!sheetRow) {
+        continue;
+      }
+      for (let columnIndex = range.start.column; columnIndex <= range.end.column; columnIndex += 1) {
+        if (!normalizeText(sheetRow.values[columnIndex])) {
+          sheetRow.values[columnIndex] = sourceValue;
+        }
+      }
+    }
+  });
+
+  return nextRows;
+}
+
 function parseSheetRows(xmlText = "", sharedStrings = []) {
-  return [...xmlText.matchAll(/<row\b[^>]*>[\s\S]*?<\/row>/g)].map((rowMatch) => {
+  const rows = [...xmlText.matchAll(/<row\b[^>]*>[\s\S]*?<\/row>/g)].map((rowMatch) => {
     const rowXml = rowMatch[0];
     const values = [];
     for (const cellMatch of rowXml.matchAll(/<c\b[^>]*>[\s\S]*?<\/c>/g)) {
@@ -204,6 +308,8 @@ function parseSheetRows(xmlText = "", sharedStrings = []) {
       values,
     };
   });
+
+  return fillMergedSheetValues(rows, parseMergeRangesFromXmlText(xmlText));
 }
 
 function readWorkbookSheets(filePath) {
@@ -261,6 +367,68 @@ if (existsSync(realWorkbookPath)) {
     "40,000 denominator rows should keep the numeric denominator instead of the slash column",
   );
   assert.equal(countBadSharePartRows(realLandRows), 0, "land rows should not contain missing or slash-only share parts");
+
+  const lot474FirstShareRow = findLandRow(realLandRows, 474, 1386, 20000);
+  assert.ok(lot474FirstShareRow, "lot 474 row with 1386 / 20000 should exist");
+  const lot474FirstShareQuality = evaluateMappedLandRow(lot474FirstShareRow);
+  assertClose(lot474FirstShareRow.landAreaSqm, 786.18, "lot 474 land area should parse as 786.18 sqm");
+  assertClose(lot474FirstShareRow.shareAreaSqm, 54.482274, "lot 474 original share area should parse from workbook", 0.000001);
+  assertClose(lot474FirstShareQuality.calculatedShareAreaSqm, 54.482274, "lot 474 calculated share area should match area x numerator / denominator", 0.000001);
+  assertClose(lot474FirstShareQuality.shareAreaSqm, 54.482274, "lot 474 chosen share area should use calculated value", 0.000001);
+  assertClose(lot474FirstShareQuality.shareAreaPing, 16.480889, "lot 474 share area ping should use 1 ping = 3.305785 sqm", 0.00001);
+  assertNumericNotClose(lot474FirstShareQuality.shareAreaSqm, 1, "lot 474 share area sqm must not be a group index");
+  assertNumericNotClose(lot474FirstShareQuality.shareAreaPing, 0.3025, "lot 474 share area ping must not be calculated from group index");
+
+  const lot474SecondShareRow = findLandRow(realLandRows, 474, 693, 20000);
+  assert.ok(lot474SecondShareRow, "lot 474 row with 693 / 20000 should exist");
+  const lot474SecondShareQuality = evaluateMappedLandRow(lot474SecondShareRow);
+  assertClose(lot474SecondShareRow.shareAreaSqm, 27.241137, "lot 474 second original share area should parse from workbook", 0.000001);
+  assertClose(lot474SecondShareQuality.calculatedShareAreaSqm, 27.241137, "lot 474 second calculated share area should match", 0.000001);
+
+  const lot475QuarterShareRow = findLandRow(realLandRows, 475, 1, 4);
+  assert.ok(lot475QuarterShareRow, "lot 475 row with 1 / 4 should exist");
+  const lot475QuarterShareQuality = evaluateMappedLandRow(lot475QuarterShareRow);
+  assertClose(lot475QuarterShareRow.landAreaSqm, 131.78, "lot 475 area should carry forward as 131.78 sqm");
+  assertClose(lot475QuarterShareQuality.calculatedShareAreaSqm, 32.945, "lot 475 calculated share area should be 131.78 x 1 / 4", 0.000001);
+  assert.ok(land474Rows.every((row) => numbersAreClose(row.landAreaSqm, 786.18)), "lot 474 ownership rows should carry forward land area");
+
+  const lot474FortyThousandShareRows = land474Rows.filter((row) => normalizeNumberText(row.shareDenominator) === "40000");
+  assert.ok(lot474FortyThousandShareRows.length > 0, "lot 474 should include rows with denominator 40000");
+  assert.ok(
+    lot474FortyThousandShareRows.every((row) => normalizeNumberText(row.shareNumerator) !== "666"),
+    "40,000 denominator rows should preserve source numerators and must not be forced to 666",
+  );
+
+  const staleSequenceShareAreaQuality = evaluateLandShareArea({
+    landAreaSqm: 786.18,
+    shareNumerator: 1386,
+    shareDenominator: 20000,
+    originalShareAreaSqm: 1,
+    existingShareAreaSqm: 1,
+  });
+  assertClose(staleSequenceShareAreaQuality.shareAreaSqm, 54.482274, "stale share area sequence values should be replaced by calculated share area", 0.000001);
+  assert.equal(staleSequenceShareAreaQuality.shareAreaSuspectedColumnMisalignment, true, "stale sequence values should be flagged as possible column misalignment");
+
+  const generatedLandRow = {
+    ownerReferenceId: "LR-CHECK",
+    landRightRowId: "LR-CHECK",
+    section: "丹鳳段",
+    lotNumber: "474",
+    landAreaSqm: 786.18,
+    landAreaPing: 786.18 / 3.305785,
+    shareNumerator: "1386",
+    shareDenominator: "20000",
+    originalShareAreaSqm: 1,
+    shareAreaSqm: 1,
+    shareAreaPing: 0.3025,
+  };
+  const generatedBlob = createRosterWorkbookBlob({ landRights: [generatedLandRow], buildingRights: [] });
+  const generatedRows = parseGeneratedWorkbookFirstSheetRows(Buffer.from(await generatedBlob.arrayBuffer()));
+  assertClose(getGeneratedCellByHeader(generatedRows, "持分面積㎡"), 54.482274, "generated workbook share area sqm should be recalculated", 0.000001);
+  assertClose(getGeneratedCellByHeader(generatedRows, "持分面積坪"), 16.480889, "generated workbook share area ping should be recalculated", 0.00001);
+  assertClose(getGeneratedCellByHeader(generatedRows, "計算持分面積㎡"), 54.482274, "generated workbook should include calculated share area", 0.000001);
+  assertNumericNotClose(getGeneratedCellByHeader(generatedRows, "持分面積㎡"), 1, "generated workbook share area column must not contain a group index");
+  assertNumericNotClose(getGeneratedCellByHeader(generatedRows, "持分面積坪"), 0.3025, "generated workbook ping column must not contain group-index conversion");
 
   assert.equal(realSelection.building.mapping.buildingNumber, 1, "real building number should map to the actual building-number column");
   assert.equal(realSelection.building.mapping.buildingAddress, 2, "real building address should map to the actual address column");
