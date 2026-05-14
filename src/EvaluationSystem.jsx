@@ -39,6 +39,14 @@ import {
   getLandDisplayLabel,
   normalizeLandKeyPart,
 } from "./landIdentity.js";
+import {
+  buildRosterWorkbookMappingResult,
+  getMissingRosterRequiredFields,
+  getRosterColumnFieldGroups,
+  getRosterColumnFieldList,
+  getRosterColumnRequiredFieldIds,
+  selectRosterSheets,
+} from "./rosterColumnMapping.js";
 import { createRosterWorkbookBlob } from "./rosterXlsxExporter.js";
 
 const defaultCaseForm = {
@@ -3214,6 +3222,64 @@ function getRowNumber(cellReference = "") {
   return match ? Number(match[0]) : 0;
 }
 
+function parseCellReference(cellReference = "") {
+  return {
+    columnIndex: getColumnIndex(cellReference),
+    rowNumber: getRowNumber(cellReference),
+  };
+}
+
+function parseMergeRanges(xml) {
+  return Array.from(xml.getElementsByTagName("mergeCell"))
+    .map((mergeCell) => mergeCell.getAttribute("ref") ?? "")
+    .map((range) => {
+      const [startRef, endRef] = range.split(":");
+      const start = parseCellReference(startRef);
+      const end = parseCellReference(endRef || startRef);
+      return {
+        startColumnIndex: Math.min(start.columnIndex, end.columnIndex),
+        endColumnIndex: Math.max(start.columnIndex, end.columnIndex),
+        startRowNumber: Math.min(start.rowNumber, end.rowNumber),
+        endRowNumber: Math.max(start.rowNumber, end.rowNumber),
+      };
+    })
+    .filter((range) => (
+      range.startColumnIndex >= 0
+      && range.endColumnIndex >= 0
+      && range.startRowNumber > 0
+      && range.endRowNumber > 0
+    ));
+}
+
+function fillMergedSheetValues(rows, mergeRanges) {
+  if (!mergeRanges.length) {
+    return rows;
+  }
+
+  const rowsByNumber = new Map(rows.map((row) => [row.excelRowNumber, row]));
+
+  mergeRanges.forEach((range) => {
+    const sourceValue = normalizeCellValue(rowsByNumber.get(range.startRowNumber)?.values?.[range.startColumnIndex]);
+    if (!sourceValue) {
+      return;
+    }
+
+    for (let rowNumber = range.startRowNumber; rowNumber <= range.endRowNumber; rowNumber += 1) {
+      const row = rowsByNumber.get(rowNumber);
+      if (!row) {
+        continue;
+      }
+      for (let columnIndex = range.startColumnIndex; columnIndex <= range.endColumnIndex; columnIndex += 1) {
+        if (!normalizeCellValue(row.values[columnIndex])) {
+          row.values[columnIndex] = sourceValue;
+        }
+      }
+    }
+  });
+
+  return rows;
+}
+
 function readUint16(view, offset) {
   return view.getUint16(offset, true);
 }
@@ -3350,7 +3416,7 @@ function parseSheetRows(xmlText, sharedStrings) {
   }
 
   const xml = parseXml(xmlText);
-  return Array.from(xml.getElementsByTagName("row")).map((row) => {
+  const rows = Array.from(xml.getElementsByTagName("row")).map((row) => {
     const values = [];
     Array.from(row.getElementsByTagName("c")).forEach((cell) => {
       values[getColumnIndex(cell.getAttribute("r") ?? "")] = normalizeCellValue(getCellText(cell, sharedStrings));
@@ -3360,32 +3426,8 @@ function parseSheetRows(xmlText, sharedStrings) {
       values,
     };
   });
-}
 
-function scoreHeaderRow(values, sheetType) {
-  const joined = values.join("|");
-  const commonScore = ["地主", "姓名", "所有權", "備註"].filter((keyword) => joined.includes(keyword)).length;
-  const landScore = ["地號", "土地", "持分", "權利範圍"].filter((keyword) => joined.includes(keyword)).length;
-  const buildingScore = ["建號", "建物", "門牌", "對應地號"].filter((keyword) => joined.includes(keyword)).length;
-  return commonScore + (sheetType === "land" ? landScore : buildingScore);
-}
-
-function rowsToObjects(rows, sheetType) {
-  const headerIndex = rows.findIndex((row) => scoreHeaderRow(row.values, sheetType) >= 2);
-  if (headerIndex < 0) {
-    return [];
-  }
-
-  const headers = rows[headerIndex].values.map((header, index) => normalizeCellValue(header) || `欄位${index + 1}`);
-  return rows.slice(headerIndex + 1)
-    .map((row) => {
-      const item = { __rowNumber: row.excelRowNumber };
-      headers.forEach((header, index) => {
-        item[header] = row.values[index] ?? "";
-      });
-      return item;
-    })
-    .filter((row) => Object.entries(row).some(([key, value]) => key !== "__rowNumber" && normalizeCellValue(value)));
+  return fillMergedSheetValues(rows, parseMergeRanges(xml));
 }
 
 async function parseRosterWorkbook(file) {
@@ -3405,18 +3447,36 @@ async function parseRosterWorkbook(file) {
     }
   });
 
-  const readSheet = async (sheetName, sheetType) => {
-    const path = sheets.get(sheetName);
-    const xml = path ? await readZipText(entries, path) : "";
-    return rowsToObjects(parseSheetRows(xml, sharedStrings), sheetType);
-  };
+  const sheetRowsByName = {};
+  for (const [sheetName, sheetPath] of sheets.entries()) {
+    sheetRowsByName[sheetName] = parseSheetRows(await readZipText(entries, sheetPath), sharedStrings);
+  }
+
+  const sheetSelection = selectRosterSheets(sheetRowsByName);
+  const mappingResult = buildRosterWorkbookMappingResult(sheetSelection);
 
   return {
     availableSheets: Array.from(sheets.keys()),
-    landRows: await readSheet(rosterImportSheets.land, "land"),
-    buildingRows: await readSheet(rosterImportSheets.building, "building"),
+    sheetSelection,
+    landRows: mappingResult.landRows,
+    buildingRows: mappingResult.buildingRows,
+    columnMappingSummary: mappingResult.columnMappingSummary,
+    columnMappingWarnings: mappingResult.columnMappingWarnings,
+    needsColumnMapping: mappingResult.needsColumnMapping,
     integrationFound: sheets.has(rosterImportSheets.integration),
     allocationFound: sheets.has(rosterImportSheets.allocation),
+  };
+}
+
+function buildRosterWorkbookDataFromMapping(workbookData, mappingOverrides) {
+  const mappingResult = buildRosterWorkbookMappingResult(workbookData.sheetSelection, mappingOverrides);
+  return {
+    ...workbookData,
+    landRows: mappingResult.landRows,
+    buildingRows: mappingResult.buildingRows,
+    columnMappingSummary: mappingResult.columnMappingSummary,
+    columnMappingWarnings: mappingResult.columnMappingWarnings,
+    needsColumnMapping: false,
   };
 }
 
@@ -3429,8 +3489,12 @@ function buildLandRightRows(rows, sourceContext = {}) {
     const shareDenominator = getFirstExactHeaderValue(row, ["持分分母"]);
     const excelShareRatio = getFirstExactHeaderValue(row, ["持分比例"]);
     const excelShareAreaPing = getFirstExactHeaderValue(row, ["持分面積坪"]);
+    const excelShareAreaSqm = getFirstExactHeaderValue(row, ["土地持分面積㎡", "持分面積㎡"]);
     const calculatedShareRatio = parseRatio(shareNumerator, shareDenominator);
-    const calculatedShareAreaSqm = calculateShareArea(landAreaSqm, shareNumerator, shareDenominator);
+    const calculatedShareAreaSqm = pickNumericValue(
+      parseRosterNumber(excelShareAreaSqm),
+      calculateShareArea(landAreaSqm, shareNumerator, shareDenominator),
+    );
     const ownerName = getFirstMatchingValue(row, ["地主姓名", "所有權人", "姓名", "名稱"]);
     const city = getRosterFieldValue(row, rosterImportFieldAliases.city);
     const district = getRosterFieldValue(row, rosterImportFieldAliases.district);
@@ -3469,6 +3533,7 @@ function buildLandRightRows(rows, sourceContext = {}) {
       shareNumerator,
       shareDenominator,
       excelShareRatio,
+      excelShareAreaSqm,
       excelShareAreaPing,
       calculatedShareRatio: roundForStorage(calculatedShareRatio, INTERNAL_DECIMAL_DIGITS),
       calculatedShareAreaSqm: roundForStorage(calculatedShareAreaSqm, INTERNAL_DECIMAL_DIGITS),
@@ -3487,8 +3552,17 @@ function buildLandRightRows(rows, sourceContext = {}) {
       contactStatus: getFirstMatchingValue(row, ["聯絡狀態", "聯絡"]),
       consentStatus: getFirstMatchingValue(row, ["同意狀態", "同意"]),
       contractStatus: getFirstMatchingValue(row, ["簽約狀態", "簽約"]),
+      otherRightsType: getFirstMatchingValue(row, ["他項權利種類", "他項權利"]),
+      otherRightsHolder: getFirstMatchingValue(row, ["他項權利人"]),
+      debtor: getFirstMatchingValue(row, ["債務人"]),
+      obligor: getFirstMatchingValue(row, ["設定義務人", "義務人"]),
+      securedAmount: getFirstMatchingValue(row, ["金額", "債權額", "擔保債權"]),
       note: getFirstMatchingValue(row, ["備註", "說明"]),
-      notes: getFirstMatchingValue(row, ["備註", "說明"]),
+      notes: [
+        getFirstMatchingValue(row, ["備註", "說明"]),
+        getFirstMatchingValue(row, ["他項權利種類", "他項權利"]),
+        getFirstMatchingValue(row, ["他項權利人"]),
+      ].filter(Boolean).join("；"),
       sourceType: sourceContext.sourceType || "",
       sourceFilename: sourceContext.sourceFilename || "",
       sourcePage: "",
@@ -3533,9 +3607,12 @@ function buildBuildingRightRows(rows, sourceContext = {}) {
     const shareNumerator = getFirstExactHeaderValue(row, ["持分分子"]);
     const shareDenominator = getFirstExactHeaderValue(row, ["持分分母"]);
     const excelShareRatio = getFirstExactHeaderValue(row, ["持分比例"]);
-    const excelShareAreaSqm = getFirstExactHeaderValue(row, ["建物持分面積㎡"]);
+    const excelShareAreaSqm = getFirstExactHeaderValue(row, ["建物持分面積㎡", "持分面積㎡"]);
     const calculatedShareRatio = parseRatio(shareNumerator, shareDenominator);
-    const calculatedShareAreaSqm = calculateShareArea(buildingAreaSqm, shareNumerator, shareDenominator);
+    const calculatedShareAreaSqm = pickNumericValue(
+      parseRosterNumber(excelShareAreaSqm),
+      calculateShareArea(buildingAreaSqm, shareNumerator, shareDenominator),
+    );
     const ownerName = getFirstMatchingValue(row, ["地主姓名", "所有權人", "姓名", "名稱"]);
     const buildingNumber = getFirstMatchingValue(row, ["建號"]);
     const city = getRosterFieldValue(row, rosterImportFieldAliases.city);
@@ -3557,8 +3634,11 @@ function buildBuildingRightRows(rows, sourceContext = {}) {
       relatedLandNumber: lotNumber,
       buildingNumber,
       address: getFirstMatchingValue(row, ["門牌", "地址"]),
+      buildingAddress: getFirstMatchingValue(row, ["建物門牌", "門牌"]),
       buildingAreaRaw,
       buildingAreaSqm: roundForStorage(buildingAreaSqm, INTERNAL_DECIMAL_DIGITS),
+      mainBuildingAreaSqm: roundForStorage(parseRosterNumber(getFirstExactHeaderValue(row, ["主建物面積㎡"])), INTERNAL_DECIMAL_DIGITS),
+      accessoryBuildingAreaSqm: roundForStorage(parseRosterNumber(getFirstExactHeaderValue(row, ["附屬建物面積㎡"])), INTERNAL_DECIMAL_DIGITS),
       excelBuildingAreaPing,
       shareNumerator,
       shareDenominator,
@@ -3569,8 +3649,20 @@ function buildBuildingRightRows(rows, sourceContext = {}) {
       calculatedShareAreaPing: roundForStorage(sqmToPing(calculatedShareAreaSqm), INTERNAL_DECIMAL_DIGITS),
       buildingArea: getFirstMatchingValue(row, ["建物面積", "面積"]),
       shareText: getFirstMatchingValue(row, ["權利範圍", "持分"]),
+      floorLevel: getFirstMatchingValue(row, ["層次", "樓層"]),
+      totalFloors: getFirstMatchingValue(row, ["總層數", "總樓層"]),
+      structure: getFirstMatchingValue(row, ["構造", "構造種類"]),
+      completionDate: getFirstMatchingValue(row, ["建築完成日期", "完工日期", "建築日期"]),
+      otherRightsType: getFirstMatchingValue(row, ["他項權利種類", "他項權利"]),
+      otherRightsHolder: getFirstMatchingValue(row, ["他項權利人"]),
+      debtor: getFirstMatchingValue(row, ["債務人"]),
+      obligor: getFirstMatchingValue(row, ["設定義務人", "義務人"]),
       note: getFirstMatchingValue(row, ["備註", "說明"]),
-      notes: getFirstMatchingValue(row, ["備註", "說明"]),
+      notes: [
+        getFirstMatchingValue(row, ["備註", "說明"]),
+        getFirstMatchingValue(row, ["他項權利種類", "他項權利"]),
+        getFirstMatchingValue(row, ["他項權利人"]),
+      ].filter(Boolean).join("；"),
       sourceType: sourceContext.sourceType || "",
       sourceFilename: sourceContext.sourceFilename || "",
       sourcePage: "",
@@ -3836,10 +3928,17 @@ function buildLandShareTotalIssues(landRights) {
   });
 }
 
+function countLandIdentityFallbackRows(landRows) {
+  return landRows.filter((row) => {
+    const identity = buildLandIdentity(row);
+    return identity.hasFallbackRisk || identity.hasPartialLocation;
+  }).length;
+}
+
 function buildRosterPreview(file, workbookData) {
   const importedAt = new Date().toLocaleString("zh-TW", { hour12: false });
   const sourceContext = {
-    sourceType: "v7-template-xlsx",
+    sourceType: workbookData.needsColumnMapping ? "xlsx-column-mapped-review" : "xlsx-column-mapped",
     sourceFilename: file.name,
     importedAt,
     updatedAt: importedAt,
@@ -3851,6 +3950,7 @@ function buildRosterPreview(file, workbookData) {
   const issues = [...partyIssues, ...shareTotalIssues];
   const landNumbers = new Set(landRights.map((row) => buildLotIdentityKey(row)).filter(Boolean));
   const buildingNumbers = new Set(buildingRights.map((row) => row.buildingNumber).filter(Boolean));
+  const fallbackLandIdentityCount = countLandIdentityFallbackRows(landRights);
   const batchId = `IMPORT-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${String(Date.now()).slice(-4)}`;
   const rosterSummary = buildRosterBaseSummary({ landRights, landRows: landRights, buildingRights, buildingRows: buildingRights });
 
@@ -3877,6 +3977,8 @@ function buildRosterPreview(file, workbookData) {
       },
     ],
     availableSheets: workbookData.availableSheets,
+    columnMappingSummary: workbookData.columnMappingSummary ?? null,
+    columnMappingWarnings: workbookData.columnMappingWarnings ?? [],
     integrationFound: workbookData.integrationFound,
     allocationFound: workbookData.allocationFound,
     landRights,
@@ -3892,6 +3994,7 @@ function buildRosterPreview(file, workbookData) {
       partyCount: partyRows.length,
       landNumberCount: landNumbers.size,
       buildingNumberCount: buildingNumbers.size,
+      fallbackLandIdentityCount,
       cadastralLocationDisplay: rosterSummary.cadastralLocationDisplay,
       sameNameMultiLandCount: partyRows.filter((party) => party.landNumbers.length > 1).length,
       sameNameMultiBuildingCount: partyRows.filter((party) => party.buildingNumbers.length > 1).length,
@@ -4010,6 +4113,144 @@ function buildCurrentRosterFileName(currentCase) {
     .slice(0, 13);
 
   return `sanze-roster-current-${caseLabel}-${timestamp}.xlsx`;
+}
+
+function RosterColumnMappingSection({ title, sheetAnalysis, mapping, onMappingChange }) {
+  if (!sheetAnalysis) {
+    return (
+      <section className="eval-roster-column-section">
+        <h5>{title}</h5>
+        <p className="eval-roster-column-hint">這份檔案沒有找到可辨識的{title}工作表。</p>
+      </section>
+    );
+  }
+
+  const fields = getRosterColumnFieldList(sheetAnalysis.sheetType);
+  const requiredFieldIds = new Set(getRosterColumnRequiredFieldIds(sheetAnalysis.sheetType));
+  const orderedFields = [
+    ...fields.filter((field) => requiredFieldIds.has(field.id)),
+    ...fields.filter((field) => !requiredFieldIds.has(field.id)),
+  ];
+
+  return (
+    <section className="eval-roster-column-section">
+      <div className="eval-roster-column-section-head">
+        <h5>{title}</h5>
+        <p>
+          來源工作表：{sheetAnalysis.name}。請確認欄位對應正確，確認後只會建立預覽。
+        </p>
+      </div>
+      <div className="eval-roster-column-grid">
+        {orderedFields.map((field) => (
+          <label className="eval-roster-column-field" key={field.id}>
+            <span>
+              {field.label}
+              {requiredFieldIds.has(field.id) && <b>必要</b>}
+            </span>
+            <select
+              value={mapping[field.id] ?? ""}
+              onChange={(event) => onMappingChange(sheetAnalysis.sheetType, field.id, event.target.value)}
+            >
+              <option value="">不使用 / 尚未對應</option>
+              {sheetAnalysis.columns
+                .filter((column) => column.label)
+                .map((column) => (
+                  <option value={column.columnIndex} key={`${field.id}-${column.columnIndex}`}>
+                    {column.optionLabel}
+                  </option>
+                ))}
+            </select>
+          </label>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function RosterColumnMappingModal({ mappingDraft, onCancel, onReselect, onBuildPreview }) {
+  const [mappingByType, setMappingByType] = useState(() => ({
+    land: { ...(mappingDraft?.workbookData?.sheetSelection?.land?.mapping ?? {}) },
+    building: { ...(mappingDraft?.workbookData?.sheetSelection?.building?.mapping ?? {}) },
+  }));
+  const [mappingError, setMappingError] = useState("");
+
+  if (!mappingDraft) {
+    return null;
+  }
+
+  const { workbookData } = mappingDraft;
+  const fieldGroups = getRosterColumnFieldGroups();
+  const landMissing = workbookData.sheetSelection.land
+    ? getMissingRosterRequiredFields(mappingByType.land, "land")
+    : fieldGroups.land.requiredFieldIds;
+  const buildingMissing = workbookData.sheetSelection.building
+    ? getMissingRosterRequiredFields(mappingByType.building, "building")
+    : [];
+
+  const handleMappingChange = (sheetType, fieldId, value) => {
+    setMappingError("");
+    setMappingByType((current) => ({
+      ...current,
+      [sheetType]: {
+        ...current[sheetType],
+        [fieldId]: value === "" ? "" : Number(value),
+      },
+    }));
+  };
+
+  const handleBuildPreview = () => {
+    const nextLandMissing = workbookData.sheetSelection.land
+      ? getMissingRosterRequiredFields(mappingByType.land, "land")
+      : fieldGroups.land.requiredFieldIds;
+    const nextBuildingMissing = workbookData.sheetSelection.building
+      ? getMissingRosterRequiredFields(mappingByType.building, "building")
+      : [];
+
+    if (nextLandMissing.length || nextBuildingMissing.length) {
+      const missingLabels = [
+        ...nextLandMissing.map((fieldId) => `土地 ${getRosterColumnFieldList("land").find((field) => field.id === fieldId)?.label ?? fieldId}`),
+        ...nextBuildingMissing.map((fieldId) => `建物 ${getRosterColumnFieldList("building").find((field) => field.id === fieldId)?.label ?? fieldId}`),
+      ];
+      setMappingError(`尚有必要欄位未對應：${missingLabels.join("、")}`);
+      return;
+    }
+
+    onBuildPreview(mappingByType);
+  };
+
+  return (
+    <div className="eval-confirm-backdrop" role="presentation">
+      <section className="eval-confirm-dialog eval-roster-column-dialog" role="dialog" aria-modal="true" aria-labelledby="roster-column-mapping-title">
+        <h4 id="roster-column-mapping-title">確認清冊欄位對應</h4>
+        <p>
+          系統已讀取檔案內容，請確認必要欄位是否對應正確。確認後會先建立預覽，不會直接寫入案件資料。
+        </p>
+        <div className="eval-roster-column-summary">
+          <span>檔案：{mappingDraft.fileName}</span>
+          <span>土地欄位信心：{workbookData.sheetSelection.land ? `${Math.round(workbookData.sheetSelection.land.confidence * 100)}%` : "未找到"}</span>
+          <span>建物欄位信心：{workbookData.sheetSelection.building ? `${Math.round(workbookData.sheetSelection.building.confidence * 100)}%` : "未找到"}</span>
+        </div>
+        <RosterColumnMappingSection
+          title="土地清冊欄位對應"
+          sheetAnalysis={workbookData.sheetSelection.land}
+          mapping={mappingByType.land}
+          onMappingChange={handleMappingChange}
+        />
+        <RosterColumnMappingSection
+          title="建物清冊欄位對應"
+          sheetAnalysis={workbookData.sheetSelection.building}
+          mapping={mappingByType.building}
+          onMappingChange={handleMappingChange}
+        />
+        {mappingError && <p className="eval-inline-error">{mappingError}</p>}
+        <div className="eval-confirm-actions">
+          <button type="button" onClick={onCancel}>取消</button>
+          <button type="button" onClick={onReselect}>重新選檔</button>
+          <button type="button" onClick={handleBuildPreview}>建立預覽</button>
+        </div>
+      </section>
+    </div>
+  );
 }
 
 function createEmptyRosterRecord(sourceLabel = "manual") {
@@ -6014,6 +6255,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
   const [parseError, setParseError] = useState("");
   const [rosterMessage, setRosterMessage] = useState("");
   const [importMode, setImportMode] = useState("replace");
+  const [columnMappingDraft, setColumnMappingDraft] = useState(null);
   const pdfFileInputId = `roster-pdf-file-${currentCase.id}`;
   const fileInputId = `roster-upload-file-${currentCase.id}`;
   const activePreview = draftPreview || preview;
@@ -6028,6 +6270,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
     const selectedFileNames = files.map((file) => file.name).join(" + ");
     setPdfFileName(selectedFileNames);
     setPdfStatus(null);
+    setColumnMappingDraft(null);
     setParseError("");
     setRosterMessage("");
 
@@ -6044,7 +6287,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
       setPdfStatus({
         type: "error",
         title: "檔案格式不支援",
-        message: "PDF 解析 MVP 只接受 .pdf 檔案；掃描影像、照片或截圖請改用三策 v7 清冊模板。",
+        message: "PDF 解析流程只接受 .pdf 檔案；若已有整理好的 Excel 清冊，可使用下方 Excel 上傳並確認欄位對應。",
       });
       event.target.value = "";
       return;
@@ -6081,10 +6324,10 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
       const isParserError = error?.name === "RosterPdfParserError";
       setPdfStatus({
         type: "error",
-        title: isParserError && error.code === "NO_TEXT_LAYER" ? "不支援掃描 PDF" : "PDF 解析未完成",
+        title: isParserError && error.code === "NO_TEXT_LAYER" ? "掃描 PDF 尚無法解析" : "PDF 解析未完成",
         message: error instanceof Error
           ? error.message
-          : "無法解析 PDF 文字層，請改用三策 v7 清冊模板填寫後上傳。",
+          : "無法解析 PDF 文字層時，可改上傳已整理的 Excel 清冊；欄位格式不同時系統會引導確認對應。",
       });
       setFileName("");
     } finally {
@@ -6099,6 +6342,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
     setParseError("");
     setRosterMessage("");
     setPdfStatus(null);
+    setColumnMappingDraft(null);
 
     if (!file) {
       setParseError("尚未選擇清冊檔案。");
@@ -6116,28 +6360,68 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
     setIsParsing(true);
     try {
       const workbookData = await parseRosterWorkbook(file);
-      if (!workbookData.availableSheets.includes(rosterImportSheets.land)) {
-        setParseError("找不到「土地清冊_匯入」工作表，請確認檔案是否為第七版清冊模板。");
+      if (!workbookData.sheetSelection.land) {
+        setParseError("這份清冊的欄位格式與系統模板不同，且目前找不到可辨識的土地清冊工作表。請確認檔案內容或重新選檔。");
+        return;
+      }
+
+      if (workbookData.needsColumnMapping) {
+        setColumnMappingDraft({
+          file,
+          fileName: file.name,
+          workbookData,
+        });
+        setRosterMessage("系統已讀取到清冊資料，但有些欄位需要您確認對應。");
         return;
       }
 
       const rosterPreview = buildRosterPreview(file, workbookData);
       setDraftPreview({
         ...rosterPreview,
-        sourceFlow: "template-upload",
+        sourceFlow: "xlsx-upload",
         pendingConfirmation: true,
       });
       if (hasExistingRoster) {
         setRosterMessage("目前案件已有清冊，請先選擇匯入模式；確認前不會覆蓋既有案件清冊。");
       }
       if (!rosterPreview.landRights.length) {
-        setParseError("解析結果為 0 筆有效土地權利列，請確認「土地清冊_匯入」是否已填寫地號、地主姓名、持分或參考編號。");
+        setParseError("解析結果為 0 筆有效土地權利列。這份清冊可能需要確認欄位對應，或檢查是否已填寫地號、所有權人與權利範圍。");
       }
     } catch (error) {
       setParseError(error instanceof Error ? error.message : "清冊解析失敗，請確認檔案是否為標準 .xlsx。");
     } finally {
       setIsParsing(false);
       event.target.value = "";
+    }
+  };
+
+  const handleCancelColumnMapping = () => {
+    setColumnMappingDraft(null);
+    setRosterMessage("");
+  };
+
+  const handleReselectColumnMappingFile = () => {
+    setColumnMappingDraft(null);
+    setRosterMessage("");
+    rosterFileInputRef.current?.click();
+  };
+
+  const handleBuildPreviewFromColumnMapping = (mappingByType) => {
+    if (!columnMappingDraft) {
+      return;
+    }
+
+    const workbookData = buildRosterWorkbookDataFromMapping(columnMappingDraft.workbookData, mappingByType);
+    const rosterPreview = buildRosterPreview(columnMappingDraft.file, workbookData);
+    setDraftPreview({
+      ...rosterPreview,
+      sourceFlow: "xlsx-upload",
+      pendingConfirmation: true,
+    });
+    setColumnMappingDraft(null);
+    setRosterMessage("已依確認的欄位對應建立清冊預覽；確認匯入前不會寫入案件資料。");
+    if (!rosterPreview.landRights.length) {
+      setParseError("解析結果為 0 筆有效土地權利列，請再確認欄位對應或原始清冊內容。");
     }
   };
 
@@ -6223,6 +6507,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
     ["建物清冊筆數", activePreview.summary.buildingCount],
     ["疑似權利人群組數", activePreview.summary.partyCount],
     ["涉及地號數", activePreview.summary.landNumberCount],
+    ["定位不足 / 待補地籍", activePreview.summary.fallbackLandIdentityCount ?? 0],
     ["地籍定位", activePreview.summary.cadastralLocationDisplay || "待清冊補齊"],
     ["涉及建號數", activePreview.summary.buildingNumberCount],
     ["疑似同姓多地號群組", activePreview.summary.sameNameMultiLandCount],
@@ -6233,6 +6518,12 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
 
   return (
     <section className="eval-roster-upload-test">
+      <RosterColumnMappingModal
+        mappingDraft={columnMappingDraft}
+        onCancel={handleCancelColumnMapping}
+        onReselect={handleReselectColumnMappingFile}
+        onBuildPreview={handleBuildPreviewFromColumnMapping}
+      />
       <section className="eval-module-section eval-roster-lifecycle">
         <div className="eval-section-head">
           <h4>清冊建立與維護流程</h4>
@@ -6291,8 +6582,8 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
 
         <section className="eval-module-section eval-roster-flow-card">
           <div className="eval-section-head">
-            <h4>下載空白清冊後填寫上傳</h4>
-            <p>請下載三策 v7 清冊模板，依欄位填寫土地與建物資料後上傳。系統會先顯示清冊預覽與檢核摘要，確認後才寫入目前案件。</p>
+            <h4>上傳已整理清冊 Excel</h4>
+            <p>可使用三策 v7 清冊模板，也可上傳由謄本整理出的土地 / 建物權屬清冊。系統會先辨識欄位並建立預覽，確認後才寫入目前案件。</p>
           </div>
           <input
             ref={rosterFileInputRef}
@@ -6311,7 +6602,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
             </button>
           </div>
           <p className="eval-roster-helper">
-            模板保留欄位字典、下拉選單與公式欄；上傳後先顯示預覽，確認後才寫入目前案件。
+            若欄位格式與系統模板不同，系統會請您確認欄位對應；不會直接寫入案件資料。
           </p>
           <div className="eval-roster-template-steps" aria-label="清冊建立流程">
             {["下載模板", "填寫清冊", "上傳清冊", "預覽與檢核", "確認匯入本案件清冊"].map((step) => (
@@ -6323,8 +6614,8 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
 
       <section className="eval-module-section eval-roster-upload-card">
         <div className="eval-section-head">
-          <h4>清冊建立狀態</h4>
-          <p>可讀電子謄本 PDF 與三策 v7 清冊都會先建立草稿。上傳後系統會顯示預覽與檢核摘要，確認後才寫入案件資料。</p>
+            <h4>清冊建立狀態</h4>
+          <p>可讀電子謄本 PDF、三策 v7 清冊或已整理 Excel 清冊都會先建立草稿。上傳後系統會顯示預覽與檢核摘要，確認後才寫入案件資料。</p>
         </div>
         <div className="eval-roster-upload-controls">
           <div className="eval-roster-file-picker">
@@ -6347,7 +6638,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
         <section className="eval-module-section eval-roster-empty-state">
           <div className="eval-section-head">
             <h4>尚未建立清冊預覽</h4>
-            <p>請使用三策 v7 空白清冊填寫後上傳，建立目前案件的清冊草稿。</p>
+            <p>請上傳已整理的土地 / 建物清冊，系統會先辨識欄位並建立目前案件的清冊草稿。</p>
           </div>
         </section>
       )}
@@ -6369,6 +6660,18 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
             </div>
             {draftPreview && (
               <>
+                {activePreview.columnMappingSummary && (
+                  <div className="eval-roster-column-preview-summary">
+                    <strong>欄位對應摘要</strong>
+                    <p>
+                      土地：{activePreview.columnMappingSummary.land?.sheetName || "未辨識"}；
+                      建物：{activePreview.columnMappingSummary.building?.sheetName || "未辨識"}。
+                      {activePreview.columnMappingWarnings?.length
+                        ? `提醒：${activePreview.columnMappingWarnings.join("、")}`
+                        : "系統已依目前欄位對應建立預覽。"}
+                    </p>
+                  </div>
+                )}
                 {hasExistingRoster && (
                   <div className="eval-roster-import-mode">
                     <div>

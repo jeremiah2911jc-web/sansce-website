@@ -3371,6 +3371,121 @@ main {
   justify-content: flex-end;
 }
 
+.eval-roster-column-dialog {
+  width: min(100%, 980px);
+  max-height: min(92vh, 860px);
+  overflow: auto;
+}
+
+.eval-roster-column-summary,
+.eval-roster-column-preview-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.eval-roster-column-summary span,
+.eval-roster-column-preview-summary {
+  border: 1px solid rgba(8, 59, 48, 0.1);
+  border-radius: 10px;
+  background: rgba(8, 59, 48, 0.05);
+  color: var(--green-950);
+  padding: 8px 10px;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.eval-roster-column-preview-summary {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+  background: rgba(184, 135, 56, 0.08);
+}
+
+.eval-roster-column-preview-summary p {
+  margin: 0;
+  color: var(--gray-700);
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1.6;
+}
+
+.eval-roster-column-section {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  border: 1px solid rgba(8, 59, 48, 0.1);
+  border-radius: 14px;
+  background: #fbfdfc;
+  padding: 14px;
+}
+
+.eval-roster-column-section-head {
+  display: grid;
+  gap: 4px;
+}
+
+.eval-roster-column-section h5 {
+  margin: 0;
+  color: var(--green-950);
+  font-size: 0.96rem;
+  font-weight: 900;
+}
+
+.eval-roster-column-section p,
+.eval-roster-column-hint {
+  margin: 0;
+  color: var(--gray-700);
+  font-size: 0.8rem;
+  font-weight: 750;
+  line-height: 1.55;
+}
+
+.eval-roster-column-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.eval-roster-column-field {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.eval-roster-column-field span {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  color: var(--green-950);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.eval-roster-column-field b {
+  border-radius: 999px;
+  background: rgba(184, 135, 56, 0.16);
+  color: #7b4e12;
+  padding: 2px 7px;
+  font-size: 0.68rem;
+}
+
+.eval-roster-column-field select {
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  border: 1px solid rgba(8, 59, 48, 0.14);
+  border-radius: 9px;
+  background: #ffffff;
+  color: var(--green-950);
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
 .eval-roster-import-mode {
   display: grid;
   gap: 10px;
@@ -4547,6 +4662,7 @@ main {
   .eval-roster-step-grid,
   .eval-roster-mode-grid,
   .eval-roster-import-mode-options,
+  .eval-roster-column-grid,
   .eval-roster-summary-grid,
   .eval-roster-summary-grid--wide,
   .eval-base-summary-grid,
@@ -4818,6 +4934,11 @@ main {
   .eval-roster-maintenance-dialog-actions,
   .eval-roster-maintenance-dialog-actions button {
     width: 100%;
+  }
+
+  .eval-roster-column-dialog {
+    max-height: 92vh;
+    padding: 18px;
   }
 
   .eval-import-summary dl {

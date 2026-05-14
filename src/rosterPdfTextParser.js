@@ -314,7 +314,7 @@ export function parseLandRegisterTextPages(pages, sourceFilename, importedAt = n
   if (textCharCount < 40) {
     throw new RosterPdfParserError(
       "NO_TEXT_LAYER",
-      "此 PDF 為掃描影像或無文字層，正式站暫不支援自動建立清冊。請改用三策 v7 清冊模板填寫後上傳。",
+      "此 PDF 為掃描影像或無文字層，暫時無法自動建立清冊。若已有整理好的 Excel 清冊，可改用 Excel 上傳並確認欄位對應。",
       { textCharCount },
     );
   }
@@ -344,7 +344,7 @@ export function parseLandRegisterTextPages(pages, sourceFilename, importedAt = n
   if (!landRights.length) {
     throw new RosterPdfParserError(
       "NO_ROSTER_ROWS",
-      "已讀取 PDF 文字層，但未能辨識足夠清冊欄位。請改用三策 v7 清冊模板。",
+      "已讀取 PDF 文字層，但未能辨識足夠清冊欄位。若已有整理好的 Excel 清冊，可改用 Excel 上傳並確認欄位對應。",
       { textCharCount, lotCount: groups.length },
     );
   }
