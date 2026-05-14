@@ -100,6 +100,9 @@ const LICENSE_GATED_MODULES = {
 };
 const DOWNSTREAM_PLACEHOLDER_MODULE_IDS = new Set(["sales", "allocation", "cashflow", "bank-report"]);
 const SYSTEM_TEST_HASH = "#system-test";
+const SYSTEM_AUTH_REQUEST_TIMEOUT_MS = 15000;
+const LOCAL_SYSTEM_AUTH_UNAVAILABLE_MESSAGE = "本機登入服務沒有回應。請確認是否已啟動本機 API，或改用正式測試站登入。";
+const SYSTEM_AUTH_FAILED_MESSAGE = "帳號或密碼不正確，或尚未取得授權。";
 const CASES_STORAGE_KEY = "sanze-evaluation-cases-v1";
 const CURRENT_CASE_ID_STORAGE_KEY = "sanze-evaluation-current-case-id-v1";
 const ROSTER_STAGING_STORAGE_KEY = "sanze-evaluation-roster-staging-v1";
@@ -9595,10 +9598,56 @@ function EvaluationAccessClosed({ isChecking }) {
   );
 }
 
+function isLocalSystemTestHost() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+  return ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+}
+
+async function fetchSystemAuthJson(endpoint, options = {}) {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), SYSTEM_AUTH_REQUEST_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(endpoint, {
+      ...options,
+      signal: controller.signal,
+    });
+    const contentType = response.headers.get("content-type") ?? "";
+    const isJsonResponse = contentType.toLowerCase().includes("application/json");
+    const data = isJsonResponse ? await response.json().catch(() => ({})) : {};
+    return { response, data, isJsonResponse };
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
+function getSystemLoginErrorMessage(response, isJsonResponse, error) {
+  if (error?.name === "AbortError") {
+    return LOCAL_SYSTEM_AUTH_UNAVAILABLE_MESSAGE;
+  }
+
+  if (isLocalSystemTestHost() && (response?.status === 404 || !isJsonResponse)) {
+    return LOCAL_SYSTEM_AUTH_UNAVAILABLE_MESSAGE;
+  }
+
+  if (response?.status === 503) {
+    return "登入服務尚未完成環境設定。請確認測試站設定，或改用正式測試站登入。";
+  }
+
+  if (response?.status >= 500) {
+    return "登入服務暫時無法使用。請稍後再試，或改用正式測試站登入。";
+  }
+
+  return SYSTEM_AUTH_FAILED_MESSAGE;
+}
+
 export function EvaluationSystem({ routeHash = window.location.hash }) {
   const [authState, setAuthState] = useState({ status: "checking", email: "", role: "" });
   const [loginError, setLoginError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAuthServiceUnavailable, setIsAuthServiceUnavailable] = useState(false);
   const [mockRole, setMockRole] = useState("admin");
   const [activeModuleId, setActiveModuleId] = useState(evaluationModules[0].id);
   const [cases, setCases] = useState(loadStoredCases);
@@ -9734,12 +9783,13 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   useEffect(() => {
     let isMounted = true;
 
-    fetch("/api/sanze-system-session", { credentials: "include" })
-      .then((response) => response.json())
-      .then((data) => {
+    fetchSystemAuthJson("/api/sanze-system-session", { credentials: "include" })
+      .then(({ response, data, isJsonResponse }) => {
         if (!isMounted) {
           return;
         }
+
+        setIsAuthServiceUnavailable(isLocalSystemTestHost() && (response.status === 404 || !isJsonResponse));
 
         if (data.authenticated) {
           setAuthState({ status: "authenticated", email: data.email ?? "", role: data.role ?? "admin" });
@@ -9760,28 +9810,35 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   }, []);
 
   const handleLogin = async ({ email, password }) => {
-    setIsSubmitting(true);
     setLoginError("");
 
+    if (isAuthServiceUnavailable) {
+      setLoginError(LOCAL_SYSTEM_AUTH_UNAVAILABLE_MESSAGE);
+      setAuthState({ status: "unauthenticated", email: "", role: "" });
+      setIsSubmitting(false);
+      return;
+    }
+
+    setIsSubmitting(true);
+
     try {
-      const response = await fetch("/api/sanze-system-login", {
+      const { response, data, isJsonResponse } = await fetchSystemAuthJson("/api/sanze-system-login", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const data = await response.json().catch(() => ({}));
 
       if (!response.ok || !data.authenticated) {
-        setLoginError("帳號或密碼不正確，或尚未取得授權。");
+        setLoginError(getSystemLoginErrorMessage(response, isJsonResponse));
         setAuthState({ status: "unauthenticated", email: "", role: "" });
         return;
       }
 
       setAuthState({ status: "authenticated", email: data.email ?? email, role: data.role ?? "admin" });
       setMockRole("admin");
-    } catch {
-      setLoginError("帳號或密碼不正確，或尚未取得授權。");
+    } catch (error) {
+      setLoginError(getSystemLoginErrorMessage(null, true, error));
       setAuthState({ status: "unauthenticated", email: "", role: "" });
     } finally {
       setIsSubmitting(false);
