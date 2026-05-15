@@ -1,0 +1,23 @@
+{
+  "name": "三策專案管理顧問有限公司",
+  "short_name": "三策",
+  "description": "三策專案管理顧問有限公司｜都市更新・危老重建・自主更新顧問",
+  "icons": [
+    {
+      "src": "/icon-192.png?v=20260515",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png?v=20260515",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "theme_color": "#0f3f19",
+  "background_color": "#8fbd3f",
+  "display": "standalone",
+  "start_url": "/"
+}
