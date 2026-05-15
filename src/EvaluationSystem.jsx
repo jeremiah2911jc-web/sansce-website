@@ -4431,6 +4431,13 @@ function buildRosterPreviewFromPdfResult(parserResult) {
   const buildingNumbers = new Set(buildingRights.map((row) => row.buildingNumber).filter(Boolean));
   const batchId = `PDF-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${String(Date.now()).slice(-4)}`;
   const rosterSummary = buildRosterBaseSummary({ landRights, landRows: landRights, buildingRights, buildingRows: buildingRights });
+  const otherRightsRowCount = [...landRights, ...buildingRights].filter((row) => (
+    normalizeCellValue(row.otherRightType || row.otherRightsType)
+      || normalizeCellValue(row.otherRightHolder || row.otherRightsHolder)
+      || normalizeCellValue(row.debtor)
+      || normalizeCellValue(row.obligor)
+      || normalizeCellValue(row.securedAmount)
+  )).length;
 
   return {
     batchId,
@@ -4474,6 +4481,7 @@ function buildRosterPreviewFromPdfResult(parserResult) {
       partyCount: partyRows.length,
       landNumberCount: landNumbers.size,
       buildingNumberCount: buildingNumbers.size,
+      otherRightsRowCount,
       cadastralLocationDisplay: rosterSummary.cadastralLocationDisplay,
       sameNameMultiLandCount: partyRows.filter((party) => party.landNumbers.length > 1).length,
       sameNameMultiBuildingCount: partyRows.filter((party) => party.buildingNumbers.length > 1).length,

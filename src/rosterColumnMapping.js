@@ -755,19 +755,49 @@ function buildOwnershipDedupeKey(mappedRow, sheetType) {
   return key.replace(/\|/g, "") ? key : "";
 }
 
+function buildLocationDedupeKey(mappedRow, sheetType) {
+  const locationParts = sheetType === "land"
+    ? [mappedRow.city, mappedRow.district, mappedRow.section, mappedRow.subsection, mappedRow.lotNumber]
+    : [mappedRow.city, mappedRow.district, mappedRow.section, mappedRow.subsection, mappedRow.relatedLandNumber, mappedRow.buildingNumber];
+  const key = locationParts
+    .map((value) => normalizeDisplayText(value))
+    .join("|");
+  return key.replace(/\|/g, "") ? key : "";
+}
+
 function rowHasOtherRightsData(mappedRow) {
   return [
+    mappedRow.otherRightRegistrationOrder,
+    mappedRow.otherRightType,
     mappedRow.otherRightsType,
+    mappedRow.otherRightHolder,
     mappedRow.otherRightsHolder,
     mappedRow.debtor,
+    mappedRow.debtorAndDebtRatio,
     mappedRow.obligor,
+    mappedRow.securedAmount,
     mappedRow.amount,
   ].some((value) => normalizeDisplayText(value));
 }
 
+const SUPPLEMENTAL_APPEND_FIELD_IDS = new Set([
+  "otherRightRegistrationOrder",
+  "otherRightType",
+  "otherRightsType",
+  "otherRightHolder",
+  "otherRightsHolder",
+  "debtor",
+  "debtorAndDebtRatio",
+  "obligor",
+  "securedAmount",
+  "amount",
+  "note",
+  "notes",
+]);
+
 function mergeSupplementalMappedRow(target, supplemental) {
   Object.entries(supplemental).forEach(([key, value]) => {
-    if (key === "__rowNumber") {
+    if (key === "__rowNumber" || key === "__sheetName") {
       return;
     }
     const normalizedValue = normalizeDisplayText(value);
@@ -778,7 +808,7 @@ function mergeSupplementalMappedRow(target, supplemental) {
       target[key] = value;
       return;
     }
-    if (["note", "notes"].includes(key) && !String(target[key]).includes(normalizedValue)) {
+    if (SUPPLEMENTAL_APPEND_FIELD_IDS.has(key) && !String(target[key]).includes(normalizedValue)) {
       target[key] = `${target[key]}；${normalizedValue}`;
     }
   });
@@ -799,6 +829,8 @@ export function applyRosterColumnMapping(sheetAnalysis, mappingOverride = null) 
   const carryForward = {};
   const mappedRows = [];
   const rowsByOwnershipKey = new Map();
+  const rowsByLocationKey = new Map();
+  let lastOwnershipRow = null;
 
   dataRows.forEach((row) => {
     if (!rowHasAnyValue(row)) {
@@ -820,19 +852,33 @@ export function applyRosterColumnMapping(sheetAnalysis, mappingOverride = null) 
       }
     });
 
-    if (!rowHasOwnershipSignal(mappedRow, sheetType)) {
+    const hasOwnershipSignal = rowHasOwnershipSignal(mappedRow, sheetType);
+    const hasOtherRightsData = rowHasOtherRightsData(mappedRow);
+    const locationKey = buildLocationDedupeKey(mappedRow, sheetType);
+
+    if (!hasOwnershipSignal) {
+      if (hasOtherRightsData) {
+        const target = (locationKey && rowsByLocationKey.get(locationKey)) || lastOwnershipRow;
+        if (target) {
+          mergeSupplementalMappedRow(target, mappedRow);
+        }
+      }
       return;
     }
 
     const dedupeKey = buildOwnershipDedupeKey(mappedRow, sheetType);
-    if (dedupeKey && rowsByOwnershipKey.has(dedupeKey) && rowHasOtherRightsData(mappedRow)) {
+    if (dedupeKey && rowsByOwnershipKey.has(dedupeKey) && hasOtherRightsData) {
       mergeSupplementalMappedRow(rowsByOwnershipKey.get(dedupeKey), mappedRow);
       return;
     }
 
     mappedRows.push(mappedRow);
+    lastOwnershipRow = mappedRow;
     if (dedupeKey) {
       rowsByOwnershipKey.set(dedupeKey, mappedRow);
+    }
+    if (locationKey) {
+      rowsByLocationKey.set(locationKey, mappedRow);
     }
   });
 

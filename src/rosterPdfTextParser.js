@@ -46,6 +46,55 @@ function parseNumber(value) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+function appendUniqueText(currentValue, nextValue) {
+  const current = cleanField(currentValue);
+  const next = cleanField(nextValue);
+  if (!next) {
+    return current;
+  }
+  if (!current) {
+    return next;
+  }
+  const parts = current.split("；").map((part) => cleanField(part)).filter(Boolean);
+  return parts.includes(next) ? current : `${current}；${next}`;
+}
+
+function normalizeRegistrationOrder(value) {
+  const digits = cleanField(value).replace(/\D/g, "");
+  return digits ? digits.padStart(4, "0") : "";
+}
+
+function parseRegistrationOrderReferences(value) {
+  const text = cleanField(value);
+  if (!text) {
+    return { all: false, orders: new Set() };
+  }
+  if (/全部|全體|所有/.test(text)) {
+    return { all: true, orders: new Set() };
+  }
+
+  const orders = new Set();
+  for (const match of text.matchAll(/(\d{1,4})(?:[-~至到](\d{1,4}))?/g)) {
+    const start = Number(match[1]);
+    const end = match[2] ? Number(match[2]) : start;
+    if (!Number.isFinite(start) || !Number.isFinite(end)) {
+      continue;
+    }
+    const min = Math.min(start, end);
+    const max = Math.max(start, end);
+    for (let order = min; order <= max; order += 1) {
+      orders.add(String(order).padStart(4, "0"));
+    }
+  }
+
+  return { all: false, orders };
+}
+
+function extractOtherRightAmountText(block) {
+  const amountText = block.match(/擔保債權總金額：(?:新臺幣)?\**(.+?)(?=標的登記次序|設定權利範圍|證明書字號|共同擔保地號|其他登記事項|$)/)?.[1] || "";
+  return cleanField(amountText);
+}
+
 function roundNumber(value, digits = 6) {
   if (!Number.isFinite(value)) {
     return "";
@@ -231,21 +280,103 @@ function parseMortgageBlocks(compactMortgageSection, lotContext) {
 
   while ((match = blockRegex.exec(compactMortgageSection)) !== null) {
     const block = match[2] || "";
+    const securedAmountText = extractOtherRightAmountText(block);
     rows.push({
       lotNumber: lotContext.lotNumber,
       mortgageOrder: match[1],
       rightType: cleanField(block.match(/權利種類：(.+?)(?=收件|登記日期|權利人|$)/)?.[1] || ""),
       creditorName: cleanField(block.match(/權利人：(.+?)(?=統一編號|住址|債權額比例|擔保債權總金額|$)/)?.[1] || ""),
-      securedAmount: parseNumber(block.match(/擔保債權總金額：新臺幣\**([\d,.]+)元正/)?.[1]),
+      debtor: cleanField(block.match(/債務人：(.+?)(?=債務人及債務額比例|設定義務人|擔保債權總金額|標的登記次序|$)/)?.[1] || ""),
+      debtorAndDebtRatio: cleanField(block.match(/債務人及債務額比例：(.+?)(?=設定義務人|擔保債權總金額|標的登記次序|$)/)?.[1] || ""),
+      obligor: cleanField(block.match(/設定義務人：(.+?)(?=擔保債權總金額|標的登記次序|設定權利範圍|證明書字號|$)/)?.[1] || ""),
+      securedAmount: securedAmountText || parseNumber(block.match(/擔保債權總金額：新臺幣\**([\d,.]+)元正/)?.[1]),
       subjectRegistrationOrders: cleanField(block.match(/標的登記次序：(.+?)(?=設定權利範圍|證明書字號|共同擔保地號|$)/)?.[1] || ""),
       mortgageShareText: cleanField(block.match(/設定權利範圍：(.+?)(?=證明書字號|共同擔保地號|其他登記事項|$)/)?.[1] || ""),
       certificateNumber: cleanField(block.match(/證明書字號：(.+?號)/)?.[1] || ""),
+      rawOtherRightsText: cleanField(block),
       sourceFilename: lotContext.sourceFilename,
       sourcePage: String(lotContext.sourcePage || ""),
     });
   }
 
   return rows.filter((row) => row.mortgageOrder || row.rightType || row.creditorName);
+}
+
+function buildMortgageNote(mortgage) {
+  return [
+    mortgage.subjectRegistrationOrders ? `標的登記次序：${mortgage.subjectRegistrationOrders}` : "",
+    mortgage.mortgageShareText ? `設定權利範圍：${mortgage.mortgageShareText}` : "",
+    mortgage.certificateNumber ? `證明書字號：${mortgage.certificateNumber}` : "",
+  ].filter(Boolean).join("；");
+}
+
+function mergeMortgageIntoOwnerRow(ownerRow, mortgage) {
+  ownerRow.otherRightRegistrationOrder = appendUniqueText(ownerRow.otherRightRegistrationOrder, mortgage.mortgageOrder);
+  ownerRow.otherRightType = appendUniqueText(ownerRow.otherRightType, mortgage.rightType);
+  ownerRow.otherRightsType = appendUniqueText(ownerRow.otherRightsType, mortgage.rightType);
+  ownerRow.otherRightHolder = appendUniqueText(ownerRow.otherRightHolder, mortgage.creditorName);
+  ownerRow.otherRightsHolder = appendUniqueText(ownerRow.otherRightsHolder, mortgage.creditorName);
+  ownerRow.debtor = appendUniqueText(ownerRow.debtor, mortgage.debtor);
+  ownerRow.debtorAndDebtRatio = appendUniqueText(ownerRow.debtorAndDebtRatio, mortgage.debtorAndDebtRatio);
+  ownerRow.obligor = appendUniqueText(ownerRow.obligor, mortgage.obligor);
+  ownerRow.securedAmount = appendUniqueText(ownerRow.securedAmount, mortgage.securedAmount);
+  ownerRow.amount = appendUniqueText(ownerRow.amount, mortgage.securedAmount);
+  ownerRow.rawOtherRightsText = appendUniqueText(ownerRow.rawOtherRightsText, mortgage.rawOtherRightsText);
+  ownerRow.notes = appendUniqueText(ownerRow.notes, buildMortgageNote(mortgage));
+  ownerRow.validationMessages = [
+    ...(ownerRow.validationMessages ?? []),
+    "原始謄本含他項權利資料，系統已保留並掛回同地號權利列，仍建議人工確認。",
+  ];
+}
+
+function attachMortgageBlocksToOwnerRows(ownerRows, mortgageRows, lotContext, issues) {
+  const nextRows = ownerRows.map((row) => ({ ...row }));
+  if (!nextRows.length || !mortgageRows.length) {
+    if (mortgageRows.length) {
+      issues.push({
+        id: `pdf-other-rights-unmatched-${lotContext.lotNumber}`,
+        type: "PDF 他項權利需確認",
+        severity: "中",
+        message: `地號 ${lotContext.lotNumber} 解析到他項權利區塊，但未能找到可掛接的所有權列，請人工確認。`,
+        rows: [],
+      });
+    }
+    return nextRows;
+  }
+
+  const rowsByRegistrationOrder = new Map(nextRows
+    .map((row) => [normalizeRegistrationOrder(row.registrationOrder), row])
+    .filter(([order]) => Boolean(order)));
+
+  mortgageRows.forEach((mortgage) => {
+    const references = parseRegistrationOrderReferences(mortgage.subjectRegistrationOrders);
+    let targetRows = [];
+    if (references.all || references.orders.size === 0) {
+      targetRows = nextRows;
+    } else {
+      targetRows = [...references.orders]
+        .map((order) => rowsByRegistrationOrder.get(order))
+        .filter(Boolean);
+    }
+
+    if (!targetRows.length) {
+      targetRows = nextRows;
+      issues.push({
+        id: `pdf-other-rights-review-${lotContext.lotNumber}-${mortgage.mortgageOrder}`,
+        type: "PDF 他項權利配對需確認",
+        severity: "中",
+        message: `地號 ${lotContext.lotNumber} 他項權利登記次序 ${mortgage.mortgageOrder} 的標的登記次序未能精準配對，已先保留在同地號權利列供人工確認。`,
+        rows: [],
+      });
+    }
+
+    targetRows.forEach((row) => mergeMortgageIntoOwnerRow(row, mortgage));
+    mortgage.attachedOwnerRegistrationOrders = targetRows
+      .map((row) => normalizeRegistrationOrder(row.registrationOrder))
+      .filter(Boolean);
+  });
+
+  return nextRows;
 }
 
 function splitOwnerAndMortgageSections(lotText) {
@@ -337,8 +468,10 @@ export function parseLandRegisterTextPages(pages, sourceFilename, importedAt = n
     parcels.push(parcel);
 
     const sections = splitOwnerAndMortgageSections(lotText);
-    landRights.push(...parseOwnerBlocks(sections.ownerSection, parcel, importedAt, issues));
-    mortgages.push(...parseMortgageBlocks(sections.mortgageSection, parcel));
+    const ownerRows = parseOwnerBlocks(sections.ownerSection, parcel, importedAt, issues);
+    const mortgageRows = parseMortgageBlocks(sections.mortgageSection, parcel);
+    landRights.push(...attachMortgageBlocksToOwnerRows(ownerRows, mortgageRows, parcel, issues));
+    mortgages.push(...mortgageRows);
   });
 
   if (!landRights.length) {

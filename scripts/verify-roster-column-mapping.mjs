@@ -11,6 +11,7 @@ import {
   createBlankRosterTemplateWorkbookBlob,
   createRosterWorkbookBlob,
 } from "../src/rosterXlsxExporter.js";
+import { parseLandRegisterTextPages } from "../src/rosterPdfTextParser.js";
 import {
   BUILDING_EXPORT_HEADERS,
   BUILDING_TEMPLATE_HEADERS,
@@ -68,6 +69,41 @@ const appliedLand = applyRosterColumnMapping(selection.land);
 assert.equal(appliedLand.rows.length, 2, "carry-forward ownership rows should remain two rows");
 assert.equal(appliedLand.rows[1].section, "丹鳳段", "land section should carry forward");
 assert.equal(appliedLand.rows[1].lotNumber, "123", "land number should carry forward");
+
+const supplementalOtherRightsRows = [
+  row(1, [
+    "序號",
+    "地段",
+    "地號",
+    "面積(㎡)",
+    "登記次序",
+    "所有權人(管理人)",
+    "身分證字號",
+    "權利範圍分子",
+    "/",
+    "權利範圍分母",
+    "土地持分面積(㎡)",
+    "他項權利登記次序",
+    "權利種類",
+    "他項權利人",
+    "債務人",
+    "債務人及債務額比例",
+    "設定義務人",
+    "金額",
+    "備註",
+    "謄本地址",
+  ]),
+  row(2, ["1", "丹鳳段", "474", "786.18", "0001", "林曾秋香", "F200****", "1386", "/", "20000", "54.482274", "", "", "", "", "", "", "", "", ""]),
+  row(3, ["", "", "", "", "", "", "", "", "", "", "", "0032", "抵押權", "國泰人壽保險股份有限公司", "林曾秋香", "全部", "林曾秋香", "180萬元", "共同擔保地號", "新北市新莊區測試路"]),
+];
+const supplementalSelection = selectRosterSheets({ 土地權屬清冊: supplementalOtherRightsRows });
+const supplementalRows = applyRosterColumnMapping(supplementalSelection.land).rows;
+assert.equal(supplementalRows.length, 1, "other-right-only extension rows should merge into the current ownership row");
+assert.equal(normalizeText(supplementalRows[0].otherRightsType), "抵押權", "supplemental other-right type should be retained");
+assert.ok(normalizeText(supplementalRows[0].otherRightsHolder).includes("國泰人壽保險股份有限公司"), "supplemental other-right holder should be retained");
+assert.equal(normalizeText(supplementalRows[0].debtor), "林曾秋香", "supplemental debtor should be retained");
+assert.equal(normalizeText(supplementalRows[0].obligor), "林曾秋香", "supplemental obligor should be retained");
+assert.equal(normalizeText(supplementalRows[0].amount), "180萬元", "supplemental secured amount should be retained");
 
 const lowConfidence = detectRosterColumnMapping(lowConfidenceRows, "land");
 assert.equal(lowConfidence.needsManualMapping, true, "low confidence sheets should require manual mapping");
@@ -352,6 +388,39 @@ function readWorkbookSheetsFromEntries(entries) {
 
   return sheets;
 }
+
+const parsedTranscript = parseLandRegisterTextPages([
+  {
+    pageNumber: 1,
+    text: `
+      資料管轄機關：新北市新莊地政事務所
+      新莊區丹鳳段0474-0000地號
+      土地標示部
+      面積：786.18平方公尺
+      民國114年01月公告土地現值：**112858元
+      土地所有權部
+      （0001）登記次序：0001
+      登記日期：民國113年03月08日登記原因：買賣原因發生日期：民國113年03月08日
+      所有權人：林曾秋香統一編號：F200822353住址：新北市測試地址
+      權利範圍：20000分之1386當期申報地價：114年1月112858元
+      土地他項權利部
+      （0001）登記次序：0032
+      權利種類：抵押權收件字號：新莊地所字第000001號
+      權利人：國泰人壽保險股份有限公司統一編號：03374707
+      債務人：林曾秋香設定義務人：林曾秋香擔保債權總金額：新臺幣**180萬元正
+      標的登記次序：0001設定權利範圍：全部證明書字號：113新莊他字第000001號
+      本謄本列印完畢
+    `,
+  },
+], "mock-transcript.pdf", "2026/05/15 00:00:00");
+assert.equal(parsedTranscript.landRights.length, 1, "readable transcript should parse one ownership row");
+assert.equal(parsedTranscript.mortgages.length, 1, "readable transcript should parse one other-right block");
+assert.equal(normalizeText(parsedTranscript.landRights[0].otherRightType), "抵押權", "PDF other-right type should be attached to the ownership row");
+assert.ok(normalizeText(parsedTranscript.landRights[0].otherRightHolder).includes("國泰人壽保險股份有限公司"), "PDF other-right holder should be attached to the ownership row");
+assert.equal(normalizeText(parsedTranscript.landRights[0].debtor), "林曾秋香", "PDF debtor should be retained on the ownership row");
+assert.equal(normalizeText(parsedTranscript.landRights[0].obligor), "林曾秋香", "PDF obligor should be retained on the ownership row");
+assert.ok(normalizeText(parsedTranscript.landRights[0].securedAmount).includes("180萬元"), "PDF secured amount text should be retained");
+assert.ok(parsedTranscript.mortgages[0].attachedOwnerRegistrationOrders.includes("0001"), "PDF mortgage should record its attached ownership order");
 
 const realWorkbookPath = "/Users/jeremiah/Downloads/1130308新莊丹鳳段清冊.xlsx";
 let realWorkbookSummary = "not-found";
