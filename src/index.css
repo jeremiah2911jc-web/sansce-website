@@ -1336,28 +1336,6 @@ main {
   font-size: 0.8rem;
 }
 
-.eval-role-switch {
-  display: inline-flex;
-  gap: 4px;
-  border-radius: 999px;
-  background: rgba(8, 59, 48, 0.08);
-  padding: 3px;
-}
-
-.eval-role-switch button {
-  min-height: 28px;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--green-900);
-  padding: 5px 10px;
-  font-size: 0.72rem;
-}
-
-.eval-role-switch button.is-active {
-  background: var(--green-900);
-  color: var(--white);
-}
-
 .eval-dashboard-home {
   display: grid;
   gap: 16px;
@@ -2347,15 +2325,6 @@ main {
   margin: 0;
 }
 
-.eval-database-sync-debug {
-  margin-top: 6px !important;
-  color: #7c2d12;
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 0.72rem;
-  font-weight: 700;
-  overflow-wrap: anywhere;
-}
-
 .eval-database-sync-preview {
   display: grid;
   gap: 12px;
@@ -2533,12 +2502,6 @@ main {
   color: var(--gray-700);
   font-size: 0.78rem;
   font-weight: 900;
-}
-
-.eval-field-placeholder strong {
-  color: var(--gray-500);
-  font-size: 0.82rem;
-  font-weight: 800;
 }
 
 .eval-field span {
@@ -2886,7 +2849,7 @@ main {
   gap: 9px;
 }
 
-.eval-checklist label {
+.eval-checklist div {
   display: flex;
   align-items: flex-start;
   gap: 8px;
@@ -2900,8 +2863,9 @@ main {
   line-height: 1.5;
 }
 
-.eval-checklist input {
-  accent-color: var(--green-800);
+.eval-checklist svg {
+  flex: 0 0 auto;
+  color: var(--green-800);
   margin-top: 3px;
 }
 
@@ -3238,51 +3202,6 @@ main {
   gap: 14px;
 }
 
-.eval-roster-lifecycle {
-  border-color: rgba(8, 59, 48, 0.1);
-  background: #fbfdfc;
-}
-
-.eval-roster-lifecycle ol {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  counter-reset: roster-lifecycle;
-}
-
-.eval-roster-lifecycle li {
-  position: relative;
-  min-height: 58px;
-  border: 1px solid rgba(8, 59, 48, 0.09);
-  border-radius: 12px;
-  background: #ffffff;
-  color: var(--green-950);
-  padding: 12px 10px 10px 34px;
-  font-size: 0.78rem;
-  font-weight: 900;
-  line-height: 1.35;
-  counter-increment: roster-lifecycle;
-}
-
-.eval-roster-lifecycle li::before {
-  position: absolute;
-  top: 11px;
-  left: 10px;
-  display: inline-grid;
-  width: 18px;
-  height: 18px;
-  place-items: center;
-  border-radius: 999px;
-  background: var(--green-900);
-  color: var(--white);
-  content: counter(roster-lifecycle);
-  font-size: 0.68rem;
-  font-weight: 900;
-}
-
 .eval-roster-official-flow {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3359,25 +3278,6 @@ main {
 
 .eval-roster-helper {
   margin: 0;
-}
-
-.eval-roster-template-steps {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.eval-roster-template-steps span {
-  display: inline-flex;
-  align-items: center;
-  min-height: 30px;
-  border: 1px solid rgba(8, 59, 48, 0.12);
-  border-radius: 999px;
-  background: rgba(8, 59, 48, 0.05);
-  color: var(--green-950);
-  padding: 6px 10px;
-  font-size: 0.76rem;
-  font-weight: 900;
 }
 
 .eval-roster-gate-message,
@@ -3839,6 +3739,27 @@ main {
 .eval-roster-maintenance {
   border-color: rgba(8, 59, 48, 0.1);
   background: linear-gradient(180deg, #ffffff 0%, #f8fbfa 100%);
+}
+
+.eval-roster-maintenance-disclosure {
+  border: 1px solid rgba(8, 59, 48, 0.1);
+  border-radius: 18px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.eval-roster-maintenance-disclosure > summary {
+  cursor: pointer;
+  padding: 14px 16px;
+  color: var(--green-950);
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.eval-roster-maintenance-disclosure > .eval-roster-maintenance {
+  border: 0;
+  border-top: 1px solid rgba(8, 59, 48, 0.08);
+  border-radius: 0;
 }
 
 .eval-roster-maintenance-actions {
@@ -4471,7 +4392,7 @@ main {
   gap: 9px;
 }
 
-.eval-security-check-grid label {
+.eval-security-check-grid div {
   display: flex;
   align-items: flex-start;
   gap: 8px;
@@ -4485,8 +4406,9 @@ main {
   line-height: 1.5;
 }
 
-.eval-security-check-grid input {
-  accent-color: var(--green-800);
+.eval-security-check-grid svg {
+  flex: 0 0 auto;
+  color: var(--green-800);
   margin-top: 3px;
 }
 
@@ -4731,7 +4653,6 @@ main {
   .eval-security-status-grid,
   .eval-security-check-grid,
   .eval-role-rule-grid,
-  .eval-roster-lifecycle ol,
   .eval-roster-step-grid,
   .eval-roster-mode-grid,
   .eval-roster-import-mode-options,
@@ -4961,7 +4882,6 @@ main {
   .eval-security-status-grid,
   .eval-security-check-grid,
   .eval-role-rule-grid,
-  .eval-roster-lifecycle ol,
   .eval-roster-step-grid,
   .eval-roster-mode-grid,
   .eval-roster-import-mode-options,

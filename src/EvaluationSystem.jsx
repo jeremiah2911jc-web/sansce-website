@@ -110,7 +110,7 @@ const DOWNSTREAM_PLACEHOLDER_MODULE_IDS = new Set(["sales", "allocation", "cashf
 const MODULE_SAVE_STATUS_IDS = new Set(["base-info", "capacity", "efficiency", "costs"]);
 const SYSTEM_TEST_HASH = "#system-test";
 const SYSTEM_AUTH_REQUEST_TIMEOUT_MS = 15000;
-const LOCAL_SYSTEM_AUTH_UNAVAILABLE_MESSAGE = "本機登入服務沒有回應。請確認是否已啟動本機 API，或改用正式測試站登入。";
+const LOCAL_SYSTEM_AUTH_UNAVAILABLE_MESSAGE = "本機登入服務沒有回應。請確認是否已啟動本機 API，或改用正式站登入。";
 const SYSTEM_AUTH_FAILED_MESSAGE = "帳號或密碼不正確，或尚未取得授權。";
 const CASES_STORAGE_KEY = "sanze-evaluation-cases-v1";
 const CURRENT_CASE_ID_STORAGE_KEY = "sanze-evaluation-current-case-id-v1";
@@ -1075,7 +1075,7 @@ function resolveImportedCurrentCaseId(cases, importedCurrentCaseId) {
 }
 
 function validateLocalTestDataPayload(payload) {
-  const invalidMessage = "這不是有效的三策開發評估系統測試資料檔，請確認檔案來源。";
+  const invalidMessage = "這不是有效的三策開發評估系統資料檔，請確認檔案來源。";
 
   if (!isPlainRecord(payload)) {
     return { ok: false, message: invalidMessage };
@@ -1204,10 +1204,10 @@ function getModuleSaveStatusLabel(saveStatus) {
   }
 
   if (saveStatus?.state === "saved") {
-    return "本機測試資料已儲存";
+    return "已儲存";
   }
 
-  return "目前資料已自動暫存於本機，可按下儲存確認本模組狀態";
+  return "目前資料已暫存，可按下儲存確認本模組狀態";
 }
 
 function getCurrentSaveStatus(moduleSaveStatusByCaseId, caseId, moduleId) {
@@ -1293,7 +1293,6 @@ function StaticFieldPlaceholder({ label }) {
   return (
     <div className="eval-field-placeholder">
       <span>{label}</span>
-      <strong>待建立</strong>
     </div>
   );
 }
@@ -1301,7 +1300,7 @@ function StaticFieldPlaceholder({ label }) {
 function StaticTablePlaceholder({ columns }) {
   return (
     <div className="eval-table-placeholder">
-      <strong>待建立表格欄位</strong>
+      <strong>資料欄位</strong>
       <div className="eval-chip-grid">
         {columns.map((column) => (
           <span className="eval-chip" key={column}>{column}</span>
@@ -1476,13 +1475,13 @@ function LocalDataClearConfirmModal({ clearConfirmation, onCancel, onContinue, o
   return (
     <div className="eval-confirm-backdrop" role="presentation">
       <section className="eval-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="local-data-clear-confirm-title">
-        <p className="eval-kicker">LOCAL TEST DATA</p>
+        <p className="eval-kicker">BROWSER DATA</p>
         <h4 id="local-data-clear-confirm-title">
-          {isSecondStep ? "此操作會清除本機測試資料" : "是否清除本機測試資料？"}
+          {isSecondStep ? "此操作會清除瀏覽器資料" : "是否清除瀏覽器資料？"}
         </h4>
         <p>
           {isSecondStep
-            ? "此操作會清除本機瀏覽器中的案件、清冊暫存、基地、容積、坪效與後續模組預留資料，無法復原。確認清除？"
+            ? "此操作會清除本機瀏覽器中的案件、清冊暫存、基地、容積、坪效與後續模組資料，無法復原。確認清除？"
             : "此操作會清除目前瀏覽器中的案件、清冊暫存、基地、容積、坪效與後續模組資料；清除前會再次確認。"}
         </p>
         <div className="eval-confirm-actions">
@@ -1508,14 +1507,14 @@ function LocalDataImportConfirmModal({ importConfirmation, onCancel, onContinue,
   return (
     <div className="eval-confirm-backdrop" role="presentation">
       <section className="eval-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="local-data-import-confirm-title">
-        <p className="eval-kicker">LOCAL TEST DATA</p>
+        <p className="eval-kicker">BROWSER DATA</p>
         <h4 id="local-data-import-confirm-title">
-          {isSecondStep ? "匯入後會覆蓋本機測試資料" : "是否匯入本機測試資料？"}
+          {isSecondStep ? "匯入後會覆蓋瀏覽器資料" : "是否匯入評估資料？"}
         </h4>
         <p>
           {isSecondStep
-            ? "匯入後會覆蓋目前瀏覽器中的案件、清冊暫存、基地、容積、坪效與後續模組預留資料，無法復原。確認匯入？"
-            : "匯入後會取代目前瀏覽器中的本機測試資料。這不會影響正式資料庫，因目前尚未接正式資料庫。"}
+            ? "匯入後會覆蓋目前瀏覽器中的案件、清冊暫存、基地、容積、坪效與後續模組資料，無法復原。確認匯入？"
+            : "匯入後會取代目前瀏覽器中的評估資料，確認前不會變更任何資料。"}
         </p>
         <div className="eval-confirm-actions">
           <button type="button" className="eval-secondary-action" onClick={onCancel}>
@@ -1660,8 +1659,8 @@ function DatabaseConnectionStatus() {
   const [connectionState, setConnectionState] = useState({
     status: "checking",
     label: "檢查中",
-    detail: "目前仍使用本機測試資料。",
-    description: "第一階段僅檢查 Supabase Vite env 與 API 可達性，尚未啟用案件資料同步。",
+    detail: "瀏覽器暫存",
+    description: "系統會先保存在瀏覽器，需要時可由管理者同步資料庫。",
   });
 
   useEffect(() => {
@@ -1682,7 +1681,7 @@ function DatabaseConnectionStatus() {
     <section className="eval-module-section eval-database-status">
       <div className="eval-section-head">
         <h4>資料庫連線狀態</h4>
-        <p>{connectionState.description || "第一階段僅檢查 Supabase Vite env 與 API 可達性，尚未啟用案件資料同步。"}</p>
+        <p>{connectionState.description || "系統會先保存在瀏覽器，需要時可由管理者同步資料庫。"}</p>
       </div>
       <div className="eval-database-status__body">
         <article data-status={connectionState.status}>
@@ -1776,7 +1775,7 @@ function DatabaseSyncControls({
 
       if (!response.ok || !payload.ok) {
         const isNotConfigured = payload.code === "DB_SYNC_NOT_CONFIGURED";
-        const apiError = buildDatabaseApiError(payload, "資料庫同步失敗，目前仍使用本機測試資料。");
+        const apiError = buildDatabaseApiError(payload, "資料庫同步失敗，瀏覽器資料仍保留。");
         setSyncState({
           status: "error",
           message: "",
@@ -1800,7 +1799,7 @@ function DatabaseSyncControls({
       setSyncState({
         status: "error",
         message: "",
-        error: "資料庫同步失敗，目前仍使用本機測試資料。",
+        error: "資料庫同步失敗，瀏覽器資料仍保留。",
         debug: "",
         backendConfigured: syncState.backendConfigured,
         lastSyncedAt: syncState.lastSyncedAt,
@@ -1820,7 +1819,7 @@ function DatabaseSyncControls({
 
       if (!response.ok || !payload.ok) {
         const isNotConfigured = payload.code === "DB_SYNC_NOT_CONFIGURED";
-        const apiError = buildDatabaseApiError(payload, "資料庫載入失敗，目前仍保留本機測試資料。");
+        const apiError = buildDatabaseApiError(payload, "資料庫載入失敗，瀏覽器資料仍保留。");
         setSyncState({
           status: "error",
           message: "",
@@ -1846,7 +1845,7 @@ function DatabaseSyncControls({
       setSyncState({
         status: "error",
         message: "",
-        error: "資料庫載入失敗，目前仍保留本機測試資料。",
+        error: "資料庫載入失敗，瀏覽器資料仍保留。",
         debug: "",
         backendConfigured: syncState.backendConfigured,
         lastSyncedAt: syncState.lastSyncedAt,
@@ -1882,7 +1881,7 @@ function DatabaseSyncControls({
     }
 
     if (mode === "replace") {
-      const confirmed = window.confirm("取代會以資料庫載入案件覆蓋目前本機測試資料，並清除尚未納入 DB 同步的後續模組暫存。是否確認取代？");
+      const confirmed = window.confirm("取代會以資料庫載入案件覆蓋目前瀏覽器資料，並清除尚未納入資料庫同步的後續模組暫存。是否確認取代？");
       if (!confirmed) {
         return;
       }
@@ -1914,18 +1913,18 @@ function DatabaseSyncControls({
     <section className="eval-module-section eval-database-sync">
       <div className="eval-section-head">
         <h4>資料庫同步</h4>
-        <p>目前採 localStorage + Supabase 並行模式。操作時仍會先寫入本機測試資料；可手動同步到資料庫，或從資料庫載入案件資料。</p>
+        <p>資料會先保存在瀏覽器，管理者可手動同步到資料庫，或從資料庫載入案件資料。</p>
       </div>
       <ul className="eval-database-sync-notes">
-        <li>目前仍以本機測試資料為主，同步失敗不會清空 localStorage。</li>
+        <li>同步失敗不會清空瀏覽器資料。</li>
         <li>本階段同步案件主檔、清冊 staging、基地、容積/TDR、坪效與成本資料。</li>
         <li>實價登錄、銷售情境、權利分配、現金流與銀行報告將在下一階段開放。</li>
-        <li>正式多人權限、案件權限與稽核紀錄需在 Auth / RLS policy / user-case mapping 完成後啟用。</li>
+        <li>多人權限、案件權限與稽核紀錄需由後端權限規則完成後啟用。</li>
       </ul>
       <div className="eval-database-sync-state" data-status={syncState.status}>
         <span>狀態</span>
         <strong>{syncStatusLabel}</strong>
-        <p>{syncState.message || "目前仍使用本機測試資料。"}</p>
+        <p>{syncState.message || "目前使用瀏覽器資料。"}</p>
       </div>
       {currentCaseSummary && (
         <div className="eval-database-sync-summary" aria-label="目前案件同步摘要">
@@ -1957,7 +1956,7 @@ function DatabaseSyncControls({
       )}
       {isBackendUnavailable && (
         <p className="eval-database-sync-message eval-database-sync-message--error">
-          後端資料庫同步尚未設定，請設定 SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY。
+          後端資料庫同步尚未設定，請由管理者確認部署設定。
         </p>
       )}
       <div className="eval-database-sync-actions">
@@ -1980,7 +1979,6 @@ function DatabaseSyncControls({
       {syncState.error && (
         <div className="eval-database-sync-message eval-database-sync-message--error">
           <p>{syncState.error}</p>
-          {syncState.debug && <p className="eval-database-sync-debug">{syncState.debug}</p>}
         </div>
       )}
       {isPreviewVisible && loadPreviewSummary && (
@@ -1989,7 +1987,7 @@ function DatabaseSyncControls({
             <strong>資料庫載入預覽</strong>
             <p>
               載入 {loadPreviewSummary.caseCount} 筆案件、{loadPreviewSummary.landRowCount} 筆土地列、
-              {loadPreviewSummary.buildingRowCount} 筆建物列。確認前不會寫入 localStorage。
+              {loadPreviewSummary.buildingRowCount} 筆建物列。確認前不會寫入瀏覽器資料。
             </p>
           </div>
           <dl>
@@ -2152,7 +2150,7 @@ function CaseManagementModule({
     setImportConfirmation(null);
     setImportPreview(null);
     setLocalDataError("");
-    setLocalDataMessage("已清除本機測試資料。");
+    setLocalDataMessage("已清除瀏覽器資料。");
   };
 
   const handleExportLocalTestData = () => {
@@ -2171,7 +2169,7 @@ function CaseManagementModule({
 
     downloadJsonFile(payload, buildLocalTestDataFileName());
     setLocalDataError("");
-    setLocalDataMessage("已匯出本機測試資料。此檔僅供三策開發評估系統測試使用，請勿視為正式案件資料備份。");
+    setLocalDataMessage("已匯出評估資料 JSON。");
   };
 
   const handleImportFileRequest = () => {
@@ -2198,7 +2196,7 @@ function CaseManagementModule({
     }
 
     if (!file.name.toLowerCase().endsWith(".json")) {
-      setLocalDataError("檔案不是 .json，請選擇三策測試資料 JSON。");
+      setLocalDataError("檔案不是 .json，請選擇三策評估資料 JSON。");
       return;
     }
 
@@ -2226,7 +2224,7 @@ function CaseManagementModule({
 
   const handleRequestImportLocalData = () => {
     if (!importPreview) {
-      setLocalDataError("尚未選擇有效的三策測試資料 JSON。");
+      setLocalDataError("尚未選擇有效的三策評估資料 JSON。");
       return;
     }
 
@@ -2237,7 +2235,7 @@ function CaseManagementModule({
 
   const handleCancelImportLocalData = () => {
     setImportConfirmation(null);
-    setLocalDataError("匯入被取消，尚未變更目前本機測試資料。");
+    setLocalDataError("匯入被取消，尚未變更目前瀏覽器資料。");
   };
 
   const handleContinueImportLocalData = () => {
@@ -2247,7 +2245,7 @@ function CaseManagementModule({
   const handleConfirmImportLocalData = () => {
     if (!importPreview) {
       setImportConfirmation(null);
-      setLocalDataError("尚未選擇有效的三策測試資料 JSON。");
+      setLocalDataError("尚未選擇有效的三策評估資料 JSON。");
       return;
     }
 
@@ -2258,7 +2256,7 @@ function CaseManagementModule({
     setClearConfirmation(null);
     setImportConfirmation(null);
     setLocalDataError("");
-    setLocalDataMessage("已匯入本機測試資料。");
+    setLocalDataMessage("已匯入評估資料。");
   };
 
   const importSummaryItems = importPreview ? [
@@ -2306,7 +2304,7 @@ function CaseManagementModule({
           </label>
           <label className="eval-field">
             <span>案件名稱</span>
-            <input type="text" value={caseForm.name} onChange={handleChange("name")} placeholder="測試案件名稱" />
+            <input type="text" value={caseForm.name} onChange={handleChange("name")} placeholder="案件名稱" />
           </label>
           <label className="eval-field">
             <span>開發路徑</span>
@@ -2330,7 +2328,7 @@ function CaseManagementModule({
           </label>
           <div className="eval-case-form-actions" aria-label={editingCase ? "案件編輯操作" : "案件新增操作"}>
             <p className="eval-case-form-hint">
-              {editingCase ? "編輯儲存後會更新案件摘要與本機測試資料。" : "新增成功後會自動成為目前案件，並保留於本機測試資料。"}
+              {editingCase ? "編輯儲存後會更新案件摘要。" : "新增成功後會自動成為目前案件。"}
             </p>
             <div className="eval-case-form-buttons">
               <button type="submit" className="eval-case-form-primary case-form-primary-action">
@@ -2407,7 +2405,7 @@ function CaseManagementModule({
 
       <section className="eval-module-section eval-local-test-tools">
         <div className="eval-section-head">
-          <h4>本機測試資料工具</h4>
+          <h4>瀏覽器資料工具</h4>
           <p>匯出、匯入或清除目前瀏覽器中的評估資料。</p>
         </div>
         <input
@@ -2420,16 +2418,16 @@ function CaseManagementModule({
         <div className="eval-local-test-tools__body">
           <article className="eval-local-test-card">
             <div>
-              <strong>匯出本機測試資料</strong>
+              <strong>匯出評估資料</strong>
               <p>下載目前案件、清冊、基地、容積與坪效資料。</p>
             </div>
             <button type="button" onClick={handleExportLocalTestData}>
-              匯出本機測試資料
+              匯出評估資料
             </button>
           </article>
           <article className="eval-local-test-card">
             <div>
-              <strong>匯入本機測試資料</strong>
+              <strong>匯入評估資料</strong>
               <p>匯入三策評估系統 JSON，匯入前會再次確認。</p>
             </div>
             <button type="button" onClick={handleImportFileRequest}>
@@ -2438,11 +2436,11 @@ function CaseManagementModule({
           </article>
           <article className="eval-local-test-card eval-local-test-card--danger">
             <div>
-              <strong>清除本機測試資料</strong>
+              <strong>清除瀏覽器資料</strong>
               <p>清除目前瀏覽器中的評估資料，會保留二次確認。</p>
             </div>
             <button type="button" className="eval-danger-action" onClick={handleRequestClearLocalData}>
-              清除本機測試資料
+              清除瀏覽器資料
             </button>
           </article>
         </div>
@@ -2452,7 +2450,7 @@ function CaseManagementModule({
           <div className="eval-import-summary">
             <div>
               <strong>匯入摘要</strong>
-              <p>匯入後會取代目前瀏覽器中的本機測試資料。這不會影響正式資料庫，因目前尚未接正式資料庫。</p>
+              <p>匯入後會取代目前瀏覽器中的評估資料，確認前不會變更資料。</p>
             </div>
             <dl>
               {importSummaryItems.map(([label, value]) => (
@@ -2463,7 +2461,7 @@ function CaseManagementModule({
               ))}
             </dl>
             <button type="button" className="eval-danger-action" onClick={handleRequestImportLocalData}>
-              匯入本機測試資料
+              匯入評估資料
             </button>
           </div>
         )}
@@ -2667,10 +2665,10 @@ function RiskChecklist({ items }) {
       </div>
       <div className="eval-checklist">
         {items.map((item) => (
-          <label key={item}>
-            <input type="checkbox" readOnly />
+          <div key={item}>
+            <CheckCircle2 aria-hidden="true" size={16} />
             <span>{item}</span>
-          </label>
+          </div>
         ))}
       </div>
     </section>
@@ -2895,10 +2893,10 @@ function SecuritySection({ section }) {
       {section.items && (
         <div className="eval-security-check-grid">
           {section.items.map((item) => (
-            <label key={item}>
-              <input type="checkbox" readOnly />
+            <div key={item}>
+              <CheckCircle2 aria-hidden="true" size={16} />
               <span>{item}</span>
-            </label>
+            </div>
           ))}
         </div>
       )}
@@ -2942,8 +2940,8 @@ function SecurityProtectionModule({ module }) {
       ))}
       <SecurityRequirementGroup title="已規劃控制項" items={module.plannedControls} />
       <SecurityRequirementGroup title="未來後端需求" items={module.backendRequirements} />
-      <SecurityRequirementGroup title="資料庫規則預留表" items={module.databaseRulePlaceholders} />
-      <SecurityRequirementGroup title="Audit log 欄位規劃" items={module.auditLogFields} />
+      <SecurityRequirementGroup title="資料庫規則規劃" items={module.databaseRulePlaceholders} />
+      <SecurityRequirementGroup title="稽核紀錄欄位規劃" items={module.auditLogFields} />
     </div>
   );
 }
@@ -6781,7 +6779,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
     setIsParsing(true);
     setPdfStatus({
       type: "notice",
-      title: "檢查 PDF 文字層",
+      title: "正在讀取 PDF",
       message: "正在讀取 PDF 文字層並解析謄本資料，尚未寫入案件清冊。",
     });
 
@@ -6796,12 +6794,12 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
       });
       setPdfStatus({
         type: "notice",
-        title: "已建立 PDF 清冊草稿",
+        title: "已建立清冊預覽",
         message: `已解析 ${parsedPdf.sources.length} 份 PDF、${rosterPreview.landRights.length} 筆土地權利列。請先預覽、下載清冊並人工確認後再匯入。`,
       });
       setRosterMessage(hasExistingRoster
         ? "目前案件已有清冊，請先選擇匯入模式；確認前不會覆蓋既有案件清冊。"
-        : "PDF 已建立清冊草稿，確認前不會寫入案件清冊。");
+        : "PDF 已建立清冊預覽，確認前不會寫入案件清冊。");
     } catch (error) {
       const isParserError = error?.name === "RosterPdfParserError";
       setPdfStatus({
@@ -6832,7 +6830,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
     }
 
     if (!file.name.toLowerCase().endsWith(".xlsx")) {
-      setParseError("目前清冊上傳測試只接受 .xlsx 檔案。");
+      setParseError("請上傳 .xlsx 清冊檔。");
       event.target.value = "";
       return;
     }
@@ -6980,7 +6978,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
       downloadBlobFile(createRosterWorkbookBlob(activePreview), buildGeneratedRosterFileName(currentCase, "xlsx"));
     } catch (error) {
       downloadJsonFile(activePreview, buildGeneratedRosterFileName(currentCase, "json"));
-      setRosterMessage("generated Excel 下載暫時失敗，已改下載 draft JSON。");
+      setRosterMessage("系統產生清冊 Excel 暫時無法下載，已改下載 JSON 資料檔。");
     }
   };
 
@@ -7024,30 +7022,12 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
         onReselect={handleReselectColumnMappingFile}
         onBuildPreview={handleBuildPreviewFromColumnMapping}
       />
-      <section className="eval-module-section eval-roster-lifecycle">
-        <div className="eval-section-head">
-          <h4>清冊建立與維護流程</h4>
-          <p>清冊先建立草稿並人工確認，後續補件、年度地價更新與版本紀錄會接續保留來源脈絡。</p>
-        </div>
-        <ol>
-          {[
-            "建立清冊草稿",
-            "預覽清冊與檢核摘要",
-            "人工確認後寫入案件清冊",
-            "後續新增、修改、補件更新",
-            "年度公告現值 / 申報地價更新",
-            "版本紀錄與來源紀錄",
-          ].map((step) => (
-            <li key={step}>{step}</li>
-          ))}
-        </ol>
-      </section>
 
       <div className="eval-roster-official-flow">
         <section className="eval-module-section eval-roster-flow-card">
           <div className="eval-section-head">
-            <h4>上傳可讀電子謄本 PDF</h4>
-            <p>請上傳可複製文字的電子謄本 PDF。系統會解析文字層並建立清冊草稿；掃描影像 PDF 暫不支援。</p>
+            <h4>上傳電子謄本 PDF</h4>
+            <p>請上傳可複製文字的電子謄本 PDF；掃描影像 PDF 暫不支援。確認預覽前不會寫入案件清冊。</p>
           </div>
           <input
             ref={pdfFileInputRef}
@@ -7060,17 +7040,9 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
           />
           <div className="eval-roster-flow-actions">
             <button type="button" onClick={() => pdfFileInputRef.current?.click()} disabled={isParsing}>
-              上傳並解析 PDF
+              上傳電子謄本 PDF
             </button>
             <span>{pdfFileName || "尚未選擇 PDF"}</span>
-          </div>
-          <p className="eval-roster-helper">
-            僅支援有文字層的電子謄本；掃描 PDF、照片、截圖與 OCR 暫不進入正式清冊建立。
-          </p>
-          <div className="eval-roster-template-steps" aria-label="PDF 清冊建立流程">
-            {["檢查 PDF 文字層", "解析謄本文字", "建立清冊草稿", "顯示預覽", "下載系統產生清冊 Excel", "確認匯入本案件清冊"].map((step) => (
-              <span key={step}>{step}</span>
-            ))}
           </div>
           {pdfStatus && (
             <div className={`eval-roster-gate-message eval-roster-gate-message--${pdfStatus.type}`}>
@@ -7082,8 +7054,8 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
 
         <section className="eval-module-section eval-roster-flow-card">
           <div className="eval-section-head">
-            <h4>上傳已整理清冊 Excel</h4>
-            <p>可使用三策都更清冊標準表單，也可上傳由謄本整理出的土地 / 建物權屬清冊。系統會先辨識欄位並建立預覽，確認後才寫入目前案件。</p>
+            <h4>上傳都更權屬清冊 Excel</h4>
+            <p>可使用三策都更清冊標準表單，或上傳由謄本整理出的土地 / 建物權屬清冊。系統會先建立預覽，確認後才寫入目前案件。</p>
           </div>
           <input
             ref={rosterFileInputRef}
@@ -7098,31 +7070,23 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
               下載都更清冊空白表單
             </button>
             <button type="button" onClick={() => rosterFileInputRef.current?.click()}>
-              上傳已填寫清冊
+              上傳都更權屬清冊 Excel
             </button>
           </div>
           <p className="eval-roster-helper">
-            系統以都更權屬清冊標準格式為主要欄位；舊版 v7 清冊仍可相容匯入，但不再作為主要模板。
+            舊版清冊仍可相容匯入，但主要欄位以都更權屬清冊標準格式為準。
           </p>
-          <div className="eval-roster-template-steps" aria-label="清冊建立流程">
-            {["下載空白表單", "填寫清冊", "上傳清冊", "預覽與檢核", "確認匯入本案件清冊"].map((step) => (
-              <span key={step}>{step}</span>
-            ))}
-          </div>
         </section>
       </div>
 
       <section className="eval-module-section eval-roster-upload-card">
         <div className="eval-section-head">
-            <h4>清冊建立狀態</h4>
-          <p>可讀電子謄本 PDF、三策都更清冊標準表單或已整理 Excel 清冊都會先建立草稿。上傳後系統會顯示預覽與檢核摘要，確認後才寫入案件資料。</p>
+          <h4>預覽與檢核狀態</h4>
+          <p>上傳後會先顯示預覽與檢核摘要，確認後才寫入案件資料。</p>
         </div>
         <div className="eval-roster-upload-controls">
           <div className="eval-roster-file-picker">
             <label htmlFor={fileInputId}>目前預覽檔案</label>
-            <button type="button" onClick={() => rosterFileInputRef.current?.click()}>
-              重新選擇清冊
-            </button>
           </div>
           <article>
             <strong>{displayFileName || "尚未選擇檔案"}</strong>
@@ -7138,7 +7102,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
         <section className="eval-module-section eval-roster-empty-state">
           <div className="eval-section-head">
             <h4>尚未建立清冊預覽</h4>
-            <p>請上傳已整理的土地 / 建物清冊，系統會先辨識欄位並建立目前案件的清冊草稿。</p>
+            <p>請上傳電子謄本 PDF 或都更權屬清冊 Excel，系統會先建立預覽與檢核摘要。</p>
           </div>
         </section>
       )}
@@ -7209,7 +7173,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
                   <span>
                     {hasExistingRoster
                       ? "確認後依所選模式寫入案件清冊；未選擇模式前不會覆蓋既有資料。"
-                      : `確認後將寫入 rosterStagingByCaseId[${currentCase.id}]。`}
+                      : "確認後會寫入目前案件清冊。"}
                   </span>
                   <div className="eval-roster-confirm-actions">
                     <button type="button" onClick={handleDownloadPreviewWorkbook}>
@@ -7224,42 +7188,48 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
             )}
           </section>
 
-          <RosterPreviewTable
-            title="土地權利明細預覽"
-            description="每一筆土地權利列保留原始資料，不自動合併。"
-            emptyText="目前未讀到土地清冊資料。"
-            columns={[
-              ...LAND_PREVIEW_COLUMNS,
-            ]}
-            rows={activePreview.landRights}
-          />
+          {activePreview.landRights?.length > 0 && (
+            <RosterPreviewTable
+              title="土地權利明細預覽"
+              description="每一筆土地權利列保留原始資料，不自動合併。"
+              emptyText="目前未讀到土地清冊資料。"
+              columns={[
+                ...LAND_PREVIEW_COLUMNS,
+              ]}
+              rows={activePreview.landRights}
+            />
+          )}
 
-          <RosterPreviewTable
-            title="建物權利明細預覽"
-            description="顯示建物權利列；無有效資料時顯示空狀態。"
-            emptyText="目前未讀到建物清冊資料。"
-            columns={[
-              ...BUILDING_PREVIEW_COLUMNS,
-            ]}
-            rows={activePreview.buildingRights}
-          />
+          {activePreview.buildingRights?.length > 0 && (
+            <RosterPreviewTable
+              title="建物權利明細預覽"
+              description="顯示建物權利列。"
+              emptyText="目前未讀到建物清冊資料。"
+              columns={[
+                ...BUILDING_PREVIEW_COLUMNS,
+              ]}
+              rows={activePreview.buildingRights}
+            />
+          )}
 
-          <RosterPreviewTable
-            title="疑似權利人群組總表"
-            description="PG-* 為疑似群組，正式歸戶仍需完整資料或人工確認。"
-            emptyText="目前尚未建立疑似權利人群組。"
-            columns={[
-              { key: "partyGroupId", label: "群組 ID" },
-              { key: "name", label: "原始姓名 / 名稱" },
-              { key: "ownerReferenceIds", label: "原始參考編號" },
-              { key: "maskedIdentityCodes", label: "遮蔽證號 / 前碼" },
-              { key: "landNumbers", label: "涉及地號" },
-              { key: "buildingNumbers", label: "涉及建號" },
-              { key: "confidence", label: "歸戶狀態" },
-              { key: "reasons", label: "待確認原因" },
-            ]}
-            rows={activePreview.partyRows}
-          />
+          {activePreview.partyRows?.length > 0 && (
+            <RosterPreviewTable
+              title="疑似權利人群組總表"
+              description="PG-* 為疑似群組，正式歸戶仍需完整資料或人工確認。"
+              emptyText="目前尚未建立疑似權利人群組。"
+              columns={[
+                { key: "partyGroupId", label: "群組 ID" },
+                { key: "name", label: "原始姓名 / 名稱" },
+                { key: "ownerReferenceIds", label: "原始參考編號" },
+                { key: "maskedIdentityCodes", label: "遮蔽證號 / 前碼" },
+                { key: "landNumbers", label: "涉及地號" },
+                { key: "buildingNumbers", label: "涉及建號" },
+                { key: "confidence", label: "歸戶狀態" },
+                { key: "reasons", label: "待確認原因" },
+              ]}
+              rows={activePreview.partyRows}
+            />
+          )}
 
           <section className="eval-module-section">
             <div className="eval-section-head">
@@ -7696,7 +7666,7 @@ function RosterMaintenancePanel({ currentCase, rosterStaging, onRosterStagingCha
         <button type="button" onClick={() => openAction("reimport")}>重新匯入清冊</button>
       </div>
       {!hasRosterRows && (
-        <p className="eval-roster-maintenance-hint">目前案件尚無清冊資料；可先新增土地 / 建物權利列，或從上方清冊建立流程匯入。</p>
+        <p className="eval-roster-maintenance-hint">目前案件尚無清冊資料；可先新增土地 / 建物權利列，或從上方清冊上傳區匯入。</p>
       )}
       {message && <p className="eval-inline-success">{message}</p>}
       {error && <p className="eval-inline-error">{error}</p>}
@@ -7998,7 +7968,7 @@ function RosterImportVersioning({ config }) {
         <p>{config.notice}</p>
         <ol>
           {[
-            "建立清冊草稿：可讀電子謄本 PDF 與三策都更權屬清冊上傳後先進入草稿",
+            "建立清冊預覽：可讀電子謄本 PDF 與三策都更權屬清冊上傳後先進入預覽",
             "預覽清冊：土地、建物、地籍定位、權利範圍與人工確認項目先呈現給使用者",
             "確認匯入：按下確認後才寫入目前案件清冊暫存",
             "後續維護：補件匯入、逐筆新增 / 修改、清冊版本與來源紀錄分階段開放",
@@ -9537,7 +9507,7 @@ function RolePermissionPanel({ profile }) {
       <div className="eval-section-head">
         <h4>角色權限顯示規則</h4>
         <p>
-          目前以前端角色切換示範 admin / user 的顯示差異。正式上線時，後端 API 與資料庫規則仍必須檢查角色、授權方案與設備綁定，不可只靠前端隱藏。
+          角色、授權方案與設備綁定必須由後端權限規則檢查，不可只靠前端隱藏。
         </p>
       </div>
       <div className="eval-role-rule-grid">
@@ -9576,7 +9546,7 @@ function ParameterAccessNotice({ profile }) {
     <section className="eval-module-section eval-parameter-access">
       <div className="eval-section-head">
         <h4>參數權限分層</h4>
-        <p>案件個別參數與全系統預設參數要分開控管；這裡以角色切換呈現後續正式權限規則。</p>
+        <p>案件個別參數與全系統預設參數分開控管；全系統設定需管理員權限。</p>
       </div>
       <div className="eval-role-rule-grid">
         <article>
@@ -9655,6 +9625,9 @@ function OwnershipModule({ module, currentCase, rosterStaging, onRosterStagingCh
     );
   }
 
+  const normalizedRoster = normalizeRosterStaging(rosterStaging) || {};
+  const hasRosterRows = getRosterLandRows(normalizedRoster).length > 0 || getRosterBuildingRows(normalizedRoster).length > 0;
+
   return (
     <div className="eval-module-stack">
       <RosterUploadTesting
@@ -9662,15 +9635,17 @@ function OwnershipModule({ module, currentCase, rosterStaging, onRosterStagingCh
         preview={rosterStaging}
         onPreviewChange={onRosterStagingChange}
       />
-      <RosterMaintenancePanel
-        currentCase={currentCase}
-        rosterStaging={rosterStaging}
-        onRosterStagingChange={onRosterStagingChange}
-        onMarkUnsaved={onMarkUnsaved}
-      />
-      <RosterImportVersioning
-        config={module.rosterImportVersioning}
-      />
+      {hasRosterRows && (
+        <details className="eval-roster-maintenance-disclosure">
+          <summary>清冊維護</summary>
+          <RosterMaintenancePanel
+            currentCase={currentCase}
+            rosterStaging={rosterStaging}
+            onRosterStagingChange={onRosterStagingChange}
+            onMarkUnsaved={onMarkUnsaved}
+          />
+        </details>
+      )}
     </div>
   );
 }
@@ -9877,7 +9852,7 @@ function EvaluationLanding({ onLogin }) {
           <ArrowLeft aria-hidden="true" size={18} />
           回到三策官網
         </a>
-        <span>三策內部測試入口</span>
+        <span>三策內部入口</span>
       </header>
 
       <section className="eval-landing">
@@ -9889,7 +9864,7 @@ function EvaluationLanding({ onLogin }) {
           </p>
           <div className="eval-landing__actions">
             <button type="button" onClick={onLogin}>
-              進入示範系統
+              進入系統
               <ArrowRight aria-hidden="true" size={18} />
             </button>
             <a href="#system-modules">了解系統模組</a>
@@ -9899,9 +9874,9 @@ function EvaluationLanding({ onLogin }) {
         <aside className="eval-login-card" aria-label="登入提示">
           <LockKeyhole aria-hidden="true" size={34} />
           <h2>登入提示</h2>
-          <p>目前為三策內部授權測試，未開放公開使用。</p>
+          <p>目前為三策內部授權使用，未開放公開使用。</p>
           <button type="button" onClick={onLogin}>
-            使用測試身分登入
+            使用授權身分登入
           </button>
         </aside>
       </section>
@@ -9932,7 +9907,7 @@ function DashboardHome({ activeModule, cases, currentCase, visibleModuleCount })
         <article>
           <span>案件列表</span>
           <strong>{cases.length}</strong>
-          <p>本機測試建立的案件數，正式版將由 cases 資料表提供。</p>
+          <p>目前瀏覽器中的案件數。</p>
         </article>
         <article>
           <span>開發路徑</span>
@@ -10000,21 +9975,21 @@ function EvaluationLogin({ errorMessage, isChecking, isSubmitting, onSubmit }) {
           <ArrowLeft aria-hidden="true" size={18} />
           回到三策官網
         </a>
-        <span>指定管理者測試入口</span>
+        <span>指定管理者入口</span>
       </header>
 
       <section className="eval-landing eval-landing--auth">
         <div className="eval-landing__copy">
-          <p className="eval-kicker">SANZE SYSTEM TEST</p>
+          <p className="eval-kicker">SANZE SYSTEM</p>
           <h1>開發評估系統</h1>
           <p>
-            本系統目前為三策內部授權測試，未開放公開使用。
+            本系統目前為三策內部授權使用，未開放公開使用。
           </p>
         </div>
 
-        <aside className="eval-login-card" aria-label="三策管理者測試登入">
+        <aside className="eval-login-card" aria-label="三策管理者登入">
           <LockKeyhole aria-hidden="true" size={34} />
-          <h2>管理者測試登入</h2>
+          <h2>管理者登入</h2>
           <form className="eval-auth-form" onSubmit={handleSubmit}>
             <label>
               <span>EMAIL</span>
@@ -10043,7 +10018,7 @@ function EvaluationLogin({ errorMessage, isChecking, isSubmitting, onSubmit }) {
             </label>
             {errorMessage && <p className="eval-auth-error">{errorMessage}</p>}
             <button type="submit" disabled={isChecking || isSubmitting}>
-              {isSubmitting ? "登入中..." : "登入測試系統"}
+              {isSubmitting ? "登入中..." : "登入系統"}
             </button>
           </form>
         </aside>
@@ -10064,9 +10039,9 @@ function EvaluationAccessClosed({ isChecking }) {
       </header>
       <section className="eval-access-closed">
         <LockKeyhole aria-hidden="true" size={42} />
-        <p className="eval-kicker">PRIVATE TEST</p>
+        <p className="eval-kicker">PRIVATE ACCESS</p>
         <h1>開發評估系統暫不公開</h1>
-        {isChecking && <span>正在確認測試 session...</span>}
+        {isChecking && <span>正在確認登入狀態...</span>}
       </section>
     </main>
   );
@@ -10113,11 +10088,11 @@ function getSystemLoginErrorMessage(response, isJsonResponse, error) {
   }
 
   if (response?.status === 503) {
-    return "登入服務尚未完成環境設定。請確認測試站設定，或改用正式測試站登入。";
+    return "登入服務尚未完成環境設定。請由管理者確認部署設定。";
   }
 
   if (response?.status >= 500) {
-    return "登入服務暫時無法使用。請稍後再試，或改用正式測試站登入。";
+    return "登入服務暫時無法使用。請稍後再試。";
   }
 
   return SYSTEM_AUTH_FAILED_MESSAGE;
@@ -10128,7 +10103,6 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   const [loginError, setLoginError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAuthServiceUnavailable, setIsAuthServiceUnavailable] = useState(false);
-  const [mockRole, setMockRole] = useState("admin");
   const [activeModuleId, setActiveModuleId] = useState(evaluationModules[0].id);
   const [cases, setCases] = useState(loadStoredCases);
   const [currentCaseId, setCurrentCaseId] = useState(loadStoredCurrentCaseId);
@@ -10143,7 +10117,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   const [moduleSaveStatusByCaseId, setModuleSaveStatusByCaseId] = useState({});
   const isLoggedIn = authState.status === "authenticated";
   const isTestRoute = routeHash === SYSTEM_TEST_HASH;
-  const accessProfile = mockAccessProfiles[mockRole];
+  const accessProfile = mockAccessProfiles[authState.role] ?? mockAccessProfiles.admin;
   const currentCase = useMemo(
     () => cases.find((item) => item.id === currentCaseId) ?? null,
     [cases, currentCaseId],
@@ -10273,7 +10247,6 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
 
         if (data.authenticated) {
           setAuthState({ status: "authenticated", email: data.email ?? "", role: data.role ?? "admin" });
-          setMockRole("admin");
         } else {
           setAuthState({ status: "unauthenticated", email: "", role: "" });
         }
@@ -10316,7 +10289,6 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
       }
 
       setAuthState({ status: "authenticated", email: data.email ?? email, role: data.role ?? "admin" });
-      setMockRole("admin");
     } catch (error) {
       setLoginError(getSystemLoginErrorMessage(null, true, error));
       setAuthState({ status: "unauthenticated", email: "", role: "" });
@@ -10331,7 +10303,6 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
       credentials: "include",
     }).catch(() => {});
     setAuthState({ status: "unauthenticated", email: "", role: "" });
-    setMockRole("admin");
     removeStoredJson(CURRENT_CASE_ID_STORAGE_KEY);
     setCurrentCaseId("");
   };
@@ -10765,23 +10736,11 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
       <section className="eval-workspace">
         <header className="eval-workspace__top">
           <div>
-            <p className="eval-kicker">AUTHORIZED TEST</p>
+            <p className="eval-kicker">AUTHORIZED ACCESS</p>
             <h1>開發評估系統</h1>
           </div>
           <div className="eval-user-status">
             <span>{authState.email || accessProfile.label}</span>
-            <div className="eval-role-switch" aria-label="角色切換">
-              {Object.entries(mockAccessProfiles).map(([role, profile]) => (
-                <button
-                  className={mockRole === role ? "is-active" : ""}
-                  type="button"
-                  key={role}
-                  onClick={() => setMockRole(role)}
-                >
-                  {profile.roleLabel}
-                </button>
-              ))}
-            </div>
             <button type="button" onClick={handleLogout}>
               登出
             </button>
