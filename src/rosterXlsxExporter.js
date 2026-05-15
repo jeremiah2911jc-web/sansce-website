@@ -227,6 +227,23 @@ function joinMessages(value) {
   return Array.isArray(value) ? value.filter(Boolean).join("；") : String(value ?? "");
 }
 
+function cleanSecuredAmountForExport(value) {
+  const text = String(value ?? "").trim();
+  if (!text) {
+    return "";
+  }
+  const amountMatch = text.match(/(?:最高限額)?(?:新[臺台]幣)?\**([\d,]+(?:\.\d+)?)(萬)?(?:元正|元|圓正|圓)?/);
+  return amountMatch ? `${amountMatch[1]}${amountMatch[2] || ""}元` : text;
+}
+
+function combineOtherRightNotes(row) {
+  return [
+    row.note || row.notes || "",
+    row.otherRightNote || "",
+    row.securedClaimScope || "",
+  ].filter(Boolean).join("；");
+}
+
 function getLandShareAreaQuality(row) {
   return evaluateLandShareArea({
     landAreaSqm: row.landAreaSqm,
@@ -273,8 +290,8 @@ function landRowsForSheet(preview) {
       row.debtor || "",
       row.debtorAndDebtRatio || "",
       row.obligor || "",
-      row.securedAmount || row.amount || "",
-      row.note || row.notes || "",
+      cleanSecuredAmountForExport(row.securedAmount || row.amount || ""),
+      combineOtherRightNotes(row),
       row.transcriptAddress || row.address || "",
       shareAreaQuality.shareAreaValidationStatus || row.shareAreaValidationStatus || row.validationStatus || "",
       joinMessages(row.validationMessages?.length ? row.validationMessages : shareAreaQuality.shareAreaValidationMessages),
@@ -311,7 +328,7 @@ function buildingRowsForSheet(preview) {
       row.debtor || "",
       row.debtorAndDebtRatio || "",
       row.obligor || "",
-      row.note || row.notes || "",
+      combineOtherRightNotes(row),
       row.transcriptAddress || "",
       row.floorLevel || "",
       row.totalFloors || "",

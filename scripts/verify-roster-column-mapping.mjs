@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { inflateRawSync } from "node:zlib";
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
 import {
   applyRosterColumnMapping,
   detectRosterColumnMapping,
@@ -192,6 +193,16 @@ function getGeneratedCellByHeader(rows, headerName) {
   const headerIndex = headers.findIndex((header) => normalizeText(header) === normalizedHeaderName);
   assert.notEqual(headerIndex, -1, `generated workbook should include ${headerName}`);
   return rows[1]?.values?.[headerIndex];
+}
+
+function getGeneratedColumnByHeader(rows, headerName) {
+  const headers = rows[0]?.values ?? [];
+  const normalizedHeaderName = normalizeText(headerName);
+  const headerIndex = headers.findIndex((header) => normalizeText(header) === normalizedHeaderName);
+  assert.notEqual(headerIndex, -1, `generated workbook should include ${headerName}`);
+  return rows.slice(1)
+    .map((row) => row.values?.[headerIndex] ?? "")
+    .filter((value) => normalizeText(value));
 }
 
 function readUInt16(buffer, offset) {
@@ -420,6 +431,7 @@ assert.ok(normalizeText(parsedTranscript.landRights[0].otherRightHolder).include
 assert.equal(normalizeText(parsedTranscript.landRights[0].debtor), "林曾秋香", "PDF debtor should be retained on the ownership row");
 assert.equal(normalizeText(parsedTranscript.landRights[0].obligor), "林曾秋香", "PDF obligor should be retained on the ownership row");
 assert.ok(normalizeText(parsedTranscript.landRights[0].securedAmount).includes("180萬元"), "PDF secured amount text should be retained");
+assert.ok(!normalizeText(parsedTranscript.landRights[0].securedAmount).includes("擔保債權種類"), "PDF secured amount should not absorb claim-scope prose");
 assert.ok(parsedTranscript.mortgages[0].attachedOwnerRegistrationOrders.includes("0001"), "PDF mortgage should record its attached ownership order");
 
 const realWorkbookPath = "/Users/jeremiah/Downloads/1130308新莊丹鳳段清冊.xlsx";
@@ -636,6 +648,67 @@ if (existsSync(realWorkbookPath)) {
   };
 }
 
+const realPdfPath = "/Users/jeremiah/Downloads/150,151,153.pdf";
+let realPdfSummary = "not-found";
+if (existsSync(realPdfPath)) {
+  const pdf = await pdfjsLib.getDocument({
+    data: new Uint8Array(readFileSync(realPdfPath)),
+    disableWorker: true,
+    disableFontFace: true,
+    isEvalSupported: false,
+  }).promise;
+  const pdfPages = [];
+  for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+    const page = await pdf.getPage(pageNumber);
+    const textContent = await page.getTextContent({ normalizeWhitespace: true });
+    pdfPages.push({
+      pageNumber,
+      text: textContent.items
+        .map((item) => ("str" in item ? item.str : ""))
+        .filter(Boolean)
+        .join("\n"),
+      textItemCount: textContent.items.length,
+    });
+  }
+  const realPdf = parseLandRegisterTextPages(pdfPages, "150,151,153.pdf", "2026/05/15 00:00:00");
+  const pdfOtherRightRows = realPdf.landRights.filter((row) => (
+    normalizeText(row.otherRightType || row.otherRightsType)
+    || normalizeText(row.otherRightHolder || row.otherRightsHolder)
+    || normalizeText(row.securedAmount)
+    || normalizeText(row.rawOtherRightsText)
+  ));
+  assert.equal(realPdf.mortgages.length, 2, "real PDF should parse two other-right blocks");
+  assert.equal(pdfOtherRightRows.length, 2, "real PDF should attach two other-right rows to land rights");
+  realPdf.mortgages.forEach((mortgage, index) => {
+    assert.ok(normalizeText(mortgage.securedAmount), `real PDF other-right ${index + 1} should keep amount`);
+    assert.ok(!normalizeText(mortgage.securedAmount).includes("擔保債權種類"), `real PDF other-right ${index + 1} amount must not include claim-scope prose`);
+    assert.ok(Number.isFinite(mortgage.securedAmountNumber), `real PDF other-right ${index + 1} should keep numeric amount`);
+    assert.ok(normalizeText(mortgage.securedClaimScope), `real PDF other-right ${index + 1} should preserve claim scope outside amount`);
+    assert.ok(normalizeText(mortgage.rawOtherRightsText), `real PDF other-right ${index + 1} should preserve raw other-right text`);
+    assert.ok(normalizeText(mortgage.debtor), `real PDF other-right ${index + 1} debtor should be parsed or marked for review`);
+    assert.ok(normalizeText(mortgage.obligor), `real PDF other-right ${index + 1} obligor should be parsed or marked for review`);
+  });
+  const generatedPdfBlob = createRosterWorkbookBlob({ landRights: realPdf.landRights, buildingRights: [] });
+  const generatedPdfRows = parseGeneratedWorkbookFirstSheetRows(Buffer.from(await generatedPdfBlob.arrayBuffer()));
+  const generatedPdfAmounts = getGeneratedColumnByHeader(generatedPdfRows, "金額");
+  assert.equal(generatedPdfAmounts.length, 2, "generated workbook from real PDF should export two amount values");
+  assert.ok(generatedPdfAmounts.every((value) => !normalizeText(value).includes("擔保債權種類")), "generated workbook amount column must not include claim-scope prose");
+  assert.ok(getGeneratedColumnByHeader(generatedPdfRows, "債務人").every((value) => normalizeText(value)), "generated workbook debtor column should be parsed or marked for review");
+  assert.ok(getGeneratedColumnByHeader(generatedPdfRows, "設定義務人").every((value) => normalizeText(value)), "generated workbook obligor column should be parsed or marked for review");
+  assert.ok(getGeneratedColumnByHeader(generatedPdfRows, "備註").some((value) => normalizeText(value).includes("擔保債權種類")), "generated workbook notes should preserve claim-scope prose outside amount");
+  assert.equal(countBadSharePartRows(realPdf.landRights), 0, "real PDF land rights should not contain missing or slash-only share parts");
+  assert.ok(!JSON.stringify(realPdf.landRights).match(/NaN|undefined|Infinity/), "real PDF rows should not contain invalid numeric tokens");
+
+  realPdfSummary = {
+    pageCount: pdf.numPages,
+    landRightCount: realPdf.landRights.length,
+    otherRightBlockCount: realPdf.mortgages.length,
+    landRowsWithOtherRights: pdfOtherRightRows.length,
+    amountColumnClean: true,
+    debtorAndObligorParsedOrReview: true,
+  };
+}
+
 console.log(JSON.stringify({
   ok: true,
   fixtures: {
@@ -644,4 +717,5 @@ console.log(JSON.stringify({
     lowConfidenceNeedsManualMapping: lowConfidence.needsManualMapping,
   },
   realWorkbook: realWorkbookSummary,
+  realPdf: realPdfSummary,
 }, null, 2));

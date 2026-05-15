@@ -91,8 +91,65 @@ function parseRegistrationOrderReferences(value) {
 }
 
 function extractOtherRightAmountText(block) {
-  const amountText = block.match(/擔保債權總金額：(?:新臺幣)?\**(.+?)(?=標的登記次序|設定權利範圍|證明書字號|共同擔保地號|其他登記事項|$)/)?.[1] || "";
-  return cleanField(amountText);
+  return extractOtherRightAmountInfo(block).securedAmount;
+}
+
+function parseSecuredAmountNumber(value) {
+  const text = cleanField(value);
+  const number = parseNumber(text.replace(/萬元?|元|圓/g, ""));
+  if (!Number.isFinite(number)) {
+    return "";
+  }
+  return /萬/.test(text) ? number * 10000 : number;
+}
+
+function extractOtherRightAmountInfo(block) {
+  const amountSection = block.match(/擔保債權總金額：([\s\S]*?)(?=標的登記次序|設定權利範圍|證明書字號|共同擔保地號|其他登記事項|$)/)?.[1] || "";
+  const amountMatch = amountSection.match(/(?:最高限額)?(?:新[臺台]幣)?\**([\d,]+(?:\.\d+)?)(萬)?(?:元正|元|圓正|圓)?/);
+  const securedAmountRaw = cleanField(amountMatch?.[0] || amountSection);
+  const securedAmountNumber = parseSecuredAmountNumber(`${amountMatch?.[1] || ""}${amountMatch?.[2] || ""}`);
+  const securedAmount = amountMatch
+    ? `${amountMatch[1]}${amountMatch[2] || ""}元`
+    : "";
+  const amountTail = amountMatch
+    ? amountSection.slice((amountMatch.index || 0) + amountMatch[0].length)
+    : "";
+  const securedClaimScope = cleanField(amountTail.replace(/^正/, ""));
+
+  return {
+    securedAmountRaw,
+    securedAmount,
+    securedAmountNumber,
+    securedClaimScope,
+  };
+}
+
+function extractOtherRightLabeledValue(block, labelPattern, stopPattern = "") {
+  const defaultStopPattern = [
+    "債務人及債務額比例：",
+    "債務額比例：",
+    "債務人：",
+    "債務者：",
+    "設定義務人：",
+    "義務人：",
+    "擔保債權總金額：",
+    "標的登記次序：",
+    "設定權利範圍：",
+    "證明書字號：",
+    "共同擔保地號：",
+    "其他登記事項：",
+    "擔保債權種類及範圍：",
+    "清償日期：",
+    "利息\\(率\\)：",
+    "遲延利息\\(率\\)：",
+    "違約金：",
+  ].join("|");
+  const match = block.match(new RegExp(`(?:${labelPattern})：([\\s\\S]*?)(?=${stopPattern || defaultStopPattern}|$)`));
+  return cleanField(match?.[1] || "");
+}
+
+function buildOtherRightReviewValue(hasOtherRightContext, parsedValue) {
+  return parsedValue || (hasOtherRightContext ? "需確認" : "");
 }
 
 function roundNumber(value, digits = 6) {
@@ -280,20 +337,41 @@ function parseMortgageBlocks(compactMortgageSection, lotContext) {
 
   while ((match = blockRegex.exec(compactMortgageSection)) !== null) {
     const block = match[2] || "";
-    const securedAmountText = extractOtherRightAmountText(block);
+    const amountInfo = extractOtherRightAmountInfo(block);
+    const rawDebtor = extractOtherRightLabeledValue(block, "債務人|債務者", "債務人及債務額比例：|債務額比例：|設定義務人：|義務人：|擔保債權總金額：|標的登記次序：|設定權利範圍：|證明書字號：|共同擔保地號：|其他登記事項：|$");
+    const rawDebtorAndDebtRatio = extractOtherRightLabeledValue(block, "債務人及債務額比例|債務額比例", "設定義務人：|義務人：|擔保債權總金額：|標的登記次序：|設定權利範圍：|證明書字號：|共同擔保地號：|其他登記事項：|$");
+    const rawObligor = extractOtherRightLabeledValue(block, "設定義務人|義務人", "擔保債權總金額：|標的登記次序：|設定權利範圍：|證明書字號：|共同擔保地號：|其他登記事項：|$");
+    const hasAmbiguousDebtorContext = block.includes("擔保債務人") || block.includes("債務人");
+    const hasSubjectRegistrationContext = block.includes("標的登記次序");
+    const fieldReviewMessages = [];
+    if (!rawDebtor && hasAmbiguousDebtorContext) {
+      fieldReviewMessages.push("PDF 他項權利含債務人相關文字，但未能精準切出債務人欄位，需人工確認。");
+    }
+    if (!rawObligor && hasSubjectRegistrationContext) {
+      fieldReviewMessages.push("PDF 他項權利含標的登記次序，但未能精準切出設定義務人欄位，需人工確認。");
+    }
+    if (amountInfo.securedClaimScope) {
+      fieldReviewMessages.push("擔保債權種類及範圍等長文字已保留於 rawOtherRightsText / securedClaimScope，不放入金額欄。");
+    }
+
     rows.push({
       lotNumber: lotContext.lotNumber,
       mortgageOrder: match[1],
       rightType: cleanField(block.match(/權利種類：(.+?)(?=收件|登記日期|權利人|$)/)?.[1] || ""),
       creditorName: cleanField(block.match(/權利人：(.+?)(?=統一編號|住址|債權額比例|擔保債權總金額|$)/)?.[1] || ""),
-      debtor: cleanField(block.match(/債務人：(.+?)(?=債務人及債務額比例|設定義務人|擔保債權總金額|標的登記次序|$)/)?.[1] || ""),
-      debtorAndDebtRatio: cleanField(block.match(/債務人及債務額比例：(.+?)(?=設定義務人|擔保債權總金額|標的登記次序|$)/)?.[1] || ""),
-      obligor: cleanField(block.match(/設定義務人：(.+?)(?=擔保債權總金額|標的登記次序|設定權利範圍|證明書字號|$)/)?.[1] || ""),
-      securedAmount: securedAmountText || parseNumber(block.match(/擔保債權總金額：新臺幣\**([\d,.]+)元正/)?.[1]),
+      debtor: buildOtherRightReviewValue(hasAmbiguousDebtorContext, rawDebtor),
+      debtorAndDebtRatio: buildOtherRightReviewValue(hasAmbiguousDebtorContext, rawDebtorAndDebtRatio),
+      obligor: buildOtherRightReviewValue(hasSubjectRegistrationContext, rawObligor),
+      securedAmountRaw: amountInfo.securedAmountRaw,
+      securedAmount: amountInfo.securedAmount,
+      securedAmountNumber: amountInfo.securedAmountNumber,
+      securedClaimScope: amountInfo.securedClaimScope,
+      otherRightNote: amountInfo.securedClaimScope ? "擔保債權種類及範圍等內容已保留，需人工確認。" : "",
       subjectRegistrationOrders: cleanField(block.match(/標的登記次序：(.+?)(?=設定權利範圍|證明書字號|共同擔保地號|$)/)?.[1] || ""),
       mortgageShareText: cleanField(block.match(/設定權利範圍：(.+?)(?=證明書字號|共同擔保地號|其他登記事項|$)/)?.[1] || ""),
       certificateNumber: cleanField(block.match(/證明書字號：(.+?號)/)?.[1] || ""),
       rawOtherRightsText: cleanField(block),
+      validationMessages: fieldReviewMessages,
       sourceFilename: lotContext.sourceFilename,
       sourcePage: String(lotContext.sourcePage || ""),
     });
@@ -307,6 +385,7 @@ function buildMortgageNote(mortgage) {
     mortgage.subjectRegistrationOrders ? `標的登記次序：${mortgage.subjectRegistrationOrders}` : "",
     mortgage.mortgageShareText ? `設定權利範圍：${mortgage.mortgageShareText}` : "",
     mortgage.certificateNumber ? `證明書字號：${mortgage.certificateNumber}` : "",
+    mortgage.otherRightNote || "",
   ].filter(Boolean).join("；");
 }
 
@@ -319,12 +398,19 @@ function mergeMortgageIntoOwnerRow(ownerRow, mortgage) {
   ownerRow.debtor = appendUniqueText(ownerRow.debtor, mortgage.debtor);
   ownerRow.debtorAndDebtRatio = appendUniqueText(ownerRow.debtorAndDebtRatio, mortgage.debtorAndDebtRatio);
   ownerRow.obligor = appendUniqueText(ownerRow.obligor, mortgage.obligor);
+  ownerRow.securedAmountRaw = appendUniqueText(ownerRow.securedAmountRaw, mortgage.securedAmountRaw);
   ownerRow.securedAmount = appendUniqueText(ownerRow.securedAmount, mortgage.securedAmount);
+  ownerRow.securedAmountNumber = ownerRow.securedAmountNumber || mortgage.securedAmountNumber || "";
+  ownerRow.securedClaimScope = appendUniqueText(ownerRow.securedClaimScope, mortgage.securedClaimScope);
+  ownerRow.otherRightNote = appendUniqueText(ownerRow.otherRightNote, mortgage.otherRightNote);
   ownerRow.amount = appendUniqueText(ownerRow.amount, mortgage.securedAmount);
   ownerRow.rawOtherRightsText = appendUniqueText(ownerRow.rawOtherRightsText, mortgage.rawOtherRightsText);
-  ownerRow.notes = appendUniqueText(ownerRow.notes, buildMortgageNote(mortgage));
+  const mortgageNote = buildMortgageNote(mortgage);
+  ownerRow.note = appendUniqueText(ownerRow.note, mortgageNote);
+  ownerRow.notes = appendUniqueText(ownerRow.notes, mortgageNote);
   ownerRow.validationMessages = [
     ...(ownerRow.validationMessages ?? []),
+    ...(mortgage.validationMessages ?? []),
     "原始謄本含他項權利資料，系統已保留並掛回同地號權利列，仍建議人工確認。",
   ];
 }
