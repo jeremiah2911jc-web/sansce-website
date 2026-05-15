@@ -552,7 +552,7 @@ export const evaluationModules = [
       },
       upload: {
         title: "清冊檔案上傳區",
-        description: "此處僅建立 UI 骨架；不真正解析 Excel、不真正上傳檔案，也不接後端。",
+        description: "支援都更權屬清冊 Excel 與可讀文字層謄本 PDF；系統會先建立預覽與檢核，不會直接寫入案件。",
         acceptedTypes: [".xlsx"],
         rejectedTypes: [".xls", ".xlsm", ".xlsb", ".xlam", "巨集檔"],
       },

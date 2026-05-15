@@ -1499,17 +1499,54 @@ main {
   margin-bottom: 18px;
 }
 
-.eval-panel-icons {
-  display: flex;
-  gap: 8px;
-  color: var(--green-800);
+.eval-module-panel.is-focused-module {
+  padding-top: 18px;
 }
 
-.eval-panel-icons svg {
+.eval-module-panel__meta {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.eval-current-case-chip,
+.eval-module-state-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
   border-radius: 999px;
-  background: var(--green-100);
-  padding: 7px;
-  box-sizing: content-box;
+  padding: 7px 11px;
+  font-size: 0.76rem;
+  font-weight: 900;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.eval-current-case-chip {
+  background: rgba(19, 92, 73, 0.08);
+  color: var(--green-900);
+}
+
+.eval-current-case-chip.is-empty {
+  background: rgba(154, 52, 18, 0.08);
+  color: #9a3412;
+}
+
+.eval-module-state-pill {
+  background: #f1f5f3;
+  color: var(--gray-700);
+}
+
+.eval-module-state-pill.is-dirty {
+  background: rgba(154, 52, 18, 0.1);
+  color: #9a3412;
+}
+
+.eval-module-state-pill.is-saved {
+  background: rgba(19, 92, 73, 0.12);
+  color: var(--green-900);
 }
 
 .eval-module-stack {
@@ -2481,6 +2518,27 @@ main {
 .eval-field {
   display: grid;
   gap: 6px;
+}
+
+.eval-field-placeholder {
+  display: grid;
+  gap: 6px;
+  border: 1px solid rgba(8, 59, 48, 0.08);
+  border-radius: 10px;
+  background: #fbfdfc;
+  padding: 10px;
+}
+
+.eval-field-placeholder span {
+  color: var(--gray-700);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.eval-field-placeholder strong {
+  color: var(--gray-500);
+  font-size: 0.82rem;
+  font-weight: 800;
 }
 
 .eval-field span {
@@ -4485,6 +4543,21 @@ main {
   overflow-x: auto;
 }
 
+.eval-table-placeholder {
+  display: grid;
+  gap: 10px;
+  border: 1px solid rgba(8, 59, 48, 0.08);
+  border-radius: 12px;
+  background: #fbfdfc;
+  padding: 12px;
+}
+
+.eval-table-placeholder strong {
+  color: var(--green-950);
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
 .eval-table {
   width: 100%;
   min-width: 760px;
@@ -5019,6 +5092,16 @@ main {
   .eval-module-panel__head {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .eval-module-panel__meta {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .eval-current-case-chip,
+  .eval-module-state-pill {
+    white-space: normal;
   }
 
   .eval-module-save-status button {

@@ -2,13 +2,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
-  BarChart3,
-  Building2,
   CheckCircle2,
-  FileText,
   LayoutDashboard,
   LockKeyhole,
-  Settings2,
 } from "lucide-react";
 import {
   developmentPaths,
@@ -111,6 +107,7 @@ const LICENSE_GATED_MODULES = {
   [TAKEOVER_MODULE_ID]: "takeover",
 };
 const DOWNSTREAM_PLACEHOLDER_MODULE_IDS = new Set(["sales", "allocation", "cashflow", "bank-report"]);
+const MODULE_SAVE_STATUS_IDS = new Set(["base-info", "capacity", "efficiency", "costs"]);
 const SYSTEM_TEST_HASH = "#system-test";
 const SYSTEM_AUTH_REQUEST_TIMEOUT_MS = 15000;
 const LOCAL_SYSTEM_AUTH_UNAVAILABLE_MESSAGE = "本機登入服務沒有回應。請確認是否已啟動本機 API，或改用正式測試站登入。";
@@ -1292,40 +1289,24 @@ function canViewModule(module, profile) {
   return true;
 }
 
-function PlaceholderInput({ label }) {
+function StaticFieldPlaceholder({ label }) {
   return (
-    <label className="eval-field">
+    <div className="eval-field-placeholder">
       <span>{label}</span>
-      <input type="text" placeholder="待輸入" readOnly />
-    </label>
+      <strong>待建立</strong>
+    </div>
   );
 }
 
-function SkeletonTable({ columns, rows }) {
-  const tableRows = rows?.length ? rows : ["範例列 1", "範例列 2", "範例列 3"];
-
+function StaticTablePlaceholder({ columns }) {
   return (
-    <div className="eval-table-wrap">
-      <table className="eval-table">
-        <thead>
-          <tr>
-            {columns.map((column) => (
-              <th key={column}>{column}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {tableRows.map((row, index) => (
-            <tr key={`${row}-${index}`}>
-              {columns.map((column, columnIndex) => (
-                <td key={`${row}-${column}`}>
-                  {columnIndex === 0 ? row : <span className="eval-muted">待建立</span>}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="eval-table-placeholder">
+      <strong>待建立表格欄位</strong>
+      <div className="eval-chip-grid">
+        {columns.map((column) => (
+          <span className="eval-chip" key={column}>{column}</span>
+        ))}
+      </div>
     </div>
   );
 }
@@ -1396,6 +1377,24 @@ function ModuleFlowBrief({ module }) {
         </div>
       </div>
     </details>
+  );
+}
+
+function ModulePanelMeta({ currentCase, saveStatus, showSaveStatus = false }) {
+  const state = saveStatus?.state ?? "ready";
+  const statusLabel = state === "dirty" ? "尚未儲存" : state === "saved" ? "已儲存" : "本機暫存";
+
+  return (
+    <div className="eval-module-panel__meta" aria-label="目前模組狀態">
+      <span className={`eval-current-case-chip${currentCase ? "" : " is-empty"}`}>
+        目前案件：{currentCase?.name ?? "尚未選定"}
+      </span>
+      {showSaveStatus && (
+        <span className={`eval-module-state-pill is-${state}`}>
+          {statusLabel}
+        </span>
+      )}
+    </div>
   );
 }
 
@@ -2518,7 +2517,7 @@ function ModuleSection({ section }) {
       {section.fields && (
         <div className="eval-field-grid">
           {section.fields.map((field) => (
-            <PlaceholderInput key={field} label={field} />
+            <StaticFieldPlaceholder key={field} label={field} />
           ))}
         </div>
       )}
@@ -2541,7 +2540,7 @@ function ModuleSection({ section }) {
         </ul>
       )}
 
-      {section.tableColumns && <SkeletonTable columns={section.tableColumns} rows={section.rows} />}
+      {section.tableColumns && <StaticTablePlaceholder columns={section.tableColumns} />}
     </section>
   );
 }
@@ -2740,8 +2739,7 @@ function LicensePrinciples({ module }) {
         <p className="eval-kicker">LICENSE RULE</p>
         <h4>第一版授權限制：一個帳號最多綁定 1 台設備</h4>
         <p>
-          授權與帳號管理會控管登入、案件建立、模組權限、報告匯出與設備登入資格。第一階段先建立 UI
-          與資料欄位骨架，不接正式後端、不做真正設備指紋驗證。
+          授權與帳號管理會控管登入、案件建立、模組權限、報告匯出與設備登入資格。正式啟用前仍需接後端授權、設備綁定與稽核紀錄。
         </p>
       </div>
       <div className="eval-license-rule-card">
@@ -2804,8 +2802,8 @@ function LicensePlans({ plans }) {
   return (
     <section className="eval-module-section eval-license-plans">
       <div className="eval-section-head">
-        <h4>授權方案骨架</h4>
-        <p>以下僅為前端骨架，未寫死為正式商業方案，後續可由管理端調整模組與報告權限。</p>
+        <h4>授權方案規劃</h4>
+        <p>方案內容尚未定稿，後續可由管理端調整模組與報告權限。</p>
       </div>
       <div className="eval-plan-grid">
         {plans.map((plan) => (
@@ -2850,7 +2848,7 @@ function LicenseManagementModule({ module }) {
       />
       <SecondDeviceWarning warning={module.secondDeviceWarning} />
       <LicenseListSection
-        title="管理端功能骨架"
+        title="管理端功能規劃"
         description="管理端保留帳號、授權、設備、session 與異常登入管理入口。"
         items={module.adminActions}
         className="eval-admin-actions"
@@ -2932,9 +2930,9 @@ function SecurityProtectionModule({ module }) {
     <div className="eval-module-stack">
       <section className="eval-module-section eval-security-hero">
         <p className="eval-kicker">SECURITY PLAN</p>
-        <h4>未來正式上線前的安全防護規劃骨架</h4>
+        <h4>正式上線前的安全防護規劃</h4>
         <p>
-          此模組只建立前端規劃與資料結構，不接正式後端、不做真正登入驗證、不做真正攻擊阻擋。後續每一項都需要在 API、資料庫與部署環境中落實。
+          這裡整理授權、設備、API、資料隔離與稽核要求；後續每一項都需要在 API、資料庫與部署環境中落實。
         </p>
       </section>
 
@@ -2945,7 +2943,7 @@ function SecurityProtectionModule({ module }) {
       <SecurityRequirementGroup title="已規劃控制項" items={module.plannedControls} />
       <SecurityRequirementGroup title="未來後端需求" items={module.backendRequirements} />
       <SecurityRequirementGroup title="資料庫規則預留表" items={module.databaseRulePlaceholders} />
-      <SecurityRequirementGroup title="Audit log 欄位骨架" items={module.auditLogFields} />
+      <SecurityRequirementGroup title="Audit log 欄位規劃" items={module.auditLogFields} />
     </div>
   );
 }
@@ -8125,7 +8123,6 @@ function BaseInfoModule({
 
   return (
     <div className="eval-module-stack">
-      <CurrentCaseSummary currentCase={currentCase} />
       <ModuleSaveStatusBar saveStatus={saveStatus} onSave={onSaveModule} />
       <BaseRosterSummary rosterStaging={rosterStaging} />
       <section className="eval-module-section">
@@ -8525,7 +8522,6 @@ function CapacityModule({
   ];
   return (
     <div className="eval-module-stack">
-      <CurrentCaseSummary currentCase={currentCase} />
       <ModuleSaveStatusBar saveStatus={saveStatus} onSave={onSaveModule} />
       <section className="eval-module-section eval-linked-module">
         <div className="eval-section-head">
@@ -9005,7 +9001,6 @@ function FloorEfficiencyModule({
 
   return (
     <div className="eval-module-stack">
-      <CurrentCaseSummary currentCase={currentCase} />
       <ModuleSaveStatusBar saveStatus={saveStatus} onSave={onSaveModule} />
       <section className="eval-module-section eval-linked-module">
         <div className="eval-section-head">
@@ -9356,7 +9351,6 @@ function CostAndCommonBurdenModule({
 
   return (
     <div className="eval-module-stack">
-      <CurrentCaseSummary currentCase={currentCase} />
       <ModuleSaveStatusBar saveStatus={saveStatus} onSave={onSaveModule} />
 
       <section className="eval-module-section eval-cost-hero">
@@ -9663,7 +9657,6 @@ function OwnershipModule({ module, currentCase, rosterStaging, onRosterStagingCh
 
   return (
     <div className="eval-module-stack">
-      <CurrentCaseSummary currentCase={currentCase} />
       <RosterUploadTesting
         currentCase={currentCase}
         preview={rosterStaging}
@@ -9884,7 +9877,7 @@ function EvaluationLanding({ onLogin }) {
           <ArrowLeft aria-hidden="true" size={18} />
           回到三策官網
         </a>
-        <span>第一階段 UI 骨架</span>
+        <span>三策內部測試入口</span>
       </header>
 
       <section className="eval-landing">
@@ -9892,7 +9885,7 @@ function EvaluationLanding({ onLogin }) {
           <p className="eval-kicker">SANZE PRO SYSTEM</p>
           <h1>開發評估系統</h1>
           <p>
-            協助進行購地自建、一般合建、危老重建、都市更新與自主更新案件的前期開發可行性評估，先把基地條件、容積來源、坪效、成本、銷售情境、分配、現金流與銀行融資報告建立成可延伸的資料骨架。
+            協助進行購地自建、一般合建、危老重建、都市更新與自主更新案件的前期開發可行性評估。
           </p>
           <div className="eval-landing__actions">
             <button type="button" onClick={onLogin}>
@@ -9906,7 +9899,7 @@ function EvaluationLanding({ onLogin }) {
         <aside className="eval-login-card" aria-label="登入提示">
           <LockKeyhole aria-hidden="true" size={34} />
           <h2>登入提示</h2>
-          <p>目前尚未串接正式帳號後端。第一階段先使用前端登入狀態，讓系統主畫面、模組導覽與欄位骨架可以先被檢視。</p>
+          <p>目前為三策內部授權測試，未開放公開使用。</p>
           <button type="button" onClick={onLogin}>
             使用測試身分登入
           </button>
@@ -9916,7 +9909,7 @@ function EvaluationLanding({ onLogin }) {
       <section className="eval-module-preview" id="system-modules">
         <div className="eval-section-title">
           <p className="eval-kicker">MODULES</p>
-          <h2>第一階段主模組</h2>
+          <h2>系統主模組</h2>
         </div>
         <div className="eval-preview-grid">
           {evaluationModules.map((module) => (
@@ -10717,6 +10710,10 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     );
   }
 
+  const isOverviewModule = activeModule.id === "case-management";
+  const currentModuleSaveStatus = getCurrentSaveStatus(moduleSaveStatusByCaseId, currentCase?.id, activeModule.id);
+  const shouldShowSaveStatusChip = MODULE_SAVE_STATUS_IDS.has(activeModule.id);
+
   return (
     <main className="evaluation-shell evaluation-shell--app">
       <aside className="eval-sidebar">
@@ -10791,29 +10788,37 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
           </div>
         </header>
 
-        <DashboardHome
-          activeModule={activeModule}
-          cases={cases}
-          currentCase={currentCase}
-          visibleModuleCount={visibleModules.length}
-        />
+        {isOverviewModule && (
+          <DashboardHome
+            activeModule={activeModule}
+            cases={cases}
+            currentCase={currentCase}
+            visibleModuleCount={visibleModules.length}
+          />
+        )}
 
-        <section className="eval-module-panel" data-active-module={activeModule.id}>
+        <section
+          className={`eval-module-panel${isOverviewModule ? " is-overview-module" : " is-focused-module"}`}
+          data-active-module={activeModule.id}
+        >
           <div className="eval-module-panel__head">
             <div>
               <p className="eval-kicker">{activeModule.eyebrow}</p>
               <h2>{activeModule.title}</h2>
               <p>{activeModule.description}</p>
             </div>
-            <div className="eval-panel-icons" aria-hidden="true">
-              <Building2 size={18} />
-              <BarChart3 size={18} />
-              <FileText size={18} />
-              <Settings2 size={18} />
-            </div>
+            <ModulePanelMeta
+              currentCase={currentCase}
+              saveStatus={currentModuleSaveStatus}
+              showSaveStatus={shouldShowSaveStatusChip && Boolean(currentCase)}
+            />
           </div>
-          <WorkflowStageStrip activeModuleId={activeModule.id} />
-          <ModuleFlowBrief module={activeModule} />
+          {isOverviewModule && (
+            <>
+              <WorkflowStageStrip activeModuleId={activeModule.id} />
+              <ModuleFlowBrief module={activeModule} />
+            </>
+          )}
           <ModuleContent
             module={activeModule}
             accessProfile={accessProfile}
