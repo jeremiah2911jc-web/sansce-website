@@ -1,4 +1,12 @@
 import { evaluateLandShareArea } from "./rosterShareAreaValidation.js";
+import {
+  BUILDING_EXPORT_HEADERS,
+  BUILDING_TEMPLATE_HEADERS,
+  LAND_EXPORT_HEADERS,
+  LAND_TEMPLATE_HEADERS,
+  ROSTER_STANDARD_SCHEMA_VERSION,
+  getRosterStandardDictionaryRows,
+} from "./rosterStandardSchema.js";
 
 const XLSX_CONTENT_TYPES = {
   workbook: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml",
@@ -7,60 +15,6 @@ const XLSX_CONTENT_TYPES = {
   core: "application/vnd.openxmlformats-package.core-properties+xml",
   app: "application/vnd.openxmlformats-officedocument.extended-properties+xml",
 };
-
-const LAND_HEADERS = [
-  "地主編號",
-  "地主姓名",
-  "縣市",
-  "行政區",
-  "段別",
-  "小段",
-  "地號",
-  "土地面積㎡",
-  "土地面積坪",
-  "持分分子",
-  "持分分母",
-  "持分比例",
-  "持分面積㎡",
-  "持分面積坪",
-  "原始持分面積㎡",
-  "計算持分面積㎡",
-  "持分面積差異㎡",
-  "持分面積檢核",
-  "登記次序",
-  "登記名義人",
-  "受託人",
-  "委託人",
-  "權利型態",
-  "公告土地現值",
-  "公告現值年度",
-  "申報地價",
-  "申報地價年度",
-  "登記日期",
-  "登記原因",
-  "原因發生日期",
-  "權狀字號",
-  "資料來源",
-  "來源頁碼",
-  "備註",
-];
-
-const BUILDING_HEADERS = [
-  "建物編號",
-  "所有人姓名",
-  "縣市",
-  "行政區",
-  "段別",
-  "小段",
-  "地號",
-  "建號",
-  "建物門牌",
-  "建物面積㎡",
-  "持分分子",
-  "持分分母",
-  "持分比例",
-  "備註",
-];
 
 function escapeXml(value = "") {
   return String(value)
@@ -269,85 +223,164 @@ function safeNumber(value) {
   return Number.isFinite(number) ? number : "";
 }
 
+function joinMessages(value) {
+  return Array.isArray(value) ? value.filter(Boolean).join("；") : String(value ?? "");
+}
+
+function getLandShareAreaQuality(row) {
+  return evaluateLandShareArea({
+    landAreaSqm: row.landAreaSqm,
+    shareNumerator: row.shareNumerator,
+    shareDenominator: row.shareDenominator,
+    originalShareAreaSqm: row.originalShareAreaSqm || row.excelShareAreaSqm,
+    existingShareAreaSqm: row.shareAreaSqm,
+  });
+}
+
+function getBuildingShareAreaQuality(row) {
+  return evaluateLandShareArea({
+    landAreaSqm: row.buildingTotalAreaSqm || row.buildingAreaSqm,
+    shareNumerator: row.shareNumerator,
+    shareDenominator: row.shareDenominator,
+    originalShareAreaSqm: row.originalShareAreaSqm || row.excelShareAreaSqm,
+    existingShareAreaSqm: row.shareAreaSqm,
+  });
+}
+
 function landRowsForSheet(preview) {
   const rows = preview?.landRights ?? preview?.landRows ?? [];
   return rows.map((row) => {
-    const shareAreaQuality = evaluateLandShareArea({
-      landAreaSqm: row.landAreaSqm,
-      shareNumerator: row.shareNumerator,
-      shareDenominator: row.shareDenominator,
-      originalShareAreaSqm: row.originalShareAreaSqm || row.excelShareAreaSqm,
-      existingShareAreaSqm: row.shareAreaSqm,
-    });
+    const shareAreaQuality = getLandShareAreaQuality(row);
 
     return [
-      row.ownerReferenceId || row.landRightRowId || row.rowId || "",
-      row.ownerName || "",
-      row.city || "",
-      row.district || "",
-      row.section || "",
-      row.subsection || "",
-      row.lotNumber || row.landNumber || "",
+      row.landSequence || row.ownerReferenceId || row.landRightRowId || row.rowId || "",
+      row.sectionName || row.section || "",
+      row.landNumber || row.lotNumber || "",
       safeNumber(row.landAreaSqm),
-      safeNumber(row.landAreaPing),
+      row.ownerRegistrationOrder || row.registrationOrder || "",
+      row.ownerName || "",
+      row.ownerIdNumber || row.maskedIdentityCode || "",
       row.shareNumerator || "",
+      "/",
       row.shareDenominator || "",
-      safeNumber(shareAreaQuality.shareRatio ?? row.shareRatio),
-      safeNumber(shareAreaQuality.shareAreaSqm),
-      safeNumber(shareAreaQuality.shareAreaPing),
       safeNumber(shareAreaQuality.originalShareAreaSqm),
       safeNumber(shareAreaQuality.calculatedShareAreaSqm),
       safeNumber(shareAreaQuality.shareAreaDifferenceSqm),
-      shareAreaQuality.shareAreaValidationStatus || row.shareAreaValidationStatus || "",
-      row.registrationOrder || "",
-      row.registeredOwnerName || "",
-      row.trusteeName || "",
-      row.trustorName || "",
-      row.ownershipType || "",
-      safeNumber(row.announcedCurrentValue),
-      row.announcedCurrentValueYear || "",
-      safeNumber(row.declaredLandValue),
-      row.declaredLandValueYear || "",
-      row.registrationDate || "",
-      row.registrationReason || "",
-      row.causeDate || "",
-      row.titleNumber || "",
-      row.sourceFilename || "",
-      row.sourcePage || "",
-      row.notes || row.note || "",
+      safeNumber(shareAreaQuality.shareAreaPing),
+      row.otherRightRegistrationOrder || "",
+      row.otherRightType || row.otherRightsType || "",
+      row.otherRightHolder || row.otherRightsHolder || "",
+      row.debtor || "",
+      row.debtorAndDebtRatio || "",
+      row.obligor || "",
+      row.securedAmount || row.amount || "",
+      row.note || row.notes || "",
+      row.transcriptAddress || row.address || "",
+      shareAreaQuality.shareAreaValidationStatus || row.shareAreaValidationStatus || row.validationStatus || "",
+      joinMessages(row.validationMessages?.length ? row.validationMessages : shareAreaQuality.shareAreaValidationMessages),
     ];
   });
 }
 
 function buildingRowsForSheet(preview) {
   const rows = preview?.buildingRights ?? preview?.buildingRows ?? [];
-  return rows.map((row) => [
-    row.ownerReferenceId || row.buildingRightRowId || row.rowId || "",
-    row.ownerName || "",
-    row.city || "",
-    row.district || "",
-    row.section || "",
-    row.subsection || "",
-    row.lotNumber || row.relatedLandNumber || "",
-    row.buildingNumber || "",
-    row.address || "",
-    safeNumber(row.buildingAreaSqm),
-    row.shareNumerator || "",
-    row.shareDenominator || "",
-    safeNumber(row.shareRatio),
-    row.notes || row.note || "",
-  ]);
+  return rows.map((row) => {
+    const shareAreaQuality = getBuildingShareAreaQuality(row);
+
+    return [
+      row.buildingSequence || row.ownerReferenceId || row.buildingRightRowId || row.rowId || "",
+      row.buildingNumber || "",
+      row.buildingDoorplate || row.buildingAddress || row.address || "",
+      safeNumber(row.buildingTotalAreaSqm || row.buildingAreaSqm),
+      safeNumber(row.mainBuildingAreaSqm),
+      safeNumber(row.accessoryBuildingAreaSqm),
+      row.locatedLandNumber || row.relatedLandNumber || row.lotNumber || "",
+      row.ownerRegistrationOrder || row.registrationOrder || "",
+      row.ownerName || "",
+      row.ownerIdNumber || row.maskedIdentityCode || "",
+      row.shareNumerator || "",
+      "/",
+      row.shareDenominator || "",
+      safeNumber(shareAreaQuality.originalShareAreaSqm),
+      safeNumber(shareAreaQuality.calculatedShareAreaSqm),
+      safeNumber(shareAreaQuality.shareAreaDifferenceSqm),
+      safeNumber(shareAreaQuality.shareAreaPing),
+      row.otherRightRegistrationOrder || "",
+      row.otherRightType || row.otherRightsType || "",
+      row.otherRightHolder || row.otherRightsHolder || "",
+      row.debtor || "",
+      row.debtorAndDebtRatio || "",
+      row.obligor || "",
+      row.note || row.notes || "",
+      row.transcriptAddress || "",
+      row.floorLevel || "",
+      row.totalFloors || "",
+      row.structureType || row.structure || "",
+      row.completionDate || "",
+      shareAreaQuality.shareAreaValidationStatus || row.shareAreaValidationStatus || row.validationStatus || "",
+      joinMessages(row.validationMessages?.length ? row.validationMessages : shareAreaQuality.shareAreaValidationMessages),
+    ];
+  });
 }
 
 export function createRosterWorkbookBlob(preview) {
+  const summary = preview?.summary ?? {};
+  const landRows = preview?.landRights ?? preview?.landRows ?? [];
+  const buildingRows = preview?.buildingRights ?? preview?.buildingRows ?? [];
+  const otherRightsRowCount = [...landRows, ...buildingRows].filter((row) => (
+    row.otherRightType || row.otherRightsType || row.otherRightHolder || row.otherRightsHolder || row.debtor || row.obligor
+  )).length;
+  const validationWarningCount = [...landRows, ...buildingRows].filter((row) => (
+    Array.isArray(row.validationMessages) && row.validationMessages.length
+  )).length;
   const sheets = [
-    ["土地清冊_匯入", [LAND_HEADERS, ...landRowsForSheet(preview)]],
-    ["建物清冊_匯入", [BUILDING_HEADERS, ...buildingRowsForSheet(preview)]],
-    ["整合紀錄_匯入", [["欄位", "內容"], ["狀態", "本工作表保留供後續整合紀錄使用"]]],
-    ["分配條件_匯入", [["欄位", "內容"], ["狀態", "本工作表保留供後續分配條件使用"]]],
-    ["欄位字典", [["欄位", "說明"], ["縣市 / 行政區 / 段別 / 小段 / 地號", "完整地籍定位欄位"], ["地主姓名", "信託案件優先填委託人 / 實際權利人"]]],
-    ["下拉選單", [["類型", "值"], ["權利型態", "信託"], ["權利型態", "買賣"]]],
+    ["土地權屬清冊_系統產生", [LAND_EXPORT_HEADERS, ...landRowsForSheet(preview)]],
+    ["合法建物權屬清冊_系統產生", [BUILDING_EXPORT_HEADERS, ...buildingRowsForSheet(preview)]],
+    ["檢核摘要", [
+      ["項目", "內容"],
+      ["匯入檔名", preview?.fileName || preview?.sourceFilename || ""],
+      ["匯入時間", preview?.importedAt || preview?.updatedAt || ""],
+      ["土地權利列數", summary.landCount ?? landRows.length],
+      ["建物權利列數", summary.buildingCount ?? buildingRows.length],
+      ["權利範圍完整列數", summary.completeShareRows ?? ""],
+      ["持分面積可驗算列數", summary.verifiableShareAreaRows ?? ""],
+      ["持分面積檢核通過列數", summary.consistentShareAreaRows ?? ""],
+      ["持分面積差異警告列數", summary.shareAreaWarningRows ?? validationWarningCount],
+      ["他項權利資料列數", otherRightsRowCount],
+      ["缺少縣市 / 行政區提示", summary.fallbackLandIdentityCount ?? ""],
+      ["不可匯入警告數", summary.warningCount ?? validationWarningCount],
+      ["系統版本 / schema version", ROSTER_STANDARD_SCHEMA_VERSION],
+    ]],
+    ["欄位字典", [["欄位", "欄位名稱", "用途"], ...getRosterStandardDictionaryRows()]],
   ];
+  return createWorkbookBlob(sheets);
+}
+
+export function createBlankRosterTemplateWorkbookBlob() {
+  const sheets = [
+    ["土地權屬清冊", [LAND_TEMPLATE_HEADERS]],
+    ["合法建物權屬清冊", [BUILDING_TEMPLATE_HEADERS]],
+    ["欄位字典", [["欄位", "欄位名稱", "用途"], ...getRosterStandardDictionaryRows()]],
+    ["填寫說明", [
+      ["項目", "說明"],
+      ["填寫順序", "先填標示部，再逐列填所有權部；同一地號或建號多位所有權人可沿用標示部資料。"],
+      ["權利範圍", "請分別填寫分子與分母，中間斜線欄保留 /。"],
+      ["他項權利", "他項權利資料請填入他項權利部，不要填入所有權人欄位。"],
+      ["匯入方式", "上傳後系統會先建立預覽與檢核摘要，確認後才寫入案件。"],
+    ]],
+    ["檢核規則", [
+      ["規則", "說明"],
+      ["土地持分面積", "土地持分面積 = 土地面積 × 分子 ÷ 分母。"],
+      ["建物持分面積", "建物持分面積 = 建物面積 × 分子 ÷ 分母。"],
+      ["權利範圍分母", "分母不可為 0，缺漏時會列為待確認。"],
+      ["資料沿用", "地號 / 建號相同的多筆所有權人可沿用標示部資料。"],
+      ["他項權利", "他項權利資料不可填入所有權人欄位，也不可覆蓋所有權資料。"],
+    ]],
+  ];
+  return createWorkbookBlob(sheets);
+}
+
+function createWorkbookBlob(sheets) {
   const files = [
     { path: "[Content_Types].xml", content: contentTypesXml(sheets.length) },
     { path: "_rels/.rels", content: rootRelsXml() },

@@ -159,7 +159,7 @@ function parseOwnerBlocks(compactOwnerSection, lotContext, importedAt, issues) {
         id: `pdf-owner-review-${lotContext.lotNumber}-${match[1]}`,
         type: "PDF 權利列解析不足",
         severity: "高",
-        message: `地號 ${lotContext.lotNumber} 登記次序 ${match[1]} 未能完整辨識 ownerName 或權利範圍，請改用 v7 清冊或人工確認。`,
+        message: `地號 ${lotContext.lotNumber} 登記次序 ${match[1]} 未能完整辨識 ownerName 或權利範圍，請改用都更權屬清冊標準表單或人工確認。`,
         rows: [],
       });
       continue;

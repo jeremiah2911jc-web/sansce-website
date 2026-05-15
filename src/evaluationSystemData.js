@@ -546,9 +546,9 @@ export const evaluationModules = [
       notice:
         "上傳檔案不會直接覆蓋正式資料。必須通過安全檢查、欄位檢核、跨表關聯檢核並完成正式套用確認後，才會成為目前案件後續計算使用的正式清冊資料。",
       template: {
-        title: "清冊模板下載",
-        fileName: "sanze_roster_import_template_v7.xlsx",
-        description: "標準模板包含土地清冊、建物清冊、整合紀錄與分配條件，第一版只接受 .xlsx。",
+        title: "都更權屬清冊空白表單下載",
+        fileName: "sanze_urban_renewal_roster_template.xlsx",
+        description: "標準表單包含土地權屬清冊、合法建物權屬清冊、欄位字典、填寫說明與檢核規則；舊版 v7 僅保留匯入相容。",
       },
       upload: {
         title: "清冊檔案上傳區",
@@ -557,7 +557,7 @@ export const evaluationModules = [
         rejectedTypes: [".xls", ".xlsm", ".xlsb", ".xlam", "巨集檔"],
       },
       workflowSteps: [
-        "下載標準模板",
+        "下載都更清冊空白表單",
         "填寫土地 / 建物 / 整合 / 分配資料",
         "上傳 .xlsx",
         "安全檢查",

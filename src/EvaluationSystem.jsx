@@ -51,7 +51,15 @@ import {
   buildShareAreaQualitySummary,
   evaluateLandShareArea,
 } from "./rosterShareAreaValidation.js";
-import { createRosterWorkbookBlob } from "./rosterXlsxExporter.js";
+import {
+  BUILDING_PREVIEW_COLUMNS,
+  LAND_PREVIEW_COLUMNS,
+  ROSTER_STANDARD_SCHEMA_VERSION,
+} from "./rosterStandardSchema.js";
+import {
+  createBlankRosterTemplateWorkbookBlob,
+  createRosterWorkbookBlob,
+} from "./rosterXlsxExporter.js";
 
 const defaultCaseForm = {
   code: "",
@@ -836,7 +844,7 @@ const legacyDemoCaseSignatures = [
   {
     id: "case-001",
     code: "CASE-001",
-    markers: ["板橋民權段自主更新", "泰山文程段", "自主更新 / 前期評估", "林顧問", "第七版清冊匯入測試"],
+    markers: ["板橋民權段自主更新", "泰山文程段", "自主更新 / 前期評估", "林顧問", "都更清冊標準匯入測試"],
   },
   {
     id: "case-002",
@@ -2963,8 +2971,7 @@ const rosterImportSheets = {
   allocation: "分配條件_匯入",
 };
 
-const ROSTER_TEMPLATE_DOWNLOAD_PATH = "/sanze-roster-template-v7-protected.xlsx";
-const ROSTER_TEMPLATE_DOWNLOAD_FILENAME = "sanze-roster-template-v7-protected.xlsx";
+const ROSTER_TEMPLATE_DOWNLOAD_FILENAME = "sanze-urban-renewal-roster-template.xlsx";
 
 const rosterImportFieldAliases = {
   city: ["縣市", "市縣", "city", "county"],
@@ -3125,6 +3132,21 @@ function normalizeRosterLandRightRow(row, index = 0) {
     shareAreaCanCalculate: shareAreaQuality.shareAreaCanCalculate,
     shareAreaWithinTolerance: shareAreaQuality.shareAreaWithinTolerance,
     shareAreaSuspectedColumnMisalignment: shareAreaQuality.shareAreaSuspectedColumnMisalignment,
+    standardSchemaVersion: normalizeCellValue(locationRow.standardSchemaVersion) || ROSTER_STANDARD_SCHEMA_VERSION,
+    landSequence: normalizeCellValue(locationRow.landSequence || locationRow["序號"]),
+    sectionName: locationRow.sectionName || locationRow.section,
+    ownerRegistrationOrder: normalizeCellValue(locationRow.ownerRegistrationOrder || locationRow.registrationOrder || locationRow["登記次序"]),
+    ownerIdNumber: normalizeCellValue(locationRow.ownerIdNumber || locationRow.maskedIdentityCode || locationRow["身分證字號"]),
+    shareDisplay: formatShareText(shareNumerator, shareDenominator, locationRow.shareText),
+    otherRightRegistrationOrder: normalizeCellValue(locationRow.otherRightRegistrationOrder || locationRow["他項權利登記次序"]),
+    otherRightType: normalizeCellValue(locationRow.otherRightType || locationRow.otherRightsType || locationRow["權利種類"] || locationRow["他項權利種類"]),
+    otherRightHolder: normalizeCellValue(locationRow.otherRightHolder || locationRow.otherRightsHolder || locationRow["他項權利人"]),
+    debtor: normalizeCellValue(locationRow.debtor || locationRow["債務人"]),
+    debtorAndDebtRatio: normalizeCellValue(locationRow.debtorAndDebtRatio || locationRow["債務人及債務額比例"]),
+    obligor: normalizeCellValue(locationRow.obligor || locationRow["設定義務人"]),
+    securedAmount: normalizeCellValue(locationRow.securedAmount || locationRow.amount || locationRow["金額"]),
+    note: normalizeCellValue(locationRow.note || locationRow.notes || locationRow["備註"]),
+    transcriptAddress: normalizeCellValue(locationRow.transcriptAddress || locationRow.address || locationRow["謄本地址"]),
     parseStatus: normalizeCellValue(locationRow.parseStatus) || (shareAreaQuality.shareAreaValidationMessages.length ? "needs-review" : "parsed"),
     validationMessages: Array.isArray(locationRow.validationMessages)
       ? [...new Set([...locationRow.validationMessages, ...shareAreaQuality.shareAreaValidationMessages])]
@@ -3163,6 +3185,22 @@ function normalizeRosterLandRightRow(row, index = 0) {
 function normalizeRosterBuildingRightRow(row, index = 0) {
   const rowId = normalizeCellValue(row?.rowId || row?.buildingRightRowId) || formatSequence("BR", index);
   const importedAt = normalizeCellValue(row?.importedAt);
+  const buildingAreaSqm = parseRosterNumber(row?.buildingTotalAreaSqm || row?.buildingAreaSqm || row?.buildingAreaRaw || row?.["建物面積㎡"] || row?.["面積(m2)-合計"]);
+  const mainBuildingAreaSqm = parseRosterNumber(row?.mainBuildingAreaSqm || row?.["面積(m2)-主建物"] || row?.["主建物"]);
+  const accessoryBuildingAreaSqm = parseRosterNumber(row?.accessoryBuildingAreaSqm || row?.["面積(m2)-附屬建物"] || row?.["附屬建物"]);
+  const shareNumerator = normalizeCellValue(row?.shareNumerator || row?.["持分分子"]);
+  const shareDenominator = normalizeCellValue(row?.shareDenominator || row?.["持分分母"]);
+  const originalShareAreaSqm = pickNumericValue(
+    parseRosterNumber(row?.originalShareAreaSqm),
+    parseRosterNumber(row?.excelShareAreaSqm),
+  );
+  const shareAreaQuality = evaluateLandShareArea({
+    landAreaSqm: buildingAreaSqm,
+    shareNumerator,
+    shareDenominator,
+    originalShareAreaSqm,
+    existingShareAreaSqm: row?.shareAreaSqm,
+  });
 
   return {
     ...row,
@@ -3174,7 +3212,60 @@ function normalizeRosterBuildingRightRow(row, index = 0) {
     subsection: normalizeLandKeyPart(row?.subsection || row?.["小段"]),
     lotNumber: normalizeLandKeyPart(row?.lotNumber || row?.landNumber || row?.relatedLandNumber || row?.parcelNumber || row?.["地號"]),
     relatedLandNumber: normalizeLandKeyPart(row?.relatedLandNumber || row?.lotNumber || row?.landNumber || row?.parcelNumber || row?.["地號"]),
+    locatedLandNumber: normalizeLandKeyPart(row?.locatedLandNumber || row?.relatedLandNumber || row?.lotNumber || row?.landNumber || row?.parcelNumber || row?.["座落地號"] || row?.["地號"]),
     buildingNumber: normalizeCellValue(row?.buildingNumber || row?.["建號"]),
+    standardSchemaVersion: normalizeCellValue(row?.standardSchemaVersion) || ROSTER_STANDARD_SCHEMA_VERSION,
+    buildingSequence: normalizeCellValue(row?.buildingSequence || row?.["編號"]),
+    buildingDoorplate: normalizeCellValue(row?.buildingDoorplate || row?.buildingAddress || row?.address || row?.["建物門牌號碼"]),
+    buildingTotalAreaSqm: Number.isFinite(buildingAreaSqm) ? roundForStorage(buildingAreaSqm, INTERNAL_DECIMAL_DIGITS) : "",
+    mainBuildingAreaSqm: Number.isFinite(mainBuildingAreaSqm) ? roundForStorage(mainBuildingAreaSqm, INTERNAL_DECIMAL_DIGITS) : "",
+    accessoryBuildingAreaSqm: Number.isFinite(accessoryBuildingAreaSqm) ? roundForStorage(accessoryBuildingAreaSqm, INTERNAL_DECIMAL_DIGITS) : "",
+    ownerRegistrationOrder: normalizeCellValue(row?.ownerRegistrationOrder || row?.registrationOrder || row?.["登記次序"]),
+    ownerName: normalizeCellValue(row?.ownerName || row?.["所有權人"] || row?.["所有權人(管理人)"]),
+    ownerIdNumber: normalizeCellValue(row?.ownerIdNumber || row?.maskedIdentityCode || row?.["身分證字號"]),
+    shareNumerator,
+    shareDenominator,
+    shareDisplay: formatShareText(shareNumerator, shareDenominator, row?.shareText),
+    originalShareAreaSqm: Number.isFinite(shareAreaQuality.originalShareAreaSqm) ? shareAreaQuality.originalShareAreaSqm : "",
+    calculatedShareAreaSqm: Number.isFinite(shareAreaQuality.calculatedShareAreaSqm) ? shareAreaQuality.calculatedShareAreaSqm : "",
+    calculatedShareAreaPing: Number.isFinite(shareAreaQuality.calculatedShareAreaPing) ? shareAreaQuality.calculatedShareAreaPing : "",
+    shareAreaSqm: Number.isFinite(shareAreaQuality.shareAreaSqm) ? shareAreaQuality.shareAreaSqm : "",
+    shareAreaPing: Number.isFinite(shareAreaQuality.shareAreaPing) ? shareAreaQuality.shareAreaPing : "",
+    shareAreaSource: shareAreaQuality.shareAreaSource,
+    shareAreaValidationStatus: shareAreaQuality.shareAreaValidationStatus,
+    shareAreaDifferenceSqm: Number.isFinite(shareAreaQuality.shareAreaDifferenceSqm) ? shareAreaQuality.shareAreaDifferenceSqm : "",
+    shareAreaValidationMessages: shareAreaQuality.shareAreaValidationMessages,
+    shareAreaCanCalculate: shareAreaQuality.shareAreaCanCalculate,
+    shareAreaWithinTolerance: shareAreaQuality.shareAreaWithinTolerance,
+    shareAreaSuspectedColumnMisalignment: shareAreaQuality.shareAreaSuspectedColumnMisalignment,
+    otherRightRegistrationOrder: normalizeCellValue(row?.otherRightRegistrationOrder || row?.["他項權利登記次序"]),
+    otherRightType: normalizeCellValue(row?.otherRightType || row?.otherRightsType || row?.["權利種類"] || row?.["他項權利種類"]),
+    otherRightHolder: normalizeCellValue(row?.otherRightHolder || row?.otherRightsHolder || row?.["他項權利人"]),
+    debtor: normalizeCellValue(row?.debtor || row?.["債務人"]),
+    debtorAndDebtRatio: normalizeCellValue(row?.debtorAndDebtRatio || row?.["債務人及債務額比例"]),
+    obligor: normalizeCellValue(row?.obligor || row?.["設定義務人"]),
+    note: normalizeCellValue(row?.note || row?.notes || row?.["備註"]),
+    transcriptAddress: normalizeCellValue(row?.transcriptAddress || row?.address || row?.["謄本地址"]),
+    floorLevel: normalizeCellValue(row?.floorLevel || row?.["層次"]),
+    totalFloors: normalizeCellValue(row?.totalFloors || row?.["總層數"]),
+    structureType: normalizeCellValue(row?.structureType || row?.structure || row?.["構造"]),
+    completionDate: normalizeCellValue(row?.completionDate || row?.["建築完成日期"]),
+    parseStatus: normalizeCellValue(row?.parseStatus) || (shareAreaQuality.shareAreaValidationMessages.length ? "needs-review" : "parsed"),
+    validationMessages: Array.isArray(row?.validationMessages)
+      ? [...new Set([...row.validationMessages, ...shareAreaQuality.shareAreaValidationMessages])]
+      : shareAreaQuality.shareAreaValidationMessages,
+    originalFields: row?.originalFields ?? {
+      buildingAreaSqm: row?.buildingTotalAreaSqm || row?.buildingAreaSqm || row?.buildingAreaRaw,
+      shareNumerator,
+      shareDenominator,
+      shareAreaSqm: originalShareAreaSqm,
+    },
+    computedFields: {
+      ...(row?.computedFields ?? {}),
+      shareRatio: shareAreaQuality.shareRatio,
+      shareAreaSqm: shareAreaQuality.calculatedShareAreaSqm,
+      shareAreaPing: shareAreaQuality.calculatedShareAreaPing,
+    },
     relatedLandIdentityKey: buildLotIdentityKey({
       ...row,
       city: row?.city || row?.["縣市"] || row?.county,
@@ -3599,22 +3690,36 @@ function buildLandRightRows(rows, sourceContext = {}) {
     const announcedCurrentValue = getHeaderValue(row, ["公告土地現值", "公告現值"], ["公告土地現值", "公告現值"]);
     const declaredLandValue = getHeaderValue(row, ["申報地價", "當期申報地價"], ["申報地價", "當期申報地價"]);
     const registrationOrder = getHeaderValue(row, ["登記次序"], ["登記次序"]);
+    const landSequence = getHeaderValue(row, ["序號"], ["序號"]);
+    const ownerRegistrationOrder = getHeaderValue(row, ["所有權部登記次序", "登記次序"], ["登記次序"]);
+    const otherRightRegistrationOrder = getHeaderValue(row, ["他項權利登記次序"], ["他項權利登記次序", "他項登記次序"]);
     const registeredOwnerName = getHeaderValue(row, ["登記名義人", "所有權人"], ["登記名義人", "所有權人"]);
     const trusteeName = getHeaderValue(row, ["受託人"], ["受託人"]);
     const trustorName = getHeaderValue(row, ["委託人", "實際權利人"], ["委託人", "實際權利人"]);
     const ownershipType = getHeaderValue(row, ["權利型態"], ["信託", "權利型態"]);
+    const ownerIdNumber = getFirstMatchingValue(row, ["身分證", "統編", "統一編號", "證號", "識別碼", "前碼"]);
+    const otherRightType = getFirstMatchingValue(row, ["權利種類", "他項權利種類", "他項權利"]);
+    const debtorAndDebtRatio = getFirstMatchingValue(row, ["債務人及債務額比例", "債務額比例"]);
+    const securedAmount = getFirstMatchingValue(row, ["金額", "債權額", "擔保債權"]);
+    const note = getFirstMatchingValue(row, ["備註", "說明"]);
+    const transcriptAddress = getFirstMatchingValue(row, ["謄本地址", "地址", "通訊地址", "戶籍地址", "住址"]);
 
     return {
       sourceRowNumber: row.__rowNumber,
       ownerReferenceId: getFirstMatchingValue(row, ["地主編號", "權利人編號", "所有權人編號", "參考編號"]),
       ownerName,
       registrationOrder,
+      landSequence,
+      sectionName: section,
+      ownerRegistrationOrder,
       registeredOwnerName,
       trusteeName,
       trustorName,
       ownershipType,
-      maskedIdentityCode: getFirstMatchingValue(row, ["身分證", "統編", "統一編號", "證號", "識別碼", "前碼"]),
-      address: getFirstMatchingValue(row, ["地址", "通訊地址", "戶籍地址", "住址"]),
+      maskedIdentityCode: ownerIdNumber,
+      ownerIdNumber,
+      address: transcriptAddress,
+      transcriptAddress,
       city,
       district,
       section,
@@ -3630,6 +3735,7 @@ function buildLandRightRows(rows, sourceContext = {}) {
       excelShareAreaSqm,
       excelShareAreaPing,
       calculatedShareRatio: roundForStorage(calculatedShareRatio, INTERNAL_DECIMAL_DIGITS),
+      standardSchemaVersion: ROSTER_STANDARD_SCHEMA_VERSION,
       originalShareAreaSqm: Number.isFinite(shareAreaQuality.originalShareAreaSqm) ? shareAreaQuality.originalShareAreaSqm : "",
       calculatedShareAreaSqm,
       calculatedShareAreaPing: shareAreaQuality.calculatedShareAreaPing,
@@ -3650,19 +3756,24 @@ function buildLandRightRows(rows, sourceContext = {}) {
       declaredLandValueYear: getHeaderValue(row, ["申報地價年度"], ["申報地價年度"]),
       announcedLandValue: getFirstMatchingValue(row, ["公告地價"]),
       shareText: getFirstMatchingValue(row, ["權利範圍", "持分"]),
+      shareDisplay: formatShareText(shareNumerator, shareDenominator, getFirstMatchingValue(row, ["權利範圍", "持分"])),
       convertedShare: getFirstMatchingValue(row, ["換算持分", "持分比例", "持分面積"]),
       contactStatus: getFirstMatchingValue(row, ["聯絡狀態", "聯絡"]),
       consentStatus: getFirstMatchingValue(row, ["同意狀態", "同意"]),
       contractStatus: getFirstMatchingValue(row, ["簽約狀態", "簽約"]),
-      otherRightsType: getFirstMatchingValue(row, ["他項權利種類", "他項權利"]),
+      otherRightRegistrationOrder,
+      otherRightType,
+      otherRightsType: otherRightType,
       otherRightsHolder: getFirstMatchingValue(row, ["他項權利人"]),
+      otherRightHolder: getFirstMatchingValue(row, ["他項權利人"]),
       debtor: getFirstMatchingValue(row, ["債務人"]),
+      debtorAndDebtRatio,
       obligor: getFirstMatchingValue(row, ["設定義務人", "義務人"]),
-      securedAmount: getFirstMatchingValue(row, ["金額", "債權額", "擔保債權"]),
-      note: getFirstMatchingValue(row, ["備註", "說明"]),
+      securedAmount,
+      note,
       notes: [
-        getFirstMatchingValue(row, ["備註", "說明"]),
-        getFirstMatchingValue(row, ["他項權利種類", "他項權利"]),
+        note,
+        otherRightType,
         getFirstMatchingValue(row, ["他項權利人"]),
       ].filter(Boolean).join("；"),
       parseStatus: shareAreaQuality.shareAreaValidationMessages.length ? "needs-review" : "parsed",
@@ -3737,10 +3848,14 @@ function buildBuildingRightRows(rows, sourceContext = {}) {
     const excelShareRatio = getFirstExactHeaderValue(row, ["持分比例"]);
     const excelShareAreaSqm = getFirstExactHeaderValue(row, ["建物持分面積㎡", "持分面積㎡"]);
     const calculatedShareRatio = parseRatio(shareNumerator, shareDenominator);
-    const calculatedShareAreaSqm = pickNumericValue(
-      parseRosterNumber(excelShareAreaSqm),
-      calculateShareArea(buildingAreaSqm, shareNumerator, shareDenominator),
-    );
+    const shareAreaQuality = evaluateLandShareArea({
+      landAreaSqm: buildingAreaSqm,
+      shareNumerator,
+      shareDenominator,
+      originalShareAreaSqm: excelShareAreaSqm,
+      existingShareAreaSqm: row.shareAreaSqm,
+    });
+    const calculatedShareAreaSqm = shareAreaQuality.calculatedShareAreaSqm;
     const ownerName = getFirstMatchingValue(row, ["地主姓名", "所有權人", "姓名", "名稱"]);
     const buildingNumber = getFirstMatchingValue(row, ["建號"]);
     const city = getRosterFieldValue(row, rosterImportFieldAliases.city);
@@ -3748,49 +3863,100 @@ function buildBuildingRightRows(rows, sourceContext = {}) {
     const section = getRosterFieldValue(row, rosterImportFieldAliases.section);
     const subsection = getRosterFieldValue(row, rosterImportFieldAliases.subsection);
     const lotNumber = getRosterFieldValue(row, rosterImportFieldAliases.lotNumber, ["對應地號", "地號", "lotNo", "lotNumber"]);
+    const buildingSequence = getHeaderValue(row, ["編號"], ["編號"]);
+    const ownerRegistrationOrder = getHeaderValue(row, ["所有權部登記次序", "登記次序"], ["登記次序"]);
+    const otherRightRegistrationOrder = getHeaderValue(row, ["他項權利登記次序"], ["他項權利登記次序", "他項登記次序"]);
+    const ownerIdNumber = getFirstMatchingValue(row, ["身分證", "統編", "統一編號", "證號", "識別碼", "前碼"]);
+    const otherRightType = getFirstMatchingValue(row, ["權利種類", "他項權利種類", "他項權利"]);
+    const debtorAndDebtRatio = getFirstMatchingValue(row, ["債務人及債務額比例", "債務額比例"]);
+    const note = getFirstMatchingValue(row, ["備註", "說明"]);
+    const transcriptAddress = getFirstMatchingValue(row, ["謄本地址", "地址", "通訊地址", "戶籍地址", "住址"]);
+    const buildingDoorplate = getFirstMatchingValue(row, ["建物門牌號碼", "建物門牌", "門牌"]);
+    const mainBuildingAreaSqm = roundForStorage(parseRosterNumber(getFirstExactHeaderValue(row, ["主建物面積㎡"])), INTERNAL_DECIMAL_DIGITS);
+    const accessoryBuildingAreaSqm = roundForStorage(parseRosterNumber(getFirstExactHeaderValue(row, ["附屬建物面積㎡"])), INTERNAL_DECIMAL_DIGITS);
+    const structureType = getFirstMatchingValue(row, ["構造", "構造種類"]);
 
     return {
       sourceRowNumber: row.__rowNumber,
       ownerReferenceId: getFirstMatchingValue(row, ["地主編號", "權利人編號", "所有權人編號", "參考編號"]),
+      buildingSequence,
       ownerName,
-      maskedIdentityCode: getFirstMatchingValue(row, ["身分證", "統編", "統一編號", "證號", "識別碼", "前碼"]),
+      ownerRegistrationOrder,
+      maskedIdentityCode: ownerIdNumber,
+      ownerIdNumber,
       city,
       district,
       section,
       subsection,
       lotNumber,
       relatedLandNumber: lotNumber,
+      locatedLandNumber: lotNumber,
       buildingNumber,
-      address: getFirstMatchingValue(row, ["門牌", "地址"]),
-      buildingAddress: getFirstMatchingValue(row, ["建物門牌", "門牌"]),
+      address: buildingDoorplate || transcriptAddress,
+      transcriptAddress,
+      buildingAddress: buildingDoorplate,
+      buildingDoorplate,
       buildingAreaRaw,
       buildingAreaSqm: roundForStorage(buildingAreaSqm, INTERNAL_DECIMAL_DIGITS),
-      mainBuildingAreaSqm: roundForStorage(parseRosterNumber(getFirstExactHeaderValue(row, ["主建物面積㎡"])), INTERNAL_DECIMAL_DIGITS),
-      accessoryBuildingAreaSqm: roundForStorage(parseRosterNumber(getFirstExactHeaderValue(row, ["附屬建物面積㎡"])), INTERNAL_DECIMAL_DIGITS),
+      buildingTotalAreaSqm: roundForStorage(buildingAreaSqm, INTERNAL_DECIMAL_DIGITS),
+      mainBuildingAreaSqm,
+      accessoryBuildingAreaSqm,
       excelBuildingAreaPing,
       shareNumerator,
       shareDenominator,
       excelShareRatio,
       excelShareAreaSqm,
       calculatedShareRatio: roundForStorage(calculatedShareRatio, INTERNAL_DECIMAL_DIGITS),
-      calculatedShareAreaSqm: roundForStorage(calculatedShareAreaSqm, INTERNAL_DECIMAL_DIGITS),
-      calculatedShareAreaPing: roundForStorage(sqmToPing(calculatedShareAreaSqm), INTERNAL_DECIMAL_DIGITS),
+      standardSchemaVersion: ROSTER_STANDARD_SCHEMA_VERSION,
+      originalShareAreaSqm: Number.isFinite(shareAreaQuality.originalShareAreaSqm) ? shareAreaQuality.originalShareAreaSqm : "",
+      calculatedShareAreaSqm,
+      calculatedShareAreaPing: shareAreaQuality.calculatedShareAreaPing,
+      shareRatio: roundForStorage(calculatedShareRatio, INTERNAL_DECIMAL_DIGITS),
+      shareAreaSqm: shareAreaQuality.shareAreaSqm,
+      shareAreaPing: shareAreaQuality.shareAreaPing,
+      shareAreaSource: shareAreaQuality.shareAreaSource,
+      shareAreaValidationStatus: shareAreaQuality.shareAreaValidationStatus,
+      shareAreaDifferenceSqm: Number.isFinite(shareAreaQuality.shareAreaDifferenceSqm) ? shareAreaQuality.shareAreaDifferenceSqm : "",
+      shareAreaValidationMessages: shareAreaQuality.shareAreaValidationMessages,
+      shareAreaCanCalculate: shareAreaQuality.shareAreaCanCalculate,
+      shareAreaWithinTolerance: shareAreaQuality.shareAreaWithinTolerance,
+      shareAreaSuspectedColumnMisalignment: shareAreaQuality.shareAreaSuspectedColumnMisalignment,
       buildingArea: getFirstMatchingValue(row, ["建物面積", "面積"]),
       shareText: getFirstMatchingValue(row, ["權利範圍", "持分"]),
+      shareDisplay: formatShareText(shareNumerator, shareDenominator, getFirstMatchingValue(row, ["權利範圍", "持分"])),
       floorLevel: getFirstMatchingValue(row, ["層次", "樓層"]),
       totalFloors: getFirstMatchingValue(row, ["總層數", "總樓層"]),
-      structure: getFirstMatchingValue(row, ["構造", "構造種類"]),
+      structure: structureType,
+      structureType,
       completionDate: getFirstMatchingValue(row, ["建築完成日期", "完工日期", "建築日期"]),
-      otherRightsType: getFirstMatchingValue(row, ["他項權利種類", "他項權利"]),
+      otherRightRegistrationOrder,
+      otherRightType,
+      otherRightsType: otherRightType,
       otherRightsHolder: getFirstMatchingValue(row, ["他項權利人"]),
+      otherRightHolder: getFirstMatchingValue(row, ["他項權利人"]),
       debtor: getFirstMatchingValue(row, ["債務人"]),
+      debtorAndDebtRatio,
       obligor: getFirstMatchingValue(row, ["設定義務人", "義務人"]),
-      note: getFirstMatchingValue(row, ["備註", "說明"]),
+      note,
       notes: [
-        getFirstMatchingValue(row, ["備註", "說明"]),
-        getFirstMatchingValue(row, ["他項權利種類", "他項權利"]),
+        note,
+        otherRightType,
         getFirstMatchingValue(row, ["他項權利人"]),
       ].filter(Boolean).join("；"),
+      parseStatus: shareAreaQuality.shareAreaValidationMessages.length ? "needs-review" : "parsed",
+      validationMessages: shareAreaQuality.shareAreaValidationMessages,
+      sourceSheetName: row.__sheetName || sourceContext.sourceSheetName || "",
+      originalFields: {
+        buildingAreaSqm: buildingAreaRaw,
+        shareNumerator,
+        shareDenominator,
+        shareAreaSqm: excelShareAreaSqm,
+      },
+      computedFields: {
+        shareRatio: roundForStorage(calculatedShareRatio, INTERNAL_DECIMAL_DIGITS),
+        shareAreaSqm: shareAreaQuality.calculatedShareAreaSqm,
+        shareAreaPing: shareAreaQuality.calculatedShareAreaPing,
+      },
       sourceType: sourceContext.sourceType || "",
       sourceFilename: sourceContext.sourceFilename || "",
       sourcePage: "",
@@ -3806,7 +3972,7 @@ function buildBuildingRightRows(rows, sourceContext = {}) {
         shareNumerator,
         shareDenominator,
         baseAreaSqm: buildingAreaSqm,
-        shareAreaSqm: calculatedShareAreaSqm,
+        shareAreaSqm: shareAreaQuality.shareAreaSqm,
         city,
         district,
         relatedLandNumber: lotNumber,
@@ -4151,6 +4317,12 @@ function buildRosterPreview(file, workbookData) {
   const batchId = `IMPORT-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${String(Date.now()).slice(-4)}`;
   const rosterSummary = buildRosterBaseSummary({ landRights, landRows: landRights, buildingRights, buildingRows: buildingRights });
   const shareAreaQualitySummary = buildShareAreaQualitySummary(landRights);
+  const otherRightsRowCount = [...landRights, ...buildingRights].filter((row) => (
+    normalizeCellValue(row.otherRightType || row.otherRightsType)
+      || normalizeCellValue(row.otherRightHolder || row.otherRightsHolder)
+      || normalizeCellValue(row.debtor)
+      || normalizeCellValue(row.obligor)
+  )).length;
 
   return {
     batchId,
@@ -4194,6 +4366,7 @@ function buildRosterPreview(file, workbookData) {
       buildingNumberCount: buildingNumbers.size,
       fallbackLandIdentityCount,
       ...shareAreaQualitySummary,
+      otherRightsRowCount,
       cadastralLocationDisplay: rosterSummary.cadastralLocationDisplay,
       sameNameMultiLandCount: partyRows.filter((party) => party.landNumbers.length > 1).length,
       sameNameMultiBuildingCount: partyRows.filter((party) => party.buildingNumbers.length > 1).length,
@@ -5388,6 +5561,7 @@ function formatRosterPreviewCell(row, column) {
 }
 
 function RosterPreviewTable({ title, description, emptyText, columns, rows }) {
+  const visibleRows = rows.slice(0, 20);
   return (
     <section className="eval-module-section">
       <div className="eval-section-head">
@@ -5396,6 +5570,9 @@ function RosterPreviewTable({ title, description, emptyText, columns, rows }) {
       </div>
       {rows.length ? (
         <div className="eval-table-wrap eval-roster-preview-scroll">
+          {rows.length > visibleRows.length && (
+            <p className="eval-roster-helper">預覽先顯示前 20 筆；完整資料會保留在案件清冊與系統產生 Excel。</p>
+          )}
           <table className="eval-table eval-roster-preview-table">
             <thead>
               <tr>
@@ -5405,7 +5582,7 @@ function RosterPreviewTable({ title, description, emptyText, columns, rows }) {
               </tr>
             </thead>
             <tbody>
-              {rows.map((row, index) => (
+              {visibleRows.map((row, index) => (
                 <tr key={`${title}-${row[columns[0].key] || index}`}>
                   {columns.map((column) => (
                     <td key={column.key}>{formatRosterPreviewCell(row, column)}</td>
@@ -6712,6 +6889,11 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
     }
   };
 
+  const handleDownloadBlankRosterTemplate = () => {
+    downloadBlobFile(createBlankRosterTemplateWorkbookBlob(), ROSTER_TEMPLATE_DOWNLOAD_FILENAME);
+    setRosterMessage("已產生三策都更清冊標準空白表單；可填寫後上傳建立預覽。");
+  };
+
   const summaryCards = activePreview ? [
     ["狀態", draftPreview ? "待確認匯入" : "已寫入案件暫存"],
     ["匯入批次", activePreview.batchId],
@@ -6729,6 +6911,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
     ["持分面積警告列數", activePreview.summary.shareAreaWarningRows ?? 0],
     ["分母缺漏列數", activePreview.summary.missingShareDenominatorRows ?? 0],
     ["疑似欄位錯置列數", activePreview.summary.suspectedMisalignedShareAreaRows ?? 0],
+    ["他項權利資料列數", activePreview.summary.otherRightsRowCount ?? 0],
     ["涉及建號數", activePreview.summary.buildingNumberCount],
     ["疑似同姓多地號群組", activePreview.summary.sameNameMultiLandCount],
     ["疑似同姓多建號群組", activePreview.summary.sameNameMultiBuildingCount],
@@ -6803,7 +6986,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
         <section className="eval-module-section eval-roster-flow-card">
           <div className="eval-section-head">
             <h4>上傳已整理清冊 Excel</h4>
-            <p>可使用三策 v7 清冊模板，也可上傳由謄本整理出的土地 / 建物權屬清冊。系統會先辨識欄位並建立預覽，確認後才寫入目前案件。</p>
+            <p>可使用三策都更清冊標準表單，也可上傳由謄本整理出的土地 / 建物權屬清冊。系統會先辨識欄位並建立預覽，確認後才寫入目前案件。</p>
           </div>
           <input
             ref={rosterFileInputRef}
@@ -6814,18 +6997,18 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
             className="eval-roster-file-input"
           />
           <div className="eval-roster-flow-actions">
-            <a href={ROSTER_TEMPLATE_DOWNLOAD_PATH} download={ROSTER_TEMPLATE_DOWNLOAD_FILENAME}>
-              下載三策 v7 空白清冊
-            </a>
+            <button type="button" onClick={handleDownloadBlankRosterTemplate}>
+              下載都更清冊空白表單
+            </button>
             <button type="button" onClick={() => rosterFileInputRef.current?.click()}>
               上傳已填寫清冊
             </button>
           </div>
           <p className="eval-roster-helper">
-            若欄位格式與系統模板不同，系統會請您確認欄位對應；不會直接寫入案件資料。
+            系統以都更權屬清冊標準格式為主要欄位；舊版 v7 清冊仍可相容匯入，但不再作為主要模板。
           </p>
           <div className="eval-roster-template-steps" aria-label="清冊建立流程">
-            {["下載模板", "填寫清冊", "上傳清冊", "預覽與檢核", "確認匯入本案件清冊"].map((step) => (
+            {["下載空白表單", "填寫清冊", "上傳清冊", "預覽與檢核", "確認匯入本案件清冊"].map((step) => (
               <span key={step}>{step}</span>
             ))}
           </div>
@@ -6835,7 +7018,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
       <section className="eval-module-section eval-roster-upload-card">
         <div className="eval-section-head">
             <h4>清冊建立狀態</h4>
-          <p>可讀電子謄本 PDF、三策 v7 清冊或已整理 Excel 清冊都會先建立草稿。上傳後系統會顯示預覽與檢核摘要，確認後才寫入案件資料。</p>
+          <p>可讀電子謄本 PDF、三策都更清冊標準表單或已整理 Excel 清冊都會先建立草稿。上傳後系統會顯示預覽與檢核摘要，確認後才寫入案件資料。</p>
         </div>
         <div className="eval-roster-upload-controls">
           <div className="eval-roster-file-picker">
@@ -6949,22 +7132,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
             description="每一筆土地權利列保留原始資料，不自動合併。"
             emptyText="目前未讀到土地清冊資料。"
             columns={[
-              { key: "landRightRowId", label: "土地列 ID" },
-              { key: "sourceRowNumber", label: "原始列號" },
-              { key: "ownerReferenceId", label: "地主編號" },
-              { key: "ownerName", label: "地主姓名" },
-              { key: "maskedIdentityCode", label: "遮蔽證號 / 前碼" },
-              { key: "city", label: "縣市" },
-              { key: "district", label: "行政區" },
-              { key: "section", label: "段別" },
-              { key: "subsection", label: "小段" },
-              { key: "landNumber", label: "地號" },
-              { key: "landAreaSqm", label: "土地面積㎡" },
-              { key: "shareText", label: "權利範圍 / 持分" },
-              { key: "shareAreaSqm", label: "持分面積㎡" },
-              { key: "shareAreaPing", label: "持分面積坪" },
-              { key: "shareAreaValidationStatus", label: "持分檢核" },
-              { key: "validationStatus", label: "檢核狀態" },
+              ...LAND_PREVIEW_COLUMNS,
             ]}
             rows={activePreview.landRights}
           />
@@ -6974,14 +7142,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
             description="顯示建物權利列；無有效資料時顯示空狀態。"
             emptyText="目前未讀到建物清冊資料。"
             columns={[
-              { key: "buildingRightRowId", label: "建物列 ID" },
-              { key: "sourceRowNumber", label: "原始列號" },
-              { key: "ownerReferenceId", label: "地主編號" },
-              { key: "ownerName", label: "地主姓名" },
-              { key: "maskedIdentityCode", label: "遮蔽證號 / 前碼" },
-              { key: "relatedLandNumber", label: "對應地號" },
-              { key: "buildingNumber", label: "建號" },
-              { key: "validationStatus", label: "檢核狀態" },
+              ...BUILDING_PREVIEW_COLUMNS,
             ]}
             rows={activePreview.buildingRights}
           />
@@ -7190,7 +7351,7 @@ function RosterMaintenancePanel({ currentCase, rosterStaging, onRosterStagingCha
       return;
     }
     downloadBlobFile(createRosterWorkbookBlob(normalizedRoster), buildCurrentRosterFileName(currentCase));
-    setMessage("已產生目前案件清冊 xlsx，可再次走 v7 清冊上傳流程解析。");
+    setMessage("已產生目前案件清冊 xlsx，可再次依都更清冊標準流程解析。");
     setError("");
   };
   const handleAddLandRow = () => {
@@ -7315,7 +7476,7 @@ function RosterMaintenancePanel({ currentCase, rosterStaging, onRosterStagingCha
       const analysis = analyzeRosterSupplement(normalizedRoster, preview);
       setSupplementState((current) => ({ ...current, fileName: file.name, preview, analysis, status: "已建立補充資料預覽", error: "" }));
     } catch (parseError) {
-      setSupplementState((current) => ({ ...current, status: "", error: parseError?.message || "補充資料解析失敗，請確認是否為 v7 清冊 xlsx。" }));
+      setSupplementState((current) => ({ ...current, status: "", error: parseError?.message || "補充資料解析失敗，請確認是否為都更權屬清冊標準格式或相容舊版清冊 xlsx。" }));
     }
   };
   const handleConfirmSupplement = () => {
@@ -7519,7 +7680,7 @@ function RosterMaintenancePanel({ currentCase, rosterStaging, onRosterStagingCha
 
       {activeAction === "supplement" && (
         <RosterMaintenanceDialog title="匯入補充資料" onClose={closeAction}>
-          <p>請上傳 v7 清冊或系統 generated xlsx。其他 Excel 若無法對應 v7 欄位，會先列為人工確認，不直接合併。</p>
+          <p>請上傳都更權屬清冊標準表單或系統產生 xlsx。舊版 v7 清冊仍可相容匯入；其他 Excel 若無法對應欄位，會先列為人工確認，不直接合併。</p>
           <input type="file" accept=".xlsx,.xls" onChange={handleSupplementFileChange} />
           {supplementState.status && <p className="eval-roster-maintenance-hint">{supplementState.status}</p>}
           {supplementState.error && <p className="eval-inline-error">{supplementState.error}</p>}
@@ -7546,7 +7707,7 @@ function RosterMaintenancePanel({ currentCase, rosterStaging, onRosterStagingCha
             onChange={(value) => setValueState((current) => ({ ...current, mode: value }))}
             options={[
               ["manual", "手動批次更新"],
-              ["file", "上傳新版 v7 清冊比對地價"],
+              ["file", "上傳新版權屬清冊比對地價"],
             ]}
           />
           {valueState.mode === "manual" ? (
@@ -7740,7 +7901,7 @@ function RosterImportVersioning({ config }) {
         <p>{config.notice}</p>
         <ol>
           {[
-            "建立清冊草稿：可讀電子謄本 PDF 與三策 v7 清冊上傳後先進入草稿",
+            "建立清冊草稿：可讀電子謄本 PDF 與三策都更權屬清冊上傳後先進入草稿",
             "預覽清冊：土地、建物、地籍定位、權利範圍與人工確認項目先呈現給使用者",
             "確認匯入：按下確認後才寫入目前案件清冊暫存",
             "後續維護：補件匯入、逐筆新增 / 修改、清冊版本與來源紀錄分階段開放",

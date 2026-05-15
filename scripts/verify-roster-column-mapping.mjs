@@ -7,7 +7,17 @@ import {
   selectRosterSheets,
 } from "../src/rosterColumnMapping.js";
 import { evaluateLandShareArea } from "../src/rosterShareAreaValidation.js";
-import { createRosterWorkbookBlob } from "../src/rosterXlsxExporter.js";
+import {
+  createBlankRosterTemplateWorkbookBlob,
+  createRosterWorkbookBlob,
+} from "../src/rosterXlsxExporter.js";
+import {
+  BUILDING_EXPORT_HEADERS,
+  BUILDING_TEMPLATE_HEADERS,
+  LAND_EXPORT_HEADERS,
+  LAND_TEMPLATE_HEADERS,
+  ROSTER_STANDARD_SCHEMA_VERSION,
+} from "../src/rosterStandardSchema.js";
 
 function row(excelRowNumber, values) {
   return { excelRowNumber, values };
@@ -133,6 +143,11 @@ function findLandRow(rows, lotNumber, numerator, denominator) {
 function parseGeneratedWorkbookFirstSheetRows(buffer) {
   const entries = readZipEntriesFromBuffer(buffer);
   return parseSheetRows(entries.get("xl/worksheets/sheet1.xml") ?? "", []);
+}
+
+function assertHeaderOrder(rows, expectedHeaders, message) {
+  const headers = (rows[0]?.values ?? []).map(normalizeText);
+  assert.deepEqual(headers.slice(0, expectedHeaders.length), expectedHeaders.map(normalizeText), message);
 }
 
 function getGeneratedCellByHeader(rows, headerName) {
@@ -313,7 +328,14 @@ function parseSheetRows(xmlText = "", sharedStrings = []) {
 }
 
 function readWorkbookSheets(filePath) {
-  const entries = readZipEntries(filePath);
+  return readWorkbookSheetsFromEntries(readZipEntries(filePath));
+}
+
+function readWorkbookSheetsFromBuffer(buffer) {
+  return readWorkbookSheetsFromEntries(readZipEntriesFromBuffer(buffer));
+}
+
+function readWorkbookSheetsFromEntries(entries) {
   const relationships = parseRelationships(entries.get("xl/_rels/workbook.xml.rels") ?? "");
   const sharedStrings = parseSharedStrings(entries.get("xl/sharedStrings.xml") ?? "");
   const workbookXml = entries.get("xl/workbook.xml") ?? "";
@@ -424,11 +446,47 @@ if (existsSync(realWorkbookPath)) {
   };
   const generatedBlob = createRosterWorkbookBlob({ landRights: [generatedLandRow], buildingRights: [] });
   const generatedRows = parseGeneratedWorkbookFirstSheetRows(Buffer.from(await generatedBlob.arrayBuffer()));
-  assertClose(getGeneratedCellByHeader(generatedRows, "持分面積㎡"), 54.482274, "generated workbook share area sqm should be recalculated", 0.000001);
+  assertHeaderOrder(generatedRows, LAND_EXPORT_HEADERS, "generated land workbook headers should follow the urban renewal schema");
+  assertClose(getGeneratedCellByHeader(generatedRows, "系統驗算持分面積(㎡)"), 54.482274, "generated workbook share area sqm should be recalculated", 0.000001);
   assertClose(getGeneratedCellByHeader(generatedRows, "持分面積坪"), 16.480889, "generated workbook share area ping should be recalculated", 0.00001);
-  assertClose(getGeneratedCellByHeader(generatedRows, "計算持分面積㎡"), 54.482274, "generated workbook should include calculated share area", 0.000001);
-  assertNumericNotClose(getGeneratedCellByHeader(generatedRows, "持分面積㎡"), 1, "generated workbook share area column must not contain a group index");
+  assertNumericNotClose(getGeneratedCellByHeader(generatedRows, "系統驗算持分面積(㎡)"), 1, "generated workbook share area column must not contain a group index");
   assertNumericNotClose(getGeneratedCellByHeader(generatedRows, "持分面積坪"), 0.3025, "generated workbook ping column must not contain group-index conversion");
+
+  const blankTemplateBlob = createBlankRosterTemplateWorkbookBlob();
+  const blankTemplateSheets = readWorkbookSheetsFromBuffer(Buffer.from(await blankTemplateBlob.arrayBuffer()));
+  assert.ok(blankTemplateSheets["土地權屬清冊"], "blank template should include land roster sheet");
+  assert.ok(blankTemplateSheets["合法建物權屬清冊"], "blank template should include building roster sheet");
+  assert.ok(blankTemplateSheets["欄位字典"], "blank template should include field dictionary sheet");
+  assert.ok(blankTemplateSheets["填寫說明"], "blank template should include instructions sheet");
+  assert.ok(blankTemplateSheets["檢核規則"], "blank template should include validation rules sheet");
+  assertHeaderOrder(blankTemplateSheets["土地權屬清冊"], LAND_TEMPLATE_HEADERS, "blank land template headers should follow the urban renewal schema");
+  assertHeaderOrder(blankTemplateSheets["合法建物權屬清冊"], BUILDING_TEMPLATE_HEADERS, "blank building template headers should follow the urban renewal schema");
+  assert.notEqual(Object.keys(blankTemplateSheets)[0], "土地清冊_匯入", "blank template should not use the old generated/v7 sheet name as the primary sheet");
+
+  const generatedWorkbookSheets = readWorkbookSheetsFromBuffer(Buffer.from(await generatedBlob.arrayBuffer()));
+  assert.ok(generatedWorkbookSheets["土地權屬清冊_系統產生"], "generated workbook should include standard generated land sheet");
+  assert.ok(generatedWorkbookSheets["合法建物權屬清冊_系統產生"], "generated workbook should include standard generated building sheet");
+  assert.ok(generatedWorkbookSheets["檢核摘要"], "generated workbook should include validation summary sheet");
+  assert.ok(generatedWorkbookSheets["欄位字典"], "generated workbook should include field dictionary sheet");
+  assertHeaderOrder(generatedWorkbookSheets["土地權屬清冊_系統產生"], LAND_EXPORT_HEADERS, "generated workbook land headers should follow the urban renewal schema");
+  assertHeaderOrder(generatedWorkbookSheets["合法建物權屬清冊_系統產生"], BUILDING_EXPORT_HEADERS, "generated workbook building headers should follow the urban renewal schema");
+
+  const jsonRoundtripRow = JSON.parse(JSON.stringify({
+    standardSchemaVersion: ROSTER_STANDARD_SCHEMA_VERSION,
+    landSequence: "1",
+    sectionName: "丹鳳段",
+    landNumber: "474",
+    originalShareAreaSqm: lot474FirstShareQuality.originalShareAreaSqm,
+    calculatedShareAreaSqm: lot474FirstShareQuality.calculatedShareAreaSqm,
+    shareAreaDifferenceSqm: lot474FirstShareQuality.shareAreaDifferenceSqm,
+    validationStatus: lot474FirstShareQuality.shareAreaValidationStatus,
+    validationMessages: lot474FirstShareQuality.shareAreaValidationMessages,
+    otherRightType: "抵押權",
+    transcriptAddress: "測試地址",
+  }));
+  assert.equal(jsonRoundtripRow.standardSchemaVersion, ROSTER_STANDARD_SCHEMA_VERSION, "JSON roundtrip should keep the standard schema version");
+  assert.equal(jsonRoundtripRow.otherRightType, "抵押權", "JSON roundtrip should keep other-right fields");
+  assert.equal(jsonRoundtripRow.transcriptAddress, "測試地址", "JSON roundtrip should keep transcript address fields");
 
   assert.equal(realSelection.building.mapping.buildingNumber, 1, "real building number should map to the actual building-number column");
   assert.equal(realSelection.building.mapping.buildingAddress, 2, "real building address should map to the actual address column");
