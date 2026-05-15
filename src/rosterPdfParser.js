@@ -53,7 +53,7 @@ export async function parseReadableLandRegisterPdfs(files) {
 
   return {
     importedAt,
-    sourceType: "readable-pdf",
+    sourceType: "pdfTranscript",
     sourceFiles: pdfFiles.map((file) => file.name),
     sources: parsedSources.map((source) => ({
       sourceFilename: source.sourceFilename,

@@ -3084,6 +3084,33 @@ function normalizeLandRightLocationFields(row) {
   };
 }
 
+function buildRosterSourceLocator(row = {}) {
+  const sourcePage = normalizeCellValue(row.sourcePage || row.sourcePageNumber);
+  const sourceRowNumber = normalizeCellValue(row.sourceRowNumber || row.sourceRow || row.excelRowNumber);
+  const sourceSheetName = normalizeCellValue(row.sourceSheetName || row.sourceSheet);
+  const sourceBlockIndex = normalizeCellValue(row.sourceBlockIndex || row.sourceBlock);
+  const sourceLocator = normalizeCellValue(row.sourceLocator);
+  if (sourceLocator) {
+    return sourceLocator;
+  }
+
+  const parts = [];
+  if (sourcePage) {
+    parts.push(`第${sourcePage}頁`);
+  }
+  if (sourceRowNumber) {
+    parts.push(`第${sourceRowNumber}列`);
+  }
+  if (sourceSheetName) {
+    parts.push(sourceSheetName);
+  }
+  if (sourceBlockIndex) {
+    parts.push(sourceBlockIndex);
+  }
+
+  return parts.join(" / ");
+}
+
 function normalizeRosterLandRightRow(row, index = 0) {
   const locationRow = normalizeLandRightLocationFields(row);
   const landAreaSqm = parseRosterNumber(locationRow.landAreaSqm || locationRow.landAreaRaw || locationRow["土地面積㎡"] || locationRow["土地面積"]);
@@ -3153,7 +3180,12 @@ function normalizeRosterLandRightRow(row, index = 0) {
     debtorAndDebtRatio: normalizeCellValue(locationRow.debtorAndDebtRatio || locationRow["債務人及債務額比例"]),
     obligor: normalizeCellValue(locationRow.obligor || locationRow["設定義務人"]),
     securedAmount: normalizeCellValue(locationRow.securedAmount || locationRow.amount || locationRow["金額"]),
-    note: normalizeCellValue(locationRow.note || locationRow.notes || locationRow["備註"]),
+    securedAmountRaw: normalizeCellValue(locationRow.securedAmountRaw),
+    securedAmountNumber: normalizeCellValue(locationRow.securedAmountNumber),
+    securedClaimScope: normalizeCellValue(locationRow.securedClaimScope),
+    otherRightNote: normalizeCellValue(locationRow.otherRightNote),
+    rawOtherRightsText: normalizeCellValue(locationRow.rawOtherRightsText),
+    note: normalizeCellValue(locationRow.note || locationRow.notes || locationRow.otherRightNote || locationRow["備註"]),
     transcriptAddress: normalizeCellValue(locationRow.transcriptAddress || locationRow.address || locationRow["謄本地址"]),
     parseStatus: normalizeCellValue(locationRow.parseStatus) || (shareAreaQuality.shareAreaValidationMessages.length ? "needs-review" : "parsed"),
     validationMessages: Array.isArray(locationRow.validationMessages)
@@ -3182,7 +3214,12 @@ function normalizeRosterLandRightRow(row, index = 0) {
     declaredLandValueYear: normalizeCellValue(locationRow.declaredLandValueYear || locationRow["申報地價年度"]),
     sourceType: normalizeCellValue(locationRow.sourceType),
     sourceFilename: normalizeCellValue(locationRow.sourceFilename || locationRow.sourceFile || locationRow.fileName),
+    sourceSheetName: normalizeCellValue(locationRow.sourceSheetName),
+    sourceDocumentName: normalizeCellValue(locationRow.sourceDocumentName),
     sourcePage: normalizeCellValue(locationRow.sourcePage),
+    sourceRowNumber: normalizeCellValue(locationRow.sourceRowNumber || locationRow.excelRowNumber),
+    sourceBlockIndex: normalizeCellValue(locationRow.sourceBlockIndex),
+    sourceLocator: buildRosterSourceLocator(locationRow),
     importedAt,
     updatedAt: normalizeCellValue(locationRow.updatedAt) || importedAt,
     rowStatus: normalizeCellValue(locationRow.rowStatus) || "active",
@@ -3252,7 +3289,10 @@ function normalizeRosterBuildingRightRow(row, index = 0) {
     debtor: normalizeCellValue(row?.debtor || row?.["債務人"]),
     debtorAndDebtRatio: normalizeCellValue(row?.debtorAndDebtRatio || row?.["債務人及債務額比例"]),
     obligor: normalizeCellValue(row?.obligor || row?.["設定義務人"]),
-    note: normalizeCellValue(row?.note || row?.notes || row?.["備註"]),
+    securedClaimScope: normalizeCellValue(row?.securedClaimScope),
+    otherRightNote: normalizeCellValue(row?.otherRightNote),
+    rawOtherRightsText: normalizeCellValue(row?.rawOtherRightsText),
+    note: normalizeCellValue(row?.note || row?.notes || row?.otherRightNote || row?.["備註"]),
     transcriptAddress: normalizeCellValue(row?.transcriptAddress || row?.address || row?.["謄本地址"]),
     floorLevel: normalizeCellValue(row?.floorLevel || row?.["層次"]),
     totalFloors: normalizeCellValue(row?.totalFloors || row?.["總層數"]),
@@ -3292,7 +3332,12 @@ function normalizeRosterBuildingRightRow(row, index = 0) {
     }),
     sourceType: normalizeCellValue(row?.sourceType),
     sourceFilename: normalizeCellValue(row?.sourceFilename || row?.sourceFile || row?.fileName),
+    sourceSheetName: normalizeCellValue(row?.sourceSheetName),
+    sourceDocumentName: normalizeCellValue(row?.sourceDocumentName),
     sourcePage: normalizeCellValue(row?.sourcePage),
+    sourceRowNumber: normalizeCellValue(row?.sourceRowNumber || row?.excelRowNumber),
+    sourceBlockIndex: normalizeCellValue(row?.sourceBlockIndex),
+    sourceLocator: buildRosterSourceLocator(row),
     importedAt,
     updatedAt: normalizeCellValue(row?.updatedAt) || importedAt,
     rowStatus: normalizeCellValue(row?.rowStatus) || "active",
@@ -3720,7 +3765,6 @@ function buildLandRightRows(rows, sourceContext = {}) {
     const transcriptAddress = getMappedRosterValue(row, ["transcriptAddress"], ["謄本地址"], ["謄本地址", "地址", "通訊地址", "戶籍地址", "住址"]);
 
     return {
-      sourceRowNumber: row.__rowNumber,
       ownerReferenceId: getFirstMatchingValue(row, ["地主編號", "權利人編號", "所有權人編號", "參考編號"]),
       ownerName,
       registrationOrder,
@@ -3807,7 +3851,14 @@ function buildLandRightRows(rows, sourceContext = {}) {
       },
       sourceType: sourceContext.sourceType || "",
       sourceFilename: sourceContext.sourceFilename || "",
+      sourceDocumentName: sourceContext.sourceFilename || "",
       sourcePage: "",
+      sourceRowNumber: row.__rowNumber,
+      sourceBlockIndex: "",
+      sourceLocator: buildRosterSourceLocator({
+        sourceSheetName: row.__sheetName || sourceContext.sourceSheetName || "",
+        sourceRowNumber: row.__rowNumber,
+      }),
       importedAt: sourceContext.importedAt || "",
       updatedAt: sourceContext.updatedAt || sourceContext.importedAt || "",
       rowStatus: "active",
@@ -3899,7 +3950,6 @@ function buildBuildingRightRows(rows, sourceContext = {}) {
     const structureType = getFirstMatchingValue(row, ["構造", "構造種類"]);
 
     return {
-      sourceRowNumber: row.__rowNumber,
       ownerReferenceId: getFirstMatchingValue(row, ["地主編號", "權利人編號", "所有權人編號", "參考編號"]),
       buildingSequence,
       ownerName,
@@ -3981,7 +4031,14 @@ function buildBuildingRightRows(rows, sourceContext = {}) {
       },
       sourceType: sourceContext.sourceType || "",
       sourceFilename: sourceContext.sourceFilename || "",
+      sourceDocumentName: sourceContext.sourceFilename || "",
       sourcePage: "",
+      sourceRowNumber: row.__rowNumber,
+      sourceBlockIndex: "",
+      sourceLocator: buildRosterSourceLocator({
+        sourceSheetName: row.__sheetName || sourceContext.sourceSheetName || "",
+        sourceRowNumber: row.__rowNumber,
+      }),
       importedAt: sourceContext.importedAt || "",
       updatedAt: sourceContext.updatedAt || sourceContext.importedAt || "",
       rowStatus: "active",
@@ -4345,6 +4402,8 @@ function buildRosterPreview(file, workbookData) {
       || normalizeCellValue(row.debtor)
       || normalizeCellValue(row.obligor)
   )).length;
+  const rawOtherRightTextRowCount = [...landRights, ...buildingRights]
+    .filter((row) => normalizeCellValue(row.rawOtherRightsText)).length;
 
   return {
     batchId,
@@ -4389,6 +4448,7 @@ function buildRosterPreview(file, workbookData) {
       fallbackLandIdentityCount,
       ...shareAreaQualitySummary,
       otherRightsRowCount,
+      rawOtherRightTextRowCount,
       cadastralLocationDisplay: rosterSummary.cadastralLocationDisplay,
       sameNameMultiLandCount: partyRows.filter((party) => party.landNumbers.length > 1).length,
       sameNameMultiBuildingCount: partyRows.filter((party) => party.buildingNumbers.length > 1).length,
@@ -4403,7 +4463,7 @@ function buildRosterPreviewFromPdfResult(parserResult) {
   const landRights = parserResult.landRights.map((row, index) => ({
     ...normalizeRosterLandRightRow({
       ...row,
-      sourceType: "readable-pdf",
+      sourceType: "pdfTranscript",
       importedAt,
       updatedAt: row.updatedAt || importedAt,
       rowStatus: row.rowStatus || "draft",
@@ -4412,7 +4472,7 @@ function buildRosterPreviewFromPdfResult(parserResult) {
   }));
   const buildingRights = (parserResult.buildingRights ?? []).map((row, index) => normalizeRosterBuildingRightRow({
     ...row,
-    sourceType: "readable-pdf",
+    sourceType: "pdfTranscript",
     importedAt,
     updatedAt: row.updatedAt || importedAt,
     rowStatus: row.rowStatus || "draft",
@@ -4438,6 +4498,8 @@ function buildRosterPreviewFromPdfResult(parserResult) {
       || normalizeCellValue(row.obligor)
       || normalizeCellValue(row.securedAmount)
   )).length;
+  const rawOtherRightTextRowCount = [...landRights, ...buildingRights]
+    .filter((row) => normalizeCellValue(row.rawOtherRightsText)).length;
 
   return {
     batchId,
@@ -4445,9 +4507,9 @@ function buildRosterPreviewFromPdfResult(parserResult) {
     version: "PDF-DRAFT-V001",
     fileName: parserResult.sourceFiles.join(" + "),
     importedAt,
-    sourceType: "readable-pdf",
+    sourceType: "pdfTranscript",
     sourceRecords: parserResult.sources.map((source) => ({
-      sourceType: "readable-pdf",
+      sourceType: "pdfTranscript",
       sourceFilename: source.sourceFilename,
       importedAt,
       action: "pdf-draft-preview",
@@ -4482,6 +4544,7 @@ function buildRosterPreviewFromPdfResult(parserResult) {
       landNumberCount: landNumbers.size,
       buildingNumberCount: buildingNumbers.size,
       otherRightsRowCount,
+      rawOtherRightTextRowCount,
       cadastralLocationDisplay: rosterSummary.cadastralLocationDisplay,
       sameNameMultiLandCount: partyRows.filter((party) => party.landNumbers.length > 1).length,
       sameNameMultiBuildingCount: partyRows.filter((party) => party.buildingNumbers.length > 1).length,
@@ -4975,8 +5038,9 @@ function summarizeRosterReimportAnalysis(analysis) {
 }
 
 function getRosterPreviewSourceType(preview) {
-  return preview?.sourceFlow === "readable-pdf" || preview?.sourceType === "readable-pdf"
-    ? "readable-pdf"
+  return preview?.sourceFlow === "readable-pdf" || preview?.sourceFlow === "pdfTranscript"
+    || preview?.sourceType === "readable-pdf" || preview?.sourceType === "pdfTranscript"
+    ? "pdfTranscript"
     : "roster-excel";
 }
 
@@ -5586,6 +5650,9 @@ function formatRosterPreviewCell(row, column) {
   }
   if (normalizeCellValue(value)) {
     return value;
+  }
+  if (column.emptyLabel) {
+    return column.emptyLabel;
   }
   return ["city", "district"].includes(column.key) ? "原檔未提供" : "未填";
 }
@@ -6726,7 +6793,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
       const rosterPreview = buildRosterPreviewFromPdfResult(parsedPdf);
       setDraftPreview({
         ...rosterPreview,
-        sourceFlow: "readable-pdf",
+        sourceFlow: "pdfTranscript",
         pendingConfirmation: true,
       });
       setPdfStatus({
@@ -6929,6 +6996,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
     ["匯入批次", activePreview.batchId],
     ["檔案名稱", activePreview.fileName],
     ["匯入時間", activePreview.importedAt],
+    ["來源類型", getRosterPreviewSourceType(activePreview) === "pdfTranscript" ? "PDF 謄本" : "Excel 清冊"],
     ["土地清冊筆數", activePreview.summary.landCount],
     ["建物清冊筆數", activePreview.summary.buildingCount],
     ["疑似權利人群組數", activePreview.summary.partyCount],
@@ -6942,6 +7010,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
     ["分母缺漏列數", activePreview.summary.missingShareDenominatorRows ?? 0],
     ["疑似欄位錯置列數", activePreview.summary.suspectedMisalignedShareAreaRows ?? 0],
     ["他項權利資料列數", activePreview.summary.otherRightsRowCount ?? 0],
+    ["rawOtherRightText 保留列數", activePreview.summary.rawOtherRightTextRowCount ?? 0],
     ["涉及建號數", activePreview.summary.buildingNumberCount],
     ["疑似同姓多地號群組", activePreview.summary.sameNameMultiLandCount],
     ["疑似同姓多建號群組", activePreview.summary.sameNameMultiBuildingCount],

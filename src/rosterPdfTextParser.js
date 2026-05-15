@@ -1,3 +1,5 @@
+import { ROSTER_STANDARD_SCHEMA_VERSION } from "./rosterStandardSchema.js";
+
 const BANK_TRUSTEE_NAME = "板信商業銀行股份有限公司";
 const PING_PER_SQM_DIVISOR = 3.305785;
 
@@ -282,13 +284,26 @@ function parseOwnerBlocks(compactOwnerSection, lotContext, importedAt, issues) {
     }
 
     rows.push({
+      standardSchemaVersion: ROSTER_STANDARD_SCHEMA_VERSION,
+      sourceType: "pdfTranscript",
+      sourceDocumentName: lotContext.sourceFilename,
+      sourceFilename: lotContext.sourceFilename,
+      sourcePage: String(lotContext.sourcePage || ""),
+      sourceBlockIndex: `owner-${match[1]}`,
+      sourceLocator: [
+        lotContext.sourcePage ? `第${lotContext.sourcePage}頁` : "",
+        `owner-${match[1]}`,
+      ].filter(Boolean).join(" / "),
       city: lotContext.city,
       district: lotContext.district,
       section: lotContext.section,
+      sectionName: lotContext.section,
       subsection: lotContext.subsection,
       lotNumber: lotContext.lotNumber,
       landNumber: lotContext.lotNumber,
       ownerName,
+      ownerRegistrationOrder: match[1],
+      ownerIdNumber: registeredOwnerId,
       registeredOwnerName,
       registeredOwnerId,
       trusteeName: isTrust ? registeredOwnerName : "",
@@ -298,12 +313,15 @@ function parseOwnerBlocks(compactOwnerSection, lotContext, importedAt, issues) {
       landAreaPing: roundNumber(lotContext.landAreaSqm / PING_PER_SQM_DIVISOR),
       shareNumerator: share.shareNumerator,
       shareDenominator: share.shareDenominator,
+      shareDisplay: `${share.shareNumerator} / ${share.shareDenominator}`,
       shareRatio: roundNumber(share.shareRatio, 10),
+      originalShareAreaSqm: "",
       shareAreaSqm: roundNumber(shareAreaSqm),
       shareAreaPing: roundNumber(shareAreaSqm / PING_PER_SQM_DIVISOR),
       calculatedShareRatio: roundNumber(share.shareRatio, 10),
       calculatedShareAreaSqm: roundNumber(shareAreaSqm),
       calculatedShareAreaPing: roundNumber(shareAreaSqm / PING_PER_SQM_DIVISOR),
+      shareAreaDifferenceSqm: "",
       shareText: share.shareText,
       announcedCurrentValue: lotContext.announcedCurrentValue || "",
       announcedCurrentValueYear: lotContext.announcedCurrentValueYear,
@@ -314,16 +332,15 @@ function parseOwnerBlocks(compactOwnerSection, lotContext, importedAt, issues) {
       registrationReason: cleanField(registrationMatch?.[2] || ""),
       causeDate: cleanField(block.match(/原因發生日期：(民國\d+年\d+月\d+日)/)?.[1] || ""),
       titleNumber,
-      sourceType: "readable-pdf",
-      sourceFilename: lotContext.sourceFilename,
-      sourcePage: String(lotContext.sourcePage || ""),
       importedAt,
       updatedAt: importedAt,
       rowStatus: "draft",
+      parseStatus: "parsed",
       notes: isTrust
         ? `登記名義人為${registeredOwnerName}，信託財產。`
         : "依可讀電子謄本解析。",
       validationStatus: "PDF 文字層解析草稿，需人工確認",
+      validationMessages: ["PDF 謄本資料已轉為都更清冊標準欄位，仍需人工確認。"],
     });
   }
 
@@ -372,8 +389,16 @@ function parseMortgageBlocks(compactMortgageSection, lotContext) {
       certificateNumber: cleanField(block.match(/證明書字號：(.+?號)/)?.[1] || ""),
       rawOtherRightsText: cleanField(block),
       validationMessages: fieldReviewMessages,
+      standardSchemaVersion: ROSTER_STANDARD_SCHEMA_VERSION,
+      sourceType: "pdfTranscript",
       sourceFilename: lotContext.sourceFilename,
+      sourceDocumentName: lotContext.sourceFilename,
       sourcePage: String(lotContext.sourcePage || ""),
+      sourceBlockIndex: `other-right-${match[1]}`,
+      sourceLocator: [
+        lotContext.sourcePage ? `第${lotContext.sourcePage}頁` : "",
+        `other-right-${match[1]}`,
+      ].filter(Boolean).join(" / "),
     });
   }
 

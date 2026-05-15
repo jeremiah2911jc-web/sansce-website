@@ -244,6 +244,23 @@ function combineOtherRightNotes(row) {
   ].filter(Boolean).join("；");
 }
 
+function formatSourceLocator(row) {
+  const parts = [];
+  if (row.sourcePage) {
+    parts.push(`第${row.sourcePage}頁`);
+  }
+  if (row.sourceRowNumber) {
+    parts.push(`第${row.sourceRowNumber}列`);
+  }
+  if (row.sourceSheetName) {
+    parts.push(row.sourceSheetName);
+  }
+  if (row.sourceBlockIndex) {
+    parts.push(row.sourceBlockIndex);
+  }
+  return row.sourceLocator || parts.join(" / ");
+}
+
 function getLandShareAreaQuality(row) {
   return evaluateLandShareArea({
     landAreaSqm: row.landAreaSqm,
@@ -293,6 +310,7 @@ function landRowsForSheet(preview) {
       cleanSecuredAmountForExport(row.securedAmount || row.amount || ""),
       combineOtherRightNotes(row),
       row.transcriptAddress || row.address || "",
+      formatSourceLocator(row),
       shareAreaQuality.shareAreaValidationStatus || row.shareAreaValidationStatus || row.validationStatus || "",
       joinMessages(row.validationMessages?.length ? row.validationMessages : shareAreaQuality.shareAreaValidationMessages),
     ];
@@ -334,6 +352,7 @@ function buildingRowsForSheet(preview) {
       row.totalFloors || "",
       row.structureType || row.structure || "",
       row.completionDate || "",
+      formatSourceLocator(row),
       shareAreaQuality.shareAreaValidationStatus || row.shareAreaValidationStatus || row.validationStatus || "",
       joinMessages(row.validationMessages?.length ? row.validationMessages : shareAreaQuality.shareAreaValidationMessages),
     ];
@@ -350,6 +369,7 @@ export function createRosterWorkbookBlob(preview) {
   const validationWarningCount = [...landRows, ...buildingRows].filter((row) => (
     Array.isArray(row.validationMessages) && row.validationMessages.length
   )).length;
+  const rawOtherRightTextRowCount = [...landRows, ...buildingRows].filter((row) => row.rawOtherRightsText).length;
   const sheets = [
     ["土地權屬清冊_系統產生", [LAND_EXPORT_HEADERS, ...landRowsForSheet(preview)]],
     ["合法建物權屬清冊_系統產生", [BUILDING_EXPORT_HEADERS, ...buildingRowsForSheet(preview)]],
@@ -357,6 +377,7 @@ export function createRosterWorkbookBlob(preview) {
       ["項目", "內容"],
       ["匯入檔名", preview?.fileName || preview?.sourceFilename || ""],
       ["匯入時間", preview?.importedAt || preview?.updatedAt || ""],
+      ["來源類型", preview?.sourceType || ""],
       ["土地權利列數", summary.landCount ?? landRows.length],
       ["建物權利列數", summary.buildingCount ?? buildingRows.length],
       ["權利範圍完整列數", summary.completeShareRows ?? ""],
@@ -364,6 +385,7 @@ export function createRosterWorkbookBlob(preview) {
       ["持分面積檢核通過列數", summary.consistentShareAreaRows ?? ""],
       ["持分面積差異警告列數", summary.shareAreaWarningRows ?? validationWarningCount],
       ["他項權利資料列數", otherRightsRowCount],
+      ["rawOtherRightText 保留列數", summary.rawOtherRightTextRowCount ?? rawOtherRightTextRowCount],
       ["缺少縣市 / 行政區提示", summary.fallbackLandIdentityCount ?? ""],
       ["不可匯入警告數", summary.warningCount ?? validationWarningCount],
       ["系統版本 / schema version", ROSTER_STANDARD_SCHEMA_VERSION],

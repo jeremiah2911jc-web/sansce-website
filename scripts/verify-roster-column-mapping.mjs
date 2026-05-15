@@ -15,8 +15,10 @@ import {
 import { parseLandRegisterTextPages } from "../src/rosterPdfTextParser.js";
 import {
   BUILDING_EXPORT_HEADERS,
+  BUILDING_PREVIEW_COLUMNS,
   BUILDING_TEMPLATE_HEADERS,
   LAND_EXPORT_HEADERS,
+  LAND_PREVIEW_COLUMNS,
   LAND_TEMPLATE_HEADERS,
   ROSTER_STANDARD_SCHEMA_VERSION,
 } from "../src/rosterStandardSchema.js";
@@ -560,7 +562,7 @@ if (existsSync(realWorkbookPath)) {
   assert.ok(normalizeText(getGeneratedCellByHeader(generatedRealRows, "他項權利人")).includes("國泰人壽保險股份有限公司"), "generated workbook should keep other-right holder in the holder column");
   assert.equal(normalizeText(getGeneratedCellByHeader(generatedRealRows, "債務人")), "林曾秋香", "generated workbook debtor column should not shift");
   assert.equal(normalizeText(getGeneratedCellByHeader(generatedRealRows, "設定義務人")), "林曾秋香", "generated workbook obligor column should not shift");
-  assert.ok(normalizeText(getGeneratedCellByHeader(generatedRealRows, "備註")).includes("共同擔保地號"), "generated workbook note column should not shift");
+  assert.ok(normalizeText(getGeneratedCellByHeader(generatedRealRows, "備註 / 他項權利內容摘要")).includes("共同擔保地號"), "generated workbook note column should not shift");
 
   const generatedLandRow = {
     ownerReferenceId: "LR-CHECK",
@@ -593,6 +595,66 @@ if (existsSync(realWorkbookPath)) {
   assertHeaderOrder(blankTemplateSheets["土地權屬清冊"], LAND_TEMPLATE_HEADERS, "blank land template headers should follow the urban renewal schema");
   assertHeaderOrder(blankTemplateSheets["合法建物權屬清冊"], BUILDING_TEMPLATE_HEADERS, "blank building template headers should follow the urban renewal schema");
   assert.notEqual(Object.keys(blankTemplateSheets)[0], "土地清冊_匯入", "blank template should not use the old generated/v7 sheet name as the primary sheet");
+
+  assert.deepEqual(LAND_PREVIEW_COLUMNS.map((column) => column.label), [
+    "序號",
+    "地段",
+    "地號",
+    "土地面積(㎡)",
+    "登記次序",
+    "所有權人(管理人)",
+    "身分證字號",
+    "權利範圍",
+    "原始土地持分面積(㎡)",
+    "系統驗算持分面積(㎡)",
+    "持分面積差異(㎡)",
+    "持分面積坪",
+    "他項權利登記次序",
+    "權利種類",
+    "他項權利人",
+    "債務人",
+    "債務人及債務額比例",
+    "設定義務人",
+    "金額",
+    "備註 / 他項權利內容摘要",
+    "謄本地址",
+    "來源頁 / 來源列",
+    "檢核狀態",
+    "檢核訊息",
+  ], "land preview columns should be the single urban renewal standard schema");
+
+  assert.deepEqual(BUILDING_PREVIEW_COLUMNS.map((column) => column.label), [
+    "編號",
+    "建號",
+    "建物門牌號碼",
+    "面積(m2)-合計",
+    "面積(m2)-主建物",
+    "面積(m2)-附屬建物",
+    "座落地號",
+    "登記次序",
+    "所有權人(管理人)",
+    "身分證字號",
+    "權利範圍",
+    "原始持分面積(m2)",
+    "系統驗算持分面積(m2)",
+    "持分面積差異(m2)",
+    "持分面積坪",
+    "他項權利登記次序",
+    "權利種類",
+    "他項權利人",
+    "債務人",
+    "債務人及債務額比例",
+    "設定義務人",
+    "備註 / 他項權利內容摘要",
+    "謄本地址",
+    "層次",
+    "總層數",
+    "構造",
+    "建築完成日期",
+    "來源頁 / 來源列",
+    "檢核狀態",
+    "檢核訊息",
+  ], "building preview columns should be the single urban renewal standard schema");
 
   const generatedWorkbookSheets = readWorkbookSheetsFromBuffer(Buffer.from(await generatedBlob.arrayBuffer()));
   assert.ok(generatedWorkbookSheets["土地權屬清冊_系統產生"], "generated workbook should include standard generated land sheet");
@@ -679,6 +741,29 @@ if (existsSync(realPdfPath)) {
   ));
   assert.equal(realPdf.mortgages.length, 2, "real PDF should parse two other-right blocks");
   assert.equal(pdfOtherRightRows.length, 2, "real PDF should attach two other-right rows to land rights");
+  realPdf.landRights.forEach((row, index) => {
+    assert.equal(row.standardSchemaVersion, ROSTER_STANDARD_SCHEMA_VERSION, `real PDF land row ${index + 1} should use the standard schema version`);
+    assert.equal(row.sourceType, "pdfTranscript", `real PDF land row ${index + 1} should use the standard PDF source type`);
+    assert.ok(normalizeText(row.sourceDocumentName), `real PDF land row ${index + 1} should keep source document name`);
+    assert.ok(normalizeText(row.sourcePage), `real PDF land row ${index + 1} should keep source page`);
+    assert.ok(normalizeText(row.sourceBlockIndex), `real PDF land row ${index + 1} should keep source block index`);
+    assert.ok(normalizeText(row.sourceLocator), `real PDF land row ${index + 1} should keep source locator`);
+    [
+      "sectionName",
+      "landNumber",
+      "landAreaSqm",
+      "ownerRegistrationOrder",
+      "ownerName",
+      "ownerIdNumber",
+      "shareDisplay",
+      "calculatedShareAreaSqm",
+      "shareAreaPing",
+      "validationStatus",
+      "validationMessages",
+    ].forEach((key) => {
+      assert.ok(Object.prototype.hasOwnProperty.call(row, key), `real PDF land row ${index + 1} should expose standard field ${key}`);
+    });
+  });
   realPdf.mortgages.forEach((mortgage, index) => {
     assert.ok(normalizeText(mortgage.securedAmount), `real PDF other-right ${index + 1} should keep amount`);
     assert.ok(!normalizeText(mortgage.securedAmount).includes("擔保債權種類"), `real PDF other-right ${index + 1} amount must not include claim-scope prose`);
@@ -690,14 +775,21 @@ if (existsSync(realPdfPath)) {
   });
   const generatedPdfBlob = createRosterWorkbookBlob({ landRights: realPdf.landRights, buildingRights: [] });
   const generatedPdfRows = parseGeneratedWorkbookFirstSheetRows(Buffer.from(await generatedPdfBlob.arrayBuffer()));
+  assertHeaderOrder(generatedPdfRows, LAND_EXPORT_HEADERS, "generated workbook from real PDF should use standard generated land headers");
   const generatedPdfAmounts = getGeneratedColumnByHeader(generatedPdfRows, "金額");
   assert.equal(generatedPdfAmounts.length, 2, "generated workbook from real PDF should export two amount values");
   assert.ok(generatedPdfAmounts.every((value) => !normalizeText(value).includes("擔保債權種類")), "generated workbook amount column must not include claim-scope prose");
   assert.ok(getGeneratedColumnByHeader(generatedPdfRows, "債務人").every((value) => normalizeText(value)), "generated workbook debtor column should be parsed or marked for review");
   assert.ok(getGeneratedColumnByHeader(generatedPdfRows, "設定義務人").every((value) => normalizeText(value)), "generated workbook obligor column should be parsed or marked for review");
-  assert.ok(getGeneratedColumnByHeader(generatedPdfRows, "備註").some((value) => normalizeText(value).includes("擔保債權種類")), "generated workbook notes should preserve claim-scope prose outside amount");
+  assert.ok(getGeneratedColumnByHeader(generatedPdfRows, "備註 / 他項權利內容摘要").some((value) => normalizeText(value).includes("擔保債權種類")), "generated workbook notes should preserve claim-scope prose outside amount");
+  assert.ok(getGeneratedColumnByHeader(generatedPdfRows, "來源頁 / 來源列").every((value) => normalizeText(value)), "generated workbook from real PDF should export source page / row values");
   assert.equal(countBadSharePartRows(realPdf.landRights), 0, "real PDF land rights should not contain missing or slash-only share parts");
   assert.ok(!JSON.stringify(realPdf.landRights).match(/NaN|undefined|Infinity/), "real PDF rows should not contain invalid numeric tokens");
+  const realPdfRoundtripRow = JSON.parse(JSON.stringify(realPdf.landRights[0]));
+  assert.equal(realPdfRoundtripRow.sourceType, "pdfTranscript", "PDF JSON roundtrip should retain source type");
+  assert.ok(normalizeText(realPdfRoundtripRow.rawOtherRightsText), "PDF JSON roundtrip should retain raw other-right text");
+  assert.ok(normalizeText(realPdfRoundtripRow.securedClaimScope), "PDF JSON roundtrip should retain secured claim scope");
+  assert.ok(normalizeText(realPdfRoundtripRow.sourceLocator), "PDF JSON roundtrip should retain source locator");
 
   realPdfSummary = {
     pageCount: pdf.numPages,
