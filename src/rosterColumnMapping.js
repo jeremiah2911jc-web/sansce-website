@@ -60,8 +60,20 @@ const FIELD_GROUPS = {
       { id: "declaredLandValue", label: "申報地價", outputHeaders: ["申報地價"], aliases: ["申報地價", "當期申報地價"] },
       { id: "declaredLandValueYear", label: "申報地價年度", outputHeaders: ["申報地價年度"], aliases: ["申報地價年度"] },
       { id: "otherRightRegistrationOrder", label: "他項權利登記次序", outputHeaders: ["他項權利登記次序"], aliases: ["他項權利登記次序", "他項登記次序"] },
-      { id: "otherRightsType", label: "他項權利種類", outputHeaders: ["他項權利種類"], aliases: ["他項權利種類", "他項權利"] },
-      { id: "otherRightsHolder", label: "他項權利人", outputHeaders: ["他項權利人"], aliases: ["他項權利人"] },
+      {
+        id: "otherRightsType",
+        label: "他項權利種類",
+        outputHeaders: ["他項權利種類"],
+        aliases: ["他項權利種類", "權利種類"],
+        negativeKeywords: ["他項權利人", "債務人", "設定義務人", "金額"],
+      },
+      {
+        id: "otherRightsHolder",
+        label: "他項權利人",
+        outputHeaders: ["他項權利人"],
+        aliases: ["他項權利人"],
+        negativeKeywords: ["權利種類", "債務人", "設定義務人", "金額"],
+      },
       { id: "debtor", label: "債務人", outputHeaders: ["債務人"], aliases: ["債務人"] },
       { id: "debtorAndDebtRatio", label: "債務人及債務額比例", outputHeaders: ["債務人及債務額比例"], aliases: ["債務人及債務額比例", "債務額比例"] },
       { id: "obligor", label: "設定義務人", outputHeaders: ["設定義務人"], aliases: ["設定義務人", "義務人"] },
@@ -129,8 +141,20 @@ const FIELD_GROUPS = {
       { id: "structure", label: "構造", outputHeaders: ["構造"], aliases: ["構造", "構造種類"] },
       { id: "completionDate", label: "建築完成日期", outputHeaders: ["建築完成日期"], aliases: ["建築完成日期", "完工日期", "建築日期"] },
       { id: "otherRightRegistrationOrder", label: "他項權利登記次序", outputHeaders: ["他項權利登記次序"], aliases: ["他項權利登記次序", "他項登記次序"] },
-      { id: "otherRightsType", label: "他項權利種類", outputHeaders: ["他項權利種類"], aliases: ["他項權利種類", "他項權利"] },
-      { id: "otherRightsHolder", label: "他項權利人", outputHeaders: ["他項權利人"], aliases: ["他項權利人"] },
+      {
+        id: "otherRightsType",
+        label: "他項權利種類",
+        outputHeaders: ["他項權利種類"],
+        aliases: ["他項權利種類", "權利種類"],
+        negativeKeywords: ["他項權利人", "債務人", "設定義務人"],
+      },
+      {
+        id: "otherRightsHolder",
+        label: "他項權利人",
+        outputHeaders: ["他項權利人"],
+        aliases: ["他項權利人"],
+        negativeKeywords: ["權利種類", "債務人", "設定義務人"],
+      },
       { id: "debtor", label: "債務人", outputHeaders: ["債務人"], aliases: ["債務人"] },
       { id: "debtorAndDebtRatio", label: "債務人及債務額比例", outputHeaders: ["債務人及債務額比例"], aliases: ["債務人及債務額比例", "債務額比例"] },
       { id: "obligor", label: "設定義務人", outputHeaders: ["設定義務人"], aliases: ["設定義務人", "義務人"] },
@@ -358,7 +382,82 @@ function scoreColumnDataForField(descriptor, field, rows, dataStartIndex) {
   }
 }
 
-function refineShareTripletMapping(mapping, fieldScores, rows, dataStartIndex) {
+function getDescriptorByColumn(descriptors, columnIndex) {
+  return descriptors.find((descriptor) => descriptor.columnIndex === columnIndex);
+}
+
+function getFieldDefinition(sheetType, fieldId) {
+  return FIELD_GROUPS[sheetType]?.fields.find((field) => field.id === fieldId);
+}
+
+function getHeaderScoreForColumn(descriptors, sheetType, fieldId, columnIndex) {
+  const field = getFieldDefinition(sheetType, fieldId);
+  const descriptor = getDescriptorByColumn(descriptors, columnIndex);
+  if (!field || !descriptor) {
+    return 0;
+  }
+  return scoreHeaderForField(descriptor.label, field);
+}
+
+function setMappedColumnFromSchemaColumn(mapping, fieldScores, descriptors, sheetType, fieldId, columnIndex, minScore = MATCH_THRESHOLD) {
+  const headerScore = getHeaderScoreForColumn(descriptors, sheetType, fieldId, columnIndex);
+  if (headerScore < minScore) {
+    return false;
+  }
+
+  mapping[fieldId] = columnIndex;
+  fieldScores[fieldId] = Math.max(fieldScores[fieldId] ?? 0, headerScore + 20);
+  return true;
+}
+
+function refineStandardRosterSchemaMapping(mapping, fieldScores, descriptors, sheetType, denominatorColumn) {
+  const relativeFields = sheetType === "land"
+    ? [
+      ["shareAreaSqm", 1],
+      ["otherRightRegistrationOrder", 2],
+      ["otherRightsType", 3],
+      ["otherRightsHolder", 4],
+      ["debtor", 5],
+      ["debtorAndDebtRatio", 6],
+      ["obligor", 7],
+      ["amount", 8],
+      ["note", 9],
+      ["transcriptAddress", 10],
+    ]
+    : [
+      ["shareAreaSqm", 1],
+      ["otherRightRegistrationOrder", 2],
+      ["otherRightsType", 3],
+      ["otherRightsHolder", 4],
+      ["debtor", 5],
+      ["debtorAndDebtRatio", 6],
+      ["obligor", 7],
+      ["note", 8],
+      ["transcriptAddress", 9],
+      ["floorLevel", 10],
+      ["totalFloors", 11],
+      ["structure", 12],
+      ["completionDate", 13],
+    ];
+  const standardSchemaMatchCount = relativeFields
+    .slice(0, 7)
+    .filter(([fieldId, offset]) => getHeaderScoreForColumn(descriptors, sheetType, fieldId, denominatorColumn + offset) >= MATCH_THRESHOLD)
+    .length;
+  const shouldTrustStandardAdjacency = standardSchemaMatchCount >= 5;
+
+  relativeFields.forEach(([fieldId, offset]) => {
+    const columnIndex = denominatorColumn + offset;
+    if (shouldTrustStandardAdjacency && getDescriptorByColumn(descriptors, columnIndex)) {
+      const headerScore = getHeaderScoreForColumn(descriptors, sheetType, fieldId, columnIndex);
+      mapping[fieldId] = columnIndex;
+      fieldScores[fieldId] = Math.max(fieldScores[fieldId] ?? 0, headerScore + 20, MATCH_THRESHOLD);
+      return;
+    }
+    setMappedColumnFromSchemaColumn(mapping, fieldScores, descriptors, sheetType, fieldId, columnIndex);
+  });
+}
+
+function refineShareTripletMapping(mapping, fieldScores, descriptors, sheetType, rows, dataStartIndex) {
   const numeratorColumn = Number(mapping.shareNumerator);
   if (!Number.isFinite(numeratorColumn)) {
     return;
@@ -376,10 +475,32 @@ function refineShareTripletMapping(mapping, fieldScores, rows, dataStartIndex) {
     fieldScores.shareDenominator = Math.max(fieldScores.shareDenominator ?? 0, 120);
     delete mapping.shareText;
     delete fieldScores.shareText;
-    if ((mapping.shareAreaSqm === undefined || mapping.shareAreaSqm === "") && isMostly(shareAreaValues, isNumericText, 0.4)) {
+
+    const expectedShareAreaHeaderScore = getHeaderScoreForColumn(descriptors, sheetType, "shareAreaSqm", shareAreaColumn);
+    const currentShareAreaColumn = Number(mapping.shareAreaSqm);
+    const currentShareAreaValues = Number.isFinite(currentShareAreaColumn)
+      ? getColumnSampleValues(rows, dataStartIndex, currentShareAreaColumn)
+      : [];
+    const shouldUseAdjacentShareArea = isMostly(shareAreaValues, isNumericText, 0.4)
+      && (
+        mapping.shareAreaSqm === undefined
+        || mapping.shareAreaSqm === ""
+        || (
+          currentShareAreaColumn !== shareAreaColumn
+          && expectedShareAreaHeaderScore >= MATCH_THRESHOLD
+          && (
+            looksLikeSmallSequence(currentShareAreaValues)
+            || expectedShareAreaHeaderScore >= (fieldScores.shareAreaSqm ?? 0)
+          )
+        )
+      );
+
+    if (shouldUseAdjacentShareArea) {
       mapping.shareAreaSqm = shareAreaColumn;
-      fieldScores.shareAreaSqm = Math.max(fieldScores.shareAreaSqm ?? 0, 90);
+      fieldScores.shareAreaSqm = Math.max(fieldScores.shareAreaSqm ?? 0, expectedShareAreaHeaderScore + 20, 90);
     }
+
+    refineStandardRosterSchemaMapping(mapping, fieldScores, descriptors, sheetType, denominatorColumn);
   }
 }
 
@@ -415,7 +536,7 @@ function mapFieldsFromDescriptors(descriptors, sheetType, rows, dataStartIndex) 
     }
   });
 
-  refineShareTripletMapping(mapping, fieldScores, rows, dataStartIndex);
+  refineShareTripletMapping(mapping, fieldScores, descriptors, sheetType, rows, dataStartIndex);
 
   return { mapping, fieldScores };
 }

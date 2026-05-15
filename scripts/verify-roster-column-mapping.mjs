@@ -372,6 +372,11 @@ if (existsSync(realWorkbookPath)) {
   assert.equal(realSelection.land.mapping.shareNumerator, 7, "real land share numerator should map to the split numerator column");
   assert.equal(realSelection.land.mapping.shareDenominator, 9, "real land share denominator should skip the slash column");
   assert.equal(realSelection.land.mapping.shareAreaSqm, 10, "real land share area should map to the ownership share area column");
+  assert.equal(realSelection.land.mapping.otherRightRegistrationOrder, 11, "real land other-right registration order should map to its own column");
+  assert.equal(realSelection.land.mapping.otherRightsType, 12, "real land other-right type should map to the right type column");
+  assert.equal(realSelection.land.mapping.otherRightsHolder, 13, "real land other-right holder should map to the holder column");
+  assert.equal(realSelection.land.mapping.note, 18, "real land note should map to the note column");
+  assert.equal(realSelection.land.mapping.transcriptAddress, 19, "real land transcript address should map to the address column");
   assert.notEqual(realSelection.land.mapping.ownerName, realSelection.land.mapping.otherRightsHolder, "land ownership owner must not map to other-rights holder");
 
   const land474Rows = realLandRows.filter((row) => normalizeText(row.section) === "丹鳳段" && normalizeNumberText(row.lotNumber) === "474");
@@ -395,16 +400,24 @@ if (existsSync(realWorkbookPath)) {
   const lot474FirstShareQuality = evaluateMappedLandRow(lot474FirstShareRow);
   assertClose(lot474FirstShareRow.landAreaSqm, 786.18, "lot 474 land area should parse as 786.18 sqm");
   assertClose(lot474FirstShareRow.shareAreaSqm, 54.482274, "lot 474 original share area should parse from workbook", 0.000001);
+  assertNumericNotClose(lot474FirstShareRow.shareAreaSqm, 32, "lot 474 original share area must not be shifted from another row");
   assertClose(lot474FirstShareQuality.calculatedShareAreaSqm, 54.482274, "lot 474 calculated share area should match area x numerator / denominator", 0.000001);
   assertClose(lot474FirstShareQuality.shareAreaSqm, 54.482274, "lot 474 chosen share area should use calculated value", 0.000001);
   assertClose(lot474FirstShareQuality.shareAreaPing, 16.480889, "lot 474 share area ping should use 1 ping = 3.305785 sqm", 0.00001);
   assertNumericNotClose(lot474FirstShareQuality.shareAreaSqm, 1, "lot 474 share area sqm must not be a group index");
   assertNumericNotClose(lot474FirstShareQuality.shareAreaPing, 0.3025, "lot 474 share area ping must not be calculated from group index");
+  assert.equal(normalizeText(lot474FirstShareRow.otherRightsType), "抵押權", "lot 474 other-right type should not be shifted into the holder column");
+  assert.ok(normalizeText(lot474FirstShareRow.otherRightsHolder).includes("國泰人壽保險股份有限公司"), "lot 474 other-right holder should remain in the holder column");
+  assert.equal(normalizeText(lot474FirstShareRow.debtor), "林曾秋香", "lot 474 debtor should map to debtor column");
+  assert.equal(normalizeText(lot474FirstShareRow.obligor), "林曾秋香", "lot 474 obligor should map to obligor column");
+  assert.equal(normalizeText(lot474FirstShareRow.amount), "180萬元", "lot 474 secured amount should map to amount column");
+  assert.ok(normalizeText(lot474FirstShareRow.note).includes("共同擔保地號"), "lot 474 note should remain in the note column");
 
   const lot474SecondShareRow = findLandRow(realLandRows, 474, 693, 20000);
   assert.ok(lot474SecondShareRow, "lot 474 row with 693 / 20000 should exist");
   const lot474SecondShareQuality = evaluateMappedLandRow(lot474SecondShareRow);
   assertClose(lot474SecondShareRow.shareAreaSqm, 27.241137, "lot 474 second original share area should parse from workbook", 0.000001);
+  assertNumericNotClose(lot474SecondShareRow.shareAreaSqm, 32, "lot 474 second original share area must not be shifted from lot 475");
   assertClose(lot474SecondShareQuality.calculatedShareAreaSqm, 27.241137, "lot 474 second calculated share area should match", 0.000001);
 
   const lot475QuarterShareRow = findLandRow(realLandRows, 475, 1, 4);
@@ -430,6 +443,43 @@ if (existsSync(realWorkbookPath)) {
   });
   assertClose(staleSequenceShareAreaQuality.shareAreaSqm, 54.482274, "stale share area sequence values should be replaced by calculated share area", 0.000001);
   assert.equal(staleSequenceShareAreaQuality.shareAreaSuspectedColumnMisalignment, true, "stale sequence values should be flagged as possible column misalignment");
+
+  const generatedRealLandRow = {
+    landSequence: "1",
+    section: lot474FirstShareRow.section,
+    lotNumber: lot474FirstShareRow.lotNumber,
+    landAreaSqm: parseNumber(lot474FirstShareRow.landAreaSqm),
+    ownerRegistrationOrder: lot474FirstShareRow.registrationOrder,
+    ownerName: lot474FirstShareRow.ownerName,
+    ownerIdNumber: lot474FirstShareRow.maskedIdentityCode,
+    shareNumerator: lot474FirstShareRow.shareNumerator,
+    shareDenominator: lot474FirstShareRow.shareDenominator,
+    originalShareAreaSqm: parseNumber(lot474FirstShareRow.shareAreaSqm),
+    calculatedShareAreaSqm: lot474FirstShareQuality.calculatedShareAreaSqm,
+    shareAreaSqm: lot474FirstShareQuality.shareAreaSqm,
+    shareAreaPing: lot474FirstShareQuality.shareAreaPing,
+    otherRightRegistrationOrder: lot474FirstShareRow.otherRightRegistrationOrder,
+    otherRightType: lot474FirstShareRow.otherRightsType,
+    otherRightHolder: lot474FirstShareRow.otherRightsHolder,
+    debtor: lot474FirstShareRow.debtor,
+    debtorAndDebtRatio: lot474FirstShareRow.debtorAndDebtRatio,
+    obligor: lot474FirstShareRow.obligor,
+    securedAmount: lot474FirstShareRow.amount,
+    note: lot474FirstShareRow.note,
+    transcriptAddress: lot474FirstShareRow.transcriptAddress,
+  };
+  const generatedRealBlob = createRosterWorkbookBlob({ landRights: [generatedRealLandRow], buildingRights: [] });
+  const generatedRealRows = parseGeneratedWorkbookFirstSheetRows(Buffer.from(await generatedRealBlob.arrayBuffer()));
+  assertHeaderOrder(generatedRealRows, LAND_EXPORT_HEADERS, "generated real land workbook headers should follow the urban renewal schema");
+  assertClose(getGeneratedCellByHeader(generatedRealRows, "原始土地持分面積(㎡)"), 54.482274, "generated workbook original share area should preserve the source share area", 0.000001);
+  assertNumericNotClose(getGeneratedCellByHeader(generatedRealRows, "原始土地持分面積(㎡)"), 32, "generated workbook original share area must not be shifted from lot 475");
+  assertClose(getGeneratedCellByHeader(generatedRealRows, "系統驗算持分面積(㎡)"), 54.482274, "generated workbook calculated share area should match the recomputed value", 0.000001);
+  assertClose(getGeneratedCellByHeader(generatedRealRows, "持分面積差異(㎡)"), 0, "generated workbook share area difference should be zero for the source row", 0.000001);
+  assert.equal(normalizeText(getGeneratedCellByHeader(generatedRealRows, "權利種類")), "抵押權", "generated workbook should keep other-right type in the type column");
+  assert.ok(normalizeText(getGeneratedCellByHeader(generatedRealRows, "他項權利人")).includes("國泰人壽保險股份有限公司"), "generated workbook should keep other-right holder in the holder column");
+  assert.equal(normalizeText(getGeneratedCellByHeader(generatedRealRows, "債務人")), "林曾秋香", "generated workbook debtor column should not shift");
+  assert.equal(normalizeText(getGeneratedCellByHeader(generatedRealRows, "設定義務人")), "林曾秋香", "generated workbook obligor column should not shift");
+  assert.ok(normalizeText(getGeneratedCellByHeader(generatedRealRows, "備註")).includes("共同擔保地號"), "generated workbook note column should not shift");
 
   const generatedLandRow = {
     ownerReferenceId: "LR-CHECK",
@@ -494,6 +544,9 @@ if (existsSync(realWorkbookPath)) {
   assert.equal(realSelection.building.mapping.shareNumerator, 10, "real building share numerator should map to the split numerator column");
   assert.equal(realSelection.building.mapping.shareDenominator, 12, "real building share denominator should skip the slash column");
   assert.equal(realSelection.building.mapping.shareAreaSqm, 13, "real building share area should map to the ownership share area column");
+  assert.equal(realSelection.building.mapping.otherRightRegistrationOrder, 14, "real building other-right registration order should map to its own column");
+  assert.equal(realSelection.building.mapping.otherRightsType, 15, "real building other-right type should map to the right type column");
+  assert.equal(realSelection.building.mapping.otherRightsHolder, 16, "real building other-right holder should map to the holder column");
   assert.notEqual(realSelection.building.mapping.ownerName, realSelection.building.mapping.otherRightsHolder, "building ownership owner must not map to other-rights holder");
   assert.ok(realBuildingRows.some((row) => normalizeText(row.buildingNumber) && normalizeText(row.relatedLandNumber)), "building rows should include carried building number and related land number");
   assert.ok(realBuildingRows.some((row) => normalizeText(row.shareNumerator) && normalizeText(row.shareDenominator) && normalizeText(row.shareAreaSqm)), "building rows should include share numerator, denominator, and share area");

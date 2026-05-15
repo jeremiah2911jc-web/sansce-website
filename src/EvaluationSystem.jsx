@@ -3048,6 +3048,14 @@ function getRosterFieldValue(row, aliases, fallbackKeywords = []) {
   return getFirstExactHeaderValue(row, aliases) || getFirstMatchingValue(row, fallbackKeywords);
 }
 
+function getMappedRosterValue(row, fieldKeys = [], exactHeaders = [], fallbackKeywords = exactHeaders) {
+  const directValue = fieldKeys
+    .map((key) => normalizeCellValue(row?.[key]))
+    .find(Boolean);
+
+  return directValue || getHeaderValue(row, exactHeaders, fallbackKeywords);
+}
+
 function normalizeLandRightLocationFields(row) {
   const city = normalizeLandKeyPart(row?.city || row?.["縣市"] || row?.county);
   const district = normalizeLandKeyPart(row?.district || row?.["行政區"] || row?.town);
@@ -3663,14 +3671,18 @@ function buildRosterWorkbookDataFromMapping(workbookData, mappingOverrides) {
 
 function buildLandRightRows(rows, sourceContext = {}) {
   const mappedRows = rows.map((row) => {
-    const landAreaRaw = getHeaderValue(row, ["土地面積㎡", "土地面積"], ["土地面積", "面積"]);
+    const landAreaRaw = getMappedRosterValue(row, ["landAreaSqm"], ["土地面積㎡", "土地面積"], ["土地面積", "面積"]);
     const landAreaSqm = parseRosterNumber(landAreaRaw);
     const excelLandAreaPing = getFirstExactHeaderValue(row, ["土地面積坪"]);
-    const shareNumerator = getFirstExactHeaderValue(row, ["持分分子"]);
-    const shareDenominator = getFirstExactHeaderValue(row, ["持分分母"]);
+    const shareNumerator = getMappedRosterValue(row, ["shareNumerator"], ["持分分子"]);
+    const shareDenominator = getMappedRosterValue(row, ["shareDenominator"], ["持分分母"]);
     const excelShareRatio = getFirstExactHeaderValue(row, ["持分比例"]);
     const excelShareAreaPing = getFirstExactHeaderValue(row, ["持分面積坪"]);
-    const excelShareAreaSqm = getFirstExactHeaderValue(row, ["土地持分面積㎡", "持分面積㎡"]);
+    const excelShareAreaSqm = getMappedRosterValue(
+      row,
+      ["originalShareAreaSqm", "excelShareAreaSqm", "shareAreaSqm"],
+      ["土地持分面積㎡", "持分面積㎡"],
+    );
     const calculatedShareRatio = parseRatio(shareNumerator, shareDenominator);
     const shareAreaQuality = evaluateLandShareArea({
       landAreaSqm,
@@ -3698,11 +3710,14 @@ function buildLandRightRows(rows, sourceContext = {}) {
     const trustorName = getHeaderValue(row, ["委託人", "實際權利人"], ["委託人", "實際權利人"]);
     const ownershipType = getHeaderValue(row, ["權利型態"], ["信託", "權利型態"]);
     const ownerIdNumber = getFirstMatchingValue(row, ["身分證", "統編", "統一編號", "證號", "識別碼", "前碼"]);
-    const otherRightType = getFirstMatchingValue(row, ["權利種類", "他項權利種類", "他項權利"]);
-    const debtorAndDebtRatio = getFirstMatchingValue(row, ["債務人及債務額比例", "債務額比例"]);
-    const securedAmount = getFirstMatchingValue(row, ["金額", "債權額", "擔保債權"]);
-    const note = getFirstMatchingValue(row, ["備註", "說明"]);
-    const transcriptAddress = getFirstMatchingValue(row, ["謄本地址", "地址", "通訊地址", "戶籍地址", "住址"]);
+    const otherRightType = getMappedRosterValue(row, ["otherRightType", "otherRightsType"], ["他項權利種類", "權利種類"], ["他項權利種類", "權利種類"]);
+    const otherRightHolder = getMappedRosterValue(row, ["otherRightHolder", "otherRightsHolder"], ["他項權利人"], ["他項權利人"]);
+    const debtor = getMappedRosterValue(row, ["debtor"], ["債務人"], ["債務人"]);
+    const debtorAndDebtRatio = getMappedRosterValue(row, ["debtorAndDebtRatio"], ["債務人及債務額比例"], ["債務人及債務額比例", "債務額比例"]);
+    const obligor = getMappedRosterValue(row, ["obligor"], ["設定義務人"], ["設定義務人", "義務人"]);
+    const securedAmount = getMappedRosterValue(row, ["securedAmount", "amount"], ["金額"], ["金額", "債權額", "擔保債權"]);
+    const note = getMappedRosterValue(row, ["note", "notes"], ["備註"], ["備註", "說明"]);
+    const transcriptAddress = getMappedRosterValue(row, ["transcriptAddress"], ["謄本地址"], ["謄本地址", "地址", "通訊地址", "戶籍地址", "住址"]);
 
     return {
       sourceRowNumber: row.__rowNumber,
@@ -3764,17 +3779,17 @@ function buildLandRightRows(rows, sourceContext = {}) {
       otherRightRegistrationOrder,
       otherRightType,
       otherRightsType: otherRightType,
-      otherRightsHolder: getFirstMatchingValue(row, ["他項權利人"]),
-      otherRightHolder: getFirstMatchingValue(row, ["他項權利人"]),
-      debtor: getFirstMatchingValue(row, ["債務人"]),
+      otherRightsHolder: otherRightHolder,
+      otherRightHolder,
+      debtor,
       debtorAndDebtRatio,
-      obligor: getFirstMatchingValue(row, ["設定義務人", "義務人"]),
+      obligor,
       securedAmount,
       note,
       notes: [
         note,
         otherRightType,
-        getFirstMatchingValue(row, ["他項權利人"]),
+        otherRightHolder,
       ].filter(Boolean).join("；"),
       parseStatus: shareAreaQuality.shareAreaValidationMessages.length ? "needs-review" : "parsed",
       validationMessages: shareAreaQuality.shareAreaValidationMessages,
@@ -3840,13 +3855,17 @@ function buildLandRightRows(rows, sourceContext = {}) {
 
 function buildBuildingRightRows(rows, sourceContext = {}) {
   const mappedRows = rows.map((row) => {
-    const buildingAreaRaw = getHeaderValue(row, ["建物面積㎡", "建物面積"], ["建物面積", "面積"]);
+    const buildingAreaRaw = getMappedRosterValue(row, ["buildingTotalAreaSqm", "buildingAreaSqm"], ["建物面積㎡", "建物面積"], ["建物面積", "面積"]);
     const buildingAreaSqm = parseRosterNumber(buildingAreaRaw);
     const excelBuildingAreaPing = getFirstExactHeaderValue(row, ["建物面積坪"]);
-    const shareNumerator = getFirstExactHeaderValue(row, ["持分分子"]);
-    const shareDenominator = getFirstExactHeaderValue(row, ["持分分母"]);
+    const shareNumerator = getMappedRosterValue(row, ["shareNumerator"], ["持分分子"]);
+    const shareDenominator = getMappedRosterValue(row, ["shareDenominator"], ["持分分母"]);
     const excelShareRatio = getFirstExactHeaderValue(row, ["持分比例"]);
-    const excelShareAreaSqm = getFirstExactHeaderValue(row, ["建物持分面積㎡", "持分面積㎡"]);
+    const excelShareAreaSqm = getMappedRosterValue(
+      row,
+      ["originalShareAreaSqm", "excelShareAreaSqm", "shareAreaSqm"],
+      ["建物持分面積㎡", "持分面積㎡"],
+    );
     const calculatedShareRatio = parseRatio(shareNumerator, shareDenominator);
     const shareAreaQuality = evaluateLandShareArea({
       landAreaSqm: buildingAreaSqm,
@@ -3867,10 +3886,13 @@ function buildBuildingRightRows(rows, sourceContext = {}) {
     const ownerRegistrationOrder = getHeaderValue(row, ["所有權部登記次序", "登記次序"], ["登記次序"]);
     const otherRightRegistrationOrder = getHeaderValue(row, ["他項權利登記次序"], ["他項權利登記次序", "他項登記次序"]);
     const ownerIdNumber = getFirstMatchingValue(row, ["身分證", "統編", "統一編號", "證號", "識別碼", "前碼"]);
-    const otherRightType = getFirstMatchingValue(row, ["權利種類", "他項權利種類", "他項權利"]);
-    const debtorAndDebtRatio = getFirstMatchingValue(row, ["債務人及債務額比例", "債務額比例"]);
-    const note = getFirstMatchingValue(row, ["備註", "說明"]);
-    const transcriptAddress = getFirstMatchingValue(row, ["謄本地址", "地址", "通訊地址", "戶籍地址", "住址"]);
+    const otherRightType = getMappedRosterValue(row, ["otherRightType", "otherRightsType"], ["他項權利種類", "權利種類"], ["他項權利種類", "權利種類"]);
+    const otherRightHolder = getMappedRosterValue(row, ["otherRightHolder", "otherRightsHolder"], ["他項權利人"], ["他項權利人"]);
+    const debtor = getMappedRosterValue(row, ["debtor"], ["債務人"], ["債務人"]);
+    const debtorAndDebtRatio = getMappedRosterValue(row, ["debtorAndDebtRatio"], ["債務人及債務額比例"], ["債務人及債務額比例", "債務額比例"]);
+    const obligor = getMappedRosterValue(row, ["obligor"], ["設定義務人"], ["設定義務人", "義務人"]);
+    const note = getMappedRosterValue(row, ["note", "notes"], ["備註"], ["備註", "說明"]);
+    const transcriptAddress = getMappedRosterValue(row, ["transcriptAddress"], ["謄本地址"], ["謄本地址", "地址", "通訊地址", "戶籍地址", "住址"]);
     const buildingDoorplate = getFirstMatchingValue(row, ["建物門牌號碼", "建物門牌", "門牌"]);
     const mainBuildingAreaSqm = roundForStorage(parseRosterNumber(getFirstExactHeaderValue(row, ["主建物面積㎡"])), INTERNAL_DECIMAL_DIGITS);
     const accessoryBuildingAreaSqm = roundForStorage(parseRosterNumber(getFirstExactHeaderValue(row, ["附屬建物面積㎡"])), INTERNAL_DECIMAL_DIGITS);
@@ -3932,16 +3954,16 @@ function buildBuildingRightRows(rows, sourceContext = {}) {
       otherRightRegistrationOrder,
       otherRightType,
       otherRightsType: otherRightType,
-      otherRightsHolder: getFirstMatchingValue(row, ["他項權利人"]),
-      otherRightHolder: getFirstMatchingValue(row, ["他項權利人"]),
-      debtor: getFirstMatchingValue(row, ["債務人"]),
+      otherRightsHolder: otherRightHolder,
+      otherRightHolder,
+      debtor,
       debtorAndDebtRatio,
-      obligor: getFirstMatchingValue(row, ["設定義務人", "義務人"]),
+      obligor,
       note,
       notes: [
         note,
         otherRightType,
-        getFirstMatchingValue(row, ["他項權利人"]),
+        otherRightHolder,
       ].filter(Boolean).join("；"),
       parseStatus: shareAreaQuality.shareAreaValidationMessages.length ? "needs-review" : "parsed",
       validationMessages: shareAreaQuality.shareAreaValidationMessages,
