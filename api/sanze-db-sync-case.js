@@ -18,7 +18,7 @@ function asJsonRecord(value) {
 }
 
 const DB_SYNC_FAILED_CODE = "DB_SYNC_FAILED";
-const DB_SYNC_FAILED_MESSAGE = "資料庫同步失敗，目前仍使用本機測試資料。";
+const DB_SYNC_FAILED_MESSAGE = "資料庫同步失敗，目前仍使用瀏覽器暫存資料。";
 const MAX_DEBUG_FIELD_LENGTH = 500;
 
 function markSyncStep(context, step) {

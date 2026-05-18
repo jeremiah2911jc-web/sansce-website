@@ -244,7 +244,7 @@ export default async function handler(request, response) {
   } catch {
     sendJson(response, 500, {
       ok: false,
-      message: "資料庫載入失敗，目前仍保留本機測試資料。",
+      message: "資料庫載入失敗，目前仍保留瀏覽器暫存資料。",
     });
   }
 }

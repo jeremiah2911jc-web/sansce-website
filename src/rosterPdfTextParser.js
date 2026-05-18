@@ -288,7 +288,9 @@ function parseOwnerBlocks(compactOwnerSection, lotContext, importedAt, issues) {
       sourceType: "pdfTranscript",
       sourceDocumentName: lotContext.sourceFilename,
       sourceFilename: lotContext.sourceFilename,
+      sourceFileName: lotContext.sourceFilename,
       sourcePage: String(lotContext.sourcePage || ""),
+      sourcePageNumber: String(lotContext.sourcePage || ""),
       sourceBlockIndex: `owner-${match[1]}`,
       sourceLocator: [
         lotContext.sourcePage ? `第${lotContext.sourcePage}頁` : "",
@@ -388,12 +390,15 @@ function parseMortgageBlocks(compactMortgageSection, lotContext) {
       mortgageShareText: cleanField(block.match(/設定權利範圍：(.+?)(?=證明書字號|共同擔保地號|其他登記事項|$)/)?.[1] || ""),
       certificateNumber: cleanField(block.match(/證明書字號：(.+?號)/)?.[1] || ""),
       rawOtherRightsText: cleanField(block),
+      rawOtherRightText: cleanField(block),
       validationMessages: fieldReviewMessages,
       standardSchemaVersion: ROSTER_STANDARD_SCHEMA_VERSION,
       sourceType: "pdfTranscript",
       sourceFilename: lotContext.sourceFilename,
+      sourceFileName: lotContext.sourceFilename,
       sourceDocumentName: lotContext.sourceFilename,
       sourcePage: String(lotContext.sourcePage || ""),
+      sourcePageNumber: String(lotContext.sourcePage || ""),
       sourceBlockIndex: `other-right-${match[1]}`,
       sourceLocator: [
         lotContext.sourcePage ? `第${lotContext.sourcePage}頁` : "",
@@ -430,6 +435,7 @@ function mergeMortgageIntoOwnerRow(ownerRow, mortgage) {
   ownerRow.otherRightNote = appendUniqueText(ownerRow.otherRightNote, mortgage.otherRightNote);
   ownerRow.amount = appendUniqueText(ownerRow.amount, mortgage.securedAmount);
   ownerRow.rawOtherRightsText = appendUniqueText(ownerRow.rawOtherRightsText, mortgage.rawOtherRightsText);
+  ownerRow.rawOtherRightText = appendUniqueText(ownerRow.rawOtherRightText, mortgage.rawOtherRightText || mortgage.rawOtherRightsText);
   const mortgageNote = buildMortgageNote(mortgage);
   ownerRow.note = appendUniqueText(ownerRow.note, mortgageNote);
   ownerRow.notes = appendUniqueText(ownerRow.notes, mortgageNote);

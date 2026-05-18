@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "verify:land-identity": "node scripts/verify-land-identity-key.mjs",
-    "verify:roster-column-mapping": "node scripts/verify-roster-column-mapping.mjs"
+    "verify:roster-column-mapping": "node scripts/verify-roster-column-mapping.mjs",
+    "verify:roster-golden-fixtures": "node scripts/verify-roster-column-mapping.mjs --golden"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",

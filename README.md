@@ -2,7 +2,7 @@
 
 這是可直接部署到 Vercel 的 Vite + React + Tailwind 專案。
 
-## 本機測試
+## 本機啟動
 
 ```bash
 npm install

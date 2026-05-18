@@ -4,6 +4,7 @@ import { inflateRawSync } from "node:zlib";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
 import {
   applyRosterColumnMapping,
+  buildRosterWorkbookMappingResult,
   detectRosterColumnMapping,
   selectRosterSheets,
 } from "../src/rosterColumnMapping.js";
@@ -23,6 +24,26 @@ import {
   ROSTER_STANDARD_SCHEMA_VERSION,
 } from "../src/rosterStandardSchema.js";
 
+const requireGoldenFixtures = process.argv.includes("--golden");
+const realWorkbookPath = "/Users/jeremiah/Downloads/1130308新莊丹鳳段清冊.xlsx";
+const realPdfPath = "/Users/jeremiah/Downloads/150,151,153.pdf";
+const legacyV7TemplatePath = "public/sanze-roster-template-v7-protected.xlsx";
+
+const DATA_QUALITY_THRESHOLDS = {
+  maxMissingDenominatorRate: 0,
+  maxShareAreaMismatchRate: 0,
+  maxSuspiciousShareAreaSequenceRows: 0,
+  maxMalformedShareDisplayRows: 0,
+  maxLongAmountRows: 0,
+  maxRawOtherRightWithoutStandardFieldsRows: 0,
+  maxRequiredMissingWithHighConfidenceRows: 0,
+};
+
+if (requireGoldenFixtures) {
+  assert.ok(existsSync(realWorkbookPath), `golden Excel fixture must exist: ${realWorkbookPath}`);
+  assert.ok(existsSync(realPdfPath), `golden PDF fixture must exist: ${realPdfPath}`);
+}
+
 function row(excelRowNumber, values) {
   return { excelRowNumber, values };
 }
@@ -31,8 +52,8 @@ const landRows = [
   row(1, ["土地基本資料", "土地基本資料", "土地基本資料", "所有權資料", "所有權資料", "所有權資料", "所有權資料", "所有權資料", "所有權資料"]),
   row(2, ["地段", "地號", "面積(㎡)", "登記次序", "所有權人(管理人)", "身分證字號", "權利範圍", "權利範圍", "權利範圍"]),
   row(3, ["", "", "", "", "", "", "分子", "/", "分母"]),
-  row(4, ["丹鳳段", "123", "100", "0001", "測試權利人A", "A123****", "1", "/", "2"]),
-  row(5, ["", "", "", "0002", "測試權利人B", "B123****", "1", "/", "2"]),
+  row(4, ["丹鳳段", "123", "100", "0001", "權利人A", "A123****", "1", "/", "2"]),
+  row(5, ["", "", "", "0002", "權利人B", "B123****", "1", "/", "2"]),
   row(6, ["", "", "", "", "", "", "", "", ""]),
 ];
 
@@ -40,13 +61,13 @@ const buildingRows = [
   row(1, ["建物基本資料", "建物基本資料", "面積(m2)", "面積(m2)", "面積(m2)", "所有權資料", "所有權資料", "所有權資料", "所有權資料"]),
   row(2, ["建號", "建物門牌號碼", "合計", "主建物", "附屬建物", "座落地號", "所有權人(管理人)", "權利範圍", "權利範圍"]),
   row(3, ["", "", "", "", "", "", "", "分子", "分母"]),
-  row(4, ["456", "測試門牌", "88.8", "70", "18.8", "123", "測試權利人A", "1", "1"]),
+  row(4, ["456", "門牌A", "88.8", "70", "18.8", "123", "權利人A", "1", "1"]),
   row(5, ["", "", "", "", "", "", "", "", ""]),
 ];
 
 const lowConfidenceRows = [
   row(1, ["項目", "面積", "姓名"]),
-  row(2, ["丹鳳段123", "100", "測試權利人"]),
+  row(2, ["丹鳳段123", "100", "權利人"]),
 ];
 
 const selection = selectRosterSheets({
@@ -97,7 +118,7 @@ const supplementalOtherRightsRows = [
     "謄本地址",
   ]),
   row(2, ["1", "丹鳳段", "474", "786.18", "0001", "林曾秋香", "F200****", "1386", "/", "20000", "54.482274", "", "", "", "", "", "", "", "", ""]),
-  row(3, ["", "", "", "", "", "", "", "", "", "", "", "0032", "抵押權", "國泰人壽保險股份有限公司", "林曾秋香", "全部", "林曾秋香", "180萬元", "共同擔保地號", "新北市新莊區測試路"]),
+  row(3, ["", "", "", "", "", "", "", "", "", "", "", "0032", "抵押權", "國泰人壽保險股份有限公司", "林曾秋香", "全部", "林曾秋香", "180萬元", "共同擔保地號", "新北市新莊區清冊路"]),
 ];
 const supplementalSelection = selectRosterSheets({ 土地權屬清冊: supplementalOtherRightsRows });
 const supplementalRows = applyRosterColumnMapping(supplementalSelection.land).rows;
@@ -112,6 +133,14 @@ const lowConfidence = detectRosterColumnMapping(lowConfidenceRows, "land");
 assert.equal(lowConfidence.needsManualMapping, true, "low confidence sheets should require manual mapping");
 assert.ok(lowConfidence.requiredMissing.includes("shareNumerator"), "missing share numerator should be reported");
 assert.ok(lowConfidence.requiredMissing.includes("shareDenominator"), "missing share denominator should be reported");
+const lowConfidenceSelection = selectRosterSheets({ 土地權屬清冊: lowConfidenceRows });
+const lowConfidenceWorkbookResult = buildRosterWorkbookMappingResult(lowConfidenceSelection);
+assert.equal(lowConfidenceSelection.land?.needsManualMapping, true, "low-confidence workbook should be routed to manual column mapping");
+assert.equal(lowConfidenceWorkbookResult.needsColumnMapping, true, "low-confidence workbook should not proceed as a normal preview");
+assert.ok(
+  lowConfidenceWorkbookResult.columnMappingSummary.land?.requiredMissing.includes("shareDenominator"),
+  "low-confidence workbook should keep missing denominator visible for manual review",
+);
 
 function normalizeText(value) {
   return String(value ?? "").normalize("NFKC").replace(/\s+/g, " ").trim();
@@ -205,6 +234,150 @@ function getGeneratedColumnByHeader(rows, headerName) {
   return rows.slice(1)
     .map((row) => row.values?.[headerIndex] ?? "")
     .filter((value) => normalizeText(value));
+}
+
+function getSummaryValue(rows, itemName) {
+  const match = rows.find((row) => normalizeText(row.values?.[0]) === normalizeText(itemName));
+  assert.ok(match, `generated workbook summary should include ${itemName}`);
+  return match.values?.[1] ?? "";
+}
+
+function countMalformedShareDisplayRows(rows) {
+  return rows.filter((row) => {
+    const display = normalizeText(row.shareDisplay || row.shareText || `${row.shareNumerator || ""} / ${row.shareDenominator || ""}`);
+    return /\d+\s*[/／]\s*[/／]/.test(display) || /[/／]\s*$/.test(display) || display.includes("/ /");
+  }).length;
+}
+
+function countLongAmountRows(rows) {
+  return rows.filter((row) => {
+    const amount = normalizeText(row.securedAmount || row.amount);
+    return amount.length > 40 || amount.includes("擔保債權種類") || amount.includes("擔保債權確定期日");
+  }).length;
+}
+
+function countRawOtherRightWithoutStandardFieldsRows(rows) {
+  return rows.filter((row) => {
+    const raw = normalizeText(row.rawOtherRightsText || row.rawOtherRightText);
+    const hasStandardField = [
+      row.otherRightRegistrationOrder,
+      row.otherRightType,
+      row.otherRightsType,
+      row.otherRightHolder,
+      row.otherRightsHolder,
+      row.debtor,
+      row.debtorAndDebtRatio,
+      row.obligor,
+      row.securedAmount,
+      row.amount,
+    ].some((value) => normalizeText(value));
+    return Boolean(raw && !hasStandardField);
+  }).length;
+}
+
+function buildDataQualitySummary(rows, { getShareAreaQuality = null } = {}) {
+  const normalizedRows = (Array.isArray(rows) ? rows : []).filter((row) => {
+    const numberLabel = normalizeText(row.landNumber || row.lotNumber || row.buildingNumber);
+    if (["合計", "總計"].includes(numberLabel)) {
+      return false;
+    }
+    return [
+      row.ownerName,
+      row.shareNumerator,
+      row.shareDenominator,
+      row.otherRightRegistrationOrder,
+      row.otherRightType,
+      row.otherRightsType,
+      row.otherRightHolder,
+      row.otherRightsHolder,
+      row.debtor,
+      row.obligor,
+      row.securedAmount,
+      row.amount,
+    ].some((value) => normalizeText(value));
+  });
+  const shareQualities = normalizedRows.map((row) => (getShareAreaQuality ? getShareAreaQuality(row) : row));
+  const rowCount = normalizedRows.length || 1;
+  const missingDenominatorRows = normalizedRows.filter((row) => !normalizeText(row.shareDenominator) || isSlashOnly(row.shareDenominator)).length;
+  const shareAreaMismatchRows = shareQualities.filter((quality) => (
+    Array.isArray(quality.shareAreaValidationMessages)
+      && quality.shareAreaValidationMessages.some((message) => normalizeText(message).includes("不一致"))
+  )).length;
+  const suspiciousShareAreaSequenceRows = shareQualities.filter((quality) => quality.shareAreaSuspectedColumnMisalignment).length;
+  const malformedShareDisplayRows = countMalformedShareDisplayRows(normalizedRows);
+  const longAmountRows = countLongAmountRows(normalizedRows);
+  const rawOtherRightWithoutStandardFieldsRows = countRawOtherRightWithoutStandardFieldsRows(normalizedRows);
+
+  return {
+    rowCount: normalizedRows.length,
+    missingDenominatorRows,
+    missingDenominatorRate: missingDenominatorRows / rowCount,
+    shareAreaMismatchRows,
+    shareAreaMismatchRate: shareAreaMismatchRows / rowCount,
+    suspiciousShareAreaSequenceRows,
+    malformedShareDisplayRows,
+    longAmountRows,
+    rawOtherRightWithoutStandardFieldsRows,
+  };
+}
+
+function assertDataQualityThresholds(summary, context) {
+  assert.ok(summary.missingDenominatorRate <= DATA_QUALITY_THRESHOLDS.maxMissingDenominatorRate, `${context} denominator missing rate should stay below threshold`);
+  assert.ok(summary.shareAreaMismatchRate <= DATA_QUALITY_THRESHOLDS.maxShareAreaMismatchRate, `${context} share area mismatch rate should stay below threshold`);
+  assert.ok(summary.suspiciousShareAreaSequenceRows <= DATA_QUALITY_THRESHOLDS.maxSuspiciousShareAreaSequenceRows, `${context} should not contain sequence-like share area values`);
+  assert.ok(summary.malformedShareDisplayRows <= DATA_QUALITY_THRESHOLDS.maxMalformedShareDisplayRows, `${context} should not contain malformed share displays`);
+  assert.ok(summary.longAmountRows <= DATA_QUALITY_THRESHOLDS.maxLongAmountRows, `${context} amount fields should not absorb long prose`);
+  assert.ok(summary.rawOtherRightWithoutStandardFieldsRows <= DATA_QUALITY_THRESHOLDS.maxRawOtherRightWithoutStandardFieldsRows, `${context} raw other-right text should not be the only retained other-right data`);
+}
+
+const REQUIRED_ROUNDTRIP_FIELDS = [
+  "sourceType",
+  "sourceFileName",
+  "sourceFilename",
+  "sourceSheetName",
+  "sourceDocumentName",
+  "sourcePageNumber",
+  "sourcePage",
+  "sourceRowNumber",
+  "sourceBlockIndex",
+  "sectionName",
+  "landNumber",
+  "buildingNumber",
+  "ownerRegistrationOrder",
+  "ownerName",
+  "ownerIdNumber",
+  "shareNumerator",
+  "shareDenominator",
+  "originalShareAreaSqm",
+  "calculatedShareAreaSqm",
+  "shareAreaDifferenceSqm",
+  "validationStatus",
+  "validationMessages",
+  "otherRightRegistrationOrder",
+  "otherRightType",
+  "otherRightHolder",
+  "debtor",
+  "debtorAndDebtRatio",
+  "obligor",
+  "securedAmount",
+  "securedClaimScope",
+  "rawOtherRightText",
+  "rawOtherRightsText",
+  "note",
+  "transcriptAddress",
+  "floorLevel",
+  "totalFloors",
+  "structureType",
+  "completionDate",
+];
+
+function assertJsonRoundtripKeepsFields(row, fieldNames, context) {
+  const roundtrip = JSON.parse(JSON.stringify(row));
+  fieldNames.forEach((fieldName) => {
+    assert.ok(Object.prototype.hasOwnProperty.call(roundtrip, fieldName), `${context} JSON roundtrip should retain ${fieldName}`);
+  });
+  assert.ok(!JSON.stringify(roundtrip).match(/NaN|undefined|Infinity/), `${context} JSON roundtrip should not contain invalid numeric tokens`);
+  return roundtrip;
 }
 
 function readUInt16(buffer, offset) {
@@ -414,7 +587,7 @@ const parsedTranscript = parseLandRegisterTextPages([
       土地所有權部
       （0001）登記次序：0001
       登記日期：民國113年03月08日登記原因：買賣原因發生日期：民國113年03月08日
-      所有權人：林曾秋香統一編號：F200822353住址：新北市測試地址
+      所有權人：林曾秋香統一編號：F200****住址：新北市清冊地址
       權利範圍：20000分之1386當期申報地價：114年1月112858元
       土地他項權利部
       （0001）登記次序：0032
@@ -436,7 +609,6 @@ assert.ok(normalizeText(parsedTranscript.landRights[0].securedAmount).includes("
 assert.ok(!normalizeText(parsedTranscript.landRights[0].securedAmount).includes("擔保債權種類"), "PDF secured amount should not absorb claim-scope prose");
 assert.ok(parsedTranscript.mortgages[0].attachedOwnerRegistrationOrders.includes("0001"), "PDF mortgage should record its attached ownership order");
 
-const realWorkbookPath = "/Users/jeremiah/Downloads/1130308新莊丹鳳段清冊.xlsx";
 let realWorkbookSummary = "not-found";
 if (existsSync(realWorkbookPath)) {
   const realSelection = selectRosterSheets(readWorkbookSheets(realWorkbookPath));
@@ -482,10 +654,19 @@ if (existsSync(realWorkbookPath)) {
   assert.ok(lot474FirstShareRow, "lot 474 row with 1386 / 20000 should exist");
   const lot474FirstShareQuality = evaluateMappedLandRow(lot474FirstShareRow);
   assertClose(lot474FirstShareRow.landAreaSqm, 786.18, "lot 474 land area should parse as 786.18 sqm");
+  assert.equal(normalizeText(lot474FirstShareRow.section), "丹鳳段", "lot 474 first row should keep the section");
+  assert.equal(normalizeNumberText(lot474FirstShareRow.lotNumber), "474", "lot 474 first row should keep the lot number");
+  assert.equal(normalizeText(lot474FirstShareRow.ownerName), "林曾秋香", "lot 474 first row should keep the owner column");
+  assert.equal(normalizeNumberText(lot474FirstShareRow.shareNumerator), "1386", "lot 474 first row should keep the share numerator");
+  assert.equal(normalizeNumberText(lot474FirstShareRow.shareDenominator), "20000", "lot 474 first row should keep the share denominator");
+  assert.equal(`${normalizeNumberText(lot474FirstShareRow.shareNumerator)} / ${normalizeNumberText(lot474FirstShareRow.shareDenominator)}`, "1386 / 20000", "lot 474 share display should be well-formed");
   assertClose(lot474FirstShareRow.shareAreaSqm, 54.482274, "lot 474 original share area should parse from workbook", 0.000001);
   assertNumericNotClose(lot474FirstShareRow.shareAreaSqm, 32, "lot 474 original share area must not be shifted from another row");
   assertClose(lot474FirstShareQuality.calculatedShareAreaSqm, 54.482274, "lot 474 calculated share area should match area x numerator / denominator", 0.000001);
   assertClose(lot474FirstShareQuality.shareAreaSqm, 54.482274, "lot 474 chosen share area should use calculated value", 0.000001);
+  assertClose(lot474FirstShareQuality.originalShareAreaSqm, 54.482274, "lot 474 original share area should remain comparable to calculated area", 0.000001);
+  assertClose(lot474FirstShareQuality.shareAreaDifferenceSqm, 0, "lot 474 first share-area difference should be zero", 0.000001);
+  assert.equal(lot474FirstShareQuality.shareAreaValidationStatus, "持分面積檢核通過", "lot 474 first share-area validation should pass");
   assertClose(lot474FirstShareQuality.shareAreaPing, 16.480889, "lot 474 share area ping should use 1 ping = 3.305785 sqm", 0.00001);
   assertNumericNotClose(lot474FirstShareQuality.shareAreaSqm, 1, "lot 474 share area sqm must not be a group index");
   assertNumericNotClose(lot474FirstShareQuality.shareAreaPing, 0.3025, "lot 474 share area ping must not be calculated from group index");
@@ -502,12 +683,17 @@ if (existsSync(realWorkbookPath)) {
   assertClose(lot474SecondShareRow.shareAreaSqm, 27.241137, "lot 474 second original share area should parse from workbook", 0.000001);
   assertNumericNotClose(lot474SecondShareRow.shareAreaSqm, 32, "lot 474 second original share area must not be shifted from lot 475");
   assertClose(lot474SecondShareQuality.calculatedShareAreaSqm, 27.241137, "lot 474 second calculated share area should match", 0.000001);
+  assertClose(lot474SecondShareQuality.originalShareAreaSqm, 27.241137, "lot 474 second original share area should remain comparable", 0.000001);
+  assertClose(lot474SecondShareQuality.shareAreaDifferenceSqm, 0, "lot 474 second share-area difference should be zero", 0.000001);
 
   const lot475QuarterShareRow = findLandRow(realLandRows, 475, 1, 4);
   assert.ok(lot475QuarterShareRow, "lot 475 row with 1 / 4 should exist");
   const lot475QuarterShareQuality = evaluateMappedLandRow(lot475QuarterShareRow);
   assertClose(lot475QuarterShareRow.landAreaSqm, 131.78, "lot 475 area should carry forward as 131.78 sqm");
+  assertClose(lot475QuarterShareRow.shareAreaSqm, 32.945, "lot 475 original share area should parse as 32.945 sqm", 0.000001);
   assertClose(lot475QuarterShareQuality.calculatedShareAreaSqm, 32.945, "lot 475 calculated share area should be 131.78 x 1 / 4", 0.000001);
+  assertClose(lot475QuarterShareQuality.originalShareAreaSqm, 32.945, "lot 475 original share area should stay on lot 475", 0.000001);
+  assertClose(lot475QuarterShareQuality.shareAreaDifferenceSqm, 0, "lot 475 share-area difference should be zero", 0.000001);
   assert.ok(land474Rows.every((row) => numbersAreClose(row.landAreaSqm, 786.18)), "lot 474 ownership rows should carry forward land area");
 
   const lot474FortyThousandShareRows = land474Rows.filter((row) => normalizeNumberText(row.shareDenominator) === "40000");
@@ -550,6 +736,12 @@ if (existsSync(realWorkbookPath)) {
     securedAmount: lot474FirstShareRow.amount,
     note: lot474FirstShareRow.note,
     transcriptAddress: lot474FirstShareRow.transcriptAddress,
+    sourceType: "xlsx-column-mapped",
+    sourceFilename: realWorkbookPath.split("/").at(-1),
+    sourceFileName: realWorkbookPath.split("/").at(-1),
+    sourceSheetName: realSelection.land.name,
+    sourceRowNumber: lot474FirstShareRow.__rowNumber,
+    sourceLocator: `${realSelection.land.name} / 第${lot474FirstShareRow.__rowNumber}列`,
   };
   const generatedRealBlob = createRosterWorkbookBlob({ landRights: [generatedRealLandRow], buildingRights: [] });
   const generatedRealRows = parseGeneratedWorkbookFirstSheetRows(Buffer.from(await generatedRealBlob.arrayBuffer()));
@@ -595,6 +787,7 @@ if (existsSync(realWorkbookPath)) {
   assertHeaderOrder(blankTemplateSheets["土地權屬清冊"], LAND_TEMPLATE_HEADERS, "blank land template headers should follow the urban renewal schema");
   assertHeaderOrder(blankTemplateSheets["合法建物權屬清冊"], BUILDING_TEMPLATE_HEADERS, "blank building template headers should follow the urban renewal schema");
   assert.notEqual(Object.keys(blankTemplateSheets)[0], "土地清冊_匯入", "blank template should not use the old generated/v7 sheet name as the primary sheet");
+  assert.ok(existsSync(legacyV7TemplatePath), "legacy v7 template should remain available for compatibility");
 
   assert.deepEqual(LAND_PREVIEW_COLUMNS.map((column) => column.label), [
     "序號",
@@ -663,23 +856,63 @@ if (existsSync(realWorkbookPath)) {
   assert.ok(generatedWorkbookSheets["欄位字典"], "generated workbook should include field dictionary sheet");
   assertHeaderOrder(generatedWorkbookSheets["土地權屬清冊_系統產生"], LAND_EXPORT_HEADERS, "generated workbook land headers should follow the urban renewal schema");
   assertHeaderOrder(generatedWorkbookSheets["合法建物權屬清冊_系統產生"], BUILDING_EXPORT_HEADERS, "generated workbook building headers should follow the urban renewal schema");
+  [
+    "匯入來源",
+    "土地權利列數",
+    "建物權利列數",
+    "他項權利資料列數",
+    "權利範圍完整列數",
+    "持分面積可驗算列數",
+    "持分面積檢核通過列數",
+    "需人工確認列數",
+    "系統版本 / schema version",
+  ].forEach((summaryItem) => getSummaryValue(generatedWorkbookSheets["檢核摘要"], summaryItem));
 
-  const jsonRoundtripRow = JSON.parse(JSON.stringify({
+  const jsonRoundtripRow = assertJsonRoundtripKeepsFields({
     standardSchemaVersion: ROSTER_STANDARD_SCHEMA_VERSION,
+    sourceType: "xlsx-column-mapped",
+    sourceFileName: realWorkbookPath.split("/").at(-1),
+    sourceFilename: realWorkbookPath.split("/").at(-1),
+    sourceSheetName: realSelection.land.name,
+    sourceDocumentName: "",
+    sourcePageNumber: "",
+    sourcePage: "",
+    sourceRowNumber: lot474FirstShareRow.__rowNumber,
+    sourceBlockIndex: "",
     landSequence: "1",
     sectionName: "丹鳳段",
     landNumber: "474",
+    buildingNumber: "",
+    ownerRegistrationOrder: lot474FirstShareRow.registrationOrder,
+    ownerName: lot474FirstShareRow.ownerName,
+    ownerIdNumber: lot474FirstShareRow.maskedIdentityCode,
+    shareNumerator: lot474FirstShareRow.shareNumerator,
+    shareDenominator: lot474FirstShareRow.shareDenominator,
     originalShareAreaSqm: lot474FirstShareQuality.originalShareAreaSqm,
     calculatedShareAreaSqm: lot474FirstShareQuality.calculatedShareAreaSqm,
     shareAreaDifferenceSqm: lot474FirstShareQuality.shareAreaDifferenceSqm,
     validationStatus: lot474FirstShareQuality.shareAreaValidationStatus,
     validationMessages: lot474FirstShareQuality.shareAreaValidationMessages,
+    otherRightRegistrationOrder: lot474FirstShareRow.otherRightRegistrationOrder,
     otherRightType: "抵押權",
-    transcriptAddress: "測試地址",
-  }));
+    otherRightHolder: lot474FirstShareRow.otherRightsHolder,
+    debtor: lot474FirstShareRow.debtor,
+    debtorAndDebtRatio: lot474FirstShareRow.debtorAndDebtRatio,
+    obligor: lot474FirstShareRow.obligor,
+    securedAmount: lot474FirstShareRow.amount,
+    securedClaimScope: "",
+    rawOtherRightText: "",
+    rawOtherRightsText: "",
+    note: lot474FirstShareRow.note,
+    transcriptAddress: "清冊地址",
+    floorLevel: "",
+    totalFloors: "",
+    structureType: "",
+    completionDate: "",
+  }, REQUIRED_ROUNDTRIP_FIELDS, "Excel current-case roster row");
   assert.equal(jsonRoundtripRow.standardSchemaVersion, ROSTER_STANDARD_SCHEMA_VERSION, "JSON roundtrip should keep the standard schema version");
   assert.equal(jsonRoundtripRow.otherRightType, "抵押權", "JSON roundtrip should keep other-right fields");
-  assert.equal(jsonRoundtripRow.transcriptAddress, "測試地址", "JSON roundtrip should keep transcript address fields");
+  assert.equal(jsonRoundtripRow.transcriptAddress, "清冊地址", "JSON roundtrip should keep transcript address fields");
 
   assert.equal(realSelection.building.mapping.buildingNumber, 1, "real building number should map to the actual building-number column");
   assert.equal(realSelection.building.mapping.buildingAddress, 2, "real building address should map to the actual address column");
@@ -693,7 +926,17 @@ if (existsSync(realWorkbookPath)) {
   assert.notEqual(realSelection.building.mapping.ownerName, realSelection.building.mapping.otherRightsHolder, "building ownership owner must not map to other-rights holder");
   assert.ok(realBuildingRows.some((row) => normalizeText(row.buildingNumber) && normalizeText(row.relatedLandNumber)), "building rows should include carried building number and related land number");
   assert.ok(realBuildingRows.some((row) => normalizeText(row.shareNumerator) && normalizeText(row.shareDenominator) && normalizeText(row.shareAreaSqm)), "building rows should include share numerator, denominator, and share area");
+  assert.ok(realBuildingRows.some((row) => normalizeText(row.buildingNumber)), "building roster should parse building numbers");
+  assert.ok(realBuildingRows.some((row) => normalizeText(row.buildingAddress)), "building roster should parse building doorplates");
+  assert.ok(realBuildingRows.some((row) => normalizeText(row.ownerName)), "building roster should parse building owners");
+  assert.ok(realBuildingRows.some((row) => normalizeText(row.floorLevel)), "building roster should retain floor levels");
+  assert.ok(realBuildingRows.some((row) => normalizeText(row.totalFloors)), "building roster should retain total floor counts");
+  assert.ok(realBuildingRows.some((row) => normalizeText(row.structure)), "building roster should retain structure text");
+  assert.ok(realBuildingRows.some((row) => normalizeText(row.completionDate)), "building roster should retain completion dates");
+  assert.ok(realBuildingRows.every((row) => normalizeText(row.ownerName) || !normalizeText(row.otherRightsHolder)), "building other-right fields must not overwrite ownership fields");
   assert.equal(countBadSharePartRows(realBuildingRows), 0, "building rows should not contain missing or slash-only share parts");
+  const realWorkbookQualitySummary = buildDataQualitySummary(realLandRows, { getShareAreaQuality: evaluateMappedLandRow });
+  assertDataQualityThresholds(realWorkbookQualitySummary, "real Excel golden land rows");
 
   realWorkbookSummary = {
     landSheet: realSelection.land.name,
@@ -702,6 +945,7 @@ if (existsSync(realWorkbookPath)) {
     landPreviewRows: realLandRows.length,
     landLot474CarryForwardRows: land474Rows.length,
     landBadSharePartRows: countBadSharePartRows(realLandRows),
+    landQuality: realWorkbookQualitySummary,
     buildingSheet: realSelection.building.name,
     buildingMissing: realSelection.building.requiredMissing,
     buildingMapping: realSelection.building.mapping,
@@ -710,7 +954,6 @@ if (existsSync(realWorkbookPath)) {
   };
 }
 
-const realPdfPath = "/Users/jeremiah/Downloads/150,151,153.pdf";
 let realPdfSummary = "not-found";
 if (existsSync(realPdfPath)) {
   const pdf = await pdfjsLib.getDocument({
@@ -732,6 +975,8 @@ if (existsSync(realPdfPath)) {
       textItemCount: textContent.items.length,
     });
   }
+  assert.equal(pdf.numPages, 5, "real PDF should have five pages");
+  assert.ok(pdfPages.every((page) => page.textItemCount > 0 && normalizeText(page.text)), "real PDF should expose a readable text layer on every page");
   const realPdf = parseLandRegisterTextPages(pdfPages, "150,151,153.pdf", "2026/05/15 00:00:00");
   const pdfOtherRightRows = realPdf.landRights.filter((row) => (
     normalizeText(row.otherRightType || row.otherRightsType)
@@ -739,13 +984,16 @@ if (existsSync(realPdfPath)) {
     || normalizeText(row.securedAmount)
     || normalizeText(row.rawOtherRightsText)
   ));
+  assert.equal(realPdf.landRights.length, 3, "real PDF should parse three land ownership rows");
   assert.equal(realPdf.mortgages.length, 2, "real PDF should parse two other-right blocks");
   assert.equal(pdfOtherRightRows.length, 2, "real PDF should attach two other-right rows to land rights");
   realPdf.landRights.forEach((row, index) => {
     assert.equal(row.standardSchemaVersion, ROSTER_STANDARD_SCHEMA_VERSION, `real PDF land row ${index + 1} should use the standard schema version`);
     assert.equal(row.sourceType, "pdfTranscript", `real PDF land row ${index + 1} should use the standard PDF source type`);
     assert.ok(normalizeText(row.sourceDocumentName), `real PDF land row ${index + 1} should keep source document name`);
+    assert.ok(normalizeText(row.sourceFileName), `real PDF land row ${index + 1} should keep source file-name alias`);
     assert.ok(normalizeText(row.sourcePage), `real PDF land row ${index + 1} should keep source page`);
+    assert.ok(normalizeText(row.sourcePageNumber), `real PDF land row ${index + 1} should keep source page-number alias`);
     assert.ok(normalizeText(row.sourceBlockIndex), `real PDF land row ${index + 1} should keep source block index`);
     assert.ok(normalizeText(row.sourceLocator), `real PDF land row ${index + 1} should keep source locator`);
     [
@@ -765,15 +1013,35 @@ if (existsSync(realPdfPath)) {
     });
   });
   realPdf.mortgages.forEach((mortgage, index) => {
+    assert.equal(normalizeText(mortgage.securedAmount), "363,480,000元", `real PDF other-right ${index + 1} should keep amount body only`);
     assert.ok(normalizeText(mortgage.securedAmount), `real PDF other-right ${index + 1} should keep amount`);
     assert.ok(!normalizeText(mortgage.securedAmount).includes("擔保債權種類"), `real PDF other-right ${index + 1} amount must not include claim-scope prose`);
     assert.ok(Number.isFinite(mortgage.securedAmountNumber), `real PDF other-right ${index + 1} should keep numeric amount`);
     assert.ok(normalizeText(mortgage.securedClaimScope), `real PDF other-right ${index + 1} should preserve claim scope outside amount`);
     assert.ok(normalizeText(mortgage.rawOtherRightsText), `real PDF other-right ${index + 1} should preserve raw other-right text`);
+    assert.ok(normalizeText(mortgage.rawOtherRightText), `real PDF other-right ${index + 1} should preserve raw other-right compatibility alias`);
     assert.ok(normalizeText(mortgage.debtor), `real PDF other-right ${index + 1} debtor should be parsed or marked for review`);
     assert.ok(normalizeText(mortgage.obligor), `real PDF other-right ${index + 1} obligor should be parsed or marked for review`);
   });
-  const generatedPdfBlob = createRosterWorkbookBlob({ landRights: realPdf.landRights, buildingRights: [] });
+  const realPdfQualitySummary = buildDataQualitySummary(realPdf.landRights);
+  assertDataQualityThresholds(realPdfQualitySummary, "real PDF golden land rows");
+  const generatedPdfBlob = createRosterWorkbookBlob({
+    sourceType: "pdfTranscript",
+    fileName: "150,151,153.pdf",
+    landRights: realPdf.landRights,
+    buildingRights: [],
+    summary: {
+      landCount: realPdf.landRights.length,
+      buildingCount: 0,
+      otherRightsRowCount: 2,
+      rawOtherRightTextRowCount: 2,
+      completeShareRows: realPdf.landRights.length,
+      verifiableShareAreaRows: realPdf.landRights.length,
+      consistentShareAreaRows: realPdf.landRights.length,
+      manualReviewCount: realPdf.landRights.length,
+      warningCount: realPdf.landRights.length,
+    },
+  });
   const generatedPdfRows = parseGeneratedWorkbookFirstSheetRows(Buffer.from(await generatedPdfBlob.arrayBuffer()));
   assertHeaderOrder(generatedPdfRows, LAND_EXPORT_HEADERS, "generated workbook from real PDF should use standard generated land headers");
   const generatedPdfAmounts = getGeneratedColumnByHeader(generatedPdfRows, "金額");
@@ -783,30 +1051,53 @@ if (existsSync(realPdfPath)) {
   assert.ok(getGeneratedColumnByHeader(generatedPdfRows, "設定義務人").every((value) => normalizeText(value)), "generated workbook obligor column should be parsed or marked for review");
   assert.ok(getGeneratedColumnByHeader(generatedPdfRows, "備註 / 他項權利內容摘要").some((value) => normalizeText(value).includes("擔保債權種類")), "generated workbook notes should preserve claim-scope prose outside amount");
   assert.ok(getGeneratedColumnByHeader(generatedPdfRows, "來源頁 / 來源列").every((value) => normalizeText(value)), "generated workbook from real PDF should export source page / row values");
+  const generatedPdfSheets = readWorkbookSheetsFromBuffer(Buffer.from(await generatedPdfBlob.arrayBuffer()));
+  assert.ok(generatedPdfSheets["土地權屬清冊_系統產生"], "generated workbook from real PDF should include generated land sheet");
+  assert.ok(generatedPdfSheets["合法建物權屬清冊_系統產生"], "generated workbook from real PDF should include generated building sheet");
+  assert.ok(generatedPdfSheets["檢核摘要"], "generated workbook from real PDF should include validation summary");
+  assert.equal(normalizeText(getSummaryValue(generatedPdfSheets["檢核摘要"], "匯入來源")), "pdfTranscript", "generated workbook from real PDF should preserve source type in summary");
+  assert.equal(normalizeNumberText(getSummaryValue(generatedPdfSheets["檢核摘要"], "他項權利資料列數")), "2", "generated workbook from real PDF should count two other-right rows");
+  assert.equal(normalizeNumberText(getSummaryValue(generatedPdfSheets["檢核摘要"], "需人工確認列數")), "3", "generated workbook from real PDF should expose manual review count");
   assert.equal(countBadSharePartRows(realPdf.landRights), 0, "real PDF land rights should not contain missing or slash-only share parts");
   assert.ok(!JSON.stringify(realPdf.landRights).match(/NaN|undefined|Infinity/), "real PDF rows should not contain invalid numeric tokens");
-  const realPdfRoundtripRow = JSON.parse(JSON.stringify(realPdf.landRights[0]));
+  const realPdfRoundtripRow = assertJsonRoundtripKeepsFields({
+    ...(realPdf.landRights.find((row) => normalizeText(row.rawOtherRightsText)) ?? realPdf.landRights[0]),
+    buildingNumber: "",
+    sourceSheetName: "",
+    sourceRowNumber: "",
+    floorLevel: "",
+    totalFloors: "",
+    structureType: "",
+    completionDate: "",
+    transcriptAddress: "",
+  }, REQUIRED_ROUNDTRIP_FIELDS, "PDF current-case roster row");
   assert.equal(realPdfRoundtripRow.sourceType, "pdfTranscript", "PDF JSON roundtrip should retain source type");
   assert.ok(normalizeText(realPdfRoundtripRow.rawOtherRightsText), "PDF JSON roundtrip should retain raw other-right text");
+  assert.ok(normalizeText(realPdfRoundtripRow.rawOtherRightText), "PDF JSON roundtrip should retain raw other-right alias");
   assert.ok(normalizeText(realPdfRoundtripRow.securedClaimScope), "PDF JSON roundtrip should retain secured claim scope");
   assert.ok(normalizeText(realPdfRoundtripRow.sourceLocator), "PDF JSON roundtrip should retain source locator");
 
   realPdfSummary = {
     pageCount: pdf.numPages,
+    textLayerOk: true,
     landRightCount: realPdf.landRights.length,
     otherRightBlockCount: realPdf.mortgages.length,
     landRowsWithOtherRights: pdfOtherRightRows.length,
     amountColumnClean: true,
     debtorAndObligorParsedOrReview: true,
+    quality: realPdfQualitySummary,
   };
 }
 
 console.log(JSON.stringify({
   ok: true,
+  goldenFixturesRequired: requireGoldenFixtures,
+  dataQualityThresholds: DATA_QUALITY_THRESHOLDS,
   fixtures: {
     landRequiredMissing: landMapping.requiredMissing,
     buildingRequiredMissing: buildingMapping.requiredMissing,
     lowConfidenceNeedsManualMapping: lowConfidence.needsManualMapping,
+    lowConfidenceWorkbookNeedsColumnMapping: lowConfidenceWorkbookResult.needsColumnMapping,
   },
   realWorkbook: realWorkbookSummary,
   realPdf: realPdfSummary,

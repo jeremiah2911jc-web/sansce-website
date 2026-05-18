@@ -3162,6 +3162,9 @@ function normalizeRosterLandRightRow(row, index = 0) {
   );
   const rowId = normalizeCellValue(locationRow.rowId || locationRow.landRightRowId) || formatSequence("LR", index);
   const importedAt = normalizeCellValue(locationRow.importedAt);
+  const sourceFilename = normalizeCellValue(locationRow.sourceFilename || locationRow.sourceFileName || locationRow.sourceFile || locationRow.fileName);
+  const sourcePage = normalizeCellValue(locationRow.sourcePage || locationRow.sourcePageNumber);
+  const rawOtherRightsText = normalizeCellValue(locationRow.rawOtherRightsText || locationRow.rawOtherRightText);
 
   return {
     ...locationRow,
@@ -3206,7 +3209,8 @@ function normalizeRosterLandRightRow(row, index = 0) {
     securedAmountNumber: normalizeCellValue(locationRow.securedAmountNumber),
     securedClaimScope: normalizeCellValue(locationRow.securedClaimScope),
     otherRightNote: normalizeCellValue(locationRow.otherRightNote),
-    rawOtherRightsText: normalizeCellValue(locationRow.rawOtherRightsText),
+    rawOtherRightsText,
+    rawOtherRightText: rawOtherRightsText,
     note: normalizeCellValue(locationRow.note || locationRow.notes || locationRow.otherRightNote || locationRow["備註"]),
     transcriptAddress: normalizeCellValue(locationRow.transcriptAddress || locationRow.address || locationRow["謄本地址"]),
     parseStatus: normalizeCellValue(locationRow.parseStatus) || (shareAreaQuality.shareAreaValidationMessages.length ? "needs-review" : "parsed"),
@@ -3235,13 +3239,15 @@ function normalizeRosterLandRightRow(row, index = 0) {
     declaredLandValue: normalizeCellValue(locationRow.declaredLandValue || locationRow["申報地價"] || locationRow["當期申報地價"]),
     declaredLandValueYear: normalizeCellValue(locationRow.declaredLandValueYear || locationRow["申報地價年度"]),
     sourceType: normalizeCellValue(locationRow.sourceType),
-    sourceFilename: normalizeCellValue(locationRow.sourceFilename || locationRow.sourceFile || locationRow.fileName),
+    sourceFilename,
+    sourceFileName: sourceFilename,
     sourceSheetName: normalizeCellValue(locationRow.sourceSheetName),
     sourceDocumentName: normalizeCellValue(locationRow.sourceDocumentName),
-    sourcePage: normalizeCellValue(locationRow.sourcePage),
+    sourcePage,
+    sourcePageNumber: sourcePage,
     sourceRowNumber: normalizeCellValue(locationRow.sourceRowNumber || locationRow.excelRowNumber),
     sourceBlockIndex: normalizeCellValue(locationRow.sourceBlockIndex),
-    sourceLocator: buildRosterSourceLocator(locationRow),
+    sourceLocator: buildRosterSourceLocator({ ...locationRow, sourcePage }),
     importedAt,
     updatedAt: normalizeCellValue(locationRow.updatedAt) || importedAt,
     rowStatus: normalizeCellValue(locationRow.rowStatus) || "active",
@@ -3252,6 +3258,9 @@ function normalizeRosterLandRightRow(row, index = 0) {
 function normalizeRosterBuildingRightRow(row, index = 0) {
   const rowId = normalizeCellValue(row?.rowId || row?.buildingRightRowId) || formatSequence("BR", index);
   const importedAt = normalizeCellValue(row?.importedAt);
+  const sourceFilename = normalizeCellValue(row?.sourceFilename || row?.sourceFileName || row?.sourceFile || row?.fileName);
+  const sourcePage = normalizeCellValue(row?.sourcePage || row?.sourcePageNumber);
+  const rawOtherRightsText = normalizeCellValue(row?.rawOtherRightsText || row?.rawOtherRightText);
   const buildingAreaSqm = parseRosterNumber(row?.buildingTotalAreaSqm || row?.buildingAreaSqm || row?.buildingAreaRaw || row?.["建物面積㎡"] || row?.["面積(m2)-合計"]);
   const mainBuildingAreaSqm = parseRosterNumber(row?.mainBuildingAreaSqm || row?.["面積(m2)-主建物"] || row?.["主建物"]);
   const accessoryBuildingAreaSqm = parseRosterNumber(row?.accessoryBuildingAreaSqm || row?.["面積(m2)-附屬建物"] || row?.["附屬建物"]);
@@ -3313,7 +3322,8 @@ function normalizeRosterBuildingRightRow(row, index = 0) {
     obligor: normalizeCellValue(row?.obligor || row?.["設定義務人"]),
     securedClaimScope: normalizeCellValue(row?.securedClaimScope),
     otherRightNote: normalizeCellValue(row?.otherRightNote),
-    rawOtherRightsText: normalizeCellValue(row?.rawOtherRightsText),
+    rawOtherRightsText,
+    rawOtherRightText: rawOtherRightsText,
     note: normalizeCellValue(row?.note || row?.notes || row?.otherRightNote || row?.["備註"]),
     transcriptAddress: normalizeCellValue(row?.transcriptAddress || row?.address || row?.["謄本地址"]),
     floorLevel: normalizeCellValue(row?.floorLevel || row?.["層次"]),
@@ -3353,13 +3363,15 @@ function normalizeRosterBuildingRightRow(row, index = 0) {
       lotNumber: row?.lotNumber || row?.landNumber || row?.relatedLandNumber || row?.parcelNumber || row?.["地號"],
     }),
     sourceType: normalizeCellValue(row?.sourceType),
-    sourceFilename: normalizeCellValue(row?.sourceFilename || row?.sourceFile || row?.fileName),
+    sourceFilename,
+    sourceFileName: sourceFilename,
     sourceSheetName: normalizeCellValue(row?.sourceSheetName),
     sourceDocumentName: normalizeCellValue(row?.sourceDocumentName),
-    sourcePage: normalizeCellValue(row?.sourcePage),
+    sourcePage,
+    sourcePageNumber: sourcePage,
     sourceRowNumber: normalizeCellValue(row?.sourceRowNumber || row?.excelRowNumber),
     sourceBlockIndex: normalizeCellValue(row?.sourceBlockIndex),
-    sourceLocator: buildRosterSourceLocator(row),
+    sourceLocator: buildRosterSourceLocator({ ...row, sourcePage }),
     importedAt,
     updatedAt: normalizeCellValue(row?.updatedAt) || importedAt,
     rowStatus: normalizeCellValue(row?.rowStatus) || "active",
@@ -3873,8 +3885,10 @@ function buildLandRightRows(rows, sourceContext = {}) {
       },
       sourceType: sourceContext.sourceType || "",
       sourceFilename: sourceContext.sourceFilename || "",
+      sourceFileName: sourceContext.sourceFilename || "",
       sourceDocumentName: sourceContext.sourceFilename || "",
       sourcePage: "",
+      sourcePageNumber: "",
       sourceRowNumber: row.__rowNumber,
       sourceBlockIndex: "",
       sourceLocator: buildRosterSourceLocator({
@@ -4053,8 +4067,10 @@ function buildBuildingRightRows(rows, sourceContext = {}) {
       },
       sourceType: sourceContext.sourceType || "",
       sourceFilename: sourceContext.sourceFilename || "",
+      sourceFileName: sourceContext.sourceFilename || "",
       sourceDocumentName: sourceContext.sourceFilename || "",
       sourcePage: "",
+      sourcePageNumber: "",
       sourceRowNumber: row.__rowNumber,
       sourceBlockIndex: "",
       sourceLocator: buildRosterSourceLocator({
@@ -4513,6 +4529,8 @@ function buildRosterPreviewFromPdfResult(parserResult) {
   const buildingNumbers = new Set(buildingRights.map((row) => row.buildingNumber).filter(Boolean));
   const batchId = `PDF-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${String(Date.now()).slice(-4)}`;
   const rosterSummary = buildRosterBaseSummary({ landRights, landRows: landRights, buildingRights, buildingRows: buildingRights });
+  const shareAreaQualitySummary = buildShareAreaQualitySummary(landRights);
+  const fallbackLandIdentityCount = countLandIdentityFallbackRows(landRights);
   const otherRightsRowCount = [...landRights, ...buildingRights].filter((row) => (
     normalizeCellValue(row.otherRightType || row.otherRightsType)
       || normalizeCellValue(row.otherRightHolder || row.otherRightsHolder)
@@ -4565,6 +4583,8 @@ function buildRosterPreviewFromPdfResult(parserResult) {
       partyCount: partyRows.length,
       landNumberCount: landNumbers.size,
       buildingNumberCount: buildingNumbers.size,
+      fallbackLandIdentityCount,
+      ...shareAreaQualitySummary,
       otherRightsRowCount,
       rawOtherRightTextRowCount,
       cadastralLocationDisplay: rosterSummary.cadastralLocationDisplay,
@@ -7018,16 +7038,16 @@ function RosterWorkspace({ currentCase, preview, onPreviewChange }) {
     ["匯入批次", activePreview.batchId],
     ["檔案名稱", activePreview.fileName],
     ["匯入時間", activePreview.importedAt],
-    ["來源類型", getRosterPreviewSourceType(activePreview) === "pdfTranscript" ? "PDF 謄本" : "Excel 清冊"],
-    ["土地清冊筆數", activePreview.summary.landCount],
-    ["建物清冊筆數", activePreview.summary.buildingCount],
+    ["匯入來源", getRosterPreviewSourceType(activePreview) === "pdfTranscript" ? "PDF 謄本" : "Excel 清冊"],
+    ["土地權利列數", activePreview.summary.landCount],
+    ["建物權利列數", activePreview.summary.buildingCount],
     ["疑似權利人群組數", activePreview.summary.partyCount],
     ["涉及地號數", activePreview.summary.landNumberCount],
-    ["定位不足 / 待補地籍", activePreview.summary.fallbackLandIdentityCount ?? 0],
+    ["原檔未提供欄位提示", activePreview.summary.fallbackLandIdentityCount ?? 0],
     ["地籍定位", activePreview.summary.cadastralLocationDisplay || "待清冊補齊"],
     ["權利範圍完整列數", activePreview.summary.completeShareRows ?? 0],
     ["持分面積可驗算列數", activePreview.summary.verifiableShareAreaRows ?? 0],
-    ["持分面積一致列數", activePreview.summary.consistentShareAreaRows ?? 0],
+    ["持分面積檢核通過列數", activePreview.summary.consistentShareAreaRows ?? 0],
     ["持分面積警告列數", activePreview.summary.shareAreaWarningRows ?? 0],
     ["分母缺漏列數", activePreview.summary.missingShareDenominatorRows ?? 0],
     ["疑似欄位錯置列數", activePreview.summary.suspectedMisalignedShareAreaRows ?? 0],
@@ -7037,7 +7057,7 @@ function RosterWorkspace({ currentCase, preview, onPreviewChange }) {
     ["疑似同姓多地號群組", activePreview.summary.sameNameMultiLandCount],
     ["疑似同姓多建號群組", activePreview.summary.sameNameMultiBuildingCount],
     ["待人工確認筆數", activePreview.summary.manualReviewCount],
-    ["檢核警示數", activePreview.summary.warningCount],
+    ["不可匯入警告數", activePreview.summary.warningCount],
   ] : [];
 
   return (
@@ -9522,6 +9542,13 @@ const downstreamModuleGuidance = {
   },
 };
 
+const downstreamModuleSectionTitles = {
+  sales: "資料依賴與情境準備",
+  allocation: "分配前置條件",
+  cashflow: "金流接續條件",
+  "bank-report": "報告接續條件",
+};
+
 function DownstreamModuleNotice({ moduleId, currentCase, capacityResult, floorResult }) {
   const guidance = downstreamModuleGuidance[moduleId];
   const workspaceDefinition = getModuleWorkspaceDefinition(moduleId);
@@ -9542,7 +9569,7 @@ function DownstreamModuleNotice({ moduleId, currentCase, capacityResult, floorRe
   return (
     <section className="eval-module-section eval-downstream-notice">
       <div className="eval-section-head">
-        <h4>{guidance.title}</h4>
+        <h4>{downstreamModuleSectionTitles[moduleId] || "資料依賴"}</h4>
         <p>{workspaceDefinition?.purpose || guidance.description}</p>
       </div>
       <DataSummaryGrid items={sourceItems} />

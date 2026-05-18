@@ -51,7 +51,7 @@ export function requireSanzeSession(request, response) {
     sendJson(response, 503, {
       ok: false,
       code: "AUTH_NOT_CONFIGURED",
-      message: "三策測試授權尚未設定。",
+      message: "三策授權尚未設定。",
     });
     return null;
   }
