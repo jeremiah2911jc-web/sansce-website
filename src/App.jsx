@@ -237,13 +237,11 @@ export default function App() {
                 <span />
               </div>
               <div className="system-card__actions">
-                <a className="system-card__button system-card__button--primary" href="#system-test">
-                  <span>授權測試申請</span>
+                <a className="system-card__button system-card__button--primary" href="#system-workspace">
+                  <span>申請系統授權</span>
                   <ArrowUpRight aria-hidden="true" size={17} />
                 </a>
-                <button className="system-card__button system-card__button--secondary is-disabled" type="button" disabled>
-                  <span>暫不公開</span>
-                </button>
+                <span className="system-card__status">正式授權後開通</span>
               </div>
             </article>
           </div>

@@ -70,7 +70,7 @@ async function checkSupabaseApiReachability() {
 
 export async function checkSupabaseConnection() {
   if (!supabaseConfig.isConfigured) {
-    return buildStatus("not-configured", "未設定", "資料庫尚未設定，仍使用本機測試資料。");
+    return buildStatus("not-configured", "未設定", "資料庫尚未設定，仍使用瀏覽器暫存資料。");
   }
 
   try {
@@ -80,7 +80,7 @@ export async function checkSupabaseConnection() {
     return buildStatus(
       "error",
       "連線錯誤",
-      "目前仍使用本機測試資料。請檢查 Vercel env 或 Supabase project 狀態。",
+      "目前仍使用瀏覽器暫存資料。請檢查部署設定或 Supabase project 狀態。",
     );
   }
 
@@ -90,7 +90,7 @@ export async function checkSupabaseConnection() {
       return buildStatus(
         "error",
         "連線錯誤",
-        "目前仍使用本機測試資料。請檢查 Vercel env 或 Supabase project 狀態。",
+        "目前仍使用瀏覽器暫存資料。請檢查部署設定或 Supabase project 狀態。",
       );
     }
 
@@ -103,8 +103,8 @@ export async function checkSupabaseConnection() {
       return buildStatus(
         "rls-protected",
         "API 可達，資料表受 RLS 保護",
-        "目前仍使用本機測試資料。",
-        "第一階段僅檢查 Supabase Vite env 與 API 可達性，尚未啟用案件資料同步；正式同步需完成 Auth / RLS policy / user-case mapping。",
+        "目前仍使用瀏覽器暫存資料。",
+        "第一階段僅檢查 Supabase Vite 部署設定 與 API 可達性，尚未啟用案件資料同步；正式同步需完成 Auth / RLS policy / user-case mapping。",
       );
     }
 
@@ -112,20 +112,20 @@ export async function checkSupabaseConnection() {
       return buildStatus(
         "error",
         "連線錯誤",
-        "目前仍使用本機測試資料。請檢查 Vercel env 或 Supabase project 狀態。",
+        "目前仍使用瀏覽器暫存資料。請檢查部署設定或 Supabase project 狀態。",
       );
     }
 
     return buildStatus(
       "connected",
       "可連線",
-      "資料庫可連線；目前仍採 localStorage + DB 並行模式。",
+      "資料庫可連線；目前仍採瀏覽器資料 + DB 並行模式。",
     );
   } catch {
     return buildStatus(
       "error",
       "連線錯誤",
-      "目前仍使用本機測試資料。請檢查 Vercel env 或 Supabase project 狀態。",
+      "目前仍使用瀏覽器暫存資料。請檢查部署設定或 Supabase project 狀態。",
     );
   }
 }

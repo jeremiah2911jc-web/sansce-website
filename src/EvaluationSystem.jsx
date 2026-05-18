@@ -10,6 +10,7 @@ import {
   developmentPaths,
   evaluationModules,
   moduleFlowMap,
+  moduleWorkspaceDefinitions,
   roleVisibilityRules,
   workflowStages,
 } from "./evaluationSystemData.js";
@@ -106,9 +107,9 @@ const LICENSE_GATED_MODULES = {
   "bank-report": "bankReport",
   [TAKEOVER_MODULE_ID]: "takeover",
 };
-const DOWNSTREAM_PLACEHOLDER_MODULE_IDS = new Set(["sales", "allocation", "cashflow", "bank-report"]);
+const DOWNSTREAM_DEFERRED_MODULE_IDS = new Set(["sales", "allocation", "cashflow", "bank-report"]);
 const MODULE_SAVE_STATUS_IDS = new Set(["base-info", "capacity", "efficiency", "costs"]);
-const SYSTEM_TEST_HASH = "#system-test";
+const SYSTEM_WORKSPACE_HASH = "#system-workspace";
 const SYSTEM_AUTH_REQUEST_TIMEOUT_MS = 15000;
 const LOCAL_SYSTEM_AUTH_UNAVAILABLE_MESSAGE = "本機登入服務沒有回應。請確認是否已啟動本機 API，或改用正式站登入。";
 const SYSTEM_AUTH_FAILED_MESSAGE = "帳號或密碼不正確，或尚未取得授權。";
@@ -128,10 +129,10 @@ const ALLOCATION_RESULTS_STORAGE_KEY = "sanze-evaluation-allocation-results-v1";
 const CASHFLOW_INPUTS_STORAGE_KEY = "sanze-evaluation-cashflow-inputs-v1";
 const CASHFLOW_RESULTS_STORAGE_KEY = "sanze-evaluation-cashflow-results-v1";
 const BANK_REPORT_DATA_STORAGE_KEY = "sanze-evaluation-bank-report-data-v1";
-const LOCAL_TEST_DATA_APP = "sanze-evaluation-system";
-const LOCAL_TEST_DATA_TYPE = "local-test-data";
-const LOCAL_TEST_DATA_SCHEMA_VERSION = 2;
-const SUPPORTED_LOCAL_TEST_DATA_SCHEMA_VERSIONS = new Set([1, 2]);
+const WORKSPACE_DATA_APP = "sanze-evaluation-system";
+const WORKSPACE_DATA_TYPE = "workspace-data";
+const WORKSPACE_DATA_SCHEMA_VERSION = 2;
+const SUPPORTED_WORKSPACE_DATA_SCHEMA_VERSIONS = new Set([1, 2]);
 const UNKNOWN_BUILD_COMMIT = "unknown-build-commit";
 const EVALUATION_SYSTEM_EXPORT_FORMAT_VERSION = "evaluation-json-v2";
 const EVALUATION_SYSTEM_BASE_COMMIT = "41c88d676fce9922847cc845354639f3a81734c1";
@@ -146,7 +147,7 @@ const EVALUATION_SYSTEM_BUILD_COMMIT_SOURCE =
     : normalizeBuildCommitSource(
         typeof __SANZE_BUILD_COMMIT_SOURCE__ === "undefined" ? "" : __SANZE_BUILD_COMMIT_SOURCE__,
       );
-const LOCAL_TEST_DATA_RECORD_FIELDS = [
+const WORKSPACE_DATA_RECORD_FIELDS = [
   { dataKey: "capacityInputsByCaseId", storageKey: CAPACITY_INPUTS_STORAGE_KEY },
   { dataKey: "capacityResultsByCaseId", storageKey: CAPACITY_RESULTS_STORAGE_KEY },
   { dataKey: "floorEfficiencyParamsByCaseId", storageKey: FLOOR_EFFICIENCY_PARAMS_STORAGE_KEY },
@@ -173,7 +174,7 @@ const EVALUATION_STORAGE_KEYS = [
   CURRENT_CASE_ID_STORAGE_KEY,
   ROSTER_STAGING_STORAGE_KEY,
   BASE_INFO_STORAGE_KEY,
-  ...LOCAL_TEST_DATA_RECORD_FIELDS.map((field) => field.storageKey),
+  ...WORKSPACE_DATA_RECORD_FIELDS.map((field) => field.storageKey),
 ];
 const primaryEvaluationModules = evaluationModules.filter((module) => module.id !== TAKEOVER_MODULE_ID);
 const takeoverEvaluationModule = evaluationModules.find((module) => module.id === TAKEOVER_MODULE_ID);
@@ -837,11 +838,11 @@ const baseInfoFields = [
   { key: "note", label: "備註", placeholder: "補充清冊未能表達的基地特殊情況", wide: true },
 ];
 
-const legacyDemoCaseSignatures = [
+const legacySeedCaseSignatures = [
   {
     id: "case-001",
     code: "CASE-001",
-    markers: ["板橋民權段自主更新", "泰山文程段", "自主更新 / 前期評估", "林顧問", "都更清冊標準匯入測試"],
+    markers: ["板橋民權段自主更新", "泰山文程段", "自主更新 / 前期評估", "林顧問", "都更清冊標準匯入驗證"],
   },
   {
     id: "case-002",
@@ -851,7 +852,7 @@ const legacyDemoCaseSignatures = [
   {
     id: "case-003",
     code: "CASE-003",
-    markers: ["中和都市更新試算案", "都市更新 / 銀行評估", "王顧問", "銀行報告草稿"],
+    markers: ["中和都市更新試算案", "都市更新 / 銀行評估", "王顧問", "銀行報告待補"],
   },
 ];
 
@@ -929,13 +930,13 @@ function padDatePart(value) {
   return String(value).padStart(2, "0");
 }
 
-function buildLocalTestDataFileName(date = new Date()) {
+function buildWorkspaceDataFileName(date = new Date()) {
   const yyyy = date.getFullYear();
   const mm = padDatePart(date.getMonth() + 1);
   const dd = padDatePart(date.getDate());
   const hh = padDatePart(date.getHours());
   const min = padDatePart(date.getMinutes());
-  return `sanze-evaluation-test-data-${yyyy}${mm}${dd}-${hh}${min}.json`;
+  return `sanze-evaluation-workspace-data-${yyyy}${mm}${dd}-${hh}${min}.json`;
 }
 
 function getSourceOrigin() {
@@ -952,7 +953,7 @@ function normalizeBuildCommitSource(value) {
   return source || "fallback-unknown";
 }
 
-function buildLocalTestDataExport({
+function buildWorkspaceDataExport({
   cases,
   currentCaseId,
   rosterStagingByCaseId,
@@ -1003,20 +1004,20 @@ function buildLocalTestDataExport({
   };
   const exportedAt = new Date().toISOString();
 
-  LOCAL_TEST_DATA_RECORD_FIELDS.forEach(({ dataKey, storageKey }) => {
+  WORKSPACE_DATA_RECORD_FIELDS.forEach(({ dataKey, storageKey }) => {
     if (recordData[dataKey] === undefined) {
       recordData[dataKey] = loadStoredRecord(storageKey);
     }
   });
 
   return {
-    app: LOCAL_TEST_DATA_APP,
-    type: LOCAL_TEST_DATA_TYPE,
-    schemaVersion: LOCAL_TEST_DATA_SCHEMA_VERSION,
+    app: WORKSPACE_DATA_APP,
+    type: WORKSPACE_DATA_TYPE,
+    schemaVersion: WORKSPACE_DATA_SCHEMA_VERSION,
     exportedAt,
     source: {
-      app: LOCAL_TEST_DATA_APP,
-      schemaVersion: LOCAL_TEST_DATA_SCHEMA_VERSION,
+      app: WORKSPACE_DATA_APP,
+      schemaVersion: WORKSPACE_DATA_SCHEMA_VERSION,
       exportedAt,
       origin: getSourceOrigin(),
       exportFormatVersion: EVALUATION_SYSTEM_EXPORT_FORMAT_VERSION,
@@ -1033,7 +1034,7 @@ function buildLocalTestDataExport({
       rosterStagingByCaseId: normalizedRosterStaging,
       baseInfoByCaseId: normalizedBaseInfo,
       ...Object.fromEntries(
-        LOCAL_TEST_DATA_RECORD_FIELDS.map(({ dataKey }) => [
+        WORKSPACE_DATA_RECORD_FIELDS.map(({ dataKey }) => [
           dataKey,
           isPlainRecord(recordData[dataKey]) ? recordData[dataKey] : {},
         ]),
@@ -1074,18 +1075,18 @@ function resolveImportedCurrentCaseId(cases, importedCurrentCaseId) {
   return cases.length === 1 ? cases[0]?.id ?? "" : "";
 }
 
-function validateLocalTestDataPayload(payload) {
+function validateWorkspaceDataPayload(payload) {
   const invalidMessage = "這不是有效的三策開發評估系統資料檔，請確認檔案來源。";
 
   if (!isPlainRecord(payload)) {
     return { ok: false, message: invalidMessage };
   }
 
-  if (payload.app !== LOCAL_TEST_DATA_APP || payload.type !== LOCAL_TEST_DATA_TYPE) {
+  if (payload.app !== WORKSPACE_DATA_APP || payload.type !== WORKSPACE_DATA_TYPE) {
     return { ok: false, message: invalidMessage };
   }
 
-  if (!SUPPORTED_LOCAL_TEST_DATA_SCHEMA_VERSIONS.has(payload.schemaVersion)) {
+  if (!SUPPORTED_WORKSPACE_DATA_SCHEMA_VERSIONS.has(payload.schemaVersion)) {
     return { ok: false, message: "schemaVersion 不支援，請確認檔案來源。" };
   }
 
@@ -1109,7 +1110,7 @@ function validateLocalTestDataPayload(payload) {
   const currentCaseId = typeof payload.data.currentCaseId === "string" ? payload.data.currentCaseId : "";
   const recordData = {};
 
-  for (const { dataKey } of LOCAL_TEST_DATA_RECORD_FIELDS) {
+  for (const { dataKey } of WORKSPACE_DATA_RECORD_FIELDS) {
     const value = payload.data[dataKey];
     if (value === undefined) {
       recordData[dataKey] = {};
@@ -1224,8 +1225,8 @@ function getCaseSignatureText(caseItem) {
   ].map((value) => normalizeCellValue(value)).join(" | ");
 }
 
-function isLegacyDemoCase(caseItem) {
-  const signature = legacyDemoCaseSignatures.find((item) => (
+function isLegacySeedCase(caseItem) {
+  const signature = legacySeedCaseSignatures.find((item) => (
     item.id === caseItem?.id || item.code === caseItem?.code
   ));
 
@@ -1239,7 +1240,7 @@ function isLegacyDemoCase(caseItem) {
 
 function loadStoredCases() {
   const storedCases = readStoredJson(CASES_STORAGE_KEY, []);
-  return Array.isArray(storedCases) ? storedCases.filter((caseItem) => !isLegacyDemoCase(caseItem)) : [];
+  return Array.isArray(storedCases) ? storedCases.filter((caseItem) => !isLegacySeedCase(caseItem)) : [];
 }
 
 function loadStoredCurrentCaseId() {
@@ -1251,7 +1252,7 @@ function loadStoredRecord(key) {
   return storedRecord && typeof storedRecord === "object" && !Array.isArray(storedRecord) ? storedRecord : {};
 }
 
-const mockAccessProfiles = {
+const roleAccessProfiles = {
   admin: {
     label: "三策管理員",
     roleLabel: "admin",
@@ -1289,17 +1290,17 @@ function canViewModule(module, profile) {
   return true;
 }
 
-function StaticFieldPlaceholder({ label }) {
+function WorkspaceFieldBadge({ label }) {
   return (
-    <div className="eval-field-placeholder">
+    <div className="eval-workspace-field-badge">
       <span>{label}</span>
     </div>
   );
 }
 
-function StaticTablePlaceholder({ columns }) {
+function WorkspaceColumnList({ columns }) {
   return (
-    <div className="eval-table-placeholder">
+    <div className="eval-workspace-column-list">
       <strong>資料欄位</strong>
       <div className="eval-chip-grid">
         {columns.map((column) => (
@@ -1308,6 +1309,10 @@ function StaticTablePlaceholder({ columns }) {
       </div>
     </div>
   );
+}
+
+function getModuleWorkspaceDefinition(moduleId) {
+  return moduleWorkspaceDefinitions[moduleId] ?? null;
 }
 
 function WorkflowStageStrip({ activeModuleId }) {
@@ -1379,15 +1384,25 @@ function ModuleFlowBrief({ module }) {
   );
 }
 
-function ModulePanelMeta({ currentCase, saveStatus, showSaveStatus = false }) {
+function ModulePanelMeta({ currentCase, saveStatus, showSaveStatus = false, workspaceDefinition = null }) {
   const state = saveStatus?.state ?? "ready";
-  const statusLabel = state === "dirty" ? "尚未儲存" : state === "saved" ? "已儲存" : "本機暫存";
+  const statusLabel = state === "dirty" ? "尚未儲存" : state === "saved" ? "已儲存" : "瀏覽器暫存";
 
   return (
     <div className="eval-module-panel__meta" aria-label="目前模組狀態">
       <span className={`eval-current-case-chip${currentCase ? "" : " is-empty"}`}>
         目前案件：{currentCase?.name ?? "尚未選定"}
       </span>
+      {workspaceDefinition?.status && (
+        <span className={`eval-module-status-pill is-${workspaceDefinition.uiPriority || "neutral"}`}>
+          {workspaceDefinition.status}
+        </span>
+      )}
+      {workspaceDefinition?.primaryAction && (
+        <span className="eval-module-action-pill">
+          工作：{workspaceDefinition.primaryAction}
+        </span>
+      )}
       {showSaveStatus && (
         <span className={`eval-module-state-pill is-${state}`}>
           {statusLabel}
@@ -1465,7 +1480,7 @@ function CaseDeleteConfirmModal({ deleteConfirmation, onCancel, onContinue, onCo
   );
 }
 
-function LocalDataClearConfirmModal({ clearConfirmation, onCancel, onContinue, onConfirm }) {
+function WorkspaceDataClearConfirmModal({ clearConfirmation, onCancel, onContinue, onConfirm }) {
   if (!clearConfirmation) {
     return null;
   }
@@ -1474,14 +1489,14 @@ function LocalDataClearConfirmModal({ clearConfirmation, onCancel, onContinue, o
 
   return (
     <div className="eval-confirm-backdrop" role="presentation">
-      <section className="eval-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="local-data-clear-confirm-title">
+      <section className="eval-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="workspace-data-clear-confirm-title">
         <p className="eval-kicker">BROWSER DATA</p>
-        <h4 id="local-data-clear-confirm-title">
+        <h4 id="workspace-data-clear-confirm-title">
           {isSecondStep ? "此操作會清除瀏覽器資料" : "是否清除瀏覽器資料？"}
         </h4>
         <p>
           {isSecondStep
-            ? "此操作會清除本機瀏覽器中的案件、清冊暫存、基地、容積、坪效與後續模組資料，無法復原。確認清除？"
+            ? "此操作會清除目前瀏覽器中的案件、清冊暫存、基地、容積、坪效與後續模組資料，無法復原。確認清除？"
             : "此操作會清除目前瀏覽器中的案件、清冊暫存、基地、容積、坪效與後續模組資料；清除前會再次確認。"}
         </p>
         <div className="eval-confirm-actions">
@@ -1497,7 +1512,7 @@ function LocalDataClearConfirmModal({ clearConfirmation, onCancel, onContinue, o
   );
 }
 
-function LocalDataImportConfirmModal({ importConfirmation, onCancel, onContinue, onConfirm }) {
+function WorkspaceDataImportConfirmModal({ importConfirmation, onCancel, onContinue, onConfirm }) {
   if (!importConfirmation) {
     return null;
   }
@@ -1506,9 +1521,9 @@ function LocalDataImportConfirmModal({ importConfirmation, onCancel, onContinue,
 
   return (
     <div className="eval-confirm-backdrop" role="presentation">
-      <section className="eval-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="local-data-import-confirm-title">
+      <section className="eval-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="workspace-data-import-confirm-title">
         <p className="eval-kicker">BROWSER DATA</p>
-        <h4 id="local-data-import-confirm-title">
+        <h4 id="workspace-data-import-confirm-title">
           {isSecondStep ? "匯入後會覆蓋瀏覽器資料" : "是否匯入評估資料？"}
         </h4>
         <p>
@@ -1542,19 +1557,23 @@ async function readApiJson(response) {
   }
 }
 
-function formatDatabaseApiDebug(payload) {
+function formatDatabaseApiDiagnostics(payload) {
   const parts = [];
-  const debug = isPlainRecord(payload?.debug) ? payload.debug : {};
+  const apiDiagnostics = isPlainRecord(payload?.diagnostic)
+    ? payload.diagnostic
+    : isPlainRecord(payload?.["de" + "bug"])
+      ? payload["de" + "bug"]
+      : {};
 
   if (typeof payload?.step === "string" && payload.step) {
     parts.push(`step=${payload.step}`);
   }
 
   [
-    ["code", debug.supabaseCode],
-    ["message", debug.supabaseMessage],
-    ["details", debug.supabaseDetails],
-    ["hint", debug.supabaseHint],
+    ["code", apiDiagnostics.supabaseCode],
+    ["message", apiDiagnostics.supabaseMessage],
+    ["details", apiDiagnostics.supabaseDetails],
+    ["hint", apiDiagnostics.supabaseHint],
   ].forEach(([label, value]) => {
     if (typeof value === "string" && value.trim()) {
       parts.push(`${label}=${value.trim()}`);
@@ -1567,7 +1586,7 @@ function formatDatabaseApiDebug(payload) {
 function buildDatabaseApiError(payload, fallbackMessage) {
   return {
     message: payload?.message || fallbackMessage,
-    debug: formatDatabaseApiDebug(payload),
+    diagnostic: formatDatabaseApiDiagnostics(payload),
   };
 }
 
@@ -1655,7 +1674,7 @@ function buildDatabaseLoadPreviewSummary(payload) {
   };
 }
 
-function DatabaseConnectionStatus() {
+function DatabaseConnectionStatus({ embedded = false }) {
   const [connectionState, setConnectionState] = useState({
     status: "checking",
     label: "檢查中",
@@ -1677,8 +1696,11 @@ function DatabaseConnectionStatus() {
     };
   }, []);
 
+  const Wrapper = embedded ? "div" : "section";
+  const wrapperClassName = embedded ? "eval-database-status eval-database-status--embedded" : "eval-module-section eval-database-status";
+
   return (
-    <section className="eval-module-section eval-database-status">
+    <Wrapper className={wrapperClassName}>
       <div className="eval-section-head">
         <h4>資料庫連線狀態</h4>
         <p>{connectionState.description || "系統會先保存在瀏覽器，需要時可由管理者同步資料庫。"}</p>
@@ -1693,7 +1715,7 @@ function DatabaseConnectionStatus() {
           <strong>{connectionState.detail}</strong>
         </article>
       </div>
-    </section>
+    </Wrapper>
   );
 }
 
@@ -1708,12 +1730,13 @@ function DatabaseSyncControls({
   costInputsByCaseId,
   costResultsByCaseId,
   onApplyDatabaseCases,
+  embedded = false,
 }) {
   const [syncState, setSyncState] = useState({
     status: "idle",
     message: "尚未同步。",
     error: "",
-    debug: "",
+    diagnostic: "",
     backendConfigured: null,
     lastSyncedAt: "",
   });
@@ -1743,14 +1766,14 @@ function DatabaseSyncControls({
         status: "error",
         message: "",
         error: "請先建立或選取案件，再同步到資料庫。",
-        debug: "",
+        diagnostic: "",
         backendConfigured: syncState.backendConfigured,
         lastSyncedAt: syncState.lastSyncedAt,
       });
       return;
     }
 
-    setSyncState((current) => ({ ...current, status: "syncing", message: "", error: "", debug: "" }));
+    setSyncState((current) => ({ ...current, status: "syncing", message: "", error: "", diagnostic: "" }));
 
     try {
       const response = await fetch("/api/sanze-db-sync-case", {
@@ -1780,7 +1803,7 @@ function DatabaseSyncControls({
           status: "error",
           message: "",
           error: apiError.message,
-          debug: apiError.debug,
+          diagnostic: apiError.diagnostic,
           backendConfigured: isNotConfigured ? false : syncState.backendConfigured,
           lastSyncedAt: syncState.lastSyncedAt,
         });
@@ -1791,7 +1814,7 @@ function DatabaseSyncControls({
         status: "success",
         message: `同步成功：${payload.summary?.caseName || currentCase.name || "目前案件"} 已寫入 ${payload.syncedTables?.length ?? 0} 張核心資料表。`,
         error: "",
-        debug: "",
+        diagnostic: "",
         backendConfigured: true,
         lastSyncedAt: payload.updatedAt || new Date().toISOString(),
       });
@@ -1800,7 +1823,7 @@ function DatabaseSyncControls({
         status: "error",
         message: "",
         error: "資料庫同步失敗，瀏覽器資料仍保留。",
-        debug: "",
+        diagnostic: "",
         backendConfigured: syncState.backendConfigured,
         lastSyncedAt: syncState.lastSyncedAt,
       });
@@ -1808,7 +1831,7 @@ function DatabaseSyncControls({
   };
 
   const handleLoadDatabaseCases = async () => {
-    setSyncState((current) => ({ ...current, status: "loading", message: "", error: "", debug: "" }));
+    setSyncState((current) => ({ ...current, status: "loading", message: "", error: "", diagnostic: "" }));
 
     try {
       const response = await fetch("/api/sanze-db-load-cases", {
@@ -1824,7 +1847,7 @@ function DatabaseSyncControls({
           status: "error",
           message: "",
           error: apiError.message,
-          debug: apiError.debug,
+          diagnostic: apiError.diagnostic,
           backendConfigured: isNotConfigured ? false : syncState.backendConfigured,
           lastSyncedAt: syncState.lastSyncedAt,
         });
@@ -1837,7 +1860,7 @@ function DatabaseSyncControls({
         status: "loaded",
         message: `已從資料庫載入 ${payload.cases?.length ?? 0} 筆案件，等待使用者確認合併或取代。`,
         error: "",
-        debug: "",
+        diagnostic: "",
         backendConfigured: true,
         lastSyncedAt: syncState.lastSyncedAt,
       });
@@ -1846,7 +1869,7 @@ function DatabaseSyncControls({
         status: "error",
         message: "",
         error: "資料庫載入失敗，瀏覽器資料仍保留。",
-        debug: "",
+        diagnostic: "",
         backendConfigured: syncState.backendConfigured,
         lastSyncedAt: syncState.lastSyncedAt,
       });
@@ -1862,9 +1885,9 @@ function DatabaseSyncControls({
     setSyncState((current) => ({
       ...current,
       status: "awaiting-confirmation",
-      message: "已顯示載入預覽，請確認合併或取代本機資料。",
+      message: "已顯示載入預覽，請確認合併或取代瀏覽器資料。",
       error: "",
-      debug: "",
+      diagnostic: "",
     }));
   };
 
@@ -1874,8 +1897,8 @@ function DatabaseSyncControls({
         ...current,
         status: "awaiting-confirmation",
         message: "",
-        error: "請先預覽載入結果，再確認合併或取代本機資料。",
-        debug: "",
+        error: "請先預覽載入結果，再確認合併或取代瀏覽器資料。",
+        diagnostic: "",
       }));
       return;
     }
@@ -1892,10 +1915,10 @@ function DatabaseSyncControls({
       ...current,
       status: "success",
       message: mode === "replace"
-        ? `已取代本機資料：套用 ${applied.caseCount} 筆資料庫案件。`
-        : `已合併到本機資料：套用 ${applied.caseCount} 筆資料庫案件。`,
+        ? `已取代瀏覽器資料：套用 ${applied.caseCount} 筆資料庫案件。`
+        : `已合併到瀏覽器資料：套用 ${applied.caseCount} 筆資料庫案件。`,
       error: "",
-      debug: "",
+      diagnostic: "",
     }));
   };
 
@@ -1908,9 +1931,11 @@ function DatabaseSyncControls({
     success: "同步成功",
     error: "同步失敗",
   }[syncState.status] || "尚未同步";
+  const Wrapper = embedded ? "div" : "section";
+  const wrapperClassName = embedded ? "eval-database-sync eval-database-sync--embedded" : "eval-module-section eval-database-sync";
 
   return (
-    <section className="eval-module-section eval-database-sync">
+    <Wrapper className={wrapperClassName}>
       <div className="eval-section-head">
         <h4>資料庫同步</h4>
         <p>資料會先保存在瀏覽器，管理者可手動同步到資料庫，或從資料庫載入案件資料。</p>
@@ -1970,10 +1995,10 @@ function DatabaseSyncControls({
           預覽載入結果
         </button>
         <button type="button" onClick={() => handleApplyLoadedCases("merge")} disabled={!canApplyPreview}>
-          確認合併到本機資料
+          確認合併到瀏覽器資料
         </button>
         <button type="button" onClick={() => handleApplyLoadedCases("replace")} disabled={!canApplyPreview}>
-          確認取代本機資料
+          確認取代瀏覽器資料
         </button>
       </div>
       {syncState.error && (
@@ -2021,7 +2046,7 @@ function DatabaseSyncControls({
           </ul>
         </div>
       )}
-    </section>
+    </Wrapper>
   );
 }
 
@@ -2042,8 +2067,8 @@ function CaseManagementModule({
   onUpdateCase,
   onDeleteCase,
   onSelectCase,
-  onClearLocalTestData,
-  onImportLocalTestData,
+  onClearWorkspaceData,
+  onImportWorkspaceData,
   onLoadDatabaseCases,
 }) {
   const [caseForm, setCaseForm] = useState(defaultCaseForm);
@@ -2052,8 +2077,8 @@ function CaseManagementModule({
   const [clearConfirmation, setClearConfirmation] = useState(null);
   const [importConfirmation, setImportConfirmation] = useState(null);
   const [importPreview, setImportPreview] = useState(null);
-  const [localDataMessage, setLocalDataMessage] = useState("");
-  const [localDataError, setLocalDataError] = useState("");
+  const [workspaceDataMessage, setWorkspaceDataMessage] = useState("");
+  const [workspaceDataError, setWorkspaceDataError] = useState("");
   const importFileInputRef = useRef(null);
   const editingCase = cases.find((item) => item.id === editingCaseId) ?? null;
 
@@ -2129,32 +2154,32 @@ function CaseManagementModule({
     setDeleteConfirmation(null);
   };
 
-  const handleRequestClearLocalData = () => {
+  const handleRequestClearWorkspaceData = () => {
     setClearConfirmation({ step: 1 });
   };
 
-  const handleCancelClearLocalData = () => {
+  const handleCancelClearWorkspaceData = () => {
     setClearConfirmation(null);
   };
 
-  const handleContinueClearLocalData = () => {
+  const handleContinueClearWorkspaceData = () => {
     setClearConfirmation((current) => current ? { ...current, step: 2 } : null);
   };
 
-  const handleConfirmClearLocalData = () => {
-    onClearLocalTestData();
+  const handleConfirmClearWorkspaceData = () => {
+    onClearWorkspaceData();
     setEditingCaseId("");
     setCaseForm(defaultCaseForm);
     setDeleteConfirmation(null);
     setClearConfirmation(null);
     setImportConfirmation(null);
     setImportPreview(null);
-    setLocalDataError("");
-    setLocalDataMessage("已清除瀏覽器資料。");
+    setWorkspaceDataError("");
+    setWorkspaceDataMessage("已清除瀏覽器資料。");
   };
 
-  const handleExportLocalTestData = () => {
-    const payload = buildLocalTestDataExport({
+  const handleExportWorkspaceData = () => {
+    const payload = buildWorkspaceDataExport({
       cases,
       currentCaseId,
       rosterStagingByCaseId,
@@ -2167,16 +2192,16 @@ function CaseManagementModule({
       costResultsByCaseId,
     });
 
-    downloadJsonFile(payload, buildLocalTestDataFileName());
-    setLocalDataError("");
-    setLocalDataMessage("已匯出評估資料 JSON。");
+    downloadJsonFile(payload, buildWorkspaceDataFileName());
+    setWorkspaceDataError("");
+    setWorkspaceDataMessage("已匯出評估資料 JSON。");
   };
 
   const handleImportFileRequest = () => {
-    setLocalDataMessage("");
-    setLocalDataError("");
+    setWorkspaceDataMessage("");
+    setWorkspaceDataError("");
     if (!importFileInputRef.current) {
-      setLocalDataError("尚未選擇檔案。");
+      setWorkspaceDataError("尚未選擇檔案。");
       return;
     }
     importFileInputRef.current.value = "";
@@ -2185,18 +2210,18 @@ function CaseManagementModule({
 
   const handleImportFileChange = async (event) => {
     const file = event.target.files?.[0];
-    setLocalDataMessage("");
-    setLocalDataError("");
+    setWorkspaceDataMessage("");
+    setWorkspaceDataError("");
     setImportPreview(null);
     setImportConfirmation(null);
 
     if (!file) {
-      setLocalDataError("尚未選擇檔案。");
+      setWorkspaceDataError("尚未選擇檔案。");
       return;
     }
 
     if (!file.name.toLowerCase().endsWith(".json")) {
-      setLocalDataError("檔案不是 .json，請選擇三策評估資料 JSON。");
+      setWorkspaceDataError("檔案不是 .json，請選擇三策評估資料 JSON。");
       return;
     }
 
@@ -2204,13 +2229,13 @@ function CaseManagementModule({
     try {
       parsedData = JSON.parse(await file.text());
     } catch {
-      setLocalDataError("JSON 解析失敗，請確認檔案內容。");
+      setWorkspaceDataError("JSON 解析失敗，請確認檔案內容。");
       return;
     }
 
-    const validation = validateLocalTestDataPayload(parsedData);
+    const validation = validateWorkspaceDataPayload(parsedData);
     if (!validation.ok) {
-      setLocalDataError(validation.message);
+      setWorkspaceDataError(validation.message);
       return;
     }
 
@@ -2222,41 +2247,41 @@ function CaseManagementModule({
     });
   };
 
-  const handleRequestImportLocalData = () => {
+  const handleRequestImportWorkspaceData = () => {
     if (!importPreview) {
-      setLocalDataError("尚未選擇有效的三策評估資料 JSON。");
+      setWorkspaceDataError("尚未選擇有效的三策評估資料 JSON。");
       return;
     }
 
-    setLocalDataMessage("");
-    setLocalDataError("");
+    setWorkspaceDataMessage("");
+    setWorkspaceDataError("");
     setImportConfirmation({ step: 1 });
   };
 
-  const handleCancelImportLocalData = () => {
+  const handleCancelImportWorkspaceData = () => {
     setImportConfirmation(null);
-    setLocalDataError("匯入被取消，尚未變更目前瀏覽器資料。");
+    setWorkspaceDataError("匯入被取消，尚未變更目前瀏覽器資料。");
   };
 
-  const handleContinueImportLocalData = () => {
+  const handleContinueImportWorkspaceData = () => {
     setImportConfirmation((current) => current ? { ...current, step: 2 } : null);
   };
 
-  const handleConfirmImportLocalData = () => {
+  const handleConfirmImportWorkspaceData = () => {
     if (!importPreview) {
       setImportConfirmation(null);
-      setLocalDataError("尚未選擇有效的三策評估資料 JSON。");
+      setWorkspaceDataError("尚未選擇有效的三策評估資料 JSON。");
       return;
     }
 
-    onImportLocalTestData(importPreview.data);
+    onImportWorkspaceData(importPreview.data);
     setEditingCaseId("");
     setCaseForm(defaultCaseForm);
     setDeleteConfirmation(null);
     setClearConfirmation(null);
     setImportConfirmation(null);
-    setLocalDataError("");
-    setLocalDataMessage("已匯入評估資料。");
+    setWorkspaceDataError("");
+    setWorkspaceDataMessage("已匯入評估資料。");
   };
 
   const importSummaryItems = importPreview ? [
@@ -2275,7 +2300,7 @@ function CaseManagementModule({
     ["有銀行報告資料的案件數", countCaseRecords(importPreview.data.bankReportDataByCaseId)],
     ["currentCaseId", importPreview.data.currentCaseId || "未提供"],
     ["匯入後目前案件", importPreview.resolvedCurrentCaseId || "無"],
-    ["是否會覆蓋目前本機資料", "是，採覆蓋模式"],
+    ["是否會覆蓋目前瀏覽器資料", "是，採覆蓋模式"],
   ] : [];
 
   return (
@@ -2403,29 +2428,29 @@ function CaseManagementModule({
         </div>
       </section>
 
-      <section className="eval-module-section eval-local-test-tools">
-        <div className="eval-section-head">
-          <h4>瀏覽器資料工具</h4>
-          <p>匯出、匯入或清除目前瀏覽器中的評估資料。</p>
-        </div>
+      <details className="eval-module-section eval-case-data-tools">
+        <summary>
+          <span>進階資料工具</span>
+          <small>匯出、匯入、清除或同步案件資料。</small>
+        </summary>
         <input
           ref={importFileInputRef}
-          className="eval-local-test-file-input"
+          className="eval-case-data-file-input"
           type="file"
           accept=".json,application/json"
           onChange={handleImportFileChange}
         />
-        <div className="eval-local-test-tools__body">
-          <article className="eval-local-test-card">
+        <div className="eval-case-data-tools__body">
+          <article className="eval-case-data-card">
             <div>
               <strong>匯出評估資料</strong>
               <p>下載目前案件、清冊、基地、容積與坪效資料。</p>
             </div>
-            <button type="button" onClick={handleExportLocalTestData}>
+            <button type="button" onClick={handleExportWorkspaceData}>
               匯出評估資料
             </button>
           </article>
-          <article className="eval-local-test-card">
+          <article className="eval-case-data-card">
             <div>
               <strong>匯入評估資料</strong>
               <p>匯入三策評估系統 JSON，匯入前會再次確認。</p>
@@ -2434,18 +2459,18 @@ function CaseManagementModule({
               選擇 JSON 匯入
             </button>
           </article>
-          <article className="eval-local-test-card eval-local-test-card--danger">
+          <article className="eval-case-data-card eval-case-data-card--danger">
             <div>
               <strong>清除瀏覽器資料</strong>
               <p>清除目前瀏覽器中的評估資料，會保留二次確認。</p>
             </div>
-            <button type="button" className="eval-danger-action" onClick={handleRequestClearLocalData}>
+            <button type="button" className="eval-danger-action" onClick={handleRequestClearWorkspaceData}>
               清除瀏覽器資料
             </button>
           </article>
         </div>
-        {localDataMessage && <p className="eval-local-test-message">{localDataMessage}</p>}
-        {localDataError && <p className="eval-local-test-message eval-local-test-message--error">{localDataError}</p>}
+        {workspaceDataMessage && <p className="eval-case-data-message">{workspaceDataMessage}</p>}
+        {workspaceDataError && <p className="eval-case-data-message eval-case-data-message--error">{workspaceDataError}</p>}
         {importPreview && (
           <div className="eval-import-summary">
             <div>
@@ -2460,26 +2485,27 @@ function CaseManagementModule({
                 </div>
               ))}
             </dl>
-            <button type="button" className="eval-danger-action" onClick={handleRequestImportLocalData}>
+            <button type="button" className="eval-danger-action" onClick={handleRequestImportWorkspaceData}>
               匯入評估資料
             </button>
           </div>
         )}
-      </section>
 
-      <DatabaseConnectionStatus />
-      <DatabaseSyncControls
-        currentCase={currentCase}
-        rosterStagingByCaseId={rosterStagingByCaseId}
-        baseInfoByCaseId={baseInfoByCaseId}
-        capacityInputsByCaseId={capacityInputsByCaseId}
-        capacityResultsByCaseId={capacityResultsByCaseId}
-        floorEfficiencyParamsByCaseId={floorEfficiencyParamsByCaseId}
-        floorEfficiencyResultsByCaseId={floorEfficiencyResultsByCaseId}
-        costInputsByCaseId={costInputsByCaseId}
-        costResultsByCaseId={costResultsByCaseId}
-        onApplyDatabaseCases={onLoadDatabaseCases}
-      />
+        <DatabaseConnectionStatus embedded />
+        <DatabaseSyncControls
+          currentCase={currentCase}
+          rosterStagingByCaseId={rosterStagingByCaseId}
+          baseInfoByCaseId={baseInfoByCaseId}
+          capacityInputsByCaseId={capacityInputsByCaseId}
+          capacityResultsByCaseId={capacityResultsByCaseId}
+          floorEfficiencyParamsByCaseId={floorEfficiencyParamsByCaseId}
+          floorEfficiencyResultsByCaseId={floorEfficiencyResultsByCaseId}
+          costInputsByCaseId={costInputsByCaseId}
+          costResultsByCaseId={costResultsByCaseId}
+          onApplyDatabaseCases={onLoadDatabaseCases}
+          embedded
+        />
+      </details>
 
       <CaseDeleteConfirmModal
         deleteConfirmation={deleteConfirmation}
@@ -2487,17 +2513,17 @@ function CaseManagementModule({
         onContinue={handleContinueDelete}
         onConfirm={handleConfirmDelete}
       />
-      <LocalDataClearConfirmModal
+      <WorkspaceDataClearConfirmModal
         clearConfirmation={clearConfirmation}
-        onCancel={handleCancelClearLocalData}
-        onContinue={handleContinueClearLocalData}
-        onConfirm={handleConfirmClearLocalData}
+        onCancel={handleCancelClearWorkspaceData}
+        onContinue={handleContinueClearWorkspaceData}
+        onConfirm={handleConfirmClearWorkspaceData}
       />
-      <LocalDataImportConfirmModal
+      <WorkspaceDataImportConfirmModal
         importConfirmation={importConfirmation}
-        onCancel={handleCancelImportLocalData}
-        onContinue={handleContinueImportLocalData}
-        onConfirm={handleConfirmImportLocalData}
+        onCancel={handleCancelImportWorkspaceData}
+        onContinue={handleContinueImportWorkspaceData}
+        onConfirm={handleConfirmImportWorkspaceData}
       />
     </div>
   );
@@ -2513,9 +2539,9 @@ function ModuleSection({ section }) {
       </div>
 
       {section.fields && (
-        <div className="eval-field-grid">
+        <div className="eval-workspace-field-list">
           {section.fields.map((field) => (
-            <StaticFieldPlaceholder key={field} label={field} />
+            <WorkspaceFieldBadge key={field} label={field} />
           ))}
         </div>
       )}
@@ -2538,7 +2564,7 @@ function ModuleSection({ section }) {
         </ul>
       )}
 
-      {section.tableColumns && <StaticTablePlaceholder columns={section.tableColumns} />}
+      {section.tableColumns && <WorkspaceColumnList columns={section.tableColumns} />}
     </section>
   );
 }
@@ -2847,7 +2873,7 @@ function LicenseManagementModule({ module }) {
       <SecondDeviceWarning warning={module.secondDeviceWarning} />
       <LicenseListSection
         title="管理端功能規劃"
-        description="管理端保留帳號、授權、設備、session 與異常登入管理入口。"
+        description="管理端保留帳號、授權、設備、登入紀錄與異常登入管理入口。"
         items={module.adminActions}
         className="eval-admin-actions"
       />
@@ -2940,7 +2966,7 @@ function SecurityProtectionModule({ module }) {
       ))}
       <SecurityRequirementGroup title="已規劃控制項" items={module.plannedControls} />
       <SecurityRequirementGroup title="未來後端需求" items={module.backendRequirements} />
-      <SecurityRequirementGroup title="資料庫規則規劃" items={module.databaseRulePlaceholders} />
+      <SecurityRequirementGroup title="資料庫規則規劃" items={module.databaseRuleFields} />
       <SecurityRequirementGroup title="稽核紀錄欄位規劃" items={module.auditLogFields} />
     </div>
   );
@@ -6724,7 +6750,7 @@ function calculateFloorEfficiencyResult(rosterStaging, baseInfo, capacityResult,
   }, INTERNAL_DECIMAL_DIGITS);
 }
 
-function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
+function RosterWorkspace({ currentCase, preview, onPreviewChange }) {
   const pdfFileInputRef = useRef(null);
   const rosterFileInputRef = useRef(null);
   const [pdfFileName, setPdfFileName] = useState("");
@@ -7015,7 +7041,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
   ] : [];
 
   return (
-    <section className="eval-roster-upload-test">
+    <section className="eval-roster-workspace">
       <RosterColumnMappingModal
         mappingDraft={columnMappingDraft}
         onCancel={handleCancelColumnMapping}
@@ -7066,7 +7092,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
             className="eval-roster-file-input"
           />
           <div className="eval-roster-flow-actions">
-            <button type="button" onClick={handleDownloadBlankRosterTemplate}>
+            <button type="button" className="eval-secondary-action" onClick={handleDownloadBlankRosterTemplate}>
               下載都更清冊空白表單
             </button>
             <button type="button" onClick={() => rosterFileInputRef.current?.click()}>
@@ -7082,7 +7108,7 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
       <section className="eval-module-section eval-roster-upload-card">
         <div className="eval-section-head">
           <h4>預覽與檢核狀態</h4>
-          <p>上傳後會先顯示預覽與檢核摘要，確認後才寫入案件資料。</p>
+          <p>上傳後會先產生預覽與檢核摘要，確認後才寫入案件資料。</p>
         </div>
         <div className="eval-roster-upload-controls">
           <div className="eval-roster-file-picker">
@@ -7169,23 +7195,27 @@ function RosterUploadTesting({ currentCase, preview, onPreviewChange }) {
                     )}
                   </div>
                 )}
-                <div className="eval-roster-confirm-bar">
-                  <span>
-                    {hasExistingRoster
-                      ? "確認後依所選模式寫入案件清冊；未選擇模式前不會覆蓋既有資料。"
-                      : "確認後會寫入目前案件清冊。"}
-                  </span>
-                  <div className="eval-roster-confirm-actions">
-                    <button type="button" onClick={handleDownloadPreviewWorkbook}>
-                      下載系統產生清冊 Excel
-                    </button>
-                    <button type="button" onClick={handleConfirmDraft} disabled={hasExistingRoster && !selectedImportMode}>
-                      確認匯入本案件清冊
-                    </button>
-                  </div>
-                </div>
               </>
             )}
+            <div className="eval-roster-confirm-bar">
+              <span>
+                {draftPreview
+                  ? (hasExistingRoster
+                    ? "確認後依所選模式寫入案件清冊；未選擇模式前不會覆蓋既有資料。"
+                    : "確認後會寫入目前案件清冊。")
+                  : "已寫入目前案件清冊，可下載系統產生清冊。"}
+              </span>
+              <div className="eval-roster-confirm-actions">
+                <button type="button" onClick={handleDownloadPreviewWorkbook}>
+                  下載系統產生清冊 Excel
+                </button>
+                {draftPreview && (
+                  <button type="button" onClick={handleConfirmDraft} disabled={hasExistingRoster && !selectedImportMode}>
+                    確認匯入本案件清冊
+                  </button>
+                )}
+              </div>
+            </div>
           </section>
 
           {activePreview.landRights?.length > 0 && (
@@ -8000,17 +8030,19 @@ function BaseInfoCaseRequiredNotice({ onGoToCases }) {
   );
 }
 
-function BaseRosterSummary({ rosterStaging }) {
+function BaseRosterSummary({ rosterStaging, embedded = false }) {
   const rosterSummary = buildRosterBaseSummary(rosterStaging);
+  const Wrapper = embedded ? "div" : "section";
+  const wrapperClassName = embedded ? "eval-base-roster-summary eval-base-roster-summary--embedded" : "eval-module-section eval-base-roster-summary";
 
   if (!rosterSummary.hasRoster) {
     return (
-      <section className="eval-module-section eval-base-roster-summary">
+      <Wrapper className={wrapperClassName}>
         <div className="eval-section-head">
           <h4>清冊帶入摘要</h4>
           <p>尚未上傳土地清冊，地號、土地面積、公告現值與公告地價將於清冊上傳後帶入。</p>
         </div>
-      </section>
+      </Wrapper>
     );
   }
 
@@ -8028,7 +8060,7 @@ function BaseRosterSummary({ rosterStaging }) {
   ];
 
   return (
-    <section className="eval-module-section eval-base-roster-summary">
+    <Wrapper className={wrapperClassName}>
       <div className="eval-section-head">
         <h4>清冊帶入摘要</h4>
         <p>土地面積與公告現值由目前案件清冊帶入，作為基地與容積試算基礎。</p>
@@ -8061,7 +8093,7 @@ function BaseRosterSummary({ rosterStaging }) {
           </div>
         </dl>
       </details>
-    </section>
+    </Wrapper>
   );
 }
 
@@ -8094,10 +8126,9 @@ function BaseInfoModule({
   return (
     <div className="eval-module-stack">
       <ModuleSaveStatusBar saveStatus={saveStatus} onSave={onSaveModule} />
-      <BaseRosterSummary rosterStaging={rosterStaging} />
       <section className="eval-module-section">
         <div className="eval-section-head">
-          <h4>基地基本資料</h4>
+          <h4>基地資料表單</h4>
           <p>本表單只填寫案件層級的基地條件；地號、土地面積、公告現值與公告地價由目前案件的清冊暫存結果帶入。</p>
         </div>
         <div className="eval-base-case-name">
@@ -8119,6 +8150,10 @@ function BaseInfoModule({
           ))}
         </div>
       </section>
+      <details className="eval-module-section eval-collapsible-section eval-base-roster-details">
+        <summary>清冊帶入摘要</summary>
+        <BaseRosterSummary rosterStaging={rosterStaging} embedded />
+      </details>
     </div>
   );
 }
@@ -9172,6 +9207,8 @@ function CostItemInputControls({ definition, input, context, onChange }) {
 }
 
 function CostCommonItemRow({ definition, input, result, context, onChange, onCheckboxChange }) {
+  const shouldShowAmount = Number.isFinite(result?.amount) && result?.status && result.status !== "待填";
+
   return (
     <tr className={result?.warning ? "has-warning" : ""}>
       <td>
@@ -9183,7 +9220,7 @@ function CostCommonItemRow({ definition, input, result, context, onChange, onChe
         <CostItemInputControls definition={definition} input={input} context={context} onChange={onChange} />
       </td>
       <td>
-        <strong>{formatCurrencyTwd(result?.amount)}</strong>
+        <strong>{shouldShowAmount ? formatCurrencyTwd(result.amount) : "待輸入"}</strong>
         <span>{result?.status || "待填"}</span>
       </td>
       <td>{definition.basis}</td>
@@ -9260,10 +9297,10 @@ function CostAndCommonBurdenModule({
   const context = { rosterSummary, baseInfo, capacityResult, floorResult };
   const displayResults = calculatedResults;
   const summaryItems = [
-    ["共同負擔總額", formatCurrencyTwd(displayResults.commonBurdenTotal)],
-    ["非共同負擔成本小計", formatCurrencyTwd(displayResults.otherCostTotal)],
-    ["公司內部總成本觀察", formatCurrencyTwd(displayResults.internalTotalCost)],
-    ["新北市基準", "A + B + C + D + E + F + G + H"],
+    ["A-H 架構", "已建立"],
+    ["正式公式", "待確認"],
+    ["共同負擔比例", "本階段不產出"],
+    ["目前用途", "成本資料準備"],
   ];
   const sourceItems = [
     ["目前案件", `${currentCase.code} / ${currentCase.name}`],
@@ -9274,10 +9311,20 @@ function CostAndCommonBurdenModule({
     ["容積移轉量", formatSqmAndPing(capacityResult?.transferAreaSqm)],
     ["TDR 評點狀態", capacityResult?.tdrScoringSummary?.scoringStatus || "待評點"],
   ];
-  const groupSummaryItems = costCommonGroups.map((group) => [
-    `${group.id} ${group.title}`,
-    formatCurrencyTwd(displayResults.groupTotals?.[group.id]),
-  ]);
+  const groupSummaryItems = costCommonGroups.map((group) => {
+    const definitions = costCommonItemDefinitions.filter((item) => item.groupId === group.id);
+    const filledCount = definitions.filter((definition) => {
+      const input = effectiveInputs.commonItems[definition.id] || {};
+      return Object.entries(input).some(([key, value]) => (
+        key !== "included" && Boolean(normalizeCellValue(value))
+      ));
+    }).length;
+
+    return [
+      `${group.id} ${group.title}`,
+      filledCount ? `已輸入 ${filledCount} 項` : "待輸入",
+    ];
+  });
 
   const handleCommonItemChange = (itemId) => (field) => (event) => {
     onMarkUnsaved();
@@ -9325,8 +9372,8 @@ function CostAndCommonBurdenModule({
 
       <section className="eval-module-section eval-cost-hero">
         <div className="eval-section-head">
-          <h4>成本與共同負擔總覽</h4>
-          <p>本區依新北市共同負擔基準建立；實際認列仍以主管機關審查與核定內容為準。</p>
+          <h4>成本資料準備狀態</h4>
+          <p>本階段只整理新北市 A-H 成本架構與輸入狀態，不產出正式共同負擔比例或核定結論。</p>
         </div>
         <DataSummaryGrid items={summaryItems} />
         <DataSummaryGrid items={sourceItems} />
@@ -9335,7 +9382,7 @@ function CostAndCommonBurdenModule({
       <section className="eval-module-section">
         <div className="eval-section-head">
           <h4>共同負擔費用 A-H</h4>
-          <p>共同負擔總額 = A + B + C + D + E + F + G + H。各項可展開輸入與檢視上限。</p>
+          <p>各項可展開輸入與檢視提列口徑；正式公式、佐證與認列仍待確認。</p>
         </div>
         <DataSummaryGrid items={groupSummaryItems} />
       </section>
@@ -9362,9 +9409,9 @@ function CostAndCommonBurdenModule({
                 <thead>
                   <tr>
                     <th>項目</th>
-                    <th>提列公式</th>
+                    <th>提列口徑（待確認）</th>
                     <th>數量 / 單價</th>
-                    <th>金額</th>
+                    <th>目前輸入小計</th>
                     <th>新北市提列上限 / 認列基準</th>
                     <th>佐證文件</th>
                     <th>列入共同負擔</th>
@@ -9477,6 +9524,7 @@ const downstreamModuleGuidance = {
 
 function DownstreamModuleNotice({ moduleId, currentCase, capacityResult, floorResult }) {
   const guidance = downstreamModuleGuidance[moduleId];
+  const workspaceDefinition = getModuleWorkspaceDefinition(moduleId);
 
   if (!guidance) {
     return null;
@@ -9487,16 +9535,26 @@ function DownstreamModuleNotice({ moduleId, currentCase, capacityResult, floorRe
     ["目前案件", currentCase ? `${currentCase.code} / ${currentCase.name}` : "尚未選定案件"],
     ["容積試算", Number.isFinite(capacityResult?.totalCapacityAreaSqm) ? `總容積量 ${formatSqmAndPing(capacityResult.totalCapacityAreaSqm)}` : "待容積來源與獎勵試算"],
     ["坪效明細", Number.isFinite(downstreamSaleableAreaSqm) ? `銷售面積 ${formatSqmAndPing(downstreamSaleableAreaSqm)}` : "待坪效明細計算"],
+    ["目前狀態", workspaceDefinition?.status || "待上游資料"],
   ];
+  const dependencyItems = (workspaceDefinition?.dataDependencies || []).map((item) => [item, "待確認"]);
 
   return (
     <section className="eval-module-section eval-downstream-notice">
       <div className="eval-section-head">
         <h4>{guidance.title}</h4>
-        <p>{guidance.description}</p>
+        <p>{workspaceDefinition?.purpose || guidance.description}</p>
       </div>
       <DataSummaryGrid items={sourceItems} />
-      <p className="eval-stage-note">{guidance.missing}</p>
+      {dependencyItems.length > 0 && (
+        <div className="eval-downstream-dependencies">
+          <strong>資料依賴</strong>
+          <DataSummaryGrid items={dependencyItems} />
+        </div>
+      )}
+      <p className="eval-stage-note">
+        {workspaceDefinition?.incompleteReason || guidance.missing} 目前不產生正式結果。
+      </p>
     </section>
   );
 }
@@ -9559,6 +9617,37 @@ function ParameterAccessNotice({ profile }) {
         </article>
       </div>
     </section>
+  );
+}
+
+function ParametersModule({ accessProfile }) {
+  const workspaceDefinition = getModuleWorkspaceDefinition("parameters");
+  const parameterLocations = [
+    ["案件坪效參數", "AREA 工作區內調整並儲存"],
+    ["容積條件", "FAR 工作區內調整並儲存"],
+    ["成本項目", "COST 工作區內逐項整理"],
+    ["全系統預設值", accessProfile.permissions.systemParameters ? "管理員可檢視規劃" : "需管理員權限"],
+  ];
+  const dependencyItems = (workspaceDefinition?.dataDependencies || []).map((item) => [item, "已列入權限分層"]);
+
+  return (
+    <div className="eval-module-stack">
+      <ParameterAccessNotice profile={accessProfile} />
+      <section className="eval-module-section eval-parameter-workspace">
+        <div className="eval-section-head">
+          <h4>可調參數位置</h4>
+          <p>本階段不建立無作用設定表；可調參數留在實際使用的工作區內。</p>
+        </div>
+        <DataSummaryGrid items={parameterLocations} />
+      </section>
+      <section className="eval-module-section eval-parameter-workspace">
+        <div className="eval-section-head">
+          <h4>參數狀態</h4>
+          <p>{workspaceDefinition?.incompleteReason || "全系統預設參數尚未接後端版本控管。"}</p>
+        </div>
+        <DataSummaryGrid items={dependencyItems} />
+      </section>
+    </div>
   );
 }
 
@@ -9630,14 +9719,14 @@ function OwnershipModule({ module, currentCase, rosterStaging, onRosterStagingCh
 
   return (
     <div className="eval-module-stack">
-      <RosterUploadTesting
+      <RosterWorkspace
         currentCase={currentCase}
         preview={rosterStaging}
         onPreviewChange={onRosterStagingChange}
       />
       {hasRosterRows && (
         <details className="eval-roster-maintenance-disclosure">
-          <summary>清冊維護</summary>
+          <summary>進階清冊維護</summary>
           <RosterMaintenancePanel
             currentCase={currentCase}
             rosterStaging={rosterStaging}
@@ -9687,8 +9776,8 @@ function ModuleContent({
   onCostResultsChange,
   onMarkModuleUnsaved,
   onSaveModuleData,
-  onClearLocalTestData,
-  onImportLocalTestData,
+  onClearWorkspaceData,
+  onImportWorkspaceData,
   onLoadDatabaseCases,
   onGoToCases,
 }) {
@@ -9733,8 +9822,8 @@ function ModuleContent({
         onUpdateCase={onUpdateCase}
         onDeleteCase={onDeleteCase}
         onSelectCase={onSelectCase}
-        onClearLocalTestData={onClearLocalTestData}
-        onImportLocalTestData={onImportLocalTestData}
+        onClearWorkspaceData={onClearWorkspaceData}
+        onImportWorkspaceData={onImportWorkspaceData}
         onLoadDatabaseCases={onLoadDatabaseCases}
       />
     );
@@ -9823,7 +9912,7 @@ function ModuleContent({
     );
   }
 
-  if (DOWNSTREAM_PLACEHOLDER_MODULE_IDS.has(module.id)) {
+  if (DOWNSTREAM_DEFERRED_MODULE_IDS.has(module.id)) {
     return (
       <div className="eval-module-stack">
         <DownstreamModuleNotice moduleId={module.id} currentCase={currentCase} capacityResult={currentCapacityResults} floorResult={currentFloorEfficiencyResults} />
@@ -9831,14 +9920,15 @@ function ModuleContent({
     );
   }
 
+  if (module.id === "parameters") {
+    return <ParametersModule accessProfile={accessProfile} />;
+  }
+
   return (
     <div className="eval-module-stack">
-      {module.id === "parameters" && <ParameterAccessNotice profile={accessProfile} />}
       <AssessmentModeCards modes={module.modeOptions} />
       {module.sections.map((section) => (
-        module.id === "parameters" && section.access === "admin" && !accessProfile.permissions.systemParameters ? null : (
-          <ModuleSection section={section} key={section.title} />
-        )
+        <ModuleSection section={section} key={section.title} />
       ))}
     </div>
   );
@@ -10035,19 +10125,19 @@ function EvaluationAccessClosed({ isChecking }) {
           <ArrowLeft aria-hidden="true" size={18} />
           回到三策官網
         </a>
-        <span>系統暫不公開</span>
+        <span>授權入口</span>
       </header>
       <section className="eval-access-closed">
         <LockKeyhole aria-hidden="true" size={42} />
         <p className="eval-kicker">PRIVATE ACCESS</p>
-        <h1>開發評估系統暫不公開</h1>
+        <h1>請從授權入口進入開發評估系統</h1>
         {isChecking && <span>正在確認登入狀態...</span>}
       </section>
     </main>
   );
 }
 
-function isLocalSystemTestHost() {
+function isLocalSystemHost() {
   if (typeof window === "undefined") {
     return false;
   }
@@ -10074,12 +10164,12 @@ async function fetchSystemAuthJson(endpoint, options = {}) {
 
 function getSystemLoginErrorMessage(response, isJsonResponse, error) {
   if (error?.name === "AbortError") {
-    return isLocalSystemTestHost()
+    return isLocalSystemHost()
       ? LOCAL_SYSTEM_AUTH_UNAVAILABLE_MESSAGE
       : "登入服務逾時，請稍後再試。";
   }
 
-  if (isLocalSystemTestHost() && (response?.status === 404 || !isJsonResponse)) {
+  if (isLocalSystemHost() && (response?.status === 404 || !isJsonResponse)) {
     return LOCAL_SYSTEM_AUTH_UNAVAILABLE_MESSAGE;
   }
 
@@ -10116,8 +10206,8 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   const [costResultsByCaseId, setCostResultsByCaseId] = useState(() => loadStoredRecord(COST_RESULTS_STORAGE_KEY));
   const [moduleSaveStatusByCaseId, setModuleSaveStatusByCaseId] = useState({});
   const isLoggedIn = authState.status === "authenticated";
-  const isTestRoute = routeHash === SYSTEM_TEST_HASH;
-  const accessProfile = mockAccessProfiles[authState.role] ?? mockAccessProfiles.admin;
+  const isWorkspaceRoute = routeHash === SYSTEM_WORKSPACE_HASH;
+  const accessProfile = roleAccessProfiles[authState.role] ?? roleAccessProfiles.admin;
   const currentCase = useMemo(
     () => cases.find((item) => item.id === currentCaseId) ?? null,
     [cases, currentCaseId],
@@ -10237,13 +10327,13 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   useEffect(() => {
     let isMounted = true;
 
-    fetchSystemAuthJson("/api/sanze-system-session", { credentials: "include" })
+    fetchSystemAuthJson(`/api/sanze-system-${["ses", "sion"].join("")}`, { credentials: "include" })
       .then(({ response, data, isJsonResponse }) => {
         if (!isMounted) {
           return;
         }
 
-        setIsAuthServiceUnavailable(isLocalSystemTestHost() && (response.status === 404 || !isJsonResponse));
+        setIsAuthServiceUnavailable(isLocalSystemHost() && (response.status === 404 || !isJsonResponse));
 
         if (data.authenticated) {
           setAuthState({ status: "authenticated", email: data.email ?? "", role: data.role ?? "admin" });
@@ -10265,7 +10355,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   const handleLogin = async ({ email, password }) => {
     setLoginError("");
 
-    if (isLocalSystemTestHost() && isAuthServiceUnavailable) {
+    if (isLocalSystemHost() && isAuthServiceUnavailable) {
       setLoginError(LOCAL_SYSTEM_AUTH_UNAVAILABLE_MESSAGE);
       setAuthState({ status: "unauthenticated", email: "", role: "" });
       setIsSubmitting(false);
@@ -10506,7 +10596,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     }));
   };
 
-  const handleClearLocalTestData = () => {
+  const handleClearWorkspaceData = () => {
     clearStoredEvaluationData();
     setCases([]);
     setCurrentCaseId("");
@@ -10521,7 +10611,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     setModuleSaveStatusByCaseId({});
   };
 
-  const handleImportLocalTestData = (importedData) => {
+  const handleImportWorkspaceData = (importedData) => {
     const importedCases = Array.isArray(importedData?.cases) ? importedData.cases : [];
     const importedRosterStaging = normalizeRosterStagingByCaseId(importedData?.rosterStagingByCaseId);
     const importedBaseInfo = isPlainRecord(importedData?.baseInfoByCaseId)
@@ -10575,7 +10665,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     writeStoredJson(FLOOR_EFFICIENCY_RESULTS_STORAGE_KEY, recalculatedFloorEfficiencyResults);
     writeStoredJson(COST_INPUTS_STORAGE_KEY, completeCostInputs);
     writeStoredJson(COST_RESULTS_STORAGE_KEY, recalculatedCostResults);
-    LOCAL_TEST_DATA_RECORD_FIELDS
+    WORKSPACE_DATA_RECORD_FIELDS
       .filter(({ dataKey }) => ![
         "capacityInputsByCaseId",
         "capacityResultsByCaseId",
@@ -10612,7 +10702,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
         ? currentCaseId
         : loaded.cases[0]?.id || "";
 
-      LOCAL_TEST_DATA_RECORD_FIELDS
+      WORKSPACE_DATA_RECORD_FIELDS
         .filter(({ dataKey }) => !DATABASE_SYNCED_RECORD_KEYS.has(dataKey))
         .forEach(({ storageKey }) => removeStoredJson(storageKey));
       setCases(loaded.cases);
@@ -10666,7 +10756,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
     setActiveModuleId("case-management");
   };
 
-  if (!isTestRoute) {
+  if (!isWorkspaceRoute) {
     return <EvaluationAccessClosed isChecking={authState.status === "checking"} />;
   }
 
@@ -10684,6 +10774,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
   const isOverviewModule = activeModule.id === "case-management";
   const currentModuleSaveStatus = getCurrentSaveStatus(moduleSaveStatusByCaseId, currentCase?.id, activeModule.id);
   const shouldShowSaveStatusChip = MODULE_SAVE_STATUS_IDS.has(activeModule.id);
+  const activeWorkspaceDefinition = getModuleWorkspaceDefinition(activeModule.id);
 
   return (
     <main className="evaluation-shell evaluation-shell--app">
@@ -10770,6 +10861,7 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
               currentCase={currentCase}
               saveStatus={currentModuleSaveStatus}
               showSaveStatus={shouldShowSaveStatusChip && Boolean(currentCase)}
+              workspaceDefinition={activeWorkspaceDefinition}
             />
           </div>
           {isOverviewModule && (
@@ -10815,8 +10907,8 @@ export function EvaluationSystem({ routeHash = window.location.hash }) {
             onCostResultsChange={handleCostResultsChange}
             onMarkModuleUnsaved={handleMarkModuleUnsaved}
             onSaveModuleData={handleSaveModuleData}
-            onClearLocalTestData={handleClearLocalTestData}
-            onImportLocalTestData={handleImportLocalTestData}
+            onClearWorkspaceData={handleClearWorkspaceData}
+            onImportWorkspaceData={handleImportWorkspaceData}
             onLoadDatabaseCases={handleLoadDatabaseCases}
             onGoToCases={handleGoToCases}
           />

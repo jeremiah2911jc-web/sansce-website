@@ -339,7 +339,7 @@ function parseOwnerBlocks(compactOwnerSection, lotContext, importedAt, issues) {
       notes: isTrust
         ? `登記名義人為${registeredOwnerName}，信託財產。`
         : "依可讀電子謄本解析。",
-      validationStatus: "PDF 文字層解析草稿，需人工確認",
+      validationStatus: "PDF 文字層解析結果，需人工確認",
       validationMessages: ["PDF 謄本資料已轉為都更清冊標準欄位，仍需人工確認。"],
     });
   }
