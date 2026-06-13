@@ -47,6 +47,7 @@ const services = [
 const desktopDownloads = [
   {
     title: "Mac 版",
+    manifestPlatform: "macos",
     platform: "macOS",
     subtitle: "適用 Apple Silicon 與 Intel Mac",
     fileName: "sanze-app-macos-universal.dmg",
@@ -57,6 +58,7 @@ const desktopDownloads = [
   },
   {
     title: "Windows 版",
+    manifestPlatform: "windows",
     platform: "Windows",
     subtitle: "適用 Windows 10 / 11 64-bit 電腦",
     fileName: "sanze-app-windows-x64.exe",
@@ -129,6 +131,7 @@ function DownloadCard({ item }) {
 export default function App() {
   const year = new Date().getFullYear();
   const [routeHash, setRouteHash] = useState(() => window.location.hash);
+  const [releaseInfo, setReleaseInfo] = useState(null);
   const isSystemRoute = routeHash.startsWith("#system");
 
   useEffect(() => {
@@ -138,9 +141,41 @@ export default function App() {
     return () => window.removeEventListener("hashchange", handleRoute);
   }, []);
 
+  useEffect(() => {
+    if (isSystemRoute) {
+      return undefined;
+    }
+
+    let isMounted = true;
+
+    fetch("/downloads/sanze-app-release.json")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (isMounted && data) {
+          setReleaseInfo(data);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isSystemRoute]);
+
   if (isSystemRoute) {
     return <EvaluationSystem routeHash={routeHash} />;
   }
+
+  const downloadItems = desktopDownloads.map((item) => {
+    const releaseItem = releaseInfo?.downloads?.find((download) => download.platform === item.manifestPlatform);
+
+    return {
+      ...item,
+      available: Boolean(releaseItem?.available),
+      fileName: releaseItem?.fileName ?? item.fileName,
+      href: releaseItem?.url ?? item.href,
+    };
+  });
 
   return (
     <div className="site-shell">
@@ -247,7 +282,7 @@ export default function App() {
             </article>
 
             <div className="download-grid" aria-label="下載項目">
-              {desktopDownloads.map((item) => (
+              {downloadItems.map((item) => (
                 <DownloadCard item={item} key={item.platform} />
               ))}
             </div>

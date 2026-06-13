@@ -175,7 +175,7 @@
 }
 
 @media (max-width: 760px) {
-  .site-nav {
+  .site-shell .site-nav {
     display: none;
   }
 
