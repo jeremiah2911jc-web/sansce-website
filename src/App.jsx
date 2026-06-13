@@ -78,15 +78,6 @@ function ButtonLink({ href, children, variant = "primary" }) {
   );
 }
 
-function ButtonAction({ onClick, children, variant = "primary" }) {
-  return (
-    <button className={`button-link button-link--${variant}`} type="button" onClick={onClick}>
-      <span>{children}</span>
-      <ArrowRight aria-hidden="true" size={18} strokeWidth={2} />
-    </button>
-  );
-}
-
 function LogoMark() {
   return (
     <div className="brand">
@@ -182,14 +173,6 @@ export default function App() {
     };
   }, [isSystemRoute]);
 
-  function openDownloadPanel() {
-    setIsDownloadPanelOpen(true);
-
-    if (window.location.hash !== "#app-download") {
-      window.location.hash = "app-download";
-    }
-  }
-
   function closeDownloadPanel() {
     setIsDownloadPanelOpen(false);
 
@@ -250,10 +233,6 @@ export default function App() {
         <section className="hero" aria-labelledby="hero-title">
           <header className="site-header">
             <LogoMark />
-            <nav className="site-nav" aria-label="主選單">
-              <a href="#services">服務內容</a>
-              <a href="#contact">聯絡三策</a>
-            </nav>
           </header>
 
           <div className="hero__content">
@@ -277,12 +256,6 @@ export default function App() {
               <p className="hero__summary">
                 三策協助地主從基地條件、分配邏輯、住戶共識與推動流程開始釐清，讓社區在都市更新、危老重建與自主更新的路上，能夠看懂條件、整合意見、掌握主導權。
               </p>
-              <div className="hero__actions">
-                <ButtonAction onClick={openDownloadPanel}>下載桌面版 App</ButtonAction>
-                <ButtonLink href="#services" variant="outline">
-                  了解服務內容
-                </ButtonLink>
-              </div>
             </div>
           </div>
 
@@ -419,10 +392,6 @@ export default function App() {
                   <span>申請系統授權</span>
                   <ArrowUpRight aria-hidden="true" size={17} />
                 </a>
-                <button className="system-card__button system-card__button--secondary" type="button" onClick={openDownloadPanel}>
-                  <span>下載桌面版</span>
-                  <Download aria-hidden="true" size={17} />
-                </button>
                 <span className="system-card__status">正式授權後開通</span>
               </div>
             </article>
@@ -451,9 +420,6 @@ export default function App() {
               <div className="download-modal__intro">
                 <p className="section-kicker">DESKTOP APP</p>
                 <h2 id="app-download-title">三策 App 桌面版</h2>
-                <p>
-                  三策 App 採桌面應用程式形式提供，適用於蘋果電腦與 Windows 電腦。正式安裝檔完成簽章、公證與版本驗收後，會在此提供桌機與筆電版本下載。
-                </p>
               </div>
               <button
                 className="download-modal__close"
