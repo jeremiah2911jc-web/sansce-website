@@ -173,6 +173,14 @@ export default function App() {
     };
   }, [isSystemRoute]);
 
+  function openDownloadPanel() {
+    setIsDownloadPanelOpen(true);
+
+    if (window.location.hash !== "#app-download") {
+      window.location.hash = "app-download";
+    }
+  }
+
   function closeDownloadPanel() {
     setIsDownloadPanelOpen(false);
 
@@ -392,6 +400,10 @@ export default function App() {
                   <span>申請系統授權</span>
                   <ArrowUpRight aria-hidden="true" size={17} />
                 </a>
+                <button className="system-card__button system-card__button--secondary" type="button" onClick={openDownloadPanel}>
+                  <span>下載桌面版</span>
+                  <Download aria-hidden="true" size={17} />
+                </button>
                 <span className="system-card__status">正式授權後開通</span>
               </div>
             </article>
