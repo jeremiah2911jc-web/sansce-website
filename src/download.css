@@ -1,26 +1,67 @@
-.app-download {
-  display: grid;
-  gap: 42px;
-  border-top: 1px solid rgba(8, 59, 48, 0.08);
-  background: linear-gradient(180deg, #f7faf8 0%, #ffffff 100%);
+.button-link,
+.system-card__button,
+.download-modal__close {
+  font-family: inherit;
 }
 
-.app-download__intro {
-  display: grid;
-  max-width: 860px;
-  gap: 14px;
+button.button-link,
+button.system-card__button,
+.download-modal__close {
+  appearance: none;
 }
 
-.app-download__intro h2 {
+button.button-link,
+button.system-card__button {
+  cursor: pointer;
+}
+
+.download-modal {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(8, 23, 19, 0.48);
+  padding: clamp(16px, 3vw, 34px);
+}
+
+.download-modal__panel {
+  display: grid;
+  width: min(100%, 960px);
+  max-height: min(760px, calc(100vh - 32px));
+  gap: 26px;
+  overflow: auto;
+  border: 1px solid rgba(8, 59, 48, 0.14);
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, #f7faf8 0%, #ffffff 42%),
+    var(--white);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.22);
+  padding: clamp(22px, 4vw, 38px);
+}
+
+.download-modal__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: start;
+}
+
+.download-modal__intro {
+  display: grid;
+  max-width: 760px;
+  gap: 12px;
+}
+
+.download-modal__intro h2 {
   margin: 0;
   color: var(--green-950);
-  font-size: clamp(2.2rem, 4vw, 4.2rem);
+  font-size: clamp(2rem, 4vw, 3.5rem);
   font-weight: 900;
   line-height: 1.08;
 }
 
-.app-download__intro p,
-.download-feature p,
+.download-modal__intro p,
 .download-card p:not(.download-card__platform) {
   margin: 0;
   color: var(--gray-700);
@@ -28,28 +69,41 @@
   line-height: 1.85;
 }
 
-.app-download__layout {
+.download-modal__close {
   display: grid;
-  grid-template-columns: minmax(320px, 0.82fr) minmax(0, 1.18fr);
-  gap: clamp(18px, 3vw, 34px);
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid rgba(8, 59, 48, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--green-950);
+  cursor: pointer;
 }
 
-.download-feature,
+.download-modal__close:focus-visible,
+.download-card__button:focus-visible {
+  outline: 3px solid rgba(200, 168, 98, 0.5);
+  outline-offset: 3px;
+}
+
+.download-modal__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
 .download-card {
-  border: 1px solid rgba(8, 59, 48, 0.1);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 18px 42px rgba(21, 51, 42, 0.08);
-}
-
-.download-feature {
   display: flex;
+  min-height: 0;
   flex-direction: column;
-  justify-content: center;
-  padding: clamp(28px, 4vw, 46px);
+  border: 1px solid rgba(8, 59, 48, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 18px 42px rgba(21, 51, 42, 0.08);
+  padding: 24px;
 }
 
-.download-feature__icon,
 .download-card__icon {
   display: grid;
   width: 54px;
@@ -60,44 +114,12 @@
   color: var(--green-800);
 }
 
-.download-feature h3,
 .download-card h3 {
   margin: 18px 0 10px;
   color: var(--green-950);
+  font-size: 1.45rem;
   font-weight: 900;
   line-height: 1.25;
-}
-
-.download-feature h3 {
-  font-size: clamp(1.45rem, 2vw, 2rem);
-}
-
-.download-card h3 {
-  font-size: 1.45rem;
-}
-
-.download-feature ul {
-  display: grid;
-  gap: 10px;
-  margin: 22px 0 0;
-  padding: 0 0 0 18px;
-  color: var(--green-900);
-  font-size: 0.92rem;
-  font-weight: 850;
-  line-height: 1.55;
-}
-
-.download-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.download-card {
-  display: flex;
-  min-height: 360px;
-  flex-direction: column;
-  padding: 24px;
 }
 
 .download-card__body {
@@ -167,19 +189,49 @@
   color: var(--green-900);
 }
 
-@media (max-width: 980px) {
-  .app-download__layout,
-  .download-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 @media (max-width: 760px) {
   .site-shell .site-nav {
     display: none;
   }
 
+  .download-modal {
+    align-items: stretch;
+    padding: 12px;
+  }
+
+  .download-modal__panel {
+    width: 100%;
+    max-height: calc(100vh - 24px);
+    gap: 22px;
+    border-radius: 18px;
+    padding: 22px;
+  }
+
+  .download-modal__header,
+  .download-modal__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .download-modal__close {
+    justify-self: end;
+    order: -1;
+  }
+
   .download-card {
-    min-height: 0;
+    padding: 22px;
+  }
+}
+
+@media (max-width: 430px) {
+  .download-modal__panel {
+    padding: 18px;
+  }
+
+  .download-modal__intro h2 {
+    font-size: 1.9rem;
+  }
+
+  .download-card {
+    padding: 18px;
   }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   ArrowRight,
@@ -11,7 +11,7 @@ import {
   MapPinned,
   MonitorDown,
   Phone,
-  ShieldCheck,
+  X,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { EvaluationSystem } from "./EvaluationSystem.jsx";
@@ -78,6 +78,15 @@ function ButtonLink({ href, children, variant = "primary" }) {
   );
 }
 
+function ButtonAction({ onClick, children, variant = "primary" }) {
+  return (
+    <button className={`button-link button-link--${variant}`} type="button" onClick={onClick}>
+      <span>{children}</span>
+      <ArrowRight aria-hidden="true" size={18} strokeWidth={2} />
+    </button>
+  );
+}
+
 function LogoMark() {
   return (
     <div className="brand">
@@ -132,13 +141,24 @@ export default function App() {
   const year = new Date().getFullYear();
   const [routeHash, setRouteHash] = useState(() => window.location.hash);
   const [releaseInfo, setReleaseInfo] = useState(null);
+  const [isDownloadPanelOpen, setIsDownloadPanelOpen] = useState(() => window.location.hash === "#app-download");
+  const closeDownloadButtonRef = useRef(null);
   const isSystemRoute = routeHash.startsWith("#system");
 
   useEffect(() => {
-    const handleRoute = () => setRouteHash(window.location.hash);
+    const handleRoute = () => {
+      const nextHash = window.location.hash;
+
+      setRouteHash(nextHash);
+      setIsDownloadPanelOpen(nextHash === "#app-download");
+    };
 
     window.addEventListener("hashchange", handleRoute);
-    return () => window.removeEventListener("hashchange", handleRoute);
+    window.addEventListener("popstate", handleRoute);
+    return () => {
+      window.removeEventListener("hashchange", handleRoute);
+      window.removeEventListener("popstate", handleRoute);
+    };
   }, []);
 
   useEffect(() => {
@@ -161,6 +181,53 @@ export default function App() {
       isMounted = false;
     };
   }, [isSystemRoute]);
+
+  function openDownloadPanel() {
+    setIsDownloadPanelOpen(true);
+
+    if (window.location.hash !== "#app-download") {
+      window.location.hash = "app-download";
+    }
+  }
+
+  function closeDownloadPanel() {
+    setIsDownloadPanelOpen(false);
+
+    if (window.location.hash === "#app-download") {
+      window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+      setRouteHash(window.location.hash);
+    }
+  }
+
+  useEffect(() => {
+    if (!isDownloadPanelOpen) {
+      return undefined;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+    closeDownloadButtonRef.current?.focus();
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        closeDownloadPanel();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isDownloadPanelOpen]);
+
+  function handleDownloadBackdropMouseDown(event) {
+    if (event.target === event.currentTarget) {
+      closeDownloadPanel();
+    }
+  }
 
   if (isSystemRoute) {
     return <EvaluationSystem routeHash={routeHash} />;
@@ -185,7 +252,6 @@ export default function App() {
             <LogoMark />
             <nav className="site-nav" aria-label="主選單">
               <a href="#services">服務內容</a>
-              <a href="#app-download">下載 App</a>
               <a href="#contact">聯絡三策</a>
             </nav>
           </header>
@@ -212,7 +278,7 @@ export default function App() {
                 三策協助地主從基地條件、分配邏輯、住戶共識與推動流程開始釐清，讓社區在都市更新、危老重建與自主更新的路上，能夠看懂條件、整合意見、掌握主導權。
               </p>
               <div className="hero__actions">
-                <ButtonLink href="#app-download">下載桌面版 App</ButtonLink>
+                <ButtonAction onClick={openDownloadPanel}>下載桌面版 App</ButtonAction>
                 <ButtonLink href="#services" variant="outline">
                   了解服務內容
                 </ButtonLink>
@@ -253,39 +319,6 @@ export default function App() {
                 </div>
               </article>
             ))}
-          </div>
-        </section>
-
-        <section className="app-download section-pad" id="app-download" aria-labelledby="app-download-title">
-          <div className="app-download__intro">
-            <p className="section-kicker">DESKTOP APP</p>
-            <h2 id="app-download-title">三策 App 桌面版</h2>
-            <p>
-              三策 App 採桌面應用程式形式提供，適用於蘋果電腦與 Windows 電腦。使用者可由三策官網取得安裝檔，安裝後在桌機或筆電上使用開發評估、坪效計算、成本明細、實價行情、法規情報與市場資訊等工具。
-            </p>
-          </div>
-
-          <div className="app-download__layout">
-            <article className="download-feature" aria-label="桌面版重點">
-              <div className="download-feature__icon" aria-hidden="true">
-                <ShieldCheck size={30} strokeWidth={2.2} />
-              </div>
-              <h3>由三策官網提供下載</h3>
-              <p>
-                目前採官網下載模式，不經由 App Store 或 Microsoft Store。正式安裝檔完成簽章、公證與版本驗收後，即可在此頁面開放下載。
-              </p>
-              <ul>
-                <li>支援 macOS 與 Windows 桌面環境</li>
-                <li>優先服務公司內部、合作夥伴與授權客戶</li>
-                <li>保留版本更新與授權控管彈性</li>
-              </ul>
-            </article>
-
-            <div className="download-grid" aria-label="下載項目">
-              {downloadItems.map((item) => (
-                <DownloadCard item={item} key={item.platform} />
-              ))}
-            </div>
           </div>
         </section>
 
@@ -386,10 +419,10 @@ export default function App() {
                   <span>申請系統授權</span>
                   <ArrowUpRight aria-hidden="true" size={17} />
                 </a>
-                <a className="system-card__button system-card__button--secondary" href="#app-download">
+                <button className="system-card__button system-card__button--secondary" type="button" onClick={openDownloadPanel}>
                   <span>下載桌面版</span>
                   <Download aria-hidden="true" size={17} />
-                </a>
+                </button>
                 <span className="system-card__status">正式授權後開通</span>
               </div>
             </article>
@@ -404,6 +437,43 @@ export default function App() {
           <a href="#top">網站使用條款</a>
         </div>
       </footer>
+
+      {isDownloadPanelOpen ? (
+        <div className="download-modal" onMouseDown={handleDownloadBackdropMouseDown}>
+          <section
+            className="download-modal__panel"
+            id="app-download"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="app-download-title"
+          >
+            <header className="download-modal__header">
+              <div className="download-modal__intro">
+                <p className="section-kicker">DESKTOP APP</p>
+                <h2 id="app-download-title">三策 App 桌面版</h2>
+                <p>
+                  三策 App 採桌面應用程式形式提供，適用於蘋果電腦與 Windows 電腦。正式安裝檔完成簽章、公證與版本驗收後，會在此提供桌機與筆電版本下載。
+                </p>
+              </div>
+              <button
+                className="download-modal__close"
+                type="button"
+                aria-label="關閉下載面板"
+                ref={closeDownloadButtonRef}
+                onClick={closeDownloadPanel}
+              >
+                <X aria-hidden="true" size={20} strokeWidth={2.2} />
+              </button>
+            </header>
+
+            <div className="download-modal__grid" aria-label="下載項目">
+              {downloadItems.map((item) => (
+                <DownloadCard item={item} key={item.platform} />
+              ))}
+            </div>
+          </section>
+        </div>
+      ) : null}
     </div>
   );
 }
