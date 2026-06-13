@@ -5,12 +5,17 @@ import {
   BarChart3,
   Building2,
   Clock3,
+  Download,
+  Laptop,
   Mail,
   MapPinned,
+  MonitorDown,
   Phone,
+  ShieldCheck,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { EvaluationSystem } from "./EvaluationSystem.jsx";
+import "./download.css";
 
 const services = [
   {
@@ -39,6 +44,29 @@ const services = [
   },
 ];
 
+const desktopDownloads = [
+  {
+    title: "Mac 版",
+    platform: "macOS",
+    subtitle: "適用 Apple Silicon 與 Intel Mac",
+    fileName: "sanze-app-macos-universal.dmg",
+    href: "/downloads/sanze-app-macos-universal.dmg",
+    system: "建議 macOS 13 以上",
+    icon: Laptop,
+    available: false,
+  },
+  {
+    title: "Windows 版",
+    platform: "Windows",
+    subtitle: "適用 Windows 10 / 11 64-bit 電腦",
+    fileName: "sanze-app-windows-x64.exe",
+    href: "/downloads/sanze-app-windows-x64.exe",
+    system: "建議 Windows 10 / 11 64-bit",
+    icon: MonitorDown,
+    available: false,
+  },
+];
+
 function ButtonLink({ href, children, variant = "primary" }) {
   return (
     <a className={`button-link button-link--${variant}`} href={href}>
@@ -57,6 +85,44 @@ function LogoMark() {
         <p className="brand__en">Sanze Project Management Consulting</p>
       </div>
     </div>
+  );
+}
+
+function DownloadCard({ item }) {
+  const Icon = item.icon;
+
+  return (
+    <article className="download-card">
+      <div className="download-card__icon" aria-hidden="true">
+        <Icon size={26} strokeWidth={2.2} />
+      </div>
+      <div className="download-card__body">
+        <p className="download-card__platform">{item.platform}</p>
+        <h3>{item.title}</h3>
+        <p>{item.subtitle}</p>
+        <dl>
+          <div>
+            <dt>系統需求</dt>
+            <dd>{item.system}</dd>
+          </div>
+          <div>
+            <dt>安裝檔名稱</dt>
+            <dd>{item.fileName}</dd>
+          </div>
+        </dl>
+      </div>
+      {item.available ? (
+        <a className="download-card__button" href={item.href} download>
+          <span>下載安裝檔</span>
+          <Download aria-hidden="true" size={18} />
+        </a>
+      ) : (
+        <span className="download-card__button download-card__button--pending" aria-disabled="true">
+          <span>準備上線</span>
+          <Download aria-hidden="true" size={18} />
+        </span>
+      )}
+    </article>
   );
 }
 
@@ -82,6 +148,11 @@ export default function App() {
         <section className="hero" aria-labelledby="hero-title">
           <header className="site-header">
             <LogoMark />
+            <nav className="site-nav" aria-label="主選單">
+              <a href="#services">服務內容</a>
+              <a href="#app-download">下載 App</a>
+              <a href="#contact">聯絡三策</a>
+            </nav>
           </header>
 
           <div className="hero__content">
@@ -105,6 +176,12 @@ export default function App() {
               <p className="hero__summary">
                 三策協助地主從基地條件、分配邏輯、住戶共識與推動流程開始釐清，讓社區在都市更新、危老重建與自主更新的路上，能夠看懂條件、整合意見、掌握主導權。
               </p>
+              <div className="hero__actions">
+                <ButtonLink href="#app-download">下載桌面版 App</ButtonLink>
+                <ButtonLink href="#services" variant="outline">
+                  了解服務內容
+                </ButtonLink>
+              </div>
             </div>
           </div>
 
@@ -141,6 +218,39 @@ export default function App() {
                 </div>
               </article>
             ))}
+          </div>
+        </section>
+
+        <section className="app-download section-pad" id="app-download" aria-labelledby="app-download-title">
+          <div className="app-download__intro">
+            <p className="section-kicker">DESKTOP APP</p>
+            <h2 id="app-download-title">三策 App 桌面版</h2>
+            <p>
+              三策 App 採桌面應用程式形式提供，適用於蘋果電腦與 Windows 電腦。使用者可由三策官網取得安裝檔，安裝後在桌機或筆電上使用開發評估、坪效計算、成本明細、實價行情、法規情報與市場資訊等工具。
+            </p>
+          </div>
+
+          <div className="app-download__layout">
+            <article className="download-feature" aria-label="桌面版重點">
+              <div className="download-feature__icon" aria-hidden="true">
+                <ShieldCheck size={30} strokeWidth={2.2} />
+              </div>
+              <h3>由三策官網提供下載</h3>
+              <p>
+                目前採官網下載模式，不經由 App Store 或 Microsoft Store。正式安裝檔完成簽章、公證與版本驗收後，即可在此頁面開放下載。
+              </p>
+              <ul>
+                <li>支援 macOS 與 Windows 桌面環境</li>
+                <li>優先服務公司內部、合作夥伴與授權客戶</li>
+                <li>保留版本更新與授權控管彈性</li>
+              </ul>
+            </article>
+
+            <div className="download-grid" aria-label="下載項目">
+              {desktopDownloads.map((item) => (
+                <DownloadCard item={item} key={item.platform} />
+              ))}
+            </div>
           </div>
         </section>
 
@@ -240,6 +350,10 @@ export default function App() {
                 <a className="system-card__button system-card__button--primary" href="#system-workspace">
                   <span>申請系統授權</span>
                   <ArrowUpRight aria-hidden="true" size={17} />
+                </a>
+                <a className="system-card__button system-card__button--secondary" href="#app-download">
+                  <span>下載桌面版</span>
+                  <Download aria-hidden="true" size={17} />
                 </a>
                 <span className="system-card__status">正式授權後開通</span>
               </div>
