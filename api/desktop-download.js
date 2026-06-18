@@ -3,13 +3,13 @@ import { safeEqual, sendJson } from "./_sanze-system-auth.js";
 const DOWNLOADS = {
   macos: {
     platform: "macos",
-    fileName: "Sanze-App-macOS-Test-0.1.0-arm64.zip",
-    downloadUrl: "/downloads/Sanze-App-macOS-Test-0.1.0-arm64.zip",
+    fileName: "Sanze-App-macOS-Test-0.1.1-arm64.zip",
+    downloadUrl: "/downloads/Sanze-App-macOS-Test-0.1.1-arm64.zip",
   },
   windows: {
     platform: "windows",
-    fileName: "Sanze-App-Windows-Test-0.1.0-x64-setup.exe",
-    downloadUrl: "/downloads/Sanze-App-Windows-Test-0.1.0-x64-setup.exe",
+    fileName: "Sanze-App-Windows-Test-0.1.1-x64-setup.exe",
+    downloadUrl: "/downloads/Sanze-App-Windows-Test-0.1.1-x64-setup.exe",
   },
 };
 

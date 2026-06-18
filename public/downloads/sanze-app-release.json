@@ -2,7 +2,7 @@
   "product": "Sanze Desktop App",
   "displayName": "三策 App 桌面版",
   "channel": "public-desktop",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "status": "available",
   "updatedAt": "2026-06-18",
   "downloads": [
@@ -10,14 +10,14 @@
       "platform": "macos",
       "label": "macOS 測試版",
       "architecture": "arm64",
-      "fileName": "Sanze-App-macOS-Test-0.1.0-arm64.zip",
+      "fileName": "Sanze-App-macOS-Test-0.1.1-arm64.zip",
       "available": true
     },
     {
       "platform": "windows",
       "label": "Windows 測試版",
       "architecture": "x64",
-      "fileName": "Sanze-App-Windows-Test-0.1.0-x64-setup.exe",
+      "fileName": "Sanze-App-Windows-Test-0.1.1-x64-setup.exe",
       "available": true
     }
   ]

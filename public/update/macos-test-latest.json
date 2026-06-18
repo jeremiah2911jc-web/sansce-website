@@ -1,12 +1,9 @@
 {
   "channel": "macos-test",
-  "latestVersion": "0.1.0",
-  "latestBuild": "0b9a068",
+  "latestVersion": "0.1.1",
+  "latestBuild": "0fac994",
   "releaseDate": "2026-06-18",
   "downloadPageUrl": "https://sansce-website.vercel.app/downloads",
-  "installerName": "Sanze-App-macOS-Test-0.1.0-arm64.zip",
-  "notes": [
-    "新增版本與更新提示",
-    "修正版本更新下載入口"
-  ]
+  "installerName": "Sanze-App-macOS-Test-0.1.1-arm64.zip",
+  "notes": []
 }
