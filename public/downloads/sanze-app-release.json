@@ -3,24 +3,24 @@
   "displayName": "三策 App 桌面版",
   "channel": "public-desktop",
   "version": "0.1.0",
-  "status": "preparing",
-  "updatedAt": "2026-06-13",
+  "status": "available",
+  "updatedAt": "2026-06-18",
   "downloads": [
     {
       "platform": "macos",
-      "label": "Mac 版",
-      "architecture": "universal",
-      "fileName": "sanze-app-macos-universal.dmg",
-      "url": "/downloads/sanze-app-macos-universal.dmg",
-      "available": false
+      "label": "macOS 測試版",
+      "architecture": "arm64",
+      "fileName": "Sanze-App-macOS-Test-0.1.0-arm64.zip",
+      "url": "/downloads/Sanze-App-macOS-Test-0.1.0-arm64.zip",
+      "available": true
     },
     {
       "platform": "windows",
-      "label": "Windows 版",
+      "label": "Windows 測試版",
       "architecture": "x64",
-      "fileName": "sanze-app-windows-x64.exe",
-      "url": "/downloads/sanze-app-windows-x64.exe",
-      "available": false
+      "fileName": "Sanze-App-Windows-Test-0.1.0-x64-setup.exe",
+      "url": "/downloads/Sanze-App-Windows-Test-0.1.0-x64-setup.exe",
+      "available": true
     }
   ]
 }

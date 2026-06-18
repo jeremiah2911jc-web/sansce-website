@@ -1,0 +1,13 @@
+{
+  "channel": "windows-test",
+  "latestVersion": "0.1.0",
+  "latestBuild": "f040640",
+  "releaseDate": "2026-06-18",
+  "downloadPageUrl": "https://sansce-website.vercel.app/downloads",
+  "downloadUrl": "https://sansce-website.vercel.app/downloads/Sanze-App-Windows-Test-0.1.0-x64-setup.exe",
+  "installerName": "Sanze-App-Windows-Test-0.1.0-x64-setup.exe",
+  "notes": [
+    "修正 Windows 啟動時黑色 console 視窗問題",
+    "修正 Windows 外部新聞、政策、法規連結無法開啟問題"
+  ]
+}

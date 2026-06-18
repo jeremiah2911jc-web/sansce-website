@@ -46,26 +46,26 @@ const services = [
 
 const desktopDownloads = [
   {
-    title: "Mac 版",
+    title: "macOS 測試版",
     manifestPlatform: "macos",
     platform: "macOS",
-    subtitle: "適用 Apple Silicon 與 Intel Mac",
-    fileName: "sanze-app-macos-universal.dmg",
-    href: "/downloads/sanze-app-macos-universal.dmg",
+    subtitle: "適用 Apple Silicon Mac",
+    fileName: "Sanze-App-macOS-Test-0.1.0-arm64.zip",
+    href: "/downloads/Sanze-App-macOS-Test-0.1.0-arm64.zip",
     system: "建議 macOS 13 以上",
     icon: Laptop,
-    available: false,
+    available: true,
   },
   {
-    title: "Windows 版",
+    title: "Windows 測試版",
     manifestPlatform: "windows",
     platform: "Windows",
     subtitle: "適用 Windows 10 / 11 64-bit 電腦",
-    fileName: "sanze-app-windows-x64.exe",
-    href: "/downloads/sanze-app-windows-x64.exe",
+    fileName: "Sanze-App-Windows-Test-0.1.0-x64-setup.exe",
+    href: "/downloads/Sanze-App-Windows-Test-0.1.0-x64-setup.exe",
     system: "建議 Windows 10 / 11 64-bit",
     icon: MonitorDown,
-    available: false,
+    available: true,
   },
 ];
 
@@ -128,6 +128,44 @@ function DownloadCard({ item }) {
   );
 }
 
+function DownloadStandalonePage({ items }) {
+  return (
+    <div className="download-page">
+      <header className="download-page__header">
+        <LogoMark />
+        <a className="download-page__back" href="/">
+          回到三策官網
+        </a>
+      </header>
+
+      <main className="download-page__main">
+        <section className="download-page__intro" aria-labelledby="download-page-title">
+          <p className="section-kicker">DESKTOP APP</p>
+          <h1 id="download-page-title">三策 App 測試版下載</h1>
+          <p>
+            下載三策 App 桌面測試版。此版本供內部測試使用。下載新版後，請先關閉三策 App，再安裝或覆蓋新版；既有資料不會因更新而被覆蓋。
+          </p>
+        </section>
+
+        <section className="download-page__grid" aria-label="桌面版下載">
+          {items.map((item) => (
+            <DownloadCard item={item} key={item.platform} />
+          ))}
+        </section>
+
+        <section className="download-page__notes" aria-labelledby="download-note-title">
+          <h2 id="download-note-title">安裝提醒</h2>
+          <ul>
+            <li>Windows 版若出現安全提醒，請確認來源為三策官方下載頁後再繼續。</li>
+            <li>macOS 版目前為測試版，若系統提示無法開啟，請依測試說明由管理者協助開啟。</li>
+            <li>目前測試版未啟用自動更新，請由本頁下載新版。</li>
+          </ul>
+        </section>
+      </main>
+    </div>
+  );
+}
+
 export default function App() {
   const year = new Date().getFullYear();
   const [routeHash, setRouteHash] = useState(() => window.location.hash);
@@ -135,6 +173,7 @@ export default function App() {
   const [isDownloadPanelOpen, setIsDownloadPanelOpen] = useState(() => window.location.hash === "#app-download");
   const closeDownloadButtonRef = useRef(null);
   const isSystemRoute = routeHash.startsWith("#system");
+  const isDownloadsRoute = window.location.pathname.replace(/\/+$/, "") === "/downloads";
 
   useEffect(() => {
     const handleRoute = () => {
@@ -234,6 +273,10 @@ export default function App() {
       href: releaseItem?.url ?? item.href,
     };
   });
+
+  if (isDownloadsRoute) {
+    return <DownloadStandalonePage items={downloadItems} />;
+  }
 
   return (
     <div className="site-shell">
