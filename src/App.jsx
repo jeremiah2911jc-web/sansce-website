@@ -51,7 +51,6 @@ const desktopDownloads = [
     platform: "macOS",
     subtitle: "適用 Apple Silicon Mac",
     fileName: "Sanze-App-macOS-Test-0.1.0-arm64.zip",
-    href: "/downloads/Sanze-App-macOS-Test-0.1.0-arm64.zip",
     system: "建議 macOS 13 以上",
     icon: Laptop,
     available: true,
@@ -62,7 +61,6 @@ const desktopDownloads = [
     platform: "Windows",
     subtitle: "適用 Windows 10 / 11 64-bit 電腦",
     fileName: "Sanze-App-Windows-Test-0.1.0-x64-setup.exe",
-    href: "/downloads/Sanze-App-Windows-Test-0.1.0-x64-setup.exe",
     system: "建議 Windows 10 / 11 64-bit",
     icon: MonitorDown,
     available: true,
@@ -90,7 +88,7 @@ function LogoMark() {
   );
 }
 
-function DownloadCard({ item }) {
+function DownloadCard({ item, onDownloadRequest }) {
   const Icon = item.icon;
 
   return (
@@ -114,10 +112,10 @@ function DownloadCard({ item }) {
         </dl>
       </div>
       {item.available ? (
-        <a className="download-card__button" href={item.href} download>
+        <button className="download-card__button" type="button" onClick={() => onDownloadRequest(item)}>
           <span>下載安裝檔</span>
           <Download aria-hidden="true" size={18} />
-        </a>
+        </button>
       ) : (
         <span className="download-card__button download-card__button--pending" aria-disabled="true">
           <span>準備上線</span>
@@ -128,7 +126,55 @@ function DownloadCard({ item }) {
   );
 }
 
-function DownloadStandalonePage({ items }) {
+function DownloadAuthModal({ error, item, onClose, onPasswordChange, onSubmit, password, status }) {
+  if (!item) {
+    return null;
+  }
+
+  const isSubmitting = status === "submitting";
+
+  return (
+    <div className="download-auth" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+      <form
+        className="download-auth__panel"
+        aria-labelledby="download-auth-title"
+        aria-describedby="download-auth-desc"
+        onSubmit={onSubmit}
+      >
+        <button className="download-auth__close" type="button" aria-label="關閉下載密碼視窗" onClick={onClose}>
+          <X aria-hidden="true" size={18} strokeWidth={2.2} />
+        </button>
+        <div className="download-auth__header">
+          <p className="section-kicker">DOWNLOAD ACCESS</p>
+          <h2 id="download-auth-title">下載 {item.title}</h2>
+          <p id="download-auth-desc">請輸入管理者提供的下載密碼。密碼會送到伺服器驗證，不會寫在網頁程式碼中。</p>
+        </div>
+        <label className="download-auth__field">
+          <span>下載密碼</span>
+          <input
+            autoComplete="current-password"
+            autoFocus
+            name="downloadPassword"
+            onChange={(event) => onPasswordChange(event.target.value)}
+            type="password"
+            value={password}
+          />
+        </label>
+        {error ? <p className="download-auth__error">{error}</p> : null}
+        <div className="download-auth__actions">
+          <button className="download-auth__secondary" type="button" onClick={onClose}>
+            取消
+          </button>
+          <button className="download-auth__primary" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "驗證中" : "確認下載"}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function DownloadStandalonePage({ items, onDownloadRequest }) {
   return (
     <div className="download-page">
       <header className="download-page__header">
@@ -149,7 +195,7 @@ function DownloadStandalonePage({ items }) {
 
         <section className="download-page__grid" aria-label="桌面版下載">
           {items.map((item) => (
-            <DownloadCard item={item} key={item.platform} />
+            <DownloadCard item={item} key={item.platform} onDownloadRequest={onDownloadRequest} />
           ))}
         </section>
 
@@ -171,6 +217,10 @@ export default function App() {
   const [routeHash, setRouteHash] = useState(() => window.location.hash);
   const [releaseInfo, setReleaseInfo] = useState(null);
   const [isDownloadPanelOpen, setIsDownloadPanelOpen] = useState(() => window.location.hash === "#app-download");
+  const [downloadGateItem, setDownloadGateItem] = useState(null);
+  const [downloadGatePassword, setDownloadGatePassword] = useState("");
+  const [downloadGateError, setDownloadGateError] = useState("");
+  const [downloadGateStatus, setDownloadGateStatus] = useState("idle");
   const closeDownloadButtonRef = useRef(null);
   const isSystemRoute = routeHash.startsWith("#system");
   const isDownloadsRoute = window.location.pathname.replace(/\/+$/, "") === "/downloads";
@@ -259,6 +309,90 @@ export default function App() {
     }
   }
 
+  function openDownloadGate(item) {
+    setDownloadGateItem(item);
+    setDownloadGatePassword("");
+    setDownloadGateError("");
+    setDownloadGateStatus("idle");
+  }
+
+  function closeDownloadGate() {
+    if (downloadGateStatus === "submitting") {
+      return;
+    }
+
+    setDownloadGateItem(null);
+    setDownloadGatePassword("");
+    setDownloadGateError("");
+    setDownloadGateStatus("idle");
+  }
+
+  useEffect(() => {
+    if (!downloadGateItem) {
+      return undefined;
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        closeDownloadGate();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [downloadGateItem, downloadGateStatus]);
+
+  async function handleDownloadGateSubmit(event) {
+    event.preventDefault();
+
+    if (!downloadGateItem || downloadGateStatus === "submitting") {
+      return;
+    }
+
+    setDownloadGateStatus("submitting");
+    setDownloadGateError("");
+
+    try {
+      const response = await fetch("/api/desktop-download", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          password: downloadGatePassword,
+          platform: downloadGateItem.manifestPlatform,
+        }),
+      });
+      const data = await response.json().catch(() => null);
+
+      if (response.status === 401) {
+        setDownloadGateError("密碼錯誤，請確認後再試。");
+        setDownloadGateStatus("idle");
+        return;
+      }
+
+      if (!response.ok || !data?.downloadUrl) {
+        setDownloadGateError("目前無法提供下載，請稍後再試。");
+        setDownloadGateStatus("idle");
+        return;
+      }
+
+      const link = document.createElement("a");
+      link.href = data.downloadUrl;
+      link.download = data.fileName || downloadGateItem.fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      setDownloadGateItem(null);
+      setDownloadGatePassword("");
+      setDownloadGateStatus("idle");
+    } catch {
+      setDownloadGateError("目前無法提供下載，請稍後再試。");
+      setDownloadGateStatus("idle");
+    }
+  }
+
   if (isSystemRoute) {
     return <EvaluationSystem routeHash={routeHash} />;
   }
@@ -268,14 +402,26 @@ export default function App() {
 
     return {
       ...item,
-      available: Boolean(releaseItem?.available),
+      available: releaseInfo ? Boolean(releaseItem?.available) : item.available,
       fileName: releaseItem?.fileName ?? item.fileName,
-      href: releaseItem?.url ?? item.href,
     };
   });
 
   if (isDownloadsRoute) {
-    return <DownloadStandalonePage items={downloadItems} />;
+    return (
+      <>
+        <DownloadStandalonePage items={downloadItems} onDownloadRequest={openDownloadGate} />
+        <DownloadAuthModal
+          error={downloadGateError}
+          item={downloadGateItem}
+          onClose={closeDownloadGate}
+          onPasswordChange={setDownloadGatePassword}
+          onSubmit={handleDownloadGateSubmit}
+          password={downloadGatePassword}
+          status={downloadGateStatus}
+        />
+      </>
+    );
   }
 
   return (
@@ -489,12 +635,21 @@ export default function App() {
 
             <div className="download-modal__grid" aria-label="下載項目">
               {downloadItems.map((item) => (
-                <DownloadCard item={item} key={item.platform} />
+                <DownloadCard item={item} key={item.platform} onDownloadRequest={openDownloadGate} />
               ))}
             </div>
           </section>
         </div>
       ) : null}
+      <DownloadAuthModal
+        error={downloadGateError}
+        item={downloadGateItem}
+        onClose={closeDownloadGate}
+        onPasswordChange={setDownloadGatePassword}
+        onSubmit={handleDownloadGateSubmit}
+        password={downloadGatePassword}
+        status={downloadGateStatus}
+      />
     </div>
   );
 }

@@ -4,7 +4,6 @@
   "latestBuild": "f040640",
   "releaseDate": "2026-06-18",
   "downloadPageUrl": "https://sansce-website.vercel.app/downloads",
-  "downloadUrl": "https://sansce-website.vercel.app/downloads/Sanze-App-Windows-Test-0.1.0-x64-setup.exe",
   "installerName": "Sanze-App-Windows-Test-0.1.0-x64-setup.exe",
   "notes": [
     "修正 Windows 啟動時黑色 console 視窗問題",
