@@ -1,15 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import {
-  ArrowUpRight,
   ArrowRight,
   BarChart3,
   Building2,
   Clock3,
   Download,
-  Laptop,
   Mail,
   MapPinned,
-  MonitorDown,
   Phone,
   X,
 } from "lucide-react";
@@ -52,7 +49,6 @@ const desktopDownloads = [
     subtitle: "適用 Apple Silicon Mac",
     fileName: "Sanze-App-macOS-Test-0.1.1-arm64.zip",
     system: "建議 macOS 13 以上",
-    icon: Laptop,
     available: true,
   },
   {
@@ -62,7 +58,6 @@ const desktopDownloads = [
     subtitle: "適用 Windows 10 / 11 64-bit 電腦",
     fileName: "Sanze-App-Windows-Test-0.1.1-x64-setup.exe",
     system: "建議 Windows 10 / 11 64-bit",
-    icon: MonitorDown,
     available: true,
   },
 ];
@@ -89,25 +84,15 @@ function LogoMark() {
 }
 
 function DownloadCard({ item, onDownloadRequest }) {
-  const Icon = item.icon;
-
   return (
     <article className="download-card">
-      <div className="download-card__icon" aria-hidden="true">
-        <Icon size={26} strokeWidth={2.2} />
-      </div>
       <div className="download-card__body">
-        <p className="download-card__platform">{item.platform}</p>
         <h3>{item.title}</h3>
         <p>{item.subtitle}</p>
         <dl>
           <div>
             <dt>系統需求</dt>
             <dd>{item.system}</dd>
-          </div>
-          <div>
-            <dt>安裝檔名稱</dt>
-            <dd>{item.fileName}</dd>
           </div>
         </dl>
       </div>
@@ -585,10 +570,6 @@ export default function App() {
                 <span />
               </div>
               <div className="system-card__actions">
-                <a className="system-card__button system-card__button--primary" href="#system-workspace">
-                  <span>申請系統授權</span>
-                  <ArrowUpRight aria-hidden="true" size={17} />
-                </a>
                 <button className="system-card__button system-card__button--secondary" type="button" onClick={openDownloadPanel}>
                   <span>下載桌面版</span>
                   <Download aria-hidden="true" size={17} />
