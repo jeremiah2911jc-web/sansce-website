@@ -596,12 +596,11 @@ export default function App() {
             id="app-download"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="app-download-title"
+            aria-labelledby="app-download-kicker"
           >
             <header className="download-modal__header">
               <div className="download-modal__intro">
-                <p className="section-kicker">DESKTOP APP</p>
-                <h2 id="app-download-title">三策 App 桌面版</h2>
+                <p className="section-kicker" id="app-download-kicker">DESKTOP APP</p>
               </div>
               <button
                 className="download-modal__close"
