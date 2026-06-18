@@ -147,7 +147,7 @@ function DownloadAuthModal({ error, item, onClose, onPasswordChange, onSubmit, p
         <div className="download-auth__header">
           <p className="section-kicker">DOWNLOAD ACCESS</p>
           <h2 id="download-auth-title">下載 {item.title}</h2>
-          <p id="download-auth-desc">請輸入管理者提供的下載密碼。密碼會送到伺服器驗證，不會寫在網頁程式碼中。</p>
+          <p id="download-auth-desc">請輸入管理者提供的下載密碼。</p>
         </div>
         <label className="download-auth__field">
           <span>下載密碼</span>
