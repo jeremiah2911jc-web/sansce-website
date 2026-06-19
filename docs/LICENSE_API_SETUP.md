@@ -120,6 +120,44 @@ npm run license:generate-test-sql
 - API raw error 不直接回給使用者。
 - Phase 2 不操作 production Supabase，不建立真實 license。
 
+## Phase 3 API smoke test result
+
+Phase 3 授權 API smoke test 已完成，真實 `activate` 與 `verify` 流程皆已通過。
+
+本次測試使用固定臨時測試授權碼：
+
+```text
+SANZE-TEST-2026-0001
+```
+
+此授權碼只用於驗證流程，不作為正式授權碼。測試期間為排除 hash mismatch 問題，曾使用 visible test pepper `SANZE_VISIBLE_TEST_PEPPER_20260619`。此 pepper 只供臨時驗證，不得作為正式 production pepper。
+
+已驗證的鏈路：
+
+1. license key normalization。
+2. license key hash。
+3. Supabase `licenses` 查詢。
+4. device activation。
+5. server-side token signing。
+6. token verify。
+
+正式啟用前必須完成：
+
+1. 重新設定正式隨機 `LICENSE_KEY_PEPPER`。
+2. revoke 或刪除 visible test license。
+3. 用正式 pepper 重新產生測試 license。
+4. 重新測試 `activate` / `verify`。
+
+不得將 license token、service role key、token secret 或正式 pepper 寫入文件、repo、截圖或回報。App 目前尚未強制啟用授權；Phase 3 API smoke test 只代表後端授權鏈路已打通。
+
+## 下一步清理事項
+
+- Rotate `LICENSE_KEY_PEPPER` to production random value.
+- Revoke visible test license.
+- Generate production-like test license.
+- Re-test `activate` / `verify`.
+- Then proceed to App Phase 3 UI enforcement.
+
 ## Phase 2 與 Phase 3 邊界
 
 Phase 2 完成：
