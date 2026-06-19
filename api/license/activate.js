@@ -24,9 +24,46 @@ function invalidLicenseResponse(response) {
   });
 }
 
+function logLicenseDiagnostic(stage, details = {}) {
+  console.error("[license.activate]", JSON.stringify({
+    stage,
+    ...details,
+  }));
+}
+
+function buildSupabaseErrorDetails(error, table, operation) {
+  return {
+    table,
+    operation,
+    supabaseCode: error?.code ?? "",
+    supabaseMessage: error?.message ?? "",
+    supabaseDetails: error?.details ?? "",
+    supabaseHint: error?.hint ?? "",
+  };
+}
+
+function licenseStorageErrorResponse(response) {
+  jsonResponse(response, 500, {
+    ok: false,
+    status: "license_error",
+    errorCode: "LICENSE_ACTIVATE_STORAGE_ERROR",
+    message: "授權服務暫時無法完成驗證。",
+  });
+}
+
+function unexpectedLicenseErrorResponse(response) {
+  jsonResponse(response, 500, {
+    ok: false,
+    status: "license_error",
+    errorCode: "LICENSE_ACTIVATE_UNEXPECTED",
+    message: "授權服務暫時無法完成驗證。",
+  });
+}
+
 export default async function handler(request, response) {
   response.setHeader("Cache-Control", "no-store");
 
+  try {
   if (request.method !== "POST") {
     response.setHeader("Allow", "POST");
     jsonResponse(response, 405, { ok: false, message: "只接受 POST。" });
@@ -55,15 +92,32 @@ export default async function handler(request, response) {
   const supabase = createLicenseSupabaseClient(config);
   const licenseKeyHash = hashLicenseKey(licenseKey, config);
   const deviceFingerprintHash = hashDeviceFingerprint(deviceFingerprint, config);
+  const licenseKeyHashPrefix = licenseKeyHash.slice(0, 8);
+  const deviceFingerprintHashPrefix = deviceFingerprintHash.slice(0, 8);
 
-  const { data: license, error: licenseError } = await supabase
-    .from("licenses")
-    .select("*")
-    .eq("license_key_hash", licenseKeyHash)
-    .maybeSingle();
+  let licenseResult;
+  try {
+    licenseResult = await supabase
+      .from("licenses")
+      .select("*")
+      .eq("license_key_hash", licenseKeyHash)
+      .maybeSingle();
+  } catch (error) {
+    logLicenseDiagnostic("select_license_threw", {
+      table: "licenses",
+      operation: "select",
+      licenseKeyHashPrefix,
+      errorName: error?.name ?? "",
+      errorMessage: error?.message ?? "",
+    });
+    unexpectedLicenseErrorResponse(response);
+    return;
+  }
 
+  const { data: license, error: licenseError } = licenseResult;
   if (licenseError) {
-    jsonResponse(response, 500, { ok: false, status: "license_error", message: "授權服務暫時無法完成驗證。" });
+    logLicenseDiagnostic("select_license_failed", buildSupabaseErrorDetails(licenseError, "licenses", "select"));
+    licenseStorageErrorResponse(response);
     return;
   }
 
@@ -96,15 +150,31 @@ export default async function handler(request, response) {
     return;
   }
 
-  const { data: existingDevice, error: existingDeviceError } = await supabase
-    .from("license_devices")
-    .select("*")
-    .eq("license_id", license.id)
-    .eq("device_fingerprint_hash", deviceFingerprintHash)
-    .maybeSingle();
+  let existingDeviceResult;
+  try {
+    existingDeviceResult = await supabase
+      .from("license_devices")
+      .select("*")
+      .eq("license_id", license.id)
+      .eq("device_fingerprint_hash", deviceFingerprintHash)
+      .maybeSingle();
+  } catch (error) {
+    logLicenseDiagnostic("select_device_threw", {
+      table: "license_devices",
+      operation: "select",
+      licenseId: license.id,
+      deviceFingerprintHashPrefix,
+      errorName: error?.name ?? "",
+      errorMessage: error?.message ?? "",
+    });
+    unexpectedLicenseErrorResponse(response);
+    return;
+  }
 
+  const { data: existingDevice, error: existingDeviceError } = existingDeviceResult;
   if (existingDeviceError) {
-    jsonResponse(response, 500, { ok: false, status: "license_error", message: "授權服務暫時無法完成驗證。" });
+    logLicenseDiagnostic("select_device_failed", buildSupabaseErrorDetails(existingDeviceError, "license_devices", "select"));
+    licenseStorageErrorResponse(response);
     return;
   }
 
@@ -121,37 +191,79 @@ export default async function handler(request, response) {
     }
 
     const verifiedAt = nowIso();
-    const { data: updatedDevice, error: updateError } = await supabase
-      .from("license_devices")
-      .update({
-        device_name: deviceName || existingDevice.device_name,
-        platform,
-        app_version: appVersion,
-        build,
-        last_verified_at: verifiedAt,
-        updated_at: verifiedAt,
-      })
-      .eq("id", existingDevice.id)
-      .select("*")
-      .single();
-
-    if (updateError) {
-      jsonResponse(response, 500, { ok: false, status: "license_error", message: "授權服務暫時無法完成驗證。" });
+    let updateResult;
+    try {
+      updateResult = await supabase
+        .from("license_devices")
+        .update({
+          device_name: deviceName || existingDevice.device_name,
+          platform,
+          app_version: appVersion,
+          build,
+          last_verified_at: verifiedAt,
+          updated_at: verifiedAt,
+        })
+        .eq("id", existingDevice.id)
+        .select("*")
+        .single();
+    } catch (error) {
+      logLicenseDiagnostic("update_device_threw", {
+        table: "license_devices",
+        operation: "update",
+        licenseId: license.id,
+        deviceId: existingDevice.id,
+        errorName: error?.name ?? "",
+        errorMessage: error?.message ?? "",
+      });
+      unexpectedLicenseErrorResponse(response);
       return;
     }
 
-    await recordLicenseEvent(supabase, {
-      licenseId: license.id,
-      deviceId: updatedDevice.id,
-      eventType: "verify",
-      metadata: { source: "activate_existing_device", platform, appVersion, build },
-    });
+    const { data: updatedDevice, error: updateError } = updateResult;
+    if (updateError) {
+      logLicenseDiagnostic("update_device_failed", buildSupabaseErrorDetails(updateError, "license_devices", "update"));
+      licenseStorageErrorResponse(response);
+      return;
+    }
+
+    try {
+      await recordLicenseEvent(supabase, {
+        licenseId: license.id,
+        deviceId: updatedDevice.id,
+        eventType: "verify",
+        metadata: { source: "activate_existing_device", platform, appVersion, build },
+      });
+    } catch (error) {
+      logLicenseDiagnostic("insert_event_threw", {
+        table: "license_events",
+        operation: "insert",
+        licenseId: license.id,
+        deviceId: updatedDevice.id,
+        eventType: "verify",
+        errorName: error?.name ?? "",
+        errorMessage: error?.message ?? "",
+      });
+    }
 
     const tokenPayload = buildLicenseTokenPayload(license, updatedDevice);
+    let licenseToken;
+    try {
+      licenseToken = signLicenseToken(tokenPayload, config);
+    } catch (error) {
+      logLicenseDiagnostic("sign_token_failed", {
+        licenseId: license.id,
+        deviceId: updatedDevice.id,
+        errorName: error?.name ?? "",
+        errorMessage: error?.message ?? "",
+      });
+      unexpectedLicenseErrorResponse(response);
+      return;
+    }
+
     jsonResponse(response, 200, {
       ok: true,
       status: "online_authorized",
-      licenseToken: signLicenseToken(tokenPayload, config),
+      licenseToken,
       customerName: license.customer_name ?? "",
       plan: license.plan ?? "test",
       expiresAt: license.expires_at ?? null,
@@ -161,14 +273,29 @@ export default async function handler(request, response) {
     return;
   }
 
-  const { count: activeDeviceCount, error: countError } = await supabase
-    .from("license_devices")
-    .select("id", { count: "exact", head: true })
-    .eq("license_id", license.id)
-    .eq("status", "active");
+  let countResult;
+  try {
+    countResult = await supabase
+      .from("license_devices")
+      .select("id", { count: "exact", head: true })
+      .eq("license_id", license.id)
+      .eq("status", "active");
+  } catch (error) {
+    logLicenseDiagnostic("count_devices_threw", {
+      table: "license_devices",
+      operation: "count",
+      licenseId: license.id,
+      errorName: error?.name ?? "",
+      errorMessage: error?.message ?? "",
+    });
+    unexpectedLicenseErrorResponse(response);
+    return;
+  }
 
+  const { count: activeDeviceCount, error: countError } = countResult;
   if (countError) {
-    jsonResponse(response, 500, { ok: false, status: "license_error", message: "授權服務暫時無法完成驗證。" });
+    logLicenseDiagnostic("count_devices_failed", buildSupabaseErrorDetails(countError, "license_devices", "count"));
+    licenseStorageErrorResponse(response);
     return;
   }
 
@@ -187,45 +314,94 @@ export default async function handler(request, response) {
   }
 
   const activatedAt = nowIso();
-  const { data: device, error: insertDeviceError } = await supabase
-    .from("license_devices")
-    .insert({
-      license_id: license.id,
-      device_fingerprint_hash: deviceFingerprintHash,
-      device_name: deviceName,
-      platform,
-      app_version: appVersion,
-      build,
-      status: "active",
-      activated_at: activatedAt,
-      last_verified_at: activatedAt,
-      created_at: activatedAt,
-      updated_at: activatedAt,
-    })
-    .select("*")
-    .single();
-
-  if (insertDeviceError) {
-    jsonResponse(response, 500, { ok: false, status: "license_error", message: "授權服務暫時無法完成驗證。" });
+  let insertDeviceResult;
+  try {
+    insertDeviceResult = await supabase
+      .from("license_devices")
+      .insert({
+        license_id: license.id,
+        device_fingerprint_hash: deviceFingerprintHash,
+        device_name: deviceName,
+        platform,
+        app_version: appVersion,
+        build,
+        status: "active",
+        activated_at: activatedAt,
+        last_verified_at: activatedAt,
+        created_at: activatedAt,
+        updated_at: activatedAt,
+      })
+      .select("*")
+      .single();
+  } catch (error) {
+    logLicenseDiagnostic("insert_device_threw", {
+      table: "license_devices",
+      operation: "insert",
+      licenseId: license.id,
+      deviceFingerprintHashPrefix,
+      errorName: error?.name ?? "",
+      errorMessage: error?.message ?? "",
+    });
+    unexpectedLicenseErrorResponse(response);
     return;
   }
 
-  await recordLicenseEvent(supabase, {
-    licenseId: license.id,
-    deviceId: device.id,
-    eventType: "activate",
-    metadata: { platform, appVersion, build },
-  });
+  const { data: device, error: insertDeviceError } = insertDeviceResult;
+  if (insertDeviceError) {
+    logLicenseDiagnostic("insert_device_failed", buildSupabaseErrorDetails(insertDeviceError, "license_devices", "insert"));
+    licenseStorageErrorResponse(response);
+    return;
+  }
+
+  try {
+    await recordLicenseEvent(supabase, {
+      licenseId: license.id,
+      deviceId: device.id,
+      eventType: "activate",
+      metadata: { platform, appVersion, build },
+    });
+  } catch (error) {
+    logLicenseDiagnostic("insert_event_threw", {
+      table: "license_events",
+      operation: "insert",
+      licenseId: license.id,
+      deviceId: device.id,
+      eventType: "activate",
+      errorName: error?.name ?? "",
+      errorMessage: error?.message ?? "",
+    });
+  }
 
   const tokenPayload = buildLicenseTokenPayload(license, device);
+  let licenseToken;
+  try {
+    licenseToken = signLicenseToken(tokenPayload, config);
+  } catch (error) {
+    logLicenseDiagnostic("sign_token_failed", {
+      licenseId: license.id,
+      deviceId: device.id,
+      errorName: error?.name ?? "",
+      errorMessage: error?.message ?? "",
+    });
+    unexpectedLicenseErrorResponse(response);
+    return;
+  }
+
   jsonResponse(response, 200, {
     ok: true,
     status: "online_authorized",
-    licenseToken: signLicenseToken(tokenPayload, config),
+    licenseToken,
     customerName: license.customer_name ?? "",
     plan: license.plan ?? "test",
     expiresAt: license.expires_at ?? null,
     maxDevices: license.max_devices,
     enabledFeatures: license.enabled_features ?? {},
   });
+  } catch (error) {
+    logLicenseDiagnostic("unexpected_activate_error", {
+      errorName: error?.name ?? "",
+      errorMessage: error?.message ?? "",
+    });
+    unexpectedLicenseErrorResponse(response);
+  }
 }

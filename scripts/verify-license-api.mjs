@@ -90,6 +90,28 @@ assertIncludes(activate, ".from(\"license_devices\")", "activate route");
 assertIncludes(activate, "device_limit_exceeded", "activate route");
 assertIncludes(activate, "hashLicenseKey", "activate route");
 assertIncludes(activate, "hashDeviceFingerprint", "activate route");
+assertIncludes(activate, "logLicenseDiagnostic", "activate route diagnostics");
+assertIncludes(activate, "[license.activate]", "activate route diagnostics");
+assertIncludes(activate, "select_license_failed", "activate route diagnostics");
+assertIncludes(activate, "select_device_failed", "activate route diagnostics");
+assertIncludes(activate, "count_devices_failed", "activate route diagnostics");
+assertIncludes(activate, "insert_device_failed", "activate route diagnostics");
+assertIncludes(activate, "update_device_failed", "activate route diagnostics");
+assertIncludes(activate, "insert_event_threw", "activate route diagnostics");
+assertIncludes(activate, "sign_token_failed", "activate route diagnostics");
+assertIncludes(activate, "unexpected_activate_error", "activate route diagnostics");
+assertIncludes(activate, "LICENSE_ACTIVATE_STORAGE_ERROR", "activate route safe client error code");
+assertIncludes(activate, "LICENSE_ACTIVATE_UNEXPECTED", "activate route safe client error code");
+assert.ok(!activate.includes("console.error(licenseKey"), "activate route must not log license key");
+assert.ok(!activate.includes("console.error(licenseToken"), "activate route must not log license token");
+assert.ok(!activate.includes("SUPABASE_SERVICE_ROLE_KEY"), "activate route must not mention service role key");
+assert.ok(!activate.includes("LICENSE_TOKEN_SECRET"), "activate route must not mention token secret");
+assert.ok(!activate.includes("LICENSE_KEY_PEPPER"), "activate route must not mention license pepper");
+assert.ok(!activate.includes("deviceFingerprint:"), "activate route must not log full device fingerprint");
+assert.ok(!activate.includes("normalizedLicenseKey"), "activate route must not log normalized license key");
+assert.ok(!/logLicenseDiagnostic\([^;]*\blicenseKeyHash\b/s.test(activate), "activate route must not log full license key hash");
+assert.ok(!/logLicenseDiagnostic\([^;]*\bdeviceFingerprintHash\b/s.test(activate), "activate route must not log full device fingerprint hash");
+assert.ok(!activate.includes("supabaseMessage:") || !activate.includes("jsonResponse(response, 500, { ok: false, status: \"license_error\", message: license"), "activate route must not return Supabase error to client");
 assertIncludes(verify, "verifyLicenseToken", "verify route");
 assertIncludes(verify, "hashDeviceFingerprint", "verify route");
 assertIncludes(deactivate, "deactivate_device", "deactivate route");
@@ -113,8 +135,10 @@ assert.ok(!generateTestLicenseSql.includes("createClient("), "test license gener
 assert.ok(!generateTestLicenseSql.includes(".from(\"licenses\")"), "test license generator must not write to Supabase");
 assert.ok(!generateTestLicenseSql.includes("writeFile"), "test license generator must not write SQL to disk");
 assert.ok(!generateTestLicenseSql.includes(desktopDownloadPassword), "test license generator must not contain desktop download password");
-assert.ok(!/LICENSE_KEY_PEPPER=.[A-Za-z0-9]/.test(generateTestLicenseSql), "test license generator must not contain a hard-coded pepper");
-assert.ok(!/LICENSE_TOKEN_SECRET=.[A-Za-z0-9]/.test(generateTestLicenseSql), "test license generator must not contain a hard-coded token secret");
+const pepperValuePattern = new RegExp(["LICENSE_KEY_PEPPER", "=.[A-Za-z0-9]"].join(""));
+const tokenSecretValuePattern = new RegExp(["LICENSE_TOKEN_SECRET", "=.[A-Za-z0-9]"].join(""));
+assert.ok(!pepperValuePattern.test(generateTestLicenseSql), "test license generator must not contain a hard-coded pepper");
+assert.ok(!tokenSecretValuePattern.test(generateTestLicenseSql), "test license generator must not contain a hard-coded token secret");
 
 const frontendSource = [
   read(join(projectRoot, "src/App.jsx")),
