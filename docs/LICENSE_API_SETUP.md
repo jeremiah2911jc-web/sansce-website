@@ -158,6 +158,25 @@ SANZE-TEST-2026-0001
 - Re-test `activate` / `verify`.
 - Then proceed to App Phase 3 UI enforcement.
 
+## Production-like license verification result
+
+正式 pepper rotation 後已重新測試授權 API。舊 visible test license 已 revoke，固定臨時測試授權碼 `SANZE-TEST-2026-0001` 已不再可 activate。
+
+已使用正式 pepper 建立 production-like test license，並完成真實 API 驗證：
+
+- `activate` HTTP status：`200`
+- `activate` status：`online_authorized`
+- `customerName`：`Jeremiah Production-like Test`
+- `plan`：`test`
+- `expiresAt`：`2026-12-31T15:59:59+00:00`
+- `maxDevices`：`2`
+- server 有回傳 license token，但文件不得記錄 token 全文
+- `verify` HTTP status：`200`
+- `verify` status：`online_authorized`
+- `allowedMode`：`online_authorized`
+
+文件不得記錄 production-like test license key 全文、license token、service role key、token secret 或 `LICENSE_KEY_PEPPER`。截至此驗證完成，後端授權 API 已可進入 App Phase 3 UI enforcement；App 端尚未強制啟用授權。
+
 ## Phase 2 與 Phase 3 邊界
 
 Phase 2 完成：
