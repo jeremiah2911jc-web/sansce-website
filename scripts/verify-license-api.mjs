@@ -10,6 +10,7 @@ const paths = {
   activate: join(projectRoot, "api/license/activate.js"),
   verify: join(projectRoot, "api/license/verify.js"),
   deactivate: join(projectRoot, "api/license/deactivate-device.js"),
+  generateTestLicenseSql: join(projectRoot, "scripts/generate-test-license-sql.mjs"),
   envExample: join(projectRoot, ".env.example"),
   docs: join(projectRoot, "docs/LICENSE_API_SETUP.md"),
   packageJson: join(projectRoot, "package.json"),
@@ -29,6 +30,7 @@ const helper = read(paths.helper);
 const activate = read(paths.activate);
 const verify = read(paths.verify);
 const deactivate = read(paths.deactivate);
+const generateTestLicenseSql = read(paths.generateTestLicenseSql);
 const envExample = read(paths.envExample);
 const docs = read(paths.docs);
 const packageJson = JSON.parse(read(paths.packageJson));
@@ -96,8 +98,23 @@ assertIncludes(docs, "Phase 2", "license API setup docs");
 assertIncludes(docs, "Phase 3", "license API setup docs");
 assertIncludes(docs, "App 不可持有 service role key", "license API setup docs");
 assertIncludes(docs, "不保存明文授權碼", "license API setup docs");
+assertIncludes(docs, "npm run license:generate-test-sql", "license API setup docs");
+assertIncludes(docs, "不要把明文授權碼", "license API setup docs");
 
 assert.equal(packageJson.scripts["verify:license-api"], "node scripts/verify-license-api.mjs");
+assert.equal(packageJson.scripts["license:generate-test-sql"], "node scripts/generate-test-license-sql.mjs");
+
+assertIncludes(generateTestLicenseSql, "process.env.LICENSE_KEY_PEPPER", "test license SQL generator");
+assertIncludes(generateTestLicenseSql, "hashLicenseKey", "test license SQL generator");
+assertIncludes(generateTestLicenseSql, "normalizeLicenseKey", "test license SQL generator");
+assertIncludes(generateTestLicenseSql, "insert into public.licenses", "test license SQL generator");
+assertIncludes(generateTestLicenseSql, "Supabase SQL Editor", "test license SQL generator");
+assert.ok(!generateTestLicenseSql.includes("createClient("), "test license generator must not connect to Supabase");
+assert.ok(!generateTestLicenseSql.includes(".from(\"licenses\")"), "test license generator must not write to Supabase");
+assert.ok(!generateTestLicenseSql.includes("writeFile"), "test license generator must not write SQL to disk");
+assert.ok(!generateTestLicenseSql.includes(desktopDownloadPassword), "test license generator must not contain desktop download password");
+assert.ok(!/LICENSE_KEY_PEPPER=.[A-Za-z0-9]/.test(generateTestLicenseSql), "test license generator must not contain a hard-coded pepper");
+assert.ok(!/LICENSE_TOKEN_SECRET=.[A-Za-z0-9]/.test(generateTestLicenseSql), "test license generator must not contain a hard-coded token secret");
 
 const frontendSource = [
   read(join(projectRoot, "src/App.jsx")),
@@ -115,6 +132,7 @@ const repoSource = [
   activate,
   verify,
   deactivate,
+  generateTestLicenseSql,
   envExample,
   docs,
 ].join("\n");

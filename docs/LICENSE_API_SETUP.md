@@ -44,6 +44,21 @@ supabase/migrations/20260619_license_schema.sql
 
 Phase 2 尚未提供管理後台。建立 license 可以先用受控 server-side script 或人工 SQL，但必須先在可信環境算出 hash。
 
+## 建立測試授權
+
+1. 在本機 shell 設定 `LICENSE_KEY_PEPPER`。
+2. 執行：
+
+```bash
+npm run license:generate-test-sql
+```
+
+3. 依提示輸入授權碼、客戶資料、方案、裝置數與到期日。
+4. 複製終端機輸出的 `insert into public.licenses (...)` SQL。
+5. 貼到 Supabase SQL Editor 執行。
+6. 不要把明文授權碼、pepper、token 或任何 secret 寫入 repo、文件、截圖或回報。
+7. 工具只輸出 hash 後的 SQL，不會連線 Supabase、不會寫入資料庫、不會寫入檔案。
+
 ## API endpoints
 
 ### `POST /api/license/activate`
