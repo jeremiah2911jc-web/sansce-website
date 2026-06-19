@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "verify:land-identity": "node scripts/verify-land-identity-key.mjs",
+    "verify:license-api": "node scripts/verify-license-api.mjs",
     "verify:roster-column-mapping": "node scripts/verify-roster-column-mapping.mjs",
     "verify:roster-golden-fixtures": "node scripts/verify-roster-column-mapping.mjs --golden"
   },
