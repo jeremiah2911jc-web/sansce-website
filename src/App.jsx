@@ -11,7 +11,6 @@ import {
   X,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import { EvaluationSystem } from "./EvaluationSystem.jsx";
 import "./download.css";
 
 const services = [
@@ -199,7 +198,6 @@ function DownloadStandalonePage({ items, onDownloadRequest }) {
 
 export default function App() {
   const year = new Date().getFullYear();
-  const [routeHash, setRouteHash] = useState(() => window.location.hash);
   const [releaseInfo, setReleaseInfo] = useState(null);
   const [isDownloadPanelOpen, setIsDownloadPanelOpen] = useState(() => window.location.hash === "#app-download");
   const [downloadGateItem, setDownloadGateItem] = useState(null);
@@ -207,15 +205,11 @@ export default function App() {
   const [downloadGateError, setDownloadGateError] = useState("");
   const [downloadGateStatus, setDownloadGateStatus] = useState("idle");
   const closeDownloadButtonRef = useRef(null);
-  const isSystemRoute = routeHash.startsWith("#system");
   const isDownloadsRoute = window.location.pathname.replace(/\/+$/, "") === "/downloads";
 
   useEffect(() => {
     const handleRoute = () => {
-      const nextHash = window.location.hash;
-
-      setRouteHash(nextHash);
-      setIsDownloadPanelOpen(nextHash === "#app-download");
+      setIsDownloadPanelOpen(window.location.hash === "#app-download");
     };
 
     window.addEventListener("hashchange", handleRoute);
@@ -227,10 +221,6 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (isSystemRoute) {
-      return undefined;
-    }
-
     let isMounted = true;
 
     fetch("/downloads/sanze-app-release.json")
@@ -245,7 +235,7 @@ export default function App() {
     return () => {
       isMounted = false;
     };
-  }, [isSystemRoute]);
+  }, []);
 
   function openDownloadPanel() {
     setIsDownloadPanelOpen(true);
@@ -260,7 +250,6 @@ export default function App() {
 
     if (window.location.hash === "#app-download") {
       window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
-      setRouteHash(window.location.hash);
     }
   }
 
@@ -376,10 +365,6 @@ export default function App() {
       setDownloadGateError("目前無法提供下載，請稍後再試。");
       setDownloadGateStatus("idle");
     }
-  }
-
-  if (isSystemRoute) {
-    return <EvaluationSystem routeHash={routeHash} />;
   }
 
   const downloadItems = desktopDownloads.map((item) => {
