@@ -7,7 +7,10 @@
 兩份桌面 App 更新 manifest 的下載入口在隱蔽期間直接指向各平台既有固定安裝檔，
 避免 App 將使用者帶到已封鎖的公開下載頁。
 
-`public/robots.txt` 同時禁止所有搜尋引擎爬取。404 回應會附加：
+`public/robots.txt` 允許搜尋引擎重新抓取原公開頁面，使既有網址能讀到 404 與
+`X-Robots-Tag`；API、版本資訊及安裝檔則以 `/api/`、`/update/`、
+`/downloads/` 規則禁止爬取。`/downloads` 本身沒有結尾斜線，因此仍可被重新
+抓取並確認為 404。404 回應會附加：
 
 - `X-Robots-Tag: noindex, nofollow, noarchive`
 - `Cache-Control: no-store, no-cache, max-age=0, must-revalidate`
@@ -16,10 +19,11 @@
 
 ## 恢復公開
 
-以本次隱蔽 commit 的完整 hash 執行：
+先 revert robots 搜尋移除邏輯補正，再 revert 原始隱蔽 commit：
 
 ```sh
-git revert <temporary-hide-commit>
+git revert <robots-crawl-fix-commit>
+git revert ccd95c1e6927e8893b47f8e9390bd1dc52fc62d1
 git push origin main
 ```
 

@@ -211,7 +211,35 @@ assert.deepEqual(
   ),
 );
 
-assert.equal(read("public/robots.txt"), "User-agent: *\nDisallow: /\n");
+const robotsText = read("public/robots.txt");
+assert.equal(
+  robotsText,
+  "User-agent: *\nDisallow: /api/\nDisallow: /update/\nDisallow: /downloads/\n",
+);
+const robotsDisallowRules = robotsText
+  .split("\n")
+  .filter((line) => line.startsWith("Disallow: "))
+  .map((line) => line.slice("Disallow: ".length));
+const isDisallowedForCrawler = (pathname) =>
+  robotsDisallowRules.some((rule) => pathname.startsWith(rule));
+for (const pathname of ["/", "/about", "/downloads", "/sitemap.xml"]) {
+  assert.equal(
+    isDisallowedForCrawler(pathname),
+    false,
+    `${pathname} must remain crawlable so crawlers can observe the temporary 404`,
+  );
+}
+for (const pathname of [
+  "/api/license/verify",
+  "/update/macos-test-latest.json",
+  "/downloads/Sanze-App-macOS-Test-0.1.1-arm64.zip",
+]) {
+  assert.equal(
+    isDisallowedForCrawler(pathname),
+    true,
+    `${pathname} must remain excluded from crawler access`,
+  );
+}
 const robotsRoute = resolveRoute("/robots.txt");
 assert.ok(robotsRoute);
 assert.notEqual(robotsRoute, catchAll);
