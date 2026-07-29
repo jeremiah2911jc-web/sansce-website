@@ -11,7 +11,8 @@
     "verify:land-identity": "node scripts/verify-land-identity-key.mjs",
     "verify:license-api": "node scripts/verify-license-api.mjs",
     "verify:roster-column-mapping": "node scripts/verify-roster-column-mapping.mjs",
-    "verify:roster-golden-fixtures": "node scripts/verify-roster-column-mapping.mjs --golden"
+    "verify:roster-golden-fixtures": "node scripts/verify-roster-column-mapping.mjs --golden",
+    "verify:site-visibility": "node scripts/verify-site-visibility.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",

@@ -1,35 +1,91 @@
 {
-  "headers": [
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "routes": [
     {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://sansce-website.vercel.app; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        },
-        {
-          "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=()"
-        }
-      ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/downloads",
-      "destination": "/index.html"
+      "src": "/(.*)",
+      "headers": {
+        "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://sansce-website.vercel.app; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=()"
+      },
+      "continue": true
     },
     {
-      "source": "/downloads/",
-      "destination": "/index.html"
+      "src": "/api/desktop-download",
+      "dest": "/api/desktop-download"
+    },
+    {
+      "src": "/api/license/activate",
+      "dest": "/api/license/activate"
+    },
+    {
+      "src": "/api/license/deactivate-device",
+      "dest": "/api/license/deactivate-device"
+    },
+    {
+      "src": "/api/license/verify",
+      "dest": "/api/license/verify"
+    },
+    {
+      "src": "/api/sanze-db-env-check",
+      "dest": "/api/sanze-db-env-check"
+    },
+    {
+      "src": "/api/sanze-db-load-cases",
+      "dest": "/api/sanze-db-load-cases"
+    },
+    {
+      "src": "/api/sanze-db-sync-case",
+      "dest": "/api/sanze-db-sync-case"
+    },
+    {
+      "src": "/api/sanze-system-login",
+      "dest": "/api/sanze-system-login"
+    },
+    {
+      "src": "/api/sanze-system-logout",
+      "dest": "/api/sanze-system-logout"
+    },
+    {
+      "src": "/api/sanze-system-session",
+      "dest": "/api/sanze-system-session"
+    },
+    {
+      "src": "/downloads/Sanze-App-macOS-Test-0\\.1\\.1-arm64\\.zip",
+      "dest": "/downloads/Sanze-App-macOS-Test-0.1.1-arm64.zip"
+    },
+    {
+      "src": "/downloads/Sanze-App-Windows-Test-0\\.1\\.1-x64-setup\\.exe",
+      "dest": "/downloads/Sanze-App-Windows-Test-0.1.1-x64-setup.exe"
+    },
+    {
+      "src": "/downloads/sanze-app-release\\.json",
+      "dest": "/downloads/sanze-app-release.json"
+    },
+    {
+      "src": "/update/macos-test-latest\\.json",
+      "dest": "/update/macos-test-latest.json"
+    },
+    {
+      "src": "/update/windows-test-latest\\.json",
+      "dest": "/update/windows-test-latest.json"
+    },
+    {
+      "src": "/robots\\.txt",
+      "dest": "/robots.txt",
+      "headers": {
+        "Cache-Control": "no-store",
+        "X-Robots-Tag": "noindex, nofollow, noarchive"
+      }
+    },
+    {
+      "src": "/api/public-site-not-found",
+      "dest": "/api/public-site-not-found"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/public-site-not-found"
     }
   ]
 }
