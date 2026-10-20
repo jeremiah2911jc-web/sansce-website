@@ -66,3 +66,14 @@ create index if not exists license_events_created_at_idx on public.license_event
 alter table public.licenses enable row level security;
 alter table public.license_devices enable row level security;
 alter table public.license_events enable row level security;
+
+-- Explicit Data API privileges are required when automatic grants are disabled.
+-- License data is accessed only by trusted backend routes, never by app clients.
+revoke all on table public.licenses, public.license_devices, public.license_events
+from public, anon, authenticated;
+
+grant select, insert, update on table public.licenses, public.license_devices
+to service_role;
+
+grant select, insert on table public.license_events
+to service_role;
