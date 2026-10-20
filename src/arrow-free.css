@@ -1,0 +1,13 @@
+/* Text labels carry links and controls without decorative arrows. */
+.design-button{justify-content:center;padding:14px 25px;gap:0}
+.design-service-body{padding-right:30px}
+.design-insight-row{padding-right:0}
+.design-situation-list>a{grid-template-columns:18px .75fr 1fr}
+.design-carousel-tools button{width:auto;min-width:70px;padding:8px 14px;border-radius:20px;font:inherit;font-size:12px}
+.service-list article{grid-template-columns:1fr}
+.website-assistant .assistant-form button{width:auto;min-width:56px;padding:0 12px;border-radius:12px;font:inherit;font-size:14px;font-weight:600}
+.faq summary,.lc-help summary,.privacy-notice summary,.insight-toc-toggle summary{list-style:none}
+.faq summary::-webkit-details-marker,.lc-help summary::-webkit-details-marker,.privacy-notice summary::-webkit-details-marker,.insight-toc-toggle summary::-webkit-details-marker{display:none}
+.faq summary::after,.lc-help summary::after,.privacy-notice summary::after,.insight-toc-toggle summary::after{content:'＋';margin-left:8px;white-space:nowrap}
+.faq details[open]>summary::after,.lc-help[open]>summary::after,.privacy-notice[open]>summary::after,.insight-toc-toggle[open]>summary::after{content:'－'}
+@media(max-width:720px){.design-situation-list>a{grid-template-columns:10px 1fr}.design-situation-list p{grid-column:2}.design-button{padding:13px 22px}}

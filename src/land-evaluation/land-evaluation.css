@@ -1,0 +1,199 @@
+/* Three consistent roles: quiet input paper, open parking comparison, branded result sheet. */
+.land-evaluation{
+ --le-ink:#263e34;--le-green:#174e43;--le-muted:#5c6e62;--le-line:#cbd5ca;
+ --le-paper:#fcfcf9;--le-soft:#f2f4ed;--le-control-line:#bac7bc;--le-radius:3px;
+ --le-control:52px;--le-label:14px;--le-note:13px;--le-gap:24px;
+ max-width:1320px;margin:0 auto;padding:40px 60px 80px 36px;
+ color:var(--le-ink);font:16px/1.75 var(--sx-font,"PingFang TC",sans-serif);
+}
+.land-evaluation *{box-sizing:border-box;min-width:0}
+.land-evaluation :is(h1,h2,h3,h4,p,dl,dd,figure){margin:0}
+.interior-page .land-evaluation :is(h1,h2,h3,h4){font-family:var(--sx-font,"PingFang TC",sans-serif);font-weight:600;letter-spacing:.015em;color:var(--le-ink)}
+.land-evaluation h1{font-size:38px;line-height:1.4}.land-evaluation h2{font-size:25px;line-height:1.55}
+.land-evaluation h3{font-size:18px;line-height:1.6;margin-bottom:10px}.land-evaluation h4{font-size:16px;line-height:1.65;margin-bottom:12px}
+.land-evaluation p{color:var(--le-muted);font-size:var(--le-note);line-height:1.9}
+.land-evaluation a{color:var(--le-green);text-underline-offset:5px}
+.land-evaluation :is(button,input,select,textarea){font:inherit;color:var(--le-ink)}
+.land-evaluation button{cursor:pointer}.land-evaluation :is(button,a)::after{content:none!important}
+.land-evaluation :is(button,a,summary):focus-visible{outline:2px solid #386854;outline-offset:4px}
+.land-evaluation :is(h2,h3,summary){scroll-margin-top:125px}
+.land-evaluation .le-eyebrow{font-size:12px;font-weight:600;letter-spacing:.09em;color:var(--le-green)}
+.land-evaluation .le-intro{display:flex;align-items:flex-end;justify-content:space-between;gap:36px;padding:0 0 28px;margin-bottom:28px;border-bottom:1px solid var(--le-line);background:none}
+.land-evaluation .le-intro h1{margin:10px 0 12px}.land-evaluation .le-intro>div>p:not(.le-eyebrow):not(.le-session-note){font-size:15px}
+.land-evaluation .le-intro .le-session-note{margin-top:12px;font-size:12px}
+.land-evaluation .le-text-button{padding:6px 0;border:0;border-radius:0;background:none;box-shadow:none;font-size:13px;font-weight:400;text-decoration:underline;text-underline-offset:5px;color:var(--le-muted)}
+.land-evaluation .le-clear{flex-shrink:0;min-height:36px}
+.land-evaluation .le-identity{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;align-items:start;margin-bottom:28px}
+.land-evaluation .le-region-field p{font-size:12px;line-height:1.7;margin-top:8px;padding:0}
+
+/* Inputs: label, control and hint have a shared vertical rhythm. */
+.land-evaluation label{display:flex;flex-direction:column;gap:8px;color:#3e5146;font-size:var(--le-label);font-weight:500;line-height:1.7}
+.land-evaluation .le-field>span:first-child{display:flex;align-items:baseline;gap:9px;min-height:24px}
+.land-evaluation .le-label-text{display:block;min-height:24px;font-size:var(--le-label);line-height:1.7}
+.land-evaluation .le-selected-caption{display:block;overflow-wrap:anywhere;font-weight:400}
+.land-evaluation label small{font-size:12px;line-height:1.7;color:var(--le-muted);font-weight:400}
+.land-evaluation .le-field>span:first-child>small{font-size:11px;letter-spacing:.02em}
+.land-evaluation :is(input:not([type=checkbox]),select){width:100%;height:var(--le-control);padding:0 16px;border:1px solid var(--le-control-line);border-radius:var(--le-radius);background-color:var(--le-paper);box-shadow:none;color:#243e31;font-size:16px;font-weight:400;line-height:normal;transition:border-color .15s,background-color .15s}
+.land-evaluation textarea{display:block;width:100%;min-height:96px;padding:12px 16px;border:1px solid var(--le-control-line);border-radius:var(--le-radius);background-color:var(--le-paper);box-shadow:none;font-size:16px;font-weight:400;line-height:1.75;resize:vertical}
+.land-evaluation input[type=number]{font-size:18px;font-weight:400;font-variant-numeric:tabular-nums;font-feature-settings:"tnum";letter-spacing:.01em}
+.land-evaluation input::placeholder,.land-evaluation textarea::placeholder{color:#69796e;opacity:1;font-size:14px}
+.land-evaluation :is(input:not([type=checkbox]),select,textarea):hover:not(:disabled){border-color:#829c8a;background-color:#fff}
+.land-evaluation :is(input:not([type=checkbox]),select,textarea):focus{outline:2px solid #386854;outline-offset:2px;background-color:#fff}
+.land-evaluation :is(input,select,textarea):disabled{background-color:#eef0e9;border-color:#d8ded3;color:#657365;cursor:not-allowed;opacity:1;-webkit-text-fill-color:#657365}
+.land-evaluation input[type=checkbox]{width:18px;height:18px;flex-shrink:0;margin:3px 10px 0 0;accent-color:var(--le-green)}
+.land-evaluation label:has(>input[type=checkbox]){display:flex;flex-direction:row;align-items:flex-start;gap:0;font-size:14px;font-weight:400;line-height:1.75}
+.land-evaluation input[type=checkbox]:focus-visible{outline:2px solid #386854;outline-offset:3px}
+.land-evaluation .le-number,.land-evaluation .planning-number-unit{display:flex;align-items:center;height:var(--le-control);gap:0;border:1px solid var(--le-control-line);border-radius:var(--le-radius);background-color:var(--le-paper);overflow:hidden}
+.land-evaluation :is(.le-number,.planning-number-unit):hover{border-color:#829c8a;background-color:#fff}
+.land-evaluation :is(.le-number,.planning-number-unit):focus-within{outline:2px solid #386854;outline-offset:2px;background-color:#fff}
+.land-evaluation :is(.le-number,.planning-number-unit)>input:not([type=checkbox]){height:50px;flex:1;min-width:0;width:100%;padding:0 8px 0 16px;border:0;border-radius:0;outline:none;background:none;box-shadow:none}
+.land-evaluation :is(.le-number,.planning-number-unit)>span{flex:0 0 auto;min-width:48px;max-width:110px;padding-right:16px;padding-left:8px;font-size:12px;font-weight:400;color:var(--le-muted);white-space:nowrap}
+.land-evaluation :is(.le-number,.planning-number-unit):has(>input:disabled){background-color:#eef0e9;border-color:#d8ded3}
+.land-evaluation select:not([multiple]){appearance:none;-webkit-appearance:none;padding-right:48px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%23576f61' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 18px center;background-size:12px 8px}
+
+/* Desktop workspace and progressively disclosed detail. */
+.land-evaluation .le-workspace{display:grid;grid-template-columns:156px minmax(0,1fr);gap:44px;align-items:start;border-top:1px solid var(--le-line);padding-top:30px}
+.land-evaluation .le-tabs{position:sticky;top:110px;display:flex;flex-direction:column;align-items:stretch;gap:2px;padding:0 18px 0 0;margin:0;border:0;background:none}
+.land-evaluation .le-tabs>p{padding-bottom:18px;font-size:12px;color:var(--le-muted);letter-spacing:.08em}
+.land-evaluation .le-tabs button{width:100%;min-height:46px;padding:10px 0;margin:0;text-align:left;border:0;border-radius:0;background:none;box-shadow:none;color:var(--le-muted);font-size:14px;font-weight:400;white-space:normal;text-underline-offset:7px}
+.land-evaluation .le-tabs button:hover{color:var(--le-green);background:none;transform:none}
+.land-evaluation .le-tabs button[aria-current=step]{color:var(--le-green);font-weight:600;text-decoration:underline;text-decoration-thickness:1px}
+.land-evaluation .le-tabs button:last-child{margin-top:22px;padding-top:20px;border-top:1px solid var(--le-line);font-size:12px}
+.land-evaluation .le-form-section{margin:0;padding:0;background:none;border:0}
+.land-evaluation .le-section-heading{padding-bottom:18px;margin-bottom:24px;border-bottom:1px solid var(--le-line)}
+.land-evaluation .le-section-heading p{margin-top:8px}
+.land-evaluation :is(.le-fields,.planning-field-grid,.burden-fields,.site-road-fields){display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:24px;row-gap:24px;margin:20px 0 26px;align-items:start}
+.land-evaluation .le-fields:has(>.le-field:nth-child(4)):not(:has(>.le-field:nth-child(5))){grid-template-columns:repeat(2,minmax(0,1fr))}
+@supports(grid-template-rows:subgrid){
+ .land-evaluation :is(.le-fields,.planning-field-grid,.burden-fields,.site-road-fields){row-gap:8px}
+ .land-evaluation :is(.le-fields,.planning-field-grid,.burden-fields,.site-road-fields)>label:not(:has(>input[type=checkbox])){display:grid;grid-template-rows:subgrid;grid-row:span 3;align-items:start;row-gap:8px;padding-bottom:14px}
+ .land-evaluation :is(.le-fields,.planning-field-grid,.burden-fields,.site-road-fields)>label>.le-label-text,.land-evaluation .le-fields>label>span:first-child{align-self:end}
+}
+.land-evaluation :is(.workflow-panel,.area-review-panel,.legal-parking-panel){padding:28px 0 0;margin:30px 0 0;background:none;border:0;border-top:1px solid var(--le-line);border-radius:0;box-shadow:none;max-width:none}
+.land-evaluation :is(.workflow-panel,.area-review-panel,.legal-parking-panel)>p{margin:10px 0}
+.land-evaluation :is(.area-review-panel,.legal-parking-panel)>label{margin:18px 0}
+.land-evaluation fieldset{padding:0;border:0;margin:16px 0;min-width:0}
+.land-evaluation fieldset>label{margin-top:18px}
+.land-evaluation details{margin:16px 0 0;padding:0 0 16px;background:none;border:0;border-bottom:1px solid var(--le-line);border-radius:0}
+.land-evaluation details summary{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:16px 0;list-style:none;cursor:pointer;font-size:14px;font-weight:500;color:var(--le-green);line-height:1.75;background:none}
+.land-evaluation summary::-webkit-details-marker{display:none}
+.land-evaluation summary::after{content:'＋';font-size:18px;font-weight:400;flex-shrink:0;color:#667d6c}
+.land-evaluation details[open]{padding-bottom:24px}.land-evaluation details[open]>summary{font-weight:600}.land-evaluation details[open]>summary::after{content:'−'}
+.land-evaluation details>p{margin:8px 0 16px}.land-evaluation details>label{margin:16px 0}
+.land-evaluation details details{margin-left:0}.land-evaluation .bonus-item{margin-top:0}.land-evaluation .bonus-item-list{margin-top:12px}
+.land-evaluation .le-advanced>section{padding-top:12px;margin-top:0;border-top:0}
+.land-evaluation :is(.burden-table,.le-render-table,.le-detail-table){max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+.land-evaluation table{width:100%;border-collapse:collapse;margin:16px 0;background:#fff;font-size:13px;table-layout:auto}
+.land-evaluation :is(th,td){padding:12px 14px;border:0;border-bottom:1px solid #dbe2d7;text-align:left;vertical-align:top;line-height:1.75;white-space:normal;font-weight:400;background:transparent}
+.land-evaluation thead th{color:#425c49;background:var(--le-soft);font-weight:500}.land-evaluation tbody th{font-weight:400}
+.land-evaluation tbody tr:nth-child(even){background:#f8f9f5}.land-evaluation td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.land-evaluation table input:not([type=checkbox]){min-width:90px;width:110px}
+.land-evaluation .le-render-table p{margin:12px 0}.land-evaluation .le-render-table h3{margin-top:20px}
+.land-evaluation :is([role=alert],.planning-inline-error){color:#8b3f32}
+
+/* Parking is a comparison, with one primary number and a truthful capacity scale. */
+.land-evaluation .le-parking-overview{display:grid;grid-template-columns:130px minmax(0,1fr);gap:38px;align-items:center;border-top:1px solid var(--le-line);margin-top:28px;padding:24px 0 8px;background:none}
+.land-evaluation .le-parking-total{display:flex;flex-direction:column;gap:4px}.land-evaluation .le-parking-total>span{font-size:13px;color:var(--le-muted);font-weight:400}
+.land-evaluation .le-parking-total>strong{font:400 44px/1.3 Arial,sans-serif;font-variant-numeric:tabular-nums;color:var(--le-green);letter-spacing:-.025em}
+.land-evaluation .le-parking-total small{font:400 13px var(--sx-font,sans-serif);margin-left:10px;letter-spacing:0}
+.land-evaluation .le-parking-capacity p{font-size:13px;margin:0}.land-evaluation .le-parking-capacity b{color:var(--le-ink);font-weight:600;font-variant-numeric:tabular-nums}
+.land-evaluation .le-parking-capacity-track{height:4px;background:#e5e9df;margin:12px 0 10px;overflow:hidden;max-width:540px}.land-evaluation .le-parking-capacity-track>span{display:block;height:100%;background:#476d54}
+.land-evaluation .le-parking-extras{margin-top:4px;border-bottom:0;padding-bottom:0}.land-evaluation .le-parking-extras>summary{font-size:13px;font-weight:400;justify-content:flex-start;gap:18px;padding:12px 0;color:var(--le-muted)}
+.land-evaluation .le-parking-extras dl{max-width:420px;padding-bottom:12px}.land-evaluation .le-parking-extras dl>div{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #e0e5dc;font-size:13px;color:var(--le-muted)}
+.land-evaluation .legal-parking-panel>.planning-incomplete{font-size:13px;font-weight:400;color:var(--le-muted);border:0;background:none;padding:0;margin:26px 0 20px}
+.land-evaluation .legal-parking-panel>small{display:block;font-size:12px;line-height:1.85;color:var(--le-muted);margin-top:12px}
+
+/* Actions and exceptional states share one hierarchy. */
+.land-evaluation :is(.le-primary,.primary-btn){display:inline-flex;justify-content:center;align-items:center;gap:8px;min-height:52px;padding:12px 24px;border:1px solid var(--le-green);border-radius:var(--le-radius);background:var(--le-green);color:#fff!important;text-decoration:none;font-size:14px;font-weight:500;letter-spacing:.025em;line-height:1.6;box-shadow:none}
+.land-evaluation :is(.le-primary,.primary-btn):hover{background:#0c392f;color:#fff;transform:none}
+.land-evaluation :is(.le-secondary,.secondary-btn){display:inline-flex;justify-content:center;align-items:center;min-height:52px;padding:12px 22px;border:1px solid #8b9e90;border-radius:var(--le-radius);background:#fff;color:var(--le-green);font-size:14px;font-weight:500;text-decoration:none;box-shadow:none}
+.land-evaluation :is(.le-secondary,.secondary-btn):hover{background:var(--le-soft);transform:none}
+.land-evaluation .le-calculate{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-top:36px;border-top:1px solid #94a99a;padding:24px 0}
+.land-evaluation .le-calculate strong{font-size:17px;font-weight:600}.land-evaluation .le-calculate p{font-size:13px;margin-top:4px}.land-evaluation .le-calculate button{min-width:220px}
+.land-evaluation .le-before-results{font-size:13px;padding:0}
+.land-evaluation .le-errors{margin:24px 0;padding:18px 22px;border:1px solid #cfab9e;background:#fbf5f0;outline-offset:3px}.land-evaluation .le-errors strong{font-size:15px;font-weight:600}.land-evaluation .le-errors ul{margin:8px 0 0;padding-left:20px;font-size:14px}
+.land-evaluation .le-replace{display:flex;flex-wrap:wrap;gap:18px;align-items:center;border:1px solid #cbbd9b;background:#faf7ed;padding:18px 22px;margin-bottom:24px}.land-evaluation .le-replace p{flex:1;min-width:220px}
+.land-evaluation .le-stale{padding:20px 24px;background:#faf7ed;border:1px solid #cbbd9b}.land-evaluation .le-stale strong{font-size:16px;font-weight:600}.land-evaluation .le-stale p{margin:8px 0 16px}
+
+/* Result: the same type, spacing, table and number language as the workspace. */
+.land-evaluation .le-results-wrap{scroll-margin-top:110px;margin-top:28px}
+.land-evaluation .le-result-sheet{background:#fff;border:1px solid #bac7bc;border-radius:var(--le-radius);padding:0;overflow:hidden;box-shadow:none}
+.land-evaluation .le-report-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.85fr);gap:30px;padding:26px 30px;background:#173f39;color:#fff}
+.land-evaluation .le-report-head .le-eyebrow{color:#d3dec9;font-size:12px}
+.interior-page .land-evaluation .le-report-head h2{color:#fff;font-size:25px;font-weight:600;line-height:1.5;margin:8px 0;overflow-wrap:anywhere}
+.land-evaluation .le-report-head h2>span{display:block}.land-evaluation .le-report-head h2>.le-report-subtitle{font-size:15px;font-weight:400;line-height:1.85;margin-top:4px;color:#d9e5db}
+.land-evaluation .le-report-head p{font-size:13px;color:#d4e0d6;line-height:1.8}
+.land-evaluation .le-result-main{display:flex;flex-direction:column;align-self:center;padding-left:28px;border-left:1px solid #6f8b7e}
+.land-evaluation .le-result-main>span{font-size:12px;color:#d9e5db;line-height:1.75}
+.land-evaluation .le-result-main strong{font:400 44px/1.4 Arial,sans-serif;letter-spacing:-.025em;color:#fff;font-variant-numeric:tabular-nums}
+.land-evaluation .le-result-main strong small{font:400 14px var(--sx-font,sans-serif);margin-left:12px;color:#fff;letter-spacing:0}
+.land-evaluation .le-result-conditions{display:grid;grid-template-columns:1.05fr 1fr 1.4fr;gap:24px;background:var(--le-soft);padding:18px 30px}
+.land-evaluation .le-result-conditions>div{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--le-muted)}
+.land-evaluation .le-result-conditions strong{font-size:14px;font-weight:500;color:var(--le-ink);font-variant-numeric:tabular-nums;line-height:1.8}
+.land-evaluation .le-bonus-values{display:flex;flex-wrap:wrap;gap:2px 14px}.land-evaluation .le-bonus-values>span{white-space:nowrap}
+.land-evaluation .le-metrics-area{position:relative;isolation:isolate}
+.land-evaluation .le-result-watermark{position:absolute;z-index:-1;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;pointer-events:none;user-select:none;opacity:.065;color:var(--le-green)}
+.land-evaluation .le-result-watermark img{width:220px;height:auto;display:block;filter:grayscale(1)}.land-evaluation .le-result-watermark span{font:12px "Songti TC",serif;letter-spacing:.28em;padding-left:.28em;white-space:nowrap}
+.land-evaluation .le-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:4px 30px 0;gap:0 24px}
+.land-evaluation .le-metrics>div{border-bottom:1px solid #dce2d8;padding:18px 0 16px}
+.land-evaluation .le-metrics dt{font-size:13px;line-height:1.8;color:var(--le-muted);margin-bottom:6px}
+.land-evaluation .le-metrics dd{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 7px;font:400 28px/1.4 Arial,sans-serif;font-variant-numeric:tabular-nums;color:var(--le-ink)}
+.land-evaluation .le-metrics dd small{font:400 12px/1.7 var(--sx-font,sans-serif);white-space:nowrap;color:var(--le-muted)}
+.land-evaluation .le-metrics p{font-size:12px;line-height:1.8;margin-top:5px}
+.land-evaluation .le-volume-line{display:flex;flex-wrap:wrap;gap:8px 24px;padding:18px 30px;font-size:13px;color:var(--le-muted)}
+.land-evaluation .le-volume-line span{white-space:nowrap}.land-evaluation .le-volume-line strong{font-weight:500;color:var(--le-green);font-variant-numeric:tabular-nums}
+.land-evaluation .le-capacity-note{padding:14px 30px;background:#faf7ed;color:#745c2e;font-size:13px}
+.land-evaluation .le-capture-notes{padding:18px 30px 20px;border-top:1px solid #dce2d8;background:#fafbf6;font-size:13px;line-height:1.85}
+.land-evaluation .le-capture-notes strong{font-size:13px;font-weight:600}.land-evaluation .le-capture-notes p{margin-top:7px;font-size:12px;line-height:1.9;color:#526a58}
+.land-evaluation .le-report-foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px 20px;padding:12px 30px;margin:0;font-size:11px;line-height:1.75;background:var(--le-soft);color:var(--le-muted);border:0;border-radius:0}
+.land-evaluation .le-full-notes{padding:0}.land-evaluation .le-full-notes li{font-size:13px;line-height:1.9;margin:10px 0;color:var(--le-muted)}
+.land-evaluation .le-detail-table{max-width:640px}
+.land-evaluation table:has(thead tr:first-child>:nth-child(2):last-child){max-width:640px;table-layout:fixed}
+.land-evaluation table:has(thead tr:first-child>:nth-child(2):last-child) :is(th,td):last-child{width:180px;text-align:right;font-variant-numeric:tabular-nums}
+.land-evaluation table:has(thead tr:first-child>:nth-child(2):last-child) :is(th,td):first-child{width:auto;text-align:left}
+
+/* The App introduction continues the report's hierarchy without another card system. */
+.land-evaluation .le-app-intro{display:grid;grid-template-columns:1fr 1.05fr;gap:48px;margin-top:56px;padding-top:32px;border:0;border-top:1px solid #9cae9e;background:none}
+.land-evaluation .le-app-copy h2{font-size:25px;line-height:1.65;max-width:430px;margin:10px 0 16px}
+.land-evaluation .le-app-copy>p:not(.le-eyebrow){font-size:14px;line-height:1.95;margin-bottom:24px}
+.land-evaluation .le-app-scope dl>div{display:grid;grid-template-columns:98px 1fr;gap:16px;border-bottom:1px solid var(--le-line);padding:16px 0;font-size:13px}
+.land-evaluation .le-app-scope dt{font-weight:500}.land-evaluation .le-app-scope dd{color:var(--le-muted)}.land-evaluation .le-app-scope>p{font-size:12px;margin-top:18px}
+.le-computer-notice{max-width:680px;margin:0 auto;padding:80px 24px 100px;color:#173f39;font-size:16px;line-height:1.9}
+.le-computer-notice p{line-height:1.9}.le-computer-notice>.le-eyebrow{font-size:14px;color:#597366;margin-bottom:18px}
+.le-computer-notice .le-primary{display:inline-flex;align-items:center;justify-content:center;margin-top:25px;min-height:52px;background:#174e43;color:#fff;padding:12px 24px;border-radius:3px;text-decoration:none}
+@media(min-width:800px) and (max-width:1150px){
+ .land-evaluation{padding-left:24px;padding-right:60px}.land-evaluation .le-intro{gap:20px}.land-evaluation .le-intro h1{font-size:34px}
+ .land-evaluation .le-identity{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+ .land-evaluation .le-workspace{grid-template-columns:130px minmax(0,1fr);gap:30px}
+ .land-evaluation :is(.le-fields,.planning-field-grid,.burden-fields,.site-road-fields){grid-template-columns:repeat(2,minmax(0,1fr));column-gap:22px}
+ .land-evaluation .le-base-fields{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:20px}
+ .land-evaluation .le-parking-overview{grid-template-columns:110px minmax(0,1fr);gap:24px}
+ .land-evaluation .le-report-head{grid-template-columns:minmax(0,1fr) 310px;gap:24px;padding:22px 24px}
+ .land-evaluation .le-result-main{padding-left:24px}.land-evaluation .le-result-main strong{font-size:40px}
+ .land-evaluation .le-result-conditions{gap:18px;padding:16px 24px}.land-evaluation .le-metrics{gap:0 18px;padding-inline:24px}.land-evaluation .le-metrics dd{font-size:25px}
+ .land-evaluation :is(.le-volume-line,.le-capture-notes,.le-report-foot){padding-inline:24px}
+ .land-evaluation .le-app-intro{gap:30px}.land-evaluation .le-app-copy h2{font-size:23px}
+}
+@media(forced-colors:active){.land-evaluation select:not([multiple]){appearance:auto;-webkit-appearance:auto;background-image:none;padding-right:16px}.land-evaluation .le-parking-capacity-track{border:1px solid CanvasText}.land-evaluation .le-parking-capacity-track>span{background:CanvasText}}
+@media(prefers-reduced-motion:reduce){.land-evaluation *{scroll-behavior:auto!important;transition:none!important}}
+
+
+@media(min-width:800px){
+ .land-evaluation .le-fields:has(>label:nth-child(2)):not(:has(>label:nth-child(3))),.land-evaluation .site-road-fields:not(.le-road-verification){grid-template-columns:repeat(2,minmax(0,1fr))}
+ .land-evaluation :is(.le-three-fields,.le-road-verification){grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
+.land-evaluation .small-site-parking{margin:28px 0;padding:0;border:0}
+.land-evaluation .small-site-parking h4{margin:28px 0 16px;font-size:16px}
+.land-evaluation .small-site-parking>label{display:grid;margin:24px 0;gap:8px}
+.land-evaluation .small-site-parking .burden-table{margin:20px 0}
+.land-evaluation .small-site-parking table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.land-evaluation .small-site-parking td,.land-evaluation .small-site-parking th{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid #d9dfd5}
+.land-evaluation .small-site-parking td:nth-child(2){font-size:13px;line-height:1.7}
+.land-evaluation .small-site-parking td:last-child{width:130px}
+.land-evaluation .le-small-site-result{padding:24px 30px;border-top:1px solid #d9dfd5}
+.land-evaluation .le-small-site-result h3{font-size:18px;margin:0 0 10px}
+.land-evaluation .le-small-site-result p{font-size:13px;line-height:1.8;color:#62756a;margin:8px 0}
+.land-evaluation .le-small-site-result table{width:100%;max-width:720px;margin:18px 0;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+.land-evaluation .le-small-site-result td,.land-evaluation .le-small-site-result th{padding:10px 12px;text-align:right;border-bottom:1px solid #d9dfd5}
+.land-evaluation .le-small-site-result th:first-child{text-align:left}

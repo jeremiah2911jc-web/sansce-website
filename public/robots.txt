@@ -2,3 +2,5 @@ User-agent: *
 Disallow: /api/
 Disallow: /update/
 Disallow: /downloads/
+
+Sitemap: https://www.sanzepm.com.tw/sitemap.xml

@@ -1,0 +1,30 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';import vm from 'node:vm';import {randomUUID} from 'node:crypto';
+import {interactionTargets,validTrafficAction,trafficLinkAction} from '../shared/traffic-actions.js';
+import {makeTrafficHandler} from '../api/_site-traffic.js';import {recordContactSuccess} from '../api/_contact-tracking.js';import {makeContactHandler} from '../api/contact.js';
+for(const [action,targets] of Object.entries(interactionTargets))for(const target of targets)assert(validTrafficAction(action,target));
+for(const [a,t] of [['service_select','私人資料'],['calculator_complete','123坪'],['assistant_question','提問全文'],['contact_success','accepted'],['toString','x'],[{},'x']])assert.equal(validTrafficAction(a,t),false);
+const visitor=randomUUID(),page=randomUUID(),requestId=randomUUID();let rpc=[];
+const recording={tracking:{visitorId:visitor,pageEventId:page,path:'/contact'},requestId,headers:{'user-agent':'Safari'},dbFactory:()=>({rpc:(name,args)=>({abortSignal:async()=>{rpc.push({name,args});return {data:true};}})})};
+await recordContactSuccess(recording);assert.equal(rpc.length,1);assert.equal(rpc[0].args.p_action,'contact_success');assert.equal(rpc[0].args.p_event_id,requestId);
+for(const patch of [{headers:{cookie:'sanze_traffic_excluded=1'}},{headers:{'user-agent':'bot'}},{tracking:null},{tracking:{...recording.tracking,path:'/'}},{tracking:{...recording.tracking,pageEventId:'invalid'}}])await recordContactSuccess({...recording,...patch});assert.equal(rpc.length,1);
+const env={NODE_ENV:'production',TURNSTILE_SECRET_KEY:'mock',RESEND_API_KEY:'mock',CONTACT_FROM_EMAIL:'a@example.com',CONTACT_TO_EMAIL:'b@example.com'};
+const body={requestId,name:'測試',phone:'0912345678',email:'',district:'測試',location:'測試',stage:'初步整合中',association:'更新會',willingness:'',problem:'測試',consent:true,website:'',turnstileToken:'mock',tracking:recording.tracking};
+let successCalls=0;
+const invoke=async(handler,payload=body)=>{const res={setHeader(){},end(v){this.data=JSON.parse(v);}};await handler({method:'POST',headers:{origin:'https://www.sanzepm.com.tw','content-type':'application/json'},body:payload,socket:{}},res);return res;};
+for(const [verified,mailed,expected] of [[false,true,400],[true,false,502],[true,true,200]]){
+ const h=makeContactHandler({env,recordSuccess:async()=>{successCalls++;},fetchImpl:async url=>url.includes('siteverify')?{ok:true,json:async()=>({success:verified,hostname:'www.sanzepm.com.tw',action:'contact'})}:{ok:mailed,json:async()=>({id:'mock-mail'})}});
+ assert.equal((await invoke(h)).statusCode,expected);
+}assert.equal(successCalls,1,'only verified and accepted mail is a success');
+const brokenAnalytics=makeContactHandler({env,recordSuccess:async()=>{throw Error('analytics unavailable');},fetchImpl:async url=>({ok:true,json:async()=>url.includes('siteverify')?{success:true,hostname:'www.sanzepm.com.tw',action:'contact'}:{id:'mock-mail'}})});
+assert.equal((await invoke(brokenAnalytics)).statusCode,200,'analytics failure must not make a delivered consultation look failed');
+const handler=makeTrafficHandler({dbFactory:()=>({rpc:async()=>({data:true})})});
+const forged={...body,type:'action',eventId:randomUUID(),visitorId:visitor,pageEventId:page,path:'/contact',action:'contact_success',target:'accepted'};
+assert.equal((await invoke(handler,forged)).statusCode,400,'public action endpoint cannot forge success');
+// Queue early operations until parent page is accepted; reject arbitrary values and honor exclusion.
+let excluded=false,accept;let events={},calls=[];const source=fs.readFileSync('src/traffic-tracker.js','utf8').replace(/^import .*;\n/gm,'').replace('export function','function');
+const context={trafficLinkAction,validTrafficAction,trafficSource:()=> 'direct_unknown',trafficSourceBasis:()=> 'none',crypto:{randomUUID},Date,AbortSignal,location:{hostname:'www.sanzepm.com.tw',pathname:'/',href:'https://www.sanzepm.com.tw/'},navigator:{webdriver:false},document:{visibilityState:'visible',addEventListener(){}},window:{addEventListener:(n,f)=>events[n]=f},visitorTrackingMetadata:()=>({visitorId:visitor,excludeFromTraffic:excluded}),setTimeout:()=>1,clearTimeout(){},fetch:async(u,o)=>{let b=JSON.parse(o.body);calls.push(b);if(!b.type)return new Promise(r=>{accept=()=>r({ok:true,json:async()=>({})});});return{ok:true,status:200};}};
+vm.runInNewContext(source+';trackPageView()',context);const flush=async()=>{for(let i=0;i<40;i++)await Promise.resolve();};await flush();
+events['sanze:interaction']({detail:{action:'service_select',target:'contract'}});await flush();assert.equal(calls.length,1);accept();await flush();assert.equal(calls[1].action,'service_select');
+events['sanze:interaction']({detail:{action:'assistant_question',target:'private text'}});await flush();assert.equal(calls.length,2);excluded=true;events['sanze:interaction']({detail:{action:'assistant_open',target:'launcher'}});await flush();assert.equal(calls.length,2);assert(!JSON.stringify(calls).includes('private text'));
+console.log('PASS redesigned interactions: fixed codes only, queued parent, exclusion, invalid inputs, server-confirmed consultation only, no forged success, analytics failure preserves mail result. No live mail or data written.');

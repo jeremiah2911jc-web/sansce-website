@@ -1,43 +1,40 @@
 # 三策專案管理顧問網站
 
-這是可直接部署到 Vercel 的 Vite + React + Tailwind 專案。
+正式站：[www.sanzepm.com.tw](https://www.sanzepm.com.tw/)
 
-## 本機啟動
+`main` 與正式站使用同一份原始碼。先開分支、通過檢查，再合併到 `main`；Vercel 會自動建置與部署。不要再從與 GitHub 不同步的資料夾直接發布。
 
-```bash
-npm install
+## 本機公開頁預覽
+
+```sh
+npm ci
+SANZE_PUBLIC_PREVIEW=1 npm run prepare:private
 npm run dev
 ```
 
-## 建置
+公開預覽不含受保護的案件報告。原有報告登入在缺少正式憑證時仍拒絕存取。
 
-```bash
-npm install
-npm run build
+## 建置與部署檢查
+
+```sh
+SANZE_PUBLIC_PREVIEW=1 npm run build
+node --test tests/landowner-calculation.test.mjs tests/line-ai.test.mjs tests/line-timeout.test.mjs tests/line-webhook.test.mjs tests/private-report-bundle.test.mjs
 ```
 
-## Vercel 部署
+建置會同時檢查公開路由、SEO、sitemap 及引用資產。首頁或公開專頁被誤設成 404 時必須建置失敗，不能取代正式站。`vercel.json` 是正式設定；`vercel.paused.json` 僅保存歷史暫停設定，不可用於正常發布。
 
-1. 把整個資料夾上傳到 GitHub，或匯入到 Vercel。
-2. Framework Preset 選 Vite。
-3. Build Command 使用 `npm run build`。
-4. Output Directory 使用 `dist`。
+## 受保護的案件報告
 
-Logo 已放在 `public/logo.png`。
+報告原文與附件以 AES-256-GCM 加密保存在 `sealed/reports.v1.bin`。Vercel Production 透過敏感環境變數 `REPORT_SOURCE_ENCRYPTION_KEY` 在建置時還原伺服器檔案；金鑰不會進入前端或 Git。正式建置缺少金鑰時直接失敗。
 
-## 桌面 App 測試版下載
+這個金鑰只負責部署封裝，不取代或修改既有的 `REPORT_ACCESS_HASHES`、`REPORT_SESSION_SECRET`、Cookie、RLS 或登入規則。Preview 不取得正式報告或正式金鑰。
 
-公開下載頁位於 `/downloads`。下載頁會透過 `/api/desktop-download` 將使用者輸入的下載密碼送到 Vercel serverless API 驗證；密碼必須設定在 Vercel Environment Variables：
+有權更新案件報告的人員，應先在本機安全地載入封裝金鑰，再執行：
 
-```bash
-DESKTOP_DOWNLOAD_PASSWORD=
+```sh
+node scripts/seal-private-reports.mjs /path/to/private-source
 ```
 
-請勿將實際密碼寫入前端程式碼、public JSON、HTML、README 或任何會被打包進 client bundle 的檔案。
+原始資料夾須包含 `api/_report-records.js`、`api/_report-editorial.js` 與 `private/reports/`。只提交更新後的加密封裝；不得提交明文、金鑰或 `.env`。輪替封裝金鑰時必須一併重新封裝。
 
-目前下載檔仍放在 `public/downloads/`。這代表 server-side 密碼 gate 只保護官網下載流程，不能防止已知檔名或已分享 URL 的直連下載；若要做到正式檔案層級控管，下一階段應改用 R2 / S3 等私有儲存，並由 server-side API 驗證後發短效 signed URL。
-
-版本檢查 manifest 位於：
-
-- `public/update/windows-test-latest.json`
-- `public/update/macos-test-latest.json`
+首次同步以 2026-10-20 正式站為基準，重建出的 29 份主要 HTML 與正式發布檔案完全一致，並保留先前已合併的授權資料表明確 GRANT 修正。

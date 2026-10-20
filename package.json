@@ -5,22 +5,19 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run prepare:private && vite build && node scripts/build-pages.mjs && npm run verify:public-site && npm run verify:seo && npm run verify:assets",
     "preview": "vite preview",
-    "license:generate-test-sql": "node scripts/generate-test-license-sql.mjs",
-    "verify:land-identity": "node scripts/verify-land-identity-key.mjs",
-    "verify:license-api": "node scripts/verify-license-api.mjs",
-    "verify:roster-column-mapping": "node scripts/verify-roster-column-mapping.mjs",
-    "verify:roster-golden-fixtures": "node scripts/verify-roster-column-mapping.mjs --golden",
-    "verify:site-visibility": "node scripts/verify-site-visibility.mjs"
+    "verify:public-site": "node scripts/verify-public-site.mjs",
+    "verify:contact": "node scripts/verify-contact.mjs",
+    "verify:seo": "node scripts/verify-seo.mjs",
+    "verify:assets": "node scripts/verify-public-assets.mjs",
+    "sync:land-core": "node scripts/sync-land-evaluation-core.mjs",
+    "verify:land-evaluation": "node scripts/verify-land-evaluation.mjs",
+    "prepare:private": "node scripts/prepare-private-reports.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",
-    "@vercel/analytics": "^2.0.1",
-    "framer-motion": "^11.11.17",
     "lucide-react": "^0.468.0",
-    "pdfjs-dist": "^4.10.38",
-    "qrcode.react": "^4.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
@@ -28,7 +25,6 @@
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.14",
-    "vite": "^5.4.10"
+    "vite": "^6.4.4"
   }
 }

@@ -4,3 +4,16 @@ dist/
 .env.local
 .env.*.local
 public/logo-sanze-source.png
+.vercel
+
+# Private reports are restored during the build from the sealed bundle.
+private/reports/
+api/_report-records.js
+api/_report-editorial.js
+qa/
+.env*
+work/
+/*.png
+/*.jpg
+/*.pdf
+docs/report-portal/

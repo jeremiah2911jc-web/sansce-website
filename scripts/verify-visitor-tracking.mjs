@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {runInNewContext} from 'node:vm';
+import {webcrypto} from 'node:crypto';
+let clock=new Date('2026-10-11T15:59:00Z'),blocked=false;
+const saved=new Map();
+const context={document:{cookie:''},Intl,Date:class extends Date{constructor(...args){super(...(args.length?args:[clock]));}},crypto:webcrypto,location:{hostname:'www.sanzepm.com.tw'},navigator:{webdriver:false},localStorage:{getItem(k){if(blocked)throw Error('blocked');return saved.get(k)||null;},setItem(k,v){if(blocked)throw Error('blocked');saved.set(k,v);},removeItem(k){saved.delete(k);}}};
+const metadata=runInNewContext(readFileSync(new URL('../public/traffic/exclusion.js',import.meta.url),'utf8').replaceAll('export function','function')+'\n'+readFileSync(new URL('../src/visitor-tracking.js',import.meta.url),'utf8').replace(/^import .*\n/,'').replace('export function','function')+'\nvisitorTrackingMetadata;',context);
+const first=metadata();assert.ok(first.visitorId);assert.equal(metadata().visitorId,first.visitorId);assert.equal(JSON.parse(saved.get('sanze-visitor-day')).id,first.visitorId);
+clock=new Date('2026-10-11T16:01:00Z');assert.notEqual(metadata().visitorId,first.visitorId);assert.equal(JSON.parse(saved.get('sanze-visitor-day')).day,'2026-10-12');
+saved.set('sanze-traffic-owner','test-owner');assert.equal(metadata().excludeFromTraffic,true);saved.delete('sanze-traffic-owner');assert.equal(metadata().excludeFromTraffic,true,'exclusion persists after locking dashboard');saved.delete('sanze-traffic-excluded');context.document.cookie='';context.navigator.webdriver=true;assert.equal(metadata().excludeFromTraffic,true);context.navigator.webdriver=false;
+blocked=true;context.document.cookie='sanze_traffic_excluded=1';assert.equal(metadata().excludeFromTraffic,true,'cookie excludes when localStorage is blocked');context.document.cookie='';assert.equal(metadata().visitorId,null);assert.equal(metadata().excludeFromTraffic,true,'blocked storage must not fabricate a visitor per page');context.location.hostname='localhost';assert.equal(metadata().excludeFromTraffic,true);
+console.log('PASS: stable page/question visitor, Taiwan midnight rotation, owner/automation exclusion, blocked storage, non-production exclusion.');

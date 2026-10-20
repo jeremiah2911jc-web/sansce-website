@@ -1,0 +1,244 @@
+/* Reviewed navy/copper compositions: explicit foreground/background pairs. */
+:root{--palette-navy:#263d4b;--palette-ink:#28343b;--palette-muted:#58636a;--palette-copper:#84583f;--palette-line:#ddd8cf;--palette-paper:#f6f3ec}
+/* Service covers retain their dark, readable text panel. */
+.sx-cover-copy{background:#263d4b;color:#fff}
+.sx-cover-copy h1,.sx-cover-copy h1 :is(span,em){color:#fff}
+.sx-cover-copy .sx-label{color:#e8d4c3!important}
+.sx-cover-copy>p:not(.sx-label){color:#edf0f1}
+/* Selected filters must include icon, label, hint and count, not only the button. */
+.rp-category-list button[aria-pressed=true]{background:#263d4b!important;color:#fff!important}
+.rp-category-list button[aria-pressed=true] :is(strong,span,svg){color:#fff!important}
+.rp-category-list button[aria-pressed=true] small{color:#e5d6c9!important}
+.rp-category-list button:not([aria-pressed=true]){color:#263d4b}
+.rp-category-list button:not([aria-pressed=true]) strong{color:#263d4b}
+.rp-category-list button:not([aria-pressed=true]) :is(small,.rp-category-count){color:#58636a}
+.rp-category-list button:not([aria-pressed=true])>svg{color:#84583f}
+.rp-category-list button:not([aria-pressed=true]):hover{background:#eae3d9!important}
+.rp-category-list button:focus-visible{outline:2px solid #84583f;outline-offset:3px}
+.rp-catalog-head>p{width:auto;max-width:24em;flex:0 1 24em;line-height:1.85;color:#58636a}
+/* Compact identification column: the code does not require a tall filled slab. */
+.rp-card{grid-template-columns:120px minmax(0,1fr);gap:28px;padding:26px;background:#fff;border:1px solid #ddd8cf;border-radius:12px}
+.rp-card:hover{border-color:#b5a18f}
+.rp-record-margin{background:transparent;border-right:1px solid #ddd8cf;padding:4px 20px 4px 0;gap:10px;align-self:stretch}
+.rp-record-margin .rp-city{color:#58636a;font-size:12px;line-height:1.7}
+.rp-record-margin .rp-code{color:#263d4b;font-size:24px;line-height:1.4;font-weight:600}
+.rp-record-margin .rp-kind{color:#84583f;font-size:12px;line-height:1.8}
+.rp-record-content{padding:0;min-width:0}
+.rp-card h3{font-size:23px;line-height:1.6;color:#263d4b;margin:0}
+.rp-page .rp-card .rp-intro{color:#58636a;font-size:15px;line-height:1.9;margin:10px 0 18px;max-width:44em}
+.rp-card-details>summary{padding:13px 0;color:#263d4b;min-height:48px;border-color:#ddd8cf}
+.rp-card-links{padding-top:8px;border-color:#ddd8cf}
+.rp-card-links a{color:#385467;min-height:40px}
+.rp-card .program-details :is(p,li){color:#414d55}
+/* The white article cover needs a complete inset around the author. */
+.sanze-feature-cover{margin-bottom:8px}
+.sanze-feature-copy{padding:32px 40px 24px;border-radius:18px 18px 12px 12px}
+.sanze-feature-copy h1,.feature-cover-long .sanze-feature-copy h1,.feature-cover-compact .sanze-feature-copy h1{font-size:clamp(31px,3.1vw,44px);line-height:1.55;text-wrap:balance;max-width:22em;color:#263d4b}
+.sanze-feature-copy h1 :is(span,em){color:inherit}
+.sanze-feature-copy>p{color:#4d5b63;max-width:34em;line-height:1.9}
+.feature-author{color:#4d5b63;padding-top:16px;margin-top:22px;border-top:1px solid #ddd8cf}
+.feature-author small{color:#58636a;line-height:1.7}
+.feature-author>span{background:#f1ece4;color:#263d4b}
+.insight-magazine-layout .feature-section-copy>p,.knowledge-layout .knowledge-body p{color:#34434c}
+.insight-magazine-layout .sanze-feature-section>h2{color:#263d4b}
+.feature-aside-note>span{color:#84583f}
+.feature-aside-note>p{color:#263d4b}
+.feature-aside-note nav a{color:#4d5b63}
+/* All filled choices receive a complete inner-text treatment. */
+.insights-filters button[aria-pressed=true] :is(span,strong),.sx-service-tabs button[aria-selected=true] :is(span,strong){color:inherit}
+@media(max-width:760px){
+ .rp-catalog-head>p{max-width:none;flex:auto}
+ .rp-card{grid-template-columns:minmax(0,1fr);gap:17px;padding:22px 20px}
+ .rp-record-margin{flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:0 0 13px;border-right:0;border-bottom:1px solid #ddd8cf}
+ .rp-record-margin .rp-code{font-size:21px}
+ .rp-record-content{padding:0}
+ .rp-card h3{font-size:22px;line-height:1.65}
+ .rp-category-list button{padding:12px!important;min-height:58px}
+ .rp-category-list strong{line-height:1.65}
+ .sanze-feature-cover{margin-bottom:8px}
+ .sanze-feature-copy{padding:25px 22px 20px;border-radius:0 18px 12px 12px}
+ .sanze-feature-copy h1,.feature-cover-long .sanze-feature-copy h1,.feature-cover-compact .sanze-feature-copy h1{font-size:29px;line-height:1.55}
+ .feature-author{padding-top:15px;margin-top:20px}
+}
+
+.rp-sidebar-help{background:#f1ece4;border:0;padding:20px;border-radius:10px}
+.rp-sidebar-help :is(p,a){color:#4d5b63}
+.rp-sidebar-label{font-size:13px;color:#58636a}
+.rp-category-list small{font-size:12px}
+/* Quiet light surfaces and deliberately contrasting dark surfaces. */
+footer .footer-grid h2,footer .footer-grid h2 :is(span,em,strong){color:#fff!important}
+footer .footer-grid>div:first-child>p{color:#e0e5e8}
+footer .footer-grid>div:first-child>p span{color:inherit}
+/* A continuous golden glint crosses the complete verse; lettering stays still. */
+.scripture-quote{--verse-rest:#6f4e24;--verse-light:#8f682e}
+.scripture-quote :is(p,.scripture-verse-line,.scripture-phrase,cite){color:var(--verse-rest)!important}
+.scripture-quote p{
+ white-space:normal;width:fit-content;max-width:100%;
+ background-image:linear-gradient(110deg,var(--verse-rest) 0%,var(--verse-rest) 38%,var(--verse-light) 48%,var(--verse-light) 52%,var(--verse-rest) 62%,var(--verse-rest) 100%);
+ background-size:300% 100%;background-clip:text;-webkit-background-clip:text;
+ -webkit-text-fill-color:transparent;animation:scriptureSweep 6.5s linear infinite;
+}
+.scripture-quote :is(.scripture-verse-line,.scripture-phrase){-webkit-text-fill-color:inherit;animation:none;transform:none}
+footer .scripture-quote{--verse-rest:#c5a46b;--verse-light:#fff0be}
+.scripture-quote cite{-webkit-text-fill-color:currentColor}
+@media(prefers-reduced-motion:reduce){
+ .scripture-quote p{animation:none;background:none;-webkit-text-fill-color:var(--verse-rest)}
+}
+.co-page .co-story-topic{color:#84583f}
+.co-service-story:last-child :is(h3,.co-story-link),.co-service-story:last-child h3 :is(span,em){color:#fff!important}
+.co-page .co-service-story:last-child .co-story-topic{color:#e5c5aa!important}
+.co-service-story:last-child .co-story-copy>p:not(.co-story-topic){color:#edf0f1!important}
+.insights-masthead .insights-kicker{color:#58636a}
+.lc-example-category small{color:#4d5b63}
+.article-comparison thead th{background:#f1ece4;color:#263d4b}
+.article-comparison thead th :is(span,strong){color:inherit}
+footer .footer-grid small{color:#e0e5e8!important}
+.interior-page .insights-kicker{color:#58636a!important}
+.lc-page .lc-example-card .lc-example-category small{color:#46545d!important}
+.lc-page .lc-example-card:first-child .lc-example-category small{color:#edf0f1!important}
+@media(max-width:760px){
+ .rp-category-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .rp-category-list button{min-height:54px;padding:10px!important;gap:8px}
+ .rp-category-list button>svg{width:21px;height:21px}
+ .rp-category-list strong{font-size:12px}
+ .rp-category-list small{display:none}
+ .rp-category-list .rp-category-count{font-size:11px}
+}
+
+/* Tables: distinguish column headings from content, with room for longer answers. */
+.issue-board{overflow:visible}
+.issue-table,.comparison-table table{width:100%;border-collapse:collapse;table-layout:fixed;text-align:left;font-size:16px;line-height:1.85}
+.issue-table :is(th,td),.comparison-table :is(th,td){padding:18px 22px;vertical-align:top;border-bottom:1px solid #ddd8cf;overflow-wrap:break-word;white-space:normal}
+.issue-table th:first-child,.comparison-table th:first-child{width:26%}
+.issue-table th:nth-child(2),.comparison-table th:nth-child(2){width:33%}
+.issue-table tbody tr:nth-child(n),.interior-page .comparison-table tbody tr:nth-child(n){background:#fff}
+.issue-table tbody tr:nth-child(even),.interior-page .comparison-table tbody tr:nth-child(even){background:#f1ece4}
+.issue-table tbody th,.comparison-table tbody th{color:#263d4b;font-size:16px;font-weight:650}
+.issue-table tbody td,.comparison-table tbody td{color:#34434c;font-size:16px}
+.issue-table thead th,.comparison-table thead th,.article-comparison thead th,.cr-table-scroll thead th{
+ background:#263d4b!important;color:#fff!important;font-size:16px;font-weight:650;line-height:1.65;padding:18px 22px;vertical-align:top
+}
+:is(.issue-table,.comparison-table,.article-comparison,.cr-table-scroll) thead th :is(span,strong,em){color:inherit!important;font-size:inherit}
+.article-comparison{background:#fff;border:1px solid #ddd8cf;border-radius:10px;padding:24px}
+.article-comparison th,.article-comparison td{font-size:15px;line-height:1.85;padding:16px 14px}
+.article-comparison thead th{padding:16px 14px;font-size:15px}
+.article-comparison :is(figcaption,tbody th){color:#263d4b}
+.article-comparison>p,.article-comparison tbody td{color:#34434c}
+.cr-table-scroll thead th{font-size:15px;padding:15px 16px}
+@media(max-width:760px){
+ .issue-table,.issue-table tbody,.issue-table tr,.comparison-table table,.comparison-table tbody,.comparison-table tr{display:block;width:100%;min-width:0}
+ .issue-table thead,.comparison-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+ .issue-table tbody tr:nth-child(n),.interior-page .comparison-table tbody tr:nth-child(n){background:#fff;margin:0 0 22px;border:1px solid #ddd8cf}
+ .issue-table tbody th,.comparison-table tbody th{display:block;box-sizing:border-box;width:100%!important;background:#263d4b;color:#fff!important;padding:16px 18px;font-size:17px;line-height:1.7;border:0}
+ .issue-table tbody td,.comparison-table tbody td{display:block;padding:16px 18px;font-size:16px;line-height:1.85;width:auto;border:0}
+ .issue-table tbody td+td,.comparison-table tbody td+td{border-top:1px solid #ddd8cf}
+ .issue-table td:before,.comparison-table td:before{content:attr(data-label);display:block;font-size:16px;font-weight:650;color:#263d4b;margin-bottom:7px}
+ .article-comparison{padding:20px 14px}
+ .article-comparison th,.article-comparison td{padding:13px 8px}
+ .article-comparison thead th{padding:13px 8px;font-size:15px}
+ .article-comparison-detailed tbody th{font-size:17px}
+ .article-comparison-detailed td:before{font-size:15px;font-weight:650;color:#263d4b}
+}
+.land-evaluation thead th{background:#263d4b!important;color:#fff!important;font-size:14px;font-weight:650}
+.land-evaluation thead th :is(span,strong){font-size:inherit;color:inherit!important}
+/* Safari review: descriptive item labels need more space than short statuses. */
+.case-report .cr-table-scroll tbody th{background:transparent;color:#263d4b}
+@media(max-width:760px){
+ .case-report .cr-table-pair tr>:first-child{width:60%}
+ .case-report .cr-table-pair tr>:nth-child(2){width:40%}
+ .case-report .cr-table-text tbody th{background:#263d4b;color:#fff;border-bottom-color:#ddd8cf}
+ .case-report .cr-table-text td:before{color:#263d4b;font-weight:650}
+}
+
+/* Short viewports: reserve real reading space, including landscape and keyboard use. */
+@media(max-width:760px){
+ .website-assistant[data-compact=true] .assistant-window{height:calc(var(--assistant-visible-height,100dvh) - 24px)!important}
+ .website-assistant[data-compact=true] .assistant-header p{display:none}
+ .website-assistant[data-compact=true] .assistant-avatar{width:28px;height:28px}
+ .website-assistant[data-compact=true] .assistant-header button{width:34px;height:34px}
+ .website-assistant[data-compact=true] .assistant-input-label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+ .website-assistant[data-compact=true] .assistant-form textarea{min-height:44px;height:44px;padding:7px 10px}
+ .website-assistant[data-compact=true] .assistant-form button{min-height:44px}
+}
+
+/* Reading guides need natural wrapping at intermediate and landscape widths. */
+:is(.feature-reading-aside,.service-reading-aside) nav a{white-space:normal;overflow-wrap:break-word}
+
+/* Keep compact city tabs intact on small phones. */
+@media(max-width:360px){
+ .rp-city-filter{gap:6px}
+ .rp-city-filter button{font-size:14px;gap:5px;white-space:nowrap;padding-inline:0}
+ .rp-city-filter button span{font-size:10px;padding-inline:5px}
+}
+
+/* Header action labels remain a single, stable touch target. */
+.sx-menu-trigger{flex-shrink:0;white-space:nowrap}
+
+/* Taipei program reading guide: editorial entry points, not extra scheme counts. */
+.rp-page .rp-notice{flex-shrink:1;max-width:24em;line-height:1.8}
+.rp-taipei-guide{margin:0 0 32px;padding:25px 0 22px;border-bottom:1px solid #d9d3c9}
+.rp-taipei-guide-heading{display:flex;align-items:baseline;gap:22px;margin-bottom:18px}
+.rp-page .rp-taipei-guide-heading .eyebrow{margin:0;flex-shrink:0;color:#84583f}
+.rp-taipei-guide h3{font-size:22px;line-height:1.6;margin:0;color:#263d4b}
+.rp-taipei-paths{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
+.rp-taipei-paths a{display:block;min-width:0;padding:10px 0;color:#263d4b;text-decoration:none}
+.rp-taipei-paths strong{display:block;font-size:16px;line-height:1.65;text-decoration:underline;text-decoration-color:#b49b87;text-underline-offset:6px;text-decoration-thickness:1px}
+.rp-taipei-paths span{display:block;font-size:13px;line-height:1.85;color:#58636a;margin-top:10px}
+.rp-taipei-paths a:hover strong{color:#84583f;text-decoration-thickness:2px}
+.rp-page .rp-taipei-update{font-size:13px;line-height:1.9;color:#414d55;max-width:70em;margin:20px 0 0}
+.rp-taipei-update strong{color:#84583f;margin-right:12px}
+.rp-taipei-update a{display:inline-block;margin-left:12px;color:#385467;text-decoration:underline;text-underline-offset:4px}
+.rp-page .rp-application-status{font-size:13px;line-height:1.8;color:#84583f;margin:-6px 0 18px;font-weight:600}
+.rp-results{scroll-margin-top:120px}
+@media(max-width:850px){.rp-taipei-paths{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 24px}.rp-taipei-guide-heading{display:block}.rp-page .rp-taipei-guide-heading .eyebrow{margin-bottom:10px}}
+@media(max-width:600px){.rp-taipei-guide{padding:0 0 24px;margin-bottom:24px}.rp-taipei-guide h3{font-size:22px;line-height:1.65}.rp-taipei-paths{gap:8px 18px}.rp-taipei-paths strong{font-size:15px}.rp-taipei-paths span{font-size:12px;margin-top:8px}.rp-page .rp-taipei-update{font-size:13px;margin-top:18px}.rp-page .rp-notice{max-width:none;font-size:12px}.rp-results{scroll-margin-top:90px}}
+.rp-taipei-guide-heading{margin-bottom:12px}
+.rp-page .rp-taipei-update{max-width:none;border-top:1px solid #e6e0d8;padding-top:12px;margin-top:12px}
+.rp-taipei-update>summary{display:flex;align-items:center;gap:14px;justify-content:space-between;list-style:none;color:#84583f;cursor:pointer;padding:8px 0;min-height:44px;font-weight:600}
+.rp-taipei-update>p{margin:6px 0 8px;font-size:14px;line-height:1.95;color:#414d55;max-width:64em}
+@media(max-width:600px){.rp-taipei-guide h3{font-size:20px}.rp-taipei-paths{gap:2px 16px}.rp-taipei-paths a{padding:8px 0}.rp-page .rp-taipei-update{margin-top:8px;padding-top:8px}.rp-taipei-guide{padding-bottom:14px}}
+.rp-notice>time,.rp-notice>span{display:block}
+.rp-page .rp-catalog{scroll-margin-top:16px}
+@media(max-width:600px){.rp-page .rp-catalog{scroll-margin-top:12px}}
+/* Leave room for the expanded toggle's rotated outline. */
+.rp-card-details>summary .rp-toggle{margin-inline-end:6px}
+
+/* Keep rotated city-guide controls inside their boundary. */
+.rp-taipei-update>summary .rp-toggle{margin-inline-end:6px}
+
+/* Four cities: keep full labels and counts readable on narrow phones. */
+@media(max-width:600px){
+ .rp-page .rp-city-filter{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px}
+ .rp-page .rp-city-filter button{width:100%;min-width:0;min-height:48px;justify-content:space-between;white-space:nowrap;padding-inline:8px;font-size:15px}
+ .rp-page .rp-city-filter button span{flex-shrink:0}
+ .rp-page .rp-hero-actions{flex-wrap:wrap;gap:16px 22px}
+}
+
+/* Five city labels plus the all-cities view remain complete on phones and tablets. */
+.rp-page .rp-city-housing-note{font-size:13px;line-height:1.9;color:#58636a;margin:18px 0 0;max-width:70em}
+@media(max-width:900px){
+ .rp-page .rp-city-filter{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 12px}
+ .rp-page .rp-city-filter button{width:100%;min-width:0;min-height:48px;justify-content:space-between;white-space:nowrap;padding-inline:6px;font-size:14px;gap:5px}
+ .rp-page .rp-city-filter button span{flex-shrink:0;padding-inline:5px}
+}
+@media(max-width:375px){.rp-page .rp-city-filter{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px}}
+/* 原縣市分區為所在地對照，與現行專案資格分開呈現。 */
+.rp-page .rp-region-guide{margin:24px 0 30px;border-block:1px solid #d8d2c9;padding:20px 0;color:#45565e}
+.rp-page .rp-region-guide>p{margin:0 0 12px;font-size:14px;line-height:1.9;max-width:70em}
+.rp-page .rp-region-guide summary{display:flex;align-items:center;justify-content:space-between;gap:20px;cursor:pointer;font-size:16px;font-weight:700;padding:10px 0;list-style:none}
+.rp-page .rp-region-guide summary::-webkit-details-marker{display:none}
+.rp-page .rp-region-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.7fr);gap:28px;margin:20px 0}
+.rp-page .rp-region-columns section{padding-inline:20px;border-left:2px solid #b28b73;min-width:0}
+.rp-page .rp-region-columns h3{font-size:18px;margin:0 0 12px;color:#253e4b}
+.rp-page .rp-region-columns h3 span{font-size:13px;font-weight:400;margin-left:12px;color:#5b656a}
+.rp-page .rp-region-columns p,.rp-page .rp-region-note{font-size:14px;line-height:2;margin:0;color:#45565e}
+.rp-page .rp-region-guide a{display:inline-block;margin:16px 24px 0 0;font-size:13px;text-decoration:underline;text-underline-offset:5px}
+@media(max-width:600px){.rp-page .rp-region-columns{grid-template-columns:1fr;gap:24px}.rp-page .rp-region-guide{margin-block:18px 24px}.rp-page .rp-region-columns section{padding-inline:16px}}
+
+/* Long policy details retain a stronger subheading than their body text. */
+.rp-page .program-policy-section h4{font-size:17px;font-weight:700;line-height:1.65;margin:0 0 14px;color:var(--sx-ink)}
+.rp-page .program-policy-section li{line-height:1.95;margin-bottom:12px}
+.rp-page .rp-toggle{position:relative;display:block;width:18px;height:18px;font-size:0!important;line-height:0}
+.rp-page .rp-toggle::before,.rp-page .rp-toggle::after{content:"";position:absolute;left:2px;top:8px;width:14px;height:1.5px;background:currentColor;border:0}
+.rp-page .rp-toggle::after{transform:rotate(90deg)}
+@media(max-width:600px){.rp-page .program-policy-section h4{font-size:18px}.rp-page .program-policy-section li{font-size:16px;line-height:1.9}}

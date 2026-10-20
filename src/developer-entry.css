@@ -1,0 +1,4 @@
+.sx-drawer .sx-nav-groups section:first-child{grid-row:auto}
+.sx-drawer .sx-nav-groups section:nth-child(3){grid-column:2;grid-row:2}
+.sx-drawer .sx-nav-developer{grid-column:1;grid-row:2;align-self:end}
+.sx-nav-developer a:focus-visible{outline:2px solid #174e43;outline-offset:4px}

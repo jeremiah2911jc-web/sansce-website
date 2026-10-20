@@ -4,7 +4,7 @@
     {
       "src": "/(.*)",
       "headers": {
-        "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://sansce-website.vercel.app; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests",
+        "Content-Security-Policy": "default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://sansce-website.vercel.app; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests",
         "X-Content-Type-Options": "nosniff",
         "Referrer-Policy": "strict-origin-when-cross-origin",
         "Permissions-Policy": "camera=(), microphone=(), geolocation=()"
@@ -12,71 +12,51 @@
       "continue": true
     },
     {
-      "src": "/api/desktop-download",
-      "dest": "/api/desktop-download"
+      "src": "/from-threads/?",
+      "status": 302,
+      "headers": {
+        "Location": "https://www.sanzepm.com.tw/?utm_source=threads&utm_medium=social&utm_campaign=profile",
+        "Cache-Control": "no-store",
+        "X-Robots-Tag": "noindex, nofollow"
+      }
     },
     {
-      "src": "/api/license/activate",
-      "dest": "/api/license/activate"
+      "src": "/api/reports",
+      "dest": "/api/contact?route=reports"
     },
     {
-      "src": "/api/license/deactivate-device",
-      "dest": "/api/license/deactivate-device"
+      "src": "/reports/?",
+      "dest": "/reports/index.html",
+      "headers": {
+        "X-Robots-Tag": "noindex, nofollow, noarchive",
+        "Cache-Control": "private, no-store"
+      }
     },
     {
-      "src": "/api/license/verify",
-      "dest": "/api/license/verify"
+      "src": "/api/site-traffic",
+      "dest": "/api/contact?route=site-traffic"
     },
     {
-      "src": "/api/sanze-db-env-check",
-      "dest": "/api/sanze-db-env-check"
+      "src": "/api/website-assistant",
+      "dest": "/api/contact?route=website-assistant"
     },
     {
-      "src": "/api/sanze-db-load-cases",
-      "dest": "/api/sanze-db-load-cases"
+      "src": "/api/line-timeout",
+      "dest": "/api/contact?route=line-timeout"
     },
     {
-      "src": "/api/sanze-db-sync-case",
-      "dest": "/api/sanze-db-sync-case"
+      "src": "/api/line-webhook",
+      "dest": "/api/contact?route=line"
     },
     {
-      "src": "/api/sanze-system-login",
-      "dest": "/api/sanze-system-login"
-    },
-    {
-      "src": "/api/sanze-system-logout",
-      "dest": "/api/sanze-system-logout"
-    },
-    {
-      "src": "/api/sanze-system-session",
-      "dest": "/api/sanze-system-session"
-    },
-    {
-      "src": "/downloads/Sanze-App-macOS-Test-0\\.1\\.1-arm64\\.zip",
-      "dest": "/downloads/Sanze-App-macOS-Test-0.1.1-arm64.zip"
-    },
-    {
-      "src": "/downloads/Sanze-App-Windows-Test-0\\.1\\.1-x64-setup\\.exe",
-      "dest": "/downloads/Sanze-App-Windows-Test-0.1.1-x64-setup.exe"
-    },
-    {
-      "src": "/downloads/sanze-app-release\\.json",
-      "dest": "/downloads/sanze-app-release.json"
-    },
-    {
-      "src": "/update/macos-test-latest\\.json",
-      "dest": "/update/macos-test-latest.json"
-    },
-    {
-      "src": "/update/windows-test-latest\\.json",
-      "dest": "/update/windows-test-latest.json"
+      "src": "/api/contact",
+      "dest": "/api/contact"
     },
     {
       "src": "/robots\\.txt",
       "dest": "/robots.txt",
       "headers": {
-        "Cache-Control": "no-store",
-        "X-Robots-Tag": "noindex, nofollow, noarchive"
+        "Cache-Control": "no-store"
       }
     },
     {
@@ -84,8 +64,71 @@
       "dest": "/api/public-site-not-found"
     },
     {
+      "src": "/(assets|images)/(.*)",
+      "dest": "/$1/$2"
+    },
+    {
+      "src": "/(logo-sanze\\.png|favicon\\.ico|favicon-16x16\\.png|favicon-32x32\\.png|apple-touch-icon\\.png|site\\.webmanifest|sitemap\\.xml)",
+      "dest": "/$1"
+    },
+    {
+      "src": "/(favicon-white\\.ico|favicon-16x16-white\\.png|favicon-32x32-white\\.png|apple-touch-icon-white\\.png)",
+      "dest": "/$1"
+    },
+    {
+      "src": "/(checkup|consulting|process|insights|about|contact|programs|landowner-comparison|land-evaluation)/?",
+      "dest": "/$1/index.html"
+    },
+    {
+      "src": "/insights/joint-construction-terms/?",
+      "status": 301,
+      "headers": {
+        "Location": "/insights/renewal-distribution"
+      }
+    },
+    {
+      "src": "/insights/(urban-renewal-vs-dangerous-old|renewal-association)/?",
+      "status": 301,
+      "headers": {
+        "Location": "/insights"
+      }
+    },
+    {
+      "src": "/(services/(urban-renewal|dangerous-old-rebuilding|joint-construction|project-management))/?",
+      "dest": "/$1/index.html"
+    },
+    {
+      "src": "/insights/([a-z0-9-]+)/?",
+      "dest": "/insights/$1/index.html"
+    },
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/traffic/(dashboard\\.css|dashboard\\.js|exclusion\\.js)",
+      "dest": "/traffic/$1",
+      "headers": {
+        "X-Robots-Tag": "noindex, nofollow",
+        "Cache-Control": "no-store"
+      }
+    },
+    {
+      "src": "/traffic/?",
+      "dest": "/traffic/index.html",
+      "headers": {
+        "X-Robots-Tag": "noindex, nofollow",
+        "Cache-Control": "no-store"
+      }
+    },
+    {
       "src": "/(.*)",
       "dest": "/api/public-site-not-found"
     }
-  ]
+  ],
+  "functions": {
+    "api/contact.js": {
+      "includeFiles": "private/reports/**"
+    }
+  }
 }

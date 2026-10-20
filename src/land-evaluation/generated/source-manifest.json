@@ -1,0 +1,140 @@
+{
+  "source": "三策案件版",
+  "sourceRoot": "/Users/jeremiah/src/sanze-cases-desktop",
+  "generatedAt": "2026-10-19T15:35:04.184Z",
+  "method": "esbuild directly bundles original App exports; website has no separate calculation fork; App source is authoritative",
+  "sources": [
+    {
+      "path": "node_modules/polygon-clipping/dist/polygon-clipping.umd.js",
+      "sha256": "de2bdc061b61d537f7d12f6519f46e35113f0f246b6a06293a08b615454946cf"
+    },
+    {
+      "path": "src/components/efficiency/AreaReviewPanel.tsx",
+      "sha256": "f801358b510e2f1d15a0dd2db64f9136bc8dc124bb7d1566d195c08b650ce5e2"
+    },
+    {
+      "path": "src/components/efficiency/BasementAudit.tsx",
+      "sha256": "1e01261d77678bbaadf0b81d8bf4938e899af6c98735237b6ab7874f71f151e7"
+    },
+    {
+      "path": "src/components/efficiency/BasementDemandPanel.tsx",
+      "sha256": "3a9bab267ab847f40ffe262257ee77b6869ad1e5f107be6ba497bc78a4cfd003"
+    },
+    {
+      "path": "src/components/efficiency/BonusAssessmentPanel.tsx",
+      "sha256": "bc11a49736f769416a6f0081b2c7edec46867920c73cf17a81c60052ee5e2e86"
+    },
+    {
+      "path": "src/components/efficiency/CommonAllocationPolicyPanel.tsx",
+      "sha256": "c27922aaf84afe01cba403342ce187593935849ef24f817743d61ba6b952ada0"
+    },
+    {
+      "path": "src/components/efficiency/LegalParkingPanel.tsx",
+      "sha256": "8067b1f103dda48ad2c7d88852fe0a5e2541f0fe72f6d0aa0c586d293bfc933d"
+    },
+    {
+      "path": "src/components/efficiency/RegulatoryReviewPanel.tsx",
+      "sha256": "c3aed8504cf8a23d80c540b88b08281cb42c50e3703ed5c1042640e5299e3ff2"
+    },
+    {
+      "path": "src/components/efficiency/SiteRoadConditionsPanel.tsx",
+      "sha256": "cd3b131d13ffb8195e2e61e91b2f5e9f5781b66f7cf8458b985495d7e419eeb0"
+    },
+    {
+      "path": "src/components/efficiency/TdrApplicationPanel.tsx",
+      "sha256": "bf39044153c0d9967143733e5877ead1727084ff6825cb1b2800dd486e43b488"
+    },
+    {
+      "path": "src/lib/planning/article162.ts",
+      "sha256": "48dbab5845c4e61f77fe5ea998c31c098a7123ca780fa72596e404b8d621eb23"
+    },
+    {
+      "path": "src/lib/planning/autonomousPlanning.ts",
+      "sha256": "157bcf2d699d80464bb496a23625379373652e29766d2ed715e3c912fab13c95"
+    },
+    {
+      "path": "src/lib/planning/basementDemand.ts",
+      "sha256": "72360d62269f2b94c8c6329b476f79e0bb68e54b7d615b03401879f68c542fd5"
+    },
+    {
+      "path": "src/lib/planning/bonusAssessment.ts",
+      "sha256": "ca964a77fbb020018e7fe24bf4aaf0d0639afc6dbc52e74e6f0a8be3b47c62d0"
+    },
+    {
+      "path": "src/lib/planning/commonAllocationRules.ts",
+      "sha256": "52a995fb29755bbc6693484d02f489acd3b8a4253a468f45f83106d9e8fd39a3"
+    },
+    {
+      "path": "src/lib/planning/escapeStairs.ts",
+      "sha256": "0c074d22e77539598e0e636b66bcf7f61baabb4c385be35f4c07a0facb9a8886"
+    },
+    {
+      "path": "src/lib/planning/landAreaRatios.ts",
+      "sha256": "0bf4a68fdd015f160f9522da08da1e305f6d4f45a12a51909bf160758ede2cc2"
+    },
+    {
+      "path": "src/lib/planning/legalParking.ts",
+      "sha256": "3375ace874533874b4d7c586b3e04d00d4bde84e45170d99ebdab2df119c3c64"
+    },
+    {
+      "path": "src/lib/planning/permittedAward.ts",
+      "sha256": "4ab0f31a0593d786ba0759a3a2a351e071f4c8c91fd17988272f3c4bd6950480"
+    },
+    {
+      "path": "src/lib/planning/planningAssumptions.ts",
+      "sha256": "4258055262cb1483eb4d9ed8af70c014ba2f96613a8710b93a837743dab6ce91"
+    },
+    {
+      "path": "src/lib/planning/quantityAreaAudit.ts",
+      "sha256": "172c54093436d30517436fa869737ad6044d9bb130f8c72b709711d13d843701"
+    },
+    {
+      "path": "src/lib/planning/quantityPlanning.ts",
+      "sha256": "ea630d4ff4651632b95925d65d7a8a10d6f84c3f9389a6dae7ca6bb73620570d"
+    },
+    {
+      "path": "src/lib/planning/regulatoryReview.ts",
+      "sha256": "c11f3ebe6972cb1386e730df079b74df5baf0242c2b389f1b141093e52b8c446"
+    },
+    {
+      "path": "src/lib/planning/roofEnvelope.ts",
+      "sha256": "0f167e4f9bc5ad680ea11389b29fd813b638d2dbb5daf05638ffed74290fb749"
+    },
+    {
+      "path": "src/lib/planning/smallSiteParking.ts",
+      "sha256": "f57b502f31bfc9e1c4372ba7e8fbde394a3d30a0086351963d7a689eaf6553b3"
+    },
+    {
+      "path": "src/lib/planning/spatialGeometry.ts",
+      "sha256": "472e1a8df57a0412c0637d31be71361d04cd08f6fef45361fcb9f72b59ef80c6"
+    },
+    {
+      "path": "src/lib/planning/spatialPlanning.ts",
+      "sha256": "84517913a912193ec72cd5dae74aea21eeedaa5f973c6e00cbf7a2a5c682cdc5"
+    },
+    {
+      "path": "src/lib/planning/spatialReport.ts",
+      "sha256": "e0ca2151f0c447ad44aa3927407bfac93a2499af782fa078ae258685a7d4a1ec"
+    },
+    {
+      "path": "src/lib/planning/spatialResult.ts",
+      "sha256": "a0979e2bf96e1ae0c32cfa25a55c3d2aa610de145c275815250e94215f754168"
+    },
+    {
+      "path": "src/lib/planning/spatialTypes.ts",
+      "sha256": "56cbdb71f6d7762a0bd5041b8d457168fcb7262c78191c67ddbf32ad09378392"
+    },
+    {
+      "path": "src/lib/planning/tdrApplication.ts",
+      "sha256": "5e2f669c1feb1d3898fbe592ef4a333284864b4637ee8fe984154b608268f113"
+    },
+    {
+      "path": "src/lib/site/siteRoadConditions.ts",
+      "sha256": "5d3af2edb07eb58ea9d9b27489ceaa3184cf1f976aab43553699cb324a55d5ae"
+    },
+    {
+      "path": "src/lib/stableFingerprint.ts",
+      "sha256": "3ce6a0814d62e3ceddcd648b4ba970c631feca819a2d038030fbddc845a55b1f"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {runInNewContext} from 'node:vm';
+import {knowledgePages} from '../shared/knowledge-pages.js';
+import {trafficPage,trafficPageGroups} from '../shared/traffic-pages.js';
+const script=readFileSync('dist/traffic/dashboard.js','utf8');
+const rows=runInNewContext(script.replace(/^import .*;\n/gm,'')+';pageRows;', {document:{getElementById(){return {addEventListener(){}};},addEventListener(){}},localStorage:{getItem(){return null;}},location:{hash:''},isTrafficExcluded(){return false;},setTrafficExcluded(){},URLSearchParams,setInterval(){}});
+const data={pages:[{path:'/insights',views:4},{path:'/insights/renewal-distribution',views:3},{path:'/insights/joint-construction-terms',views:2},{path:'/retired-unlisted',views:1}]};
+const result=rows(data);assert.equal(result.find(p=>p.path==='/landowner-comparison').name,'地主分配試算與比較');assert.equal(result.find(p=>p.path==='/landowner-comparison').views,0);assert.equal(result.reduce((sum,p)=>sum+p.views,0),10);assert.equal(result.find(p=>p.path==='/insights').views,9);assert.equal(result.find(p=>p.path==='/insights').name,'三策觀點');assert.ok(!result.some(p=>p.path.startsWith('/insights/')));assert.equal(result.find(p=>p.path==='/retired-unlisted').name,'/retired-unlisted');
+for(const p of knowledgePages.filter(p=>p.kind==='service'))assert.ok(result.some(r=>r.path===p.path&&r.name===p.title),p.path);
+assert.equal(trafficPage('/insights/renewal-distribution'),'/insights');assert.equal(trafficPage('/contact'),'/contact');assert.equal(trafficPage('/services/urban-renewal'),'/services/urban-renewal');
+assert.equal(trafficPageGroups(data.pages,'views').find(p=>p.path==='/insights').views,9);
+for(const p of knowledgePages.filter(p=>p.kind==='article'))assert.ok(script.includes(JSON.stringify(p.title)),p.path);
+console.log('PASS: article pageviews grouped, historical totals preserved, article labels available for independent AI statistics.');
