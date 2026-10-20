@@ -1,0 +1,21 @@
+/* Headings share balanced line lengths; article prose keeps normal text flow. */
+#root :is(h1,h2,h3,h4,h5,h6){
+ text-wrap:balance!important;
+ word-break:normal;
+ overflow-wrap:break-word;
+}
+/* Preserve the final phrase even where article-body rules unbind prose tails. */
+#root :is(h1,h2,h3,h4,h5,h6) .readable-tail{
+ white-space:nowrap!important;
+}
+
+/* The comparison surface is light: keep numbers and all nested copy dark. */
+.lc-page{--lc-muted:#46545d}
+.lc-page .lc-difference{background:#f1ece4;color:#263d4b}
+.lc-page .lc-difference :is(h3,p,span,small,strong){color:inherit!important}
+.lc-page .lc-input input::placeholder{color:#59666e;opacity:1}
+.lc-page .lc-example-card:not(:first-child) .lc-example-reading>p,
+.lc-page .lc-example-comparison dt{color:#46545d}
+
+/* Service images keep their intrinsic responsive ratio. */
+.service-reading-layout .service-inline-photo img{height:auto;}

@@ -1,0 +1,937 @@
+{
+  "/about": {
+    "/images/editorial/community-meeting.webp|": {
+      "id": "P001",
+      "src": "/images/refresh-20261020/p001.jpg",
+      "small": "/images/refresh-20261020/p001-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與專業同事在辦公室核對基地資料",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/redesign/project-management.jpg|": {
+      "id": "P002",
+      "src": "/images/refresh-20261020/p002.jpg",
+      "small": "/images/refresh-20261020/p002-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與工程人員在工地核對圖面",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P003",
+      "src": "/images/refresh-20261020/p003.jpg",
+      "small": "/images/refresh-20261020/p003-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問在辦公室接待前來諮詢的屋主",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/checkup": {
+    "/images/redesign/document-review.jpg|": {
+      "id": "P004",
+      "src": "/images/refresh-20261020/p004.jpg",
+      "small": "/images/refresh-20261020/p004-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "整理完成的基地圖說與案件資料",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/redesign/consultation.jpg|": {
+      "id": "P005",
+      "src": "/images/refresh-20261020/p005.jpg",
+      "small": "/images/refresh-20261020/p005-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論案件資料與待辦事項",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/contract-review.webp|": {
+      "id": "P006",
+      "src": "/images/refresh-20261020/p006.jpg",
+      "small": "/images/refresh-20261020/p006-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶核對案件資料與待辦事項",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/older-apartment-stair.webp|": {
+      "id": "P007",
+      "src": "/images/refresh-20261020/p007.jpg",
+      "small": "/images/refresh-20261020/p007-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶核對案件資料與待辦事項",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/community-meeting.webp|": {
+      "id": "P008",
+      "src": "/images/refresh-20261020/p008.jpg",
+      "small": "/images/refresh-20261020/p008-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論案件資料與待辦事項",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P009",
+      "src": "/images/refresh-20261020/p009.jpg",
+      "small": "/images/refresh-20261020/p009-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論案件資料與待辦事項",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/consulting": {
+    "/images/redesign/consultation.jpg|": {
+      "id": "P010",
+      "src": "/images/refresh-20261020/p010.jpg",
+      "small": "/images/refresh-20261020/p010-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論基地評估與重建規劃",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/redesign/site-inspection-v2.jpg|": {
+      "id": "P011",
+      "src": "/images/refresh-20261020/p011.jpg",
+      "small": "/images/refresh-20261020/p011-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論基地評估與重建規劃",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/older-apartment-stair.webp|": {
+      "id": "P012",
+      "src": "/images/refresh-20261020/p012.jpg",
+      "small": "/images/refresh-20261020/p012-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶核對基地評估與重建規劃",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/contract-review.webp|": {
+      "id": "P013",
+      "src": "/images/refresh-20261020/p013.jpg",
+      "small": "/images/refresh-20261020/p013-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶核對基地評估與重建規劃",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/construction-inspection.webp|": {
+      "id": "P014",
+      "src": "/images/refresh-20261020/p014.jpg",
+      "small": "/images/refresh-20261020/p014-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "戴安全帽與反光背心的專業團隊核對工地圖說",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P015",
+      "src": "/images/refresh-20261020/p015.jpg",
+      "small": "/images/refresh-20261020/p015-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論基地評估與重建規劃",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/contact": {
+    "/images/redesign/consultation.jpg|": {
+      "id": "P016",
+      "src": "/images/refresh-20261020/p016.jpg",
+      "small": "/images/refresh-20261020/p016-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論初步案件諮詢",
+      "role": "content",
+      "position": "50% 45%"
+    }
+  },
+  "/": {
+    "/images/editorial/family-floor-plan.webp|": {
+      "id": "P017",
+      "src": "/images/refresh-20261020/p017.jpg",
+      "small": "/images/refresh-20261020/p017-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "家人在住家中討論新屋格局與生活需求",
+      "role": "content",
+      "position": "67% 45%"
+    },
+    "/images/editorial/community-meeting.webp|": {
+      "id": "P018",
+      "src": "/images/refresh-20261020/p018.jpg",
+      "small": "/images/refresh-20261020/p018-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論基地與社區重建",
+      "role": "content",
+      "position": "67% 45%"
+    },
+    "/images/editorial/urban-blocks.webp|": {
+      "id": "P019",
+      "src": "/images/refresh-20261020/p019.jpg",
+      "small": "/images/refresh-20261020/p019-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶核對基地與社區重建",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/older-apartment-stair.webp|": {
+      "id": "P020",
+      "src": "/images/refresh-20261020/p020.jpg",
+      "small": "/images/refresh-20261020/p020-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶核對基地與社區重建",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/insights/public-renewal-neighborhood-1536.webp|article-card": {
+      "id": "P021",
+      "src": "/images/refresh-20261020/p021.jpg",
+      "small": "/images/refresh-20261020/p021-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶核對基地與社區重建",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/insights/lower-floor-allocation-hero.webp|article-card": {
+      "id": "P022",
+      "src": "/images/refresh-20261020/p022.jpg",
+      "small": "/images/refresh-20261020/p022-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "屋主觀察低樓層住宅的採光與鄰棟距離",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/insights/tdr-allocation-hero.webp|article-card": {
+      "id": "P023",
+      "src": "/images/refresh-20261020/p023.jpg",
+      "small": "/images/refresh-20261020/p023-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "以建築模型與資料比較開發量體及分配",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P024",
+      "src": "/images/refresh-20261020/p024.jpg",
+      "small": "/images/refresh-20261020/p024-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論基地與社區重建",
+      "role": "closing",
+      "position": "50% 45%"
+    },
+    "/images/insights/ground-floor-shop-1536.webp|article-card": {
+      "id": "P071",
+      "src": "/images/refresh-20261020/p071.jpg",
+      "small": "/images/refresh-20261020/p071-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "老公寓一樓店面與行人通行空間",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/redesign/residential-grand-v2.jpg|article-card": {
+      "id": "P072",
+      "src": "/images/refresh-20261020/p072.jpg",
+      "small": "/images/refresh-20261020/p072-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "新建住宅外觀與街道環境",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/editorial/urban-blocks.webp|article-card": {
+      "id": "P073",
+      "src": "/images/refresh-20261020/p073.jpg",
+      "small": "/images/refresh-20261020/p073-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "臺灣新舊住宅與街區環境",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/editorial/family-floor-plan.webp|article-card": {
+      "id": "P074",
+      "src": "/images/refresh-20261020/p074.jpg",
+      "small": "/images/refresh-20261020/p074-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "家人在住家中討論新屋格局與生活需求",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/insights/selection-discussion-1536.webp|article-card": {
+      "id": "P075",
+      "src": "/images/refresh-20261020/p075.jpg",
+      "small": "/images/refresh-20261020/p075-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論基地與社區重建",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/editorial/contract-review.webp|article-card": {
+      "id": "P076",
+      "src": "/images/refresh-20261020/p076.jpg",
+      "small": "/images/refresh-20261020/p076-960.jpg",
+      "width": 1672,
+      "height": 940,
+      "alt": "屋主核對合作文件與提案條件",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/redesign/document-review.jpg|article-card": {
+      "id": "P077",
+      "src": "/images/refresh-20261020/p077.jpg",
+      "small": "/images/refresh-20261020/p077-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問整理基地圖說與案件資料",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/editorial/construction-inspection.webp|article-card": {
+      "id": "P078",
+      "src": "/images/refresh-20261020/p078.jpg",
+      "small": "/images/refresh-20261020/p078-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論基地與社區重建",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/renewal-city-vision.jpg|article-card": {
+      "id": "P079",
+      "src": "/images/refresh-20261020/p079.jpg",
+      "small": "/images/refresh-20261020/p079-960.jpg",
+      "width": 1672,
+      "height": 940,
+      "alt": "都市住宅與房屋市場環境",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/editorial/contract-review.webp|": {
+      "id": "P080",
+      "src": "/images/refresh-20261020/p080.jpg",
+      "small": "/images/refresh-20261020/p080-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "屋主核對合作文件與提案條件",
+      "role": "dynamic-content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/construction-inspection.webp|": {
+      "id": "P081",
+      "src": "/images/refresh-20261020/p081.jpg",
+      "small": "/images/refresh-20261020/p081-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論基地與社區重建",
+      "role": "dynamic-content",
+      "position": "50% 45%"
+    },
+    "/images/redesign/document-review.jpg|": {
+      "id": "P082",
+      "src": "/images/refresh-20261020/p082.jpg",
+      "small": "/images/refresh-20261020/p082-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "整理完成的基地圖說與案件資料",
+      "role": "dynamic-content",
+      "position": "50% 45%"
+    },
+    "/images/redesign/consultation.jpg|": {
+      "id": "P083",
+      "src": "/images/refresh-20261020/p083.jpg",
+      "small": "/images/refresh-20261020/p083-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論基地與社區重建",
+      "role": "dynamic-content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/community-meeting.webp|home-stage": {
+      "id": "P084",
+      "src": "/images/refresh-20261020/p084.jpg",
+      "small": "/images/refresh-20261020/p084-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論基地與社區重建",
+      "role": "dynamic-content",
+      "position": "50% 45%"
+    },
+    "/images/redesign/document-review.jpg|home-stage": {
+      "id": "P087",
+      "src": "/images/refresh-20261020/p087.jpg",
+      "small": "/images/refresh-20261020/p087-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "送件後整理保存的案件卷宗與基地圖說",
+      "role": "dynamic-content",
+      "position": "50% 45%"
+    }
+  },
+  "/insights/building-permit-extension": {
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P025",
+      "src": "/images/refresh-20261020/p025.jpg",
+      "small": "/images/refresh-20261020/p025-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論施工進度與時程",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/insights/developer-launch-market-recovery": {
+    "/images/editorial/construction-inspection.webp|": {
+      "id": "P026",
+      "src": "/images/refresh-20261020/p026.jpg",
+      "small": "/images/refresh-20261020/p026-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論新建住宅與市場資料",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P027",
+      "src": "/images/refresh-20261020/p027.jpg",
+      "small": "/images/refresh-20261020/p027-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論新建住宅與市場資料",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/insights": {
+    "/images/editorial/shop-frontage.webp|": {
+      "id": "P028",
+      "src": "/images/refresh-20261020/p028.jpg",
+      "small": "/images/refresh-20261020/p028-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "建築書籍與住宅照片的閱讀參考空間",
+      "role": "index-cover",
+      "position": "50% 45%"
+    },
+    "/images/insights/public-renewal-neighborhood-1536.webp|": {
+      "id": "P029",
+      "src": "/images/refresh-20261020/p029.jpg",
+      "small": "/images/refresh-20261020/p029-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "老公寓街區與周邊住宅環境",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/insights/lower-floor-allocation-hero.webp|": {
+      "id": "P030",
+      "src": "/images/refresh-20261020/p030.jpg",
+      "small": "/images/refresh-20261020/p030-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "屋主觀察低樓層住宅的採光與鄰棟距離",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/insights/tdr-allocation-hero.webp|": {
+      "id": "P031",
+      "src": "/images/refresh-20261020/p031.jpg",
+      "small": "/images/refresh-20261020/p031-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "以建築模型與資料比較開發量體及分配",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/insights/ground-floor-shop-1536.webp|": {
+      "id": "P032",
+      "src": "/images/refresh-20261020/p032.jpg",
+      "small": "/images/refresh-20261020/p032-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "老公寓一樓店面與行人通行空間",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/redesign/residential-grand-v2.jpg|": {
+      "id": "P033",
+      "src": "/images/refresh-20261020/p033.jpg",
+      "small": "/images/refresh-20261020/p033-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "新建住宅外觀與街道環境",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/editorial/urban-blocks.webp|": {
+      "id": "P034",
+      "src": "/images/refresh-20261020/p034.jpg",
+      "small": "/images/refresh-20261020/p034-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "臺灣新舊住宅與街區環境",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/editorial/family-floor-plan.webp|": {
+      "id": "P035",
+      "src": "/images/refresh-20261020/p035.jpg",
+      "small": "/images/refresh-20261020/p035-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "家人在住家中討論新屋格局與生活需求",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/insights/selection-discussion-1536.webp|": {
+      "id": "P036",
+      "src": "/images/refresh-20261020/p036.jpg",
+      "small": "/images/refresh-20261020/p036-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論地主權益與重建問題",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/editorial/contract-review.webp|": {
+      "id": "P037",
+      "src": "/images/refresh-20261020/p037.jpg",
+      "small": "/images/refresh-20261020/p037-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "屋主核對合作文件與提案條件",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/redesign/document-review.jpg|": {
+      "id": "P038",
+      "src": "/images/refresh-20261020/p038.jpg",
+      "small": "/images/refresh-20261020/p038-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "整理完成的基地圖說與案件資料",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/editorial/construction-inspection.webp|": {
+      "id": "P039",
+      "src": "/images/refresh-20261020/p039.jpg",
+      "small": "/images/refresh-20261020/p039-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論地主權益與重建問題",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/renewal-city-vision.jpg|": {
+      "id": "P040",
+      "src": "/images/refresh-20261020/p040.jpg",
+      "small": "/images/refresh-20261020/p040-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "都市住宅與房屋市場環境",
+      "role": "article-card",
+      "position": "50% 45%"
+    },
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P041",
+      "src": "/images/refresh-20261020/p041.jpg",
+      "small": "/images/refresh-20261020/p041-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "地主權益與重建問題的工作情境",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/insights/joint-construction-lower-floor-allocation": {
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P042",
+      "src": "/images/refresh-20261020/p042.jpg",
+      "small": "/images/refresh-20261020/p042-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論樓層、採光與分回選項",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/insights/property-transfers-market": {
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P043",
+      "src": "/images/refresh-20261020/p043.jpg",
+      "small": "/images/refresh-20261020/p043-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "住宅交易與家庭財務的工作情境",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/insights/public-urban-renewal-challenges": {
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P044",
+      "src": "/images/refresh-20261020/p044.jpg",
+      "small": "/images/refresh-20261020/p044-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論公辦都更的條件與期待",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/insights/renewal-distribution": {
+    "/images/editorial/family-floor-plan.webp|": {
+      "id": "P045",
+      "src": "/images/refresh-20261020/p045.jpg",
+      "small": "/images/refresh-20261020/p045-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "家人在住家中討論新屋格局與生活需求",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P046",
+      "src": "/images/refresh-20261020/p046.jpg",
+      "small": "/images/refresh-20261020/p046-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論地主分回與提案條件",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/insights/transfer-development-rights-allocation": {
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P047",
+      "src": "/images/refresh-20261020/p047.jpg",
+      "small": "/images/refresh-20261020/p047-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論開發量體、費用與分配",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/insights/urban-renewal-consent-plan-changes": {
+    "/images/editorial/community-meeting.webp|": {
+      "id": "P048",
+      "src": "/images/refresh-20261020/p048.jpg",
+      "small": "/images/refresh-20261020/p048-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論重建提案變更與住戶意見",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P049",
+      "src": "/images/refresh-20261020/p049.jpg",
+      "small": "/images/refresh-20261020/p049-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論重建提案變更與住戶意見",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/insights/urban-renewal-far-300": {
+    "/images/redesign/site-inspection-v2.jpg|": {
+      "id": "P050",
+      "src": "/images/refresh-20261020/p050.jpg",
+      "small": "/images/refresh-20261020/p050-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論基地條件與可建量體",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P051",
+      "src": "/images/refresh-20261020/p051.jpg",
+      "small": "/images/refresh-20261020/p051-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論基地條件與可建量體",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/insights/urban-renewal-ground-floor-shops": {
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P052",
+      "src": "/images/refresh-20261020/p052.jpg",
+      "small": "/images/refresh-20261020/p052-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論店面入口與營業需求",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/insights/urban-renewal-one-for-one": {
+    "/images/redesign/consultation.jpg|": {
+      "id": "P053",
+      "src": "/images/refresh-20261020/p053.jpg",
+      "small": "/images/refresh-20261020/p053-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論家庭生活與新屋格局",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/insights/urban-renewal-selection-disputes": {
+    "/images/insights/selection-discussion-1536.webp|": {
+      "id": "P054",
+      "src": "/images/refresh-20261020/p054.jpg",
+      "small": "/images/refresh-20261020/p054-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論選屋條件與住戶意見",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P055",
+      "src": "/images/refresh-20261020/p055.jpg",
+      "small": "/images/refresh-20261020/p055-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論選屋條件與住戶意見",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/process": {
+    "/images/editorial/community-meeting.webp|": {
+      "id": "P056",
+      "src": "/images/refresh-20261020/p056.jpg",
+      "small": "/images/refresh-20261020/p056-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論委託範圍與工作安排",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P057",
+      "src": "/images/refresh-20261020/p057.jpg",
+      "small": "/images/refresh-20261020/p057-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論委託範圍與工作安排",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/programs": {
+    "/images/editorial/urban-blocks.webp|": {
+      "id": "P058",
+      "src": "/images/refresh-20261020/p058.jpg",
+      "small": "/images/refresh-20261020/p058-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "臺灣新舊住宅與街區環境",
+      "role": "content",
+      "position": "50% 45%"
+    }
+  },
+  "/reports": {
+    "/images/redesign/document-review.jpg|": {
+      "id": "P059",
+      "src": "/images/refresh-20261020/p059.jpg",
+      "small": "/images/refresh-20261020/p059-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "整理完成的案件報告與基地圖說",
+      "role": "content",
+      "position": "50% 45%"
+    }
+  },
+  "/services/dangerous-old-rebuilding": {
+    "/images/editorial/urban-blocks.webp|": {
+      "id": "P060",
+      "src": "/images/refresh-20261020/p060.jpg",
+      "small": "/images/refresh-20261020/p060-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "臺灣新舊住宅與街區環境",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P061",
+      "src": "/images/refresh-20261020/p061.jpg",
+      "small": "/images/refresh-20261020/p061-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論老屋重建與日常出入",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/services/joint-construction": {
+    "/images/editorial/contract-review.webp|": {
+      "id": "P062",
+      "src": "/images/refresh-20261020/p062.jpg",
+      "small": "/images/refresh-20261020/p062-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "屋主核對合作文件與提案條件",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/redesign/document-review.jpg|": {
+      "id": "P063",
+      "src": "/images/refresh-20261020/p063.jpg",
+      "small": "/images/refresh-20261020/p063-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "兩份住宅提案圖面與比較資料",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P064",
+      "src": "/images/refresh-20261020/p064.jpg",
+      "small": "/images/refresh-20261020/p064-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論合建提案與契約條件",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/services/project-management": {
+    "/images/editorial/construction-inspection.webp|": {
+      "id": "P065",
+      "src": "/images/refresh-20261020/p065.jpg",
+      "small": "/images/refresh-20261020/p065-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "專業團隊核對案件分工與工作進度",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/redesign/project-management.jpg|": {
+      "id": "P066",
+      "src": "/images/refresh-20261020/p066.jpg",
+      "small": "/images/refresh-20261020/p066-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與專業同事核對圖說及案件資料",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P067",
+      "src": "/images/refresh-20261020/p067.jpg",
+      "small": "/images/refresh-20261020/p067-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "專業團隊討論住宅重建方案",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/services/urban-renewal": {
+    "/images/redesign/site-inspection-v2.jpg|": {
+      "id": "P068",
+      "src": "/images/refresh-20261020/p068.jpg",
+      "small": "/images/refresh-20261020/p068-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論社區整合與更新工作",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/community-meeting.webp|": {
+      "id": "P069",
+      "src": "/images/refresh-20261020/p069.jpg",
+      "small": "/images/refresh-20261020/p069-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論社區整合與更新工作",
+      "role": "content",
+      "position": "50% 45%"
+    },
+    "/images/editorial/relocation-home.webp|": {
+      "id": "P070",
+      "src": "/images/refresh-20261020/p070.jpg",
+      "small": "/images/refresh-20261020/p070-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與住戶討論社區整合與更新工作",
+      "role": "closing",
+      "position": "50% 45%"
+    }
+  },
+  "/landowner-comparison": {
+    "/images/redesign/document-review.jpg|": {
+      "id": "P085",
+      "src": "/images/refresh-20261020/p085.jpg",
+      "small": "/images/refresh-20261020/p085-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "兩份住宅提案圖面與比較資料",
+      "role": "css-illustration",
+      "position": "50% 45%"
+    }
+  },
+  "/land-evaluation": {
+    "/images/consulting-workscene.webp|": {
+      "id": "P086",
+      "src": "/images/refresh-20261020/p086.jpg",
+      "small": "/images/refresh-20261020/p086-960.jpg",
+      "width": 1672,
+      "height": 941,
+      "alt": "顧問與屋主查看住宅街區與基地條件",
+      "role": "sharing-only",
+      "position": "50% 45%"
+    }
+  },
+  "/insights/urban-renewal-rights-shortfall": {
+    "/images/editorial/relocation-home.webp|": {
+      "src": "/images/insights/rights-shortfall/closing.webp",
+      "small": "/images/insights/rights-shortfall/closing-small.webp",
+      "alt": "顧問在辦公室聽取另一位屋主的居住與補款需求",
+      "width": 1536,
+      "height": 1024,
+      "id": "rights-shortfall-closing",
+      "role": "closing"
+    }
+  }
+}

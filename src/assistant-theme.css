@@ -1,0 +1,99 @@
+/* Warm ochre identifies the assistant while the website keeps its forest green. */
+.website-assistant {
+  --assistant-accent: #a65f3e;
+  --assistant-accent-hover: #8d4e31;
+  --assistant-cream: #fff7ee;
+  --assistant-white: #fff9f1;
+  --assistant-border: #eadace;
+  --assistant-ink: #3f322b;
+  --assistant-muted: #756458;
+  color: var(--assistant-ink);
+}
+.website-assistant .assistant-launcher {
+  background: var(--assistant-accent);
+  border-color: var(--assistant-accent);
+  color: var(--assistant-white);
+  box-shadow: 0 7px 24px #a65f3e30, inset 0 1px 0 #ffffff18;
+}
+.website-assistant .assistant-launcher:hover {
+  background: var(--assistant-accent-hover);
+  border-color: var(--assistant-accent-hover);
+  box-shadow: 0 8px 26px #a65f3e40, inset 0 1px 0 #ffffff20;
+}
+.website-assistant .assistant-window {
+  background: var(--assistant-cream);
+  border-color: var(--assistant-border);
+  box-shadow: 0 18px 50px #60371f26;
+}
+.website-assistant .assistant-header {
+  background: var(--assistant-cream);
+  border-color: var(--assistant-border);
+  color: var(--assistant-ink);
+}
+.website-assistant .assistant-header h2 { color: var(--assistant-ink); }
+.website-assistant .assistant-header p { color: var(--assistant-muted); }
+.website-assistant .assistant-header button { color: var(--assistant-accent); }
+.website-assistant .assistant-header button:hover { background: #a65f3e12; }
+.website-assistant .assistant-avatar {
+  background: var(--assistant-accent);
+  border-color: var(--assistant-accent);
+}
+.website-assistant .assistant-mark,
+.website-assistant .assistant-mark-lines,
+.website-assistant .assistant-mark-accent { color: var(--assistant-white); }
+.website-assistant .assistant-launcher-mark { border-color: #fff9f166; background: #fff9f10a; }
+.website-assistant .assistant-ai-badge {
+  color: var(--assistant-accent-hover);
+  background: #a65f3e0c;
+  border-color: #a65f3e40;
+}
+.website-assistant .assistant-conversation { background: #ffffff; }
+.website-assistant .assistant-message > div {
+  background: #ffffff;
+  border-color: #e5e5e5;
+  color: var(--assistant-ink);
+}
+.website-assistant .assistant-message.user > div {
+  background: #ffffff;
+  border-color: #e5e5e5;
+  color: var(--assistant-ink);
+}
+.website-assistant .assistant-message a { color: var(--assistant-ink); }
+.website-assistant .assistant-message.user a { color: var(--assistant-ink); }
+.website-assistant .assistant-speaker,
+.website-assistant .assistant-tools button,
+.website-assistant .assistant-tools a,
+.website-assistant .assistant-form textarea::placeholder { color: var(--assistant-muted); }
+.website-assistant .assistant-tools,
+.website-assistant .assistant-form { background: var(--assistant-cream); border-color: var(--assistant-border); }
+.website-assistant .assistant-tools button:hover,
+.website-assistant .assistant-tools a:hover { color: var(--assistant-accent-hover); }
+.website-assistant .assistant-suggestions button,
+.website-assistant .assistant-form textarea {
+  background: #ffffff;
+  color: var(--assistant-ink);
+  border-color: var(--assistant-border);
+}
+.website-assistant .assistant-suggestions button::after { color: var(--assistant-muted); }
+.website-assistant .assistant-suggestions button:hover { background: #ffffff; border-color: #aaa; }
+.website-assistant .assistant-form textarea:focus { border-color: var(--assistant-accent); box-shadow: 0 0 0 3px #a65f3e14; }
+.website-assistant .assistant-form button { background: var(--assistant-accent); color: var(--assistant-white); box-shadow: 0 3px 8px #a65f3e20; }
+.website-assistant .assistant-form button:hover:not(:disabled) { background: var(--assistant-accent-hover); }
+.website-assistant .assistant-form button:disabled { background: var(--assistant-border); color: var(--assistant-muted); box-shadow: none; }
+.website-assistant .assistant-thinking > span { background: #777777; }
+.website-assistant .assistant-error { background: var(--assistant-cream); }
+.website-assistant :focus-visible { outline-color: var(--assistant-accent); }
+
+.website-assistant .assistant-suggestions button { border-color: #e5e5e5; }
+
+/* Separate conversation tools from the warm input area. */
+.website-assistant .assistant-tools {
+  background: #f5f5f5;
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+  min-height: 44px;
+}
+.website-assistant .assistant-tools button { color: #6b6b6b; font-size: 12px; font-weight: 400; }
+.website-assistant .assistant-tools a { color: var(--assistant-accent); font-size: 12px; font-weight: 700; }
+.website-assistant .assistant-tools button:hover { color: #3f322b; }
+.website-assistant .assistant-tools a:hover { color: var(--assistant-accent-hover); }

@@ -1,0 +1,28 @@
+name: Public website regression checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  website:
+    runs-on: ubuntu-latest
+    env:
+      SANZE_PUBLIC_PREVIEW: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      # The build itself checks that public routes are open and assets exist.
+      - run: npm run build
+      - run: node --test tests/landowner-calculation.test.mjs tests/line-ai.test.mjs tests/line-timeout.test.mjs tests/line-webhook.test.mjs tests/private-report-bundle.test.mjs
+      - run: npm run verify:contact
+      - run: node scripts/verify-website-assistant.mjs
+      - run: node scripts/verify-pageview-tracker.mjs

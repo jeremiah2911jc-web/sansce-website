@@ -1,0 +1,23 @@
+/* Emphasize contact details without bolding the surrounding explanations. */
+.contact-panel > a[href^="tel:"],
+.contact-panel > a[href^="mailto:"],
+.contact-panel .contact-address,
+.line-contact .line-add,
+.line-contact small,
+.footer-grid a[href^="tel:"],
+.footer-grid a[href^="mailto:"],
+.footer-grid a[href^="https://lin.ee/"],
+.footer-grid .contact-address,
+.design-contact-phone {
+  font-weight: 700;
+}
+
+/* Keep ten-digit landline and mobile numbers visually aligned. */
+.footer-grid a[href^="tel:"],
+.contact-panel > a[href^="tel:"],
+.design-contact-phone {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+.contact-phone-number { font-family:Arial,sans-serif; font-kerning:none; font-variant-ligatures:none; font-variant-numeric:tabular-nums; font-feature-settings:"tnum"; }

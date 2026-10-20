@@ -1,0 +1,14 @@
+/* Article-specific photo rhythm; shared article layout remains intact. */
+.feature-shortfall-cover h1{font-size:clamp(34px,3.4vw,52px)!important;line-height:1.45!important}
+.insight-story-photo{margin:30px 0 8px}
+.insight-story-photo img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:5px}
+.insight-story-photo figcaption{margin-top:10px;color:#46545d;font-size:14px;line-height:1.8}
+@media(max-width:760px){.feature-shortfall-cover h1{font-size:clamp(26px,6.5vw,32px)!important}.insight-story-photo{margin:26px 0 4px}}
+
+.feature-shortfall-cover h1>.shortfall-title-line{display:block!important;font-size:inherit!important;line-height:inherit!important}
+@media(max-width:760px){.feature-shortfall-cover h1{font-size:clamp(22px,6.66vw,28px)!important}}
+
+.feature-shortfall-cover .shortfall-title-line .readable-tail{display:inline!important}
+
+.article-shortfall-comparison table :is(th,td){padding:12px 8px!important}
+.article-shortfall-comparison tbody :is(th,td){white-space:nowrap;font-variant-numeric:tabular-nums}
