@@ -18,10 +18,10 @@ function SelectField({id,label,value,onChange,children}) {
 function DevelopmentFields({id,offer,onChange}) {
  const d=offer.development,split=offer.mode==='ratio'&&offer.distribution==='separate';
  const edit=(key,value)=>onChange({...offer,development:{...d,[key]:value,...(key==='method'?{bonus:''}:{})}});
- return <fieldset className="lc-development"><legend>這個提案預計蓋多少？</legend>
-  <SelectField id={id+'-source'} label="你手上有哪種資料？" value={d.source} onChange={v=>edit('source',v)}><option value="far">有容積資料，用來估算建坪</option><option value="area">已有建築師提供的全案面積表</option></SelectField>
+ return <fieldset className="lc-development"><legend>提案開發面積與估算依據</legend>
+  <SelectField id={id+'-source'} label="開發面積資料來源" value={d.source} onChange={v=>edit('source',v)}><option value="far">有容積資料，用來估算建坪</option><option value="area">已有建築師提供的全案面積表</option></SelectField>
   {d.source==='area'?<>
-   <p className="lc-inline-note">面積表與土地面積須對應同一個基地。這裡按你的土地持分換算面積條件；不代替個別權利價值估價。</p>
+   <p className="lc-inline-note">面積表與土地面積須對應同一個基地。依個人土地持分換算面積條件；不代替個別權利價值估價。</p>
    <NumberField id={id+'-site-land'} label="面積表對應的全基地土地面積" unit="坪" value={d.siteLand} onChange={v=>edit('siteLand',v)}/>
    {split?<><p className="lc-inline-note">分開分配需要三部分各自的建坪，不能只填全案總數。沒有的項目經確認後填0。</p>{[['baseArea','基本容積對應的全案建坪'],['bonusArea','獎勵對應的全案建坪'],['transferArea','移轉對應的全案建坪']].map(([key,label])=><NumberField key={key} id={id+'-'+key} label={label} unit="坪" value={d[key]} onChange={v=>edit(key,v)}/>)}</>:<NumberField id={id+'-sale-area'} label="全案含公設、車位另計的建坪" unit="坪" value={d.saleArea} onChange={v=>edit('saleArea',v)}/>}
   </>:<>
@@ -33,7 +33,7 @@ function DevelopmentFields({id,offer,onChange}) {
     <NumberField id={id+'-bonus'} label={d.method==='old'?'危老申請的獎勵值':'都更申請的獎勵值'} value={d.bonus} onChange={v=>edit('bonus',v)} placeholder="例如50；確認沒有才填0" hint="填占基本容積的比例。例如基本225%、獎勵50%，增加的是112.5個容積率百分點。"/>
     <NumberField id={id+'-transfer'} label="容積移轉比例" value={d.transfer} onChange={v=>edit('transfer',v)} placeholder="例如30；確認沒有才填0" hint="同樣以基本容積為母數。預估申請量不等於核准量。"/>
    </>}
-   <SelectField id={id+'-coefficient-mode'} label="提案有提供容積換算建坪的係數嗎？" value={d.coefficientMode} onChange={v=>edit('coefficientMode',v)}><option value="estimate">還沒有，暫用1.6～1.7估算</option><option value="known">有，填入這個提案的銷售係數</option></SelectField>
+   <SelectField id={id+'-coefficient-mode'} label="容積換算建坪的係數來源" value={d.coefficientMode} onChange={v=>edit('coefficientMode',v)}><option value="estimate">還沒有，暫用1.6～1.7估算</option><option value="known">有，填入這個提案的銷售係數</option></SelectField>
    {d.coefficientMode==='known'&&<NumberField id={id+'-coefficient'} label="提案採用的銷售係數" unit="倍" value={d.coefficient} onChange={v=>edit('coefficient',v)} placeholder="例如1.65" hint="須對應含公設、車位另計的建坪，不能直接填公設比。"/>}
    <p className="lc-inline-note">1.6～1.7是估算假設，實際可能超出這個範圍。有面積表時，可改用上方「全案面積表」。</p>
   </>}
@@ -47,16 +47,16 @@ function OfferFields({id,title,offer,onChange,onRemove}) {
  return <section className="lc-offer" aria-labelledby={id+'-title'}><div className="lc-section-label"><h2 id={id+'-title'}>{title}</h2>{onRemove&&<button type="button" onClick={onRemove} aria-label="移除提案B"><X size={18}/></button>}</div>
   <p>各自填寫，不會套用另一個提案的容積或分配條件。</p>
   <div className="lc-choice" role="group" aria-label={title+'的分配方式'}>{[['area','承諾分回幾坪'],['exchange','一坪土地換幾坪'],['ratio','按比例分回']].map(([mode,label])=><button key={mode} type="button" aria-pressed={offer.mode===mode} onClick={()=>onChange({...offer,mode,value:'',ratioKind:'',distribution:''})}>{label}</button>)}</div>
-  <SelectField id={id+'-area-basis'} label="提案說的坪數，是哪一種？" value={offer.areaBasis} onChange={v=>edit('areaBasis',v)}><option value="">請確認坪數口徑</option><option value="registered">含公設的建坪，車位另外計算</option><option value="interior">室內實坪</option><option value="unknown">還不確定／包含車位面積</option></SelectField>
+  <SelectField id={id+'-area-basis'} label="提案面積口徑" value={offer.areaBasis} onChange={v=>edit('areaBasis',v)}><option value="">請確認坪數口徑</option><option value="registered">含公設的建坪，車位另外計算</option><option value="interior">室內實坪</option><option value="unknown">還不確定／包含車位面積</option></SelectField>
   {offer.areaBasis&&offer.areaBasis!=='registered'&&<p className="lc-alert">室內實坪或含車位坪數，不能直接與這裡的建坪比較。請向提案方確認含公設、車位另計的數字。</p>}
   {ratio?<>
-   <SelectField id={id+'-ratio-kind'} label="這個分配比例指的是什麼？" value={offer.ratioKind} onChange={v=>edit('ratioKind',v)}><option value="">請確認比例的意思</option><option value="area">建物面積比例</option><option value="value">權利價值／房地價值比例</option><option value="unknown">還不確定</option></SelectField>
+   <SelectField id={id+'-ratio-kind'} label="分配比例採計基準" value={offer.ratioKind} onChange={v=>edit('ratioKind',v)}><option value="">請確認比例的意思</option><option value="area">建物面積比例</option><option value="value">權利價值／房地價值比例</option><option value="unknown">還不確定</option></SelectField>
    {offer.ratioKind==='value'?<p className="lc-alert">價值比例需要估價、共同負擔及各戶選配資料。這份面積試算無法直接換算，請帶提案洽詢三策。</p>:offer.ratioKind==='area'&&<>
-    <SelectField id={id+'-distribution'} label="基本容積、獎勵與移轉，地主怎麼分？" value={offer.distribution} onChange={setDistribution}><option value="">請核對提案或契約</option><option value="all">已確認：三部分都按同一比例分</option><option value="separate">已確認：三部分分開約定比例</option><option value="unknown">還沒確認，不能確定怎麼分</option></SelectField>
+    <SelectField id={id+'-distribution'} label="各容積項目的分配約定" value={offer.distribution} onChange={setDistribution}><option value="">請核對提案或契約</option><option value="all">已確認：三部分都按同一比例分</option><option value="separate">已確認：三部分分開約定比例</option><option value="unknown">還沒確認，不能確定怎麼分</option></SelectField>
     {offer.distribution==='unknown'&&<p className="lc-alert">請確認六成等比例涵蓋哪些面積。未確認前，不推算這個提案的分回坪數。</p>}
     {['all','separate'].includes(offer.distribution)&&<>
      <DevelopmentFields id={id} offer={offer} onChange={onChange}/>
-     <fieldset className="lc-distribution"><legend>{split?'各部分地主分回多少？':'地主分回多少？'}</legend>
+     <fieldset className="lc-distribution"><legend>{split?'各項地主分配比例':'地主分配比例'}</legend>
       <NumberField id={id+'-value'} label={split?'基本容積：地主分回比例':'全部建坪：地主分回比例'} value={offer.value} onChange={v=>edit('value',v)} placeholder="六成填60"/>
       {split&&<>{component('bonus')>0&&<NumberField id={id+'-bonus-share'} label="獎勵部分：地主分回比例" value={offer.bonusShare} onChange={v=>edit('bonusShare',v)} hint="全歸建商填0；按六成分填60。"/>}{component('transfer')>0&&<NumberField id={id+'-transfer-share'} label="移轉部分：地主分回比例" value={offer.transferShare} onChange={v=>edit('transferShare',v)} hint="全歸建商填0；按六成分填60。"/>}<p className="lc-inline-note">未填的分配比例不會當成0。若是固定坪數或其他特殊分法，可改填提案承諾的總建坪，或請三策協助確認。</p></>}
      </fieldset>
@@ -75,7 +75,7 @@ function Outcome({title,result,second}) {
  const base=result.base;
  return <section className={'lc-outcome'+(second?' lc-second':'')}><h3>{title}</h3><span className="lc-result-source">{result.certainty}</span><div className="lc-main-result"><span>{result.mode==='ratio'?'按這些條件換算的分回建坪':'提案承諾分回建坪'}</span><strong>{range(result.areaLow,result.areaHigh)}<small>坪</small></strong></div>
   <dl><div><dt>每坪土地換回</dt><dd>{range(result.exchangeLow,result.exchangeHigh)} 建坪</dd></div><div><dt>占這個提案開發面積</dt><dd>{result.ratioLow===null?'未換算':range(result.ratioLow*100,result.ratioHigh*100)+'%'}</dd></div></dl>
-  {base&&<details className="lc-help lc-result-help"><summary>查看這個提案的計算依據</summary>{base.source==='far'?<><p>總容積率：{fmt(base.far*100)}%。銷售係數：{range(base.coefficientLow,base.coefficientHigh)}。</p><p>按你的{fmt(result.land)}坪土地換算，分配前對應的開發面積為{range(base.areaLow,base.areaHigh)}建坪。</p>{base.components&&<p>容積率組成：基本{fmt(base.components.base*100)}%＋獎勵增加{fmt(base.components.bonus*100)}%＋移轉增加{fmt(base.components.transfer*100)}%。</p>}<p>{result.shares?'各部分容積面積分別乘地主比例，再以同一銷售係數換算建坪。':'依這個提案的開發面積及分配條件換算。'}</p></>:<p>全基地{fmt(base.siteLand)}坪，全案{fmt(base.totalSaleArea)}建坪；以你的{fmt(result.land)}坪土地占比換算。</p>}{result.shares&&<p>地主分配比例：基本{fmt(result.shares.base*100)}%、獎勵{fmt(result.shares.bonus*100)}%、移轉{fmt(result.shares.transfer*100)}%。</p>}<p>面積比例以這個提案全部開發面積為分母，不是權利價值比例。實際分回仍須核對契約、估價與選配。</p></details>}
+  {base&&<details className="lc-help lc-result-help"><summary>查看這個提案的計算依據</summary>{base.source==='far'?<><p>總容積率：{fmt(base.far*100)}%。銷售係數：{range(base.coefficientLow,base.coefficientHigh)}。</p><p>按個人持有的{fmt(result.land)}坪土地換算，分配前對應的開發面積為{range(base.areaLow,base.areaHigh)}建坪。</p>{base.components&&<p>容積率組成：基本{fmt(base.components.base*100)}%＋獎勵增加{fmt(base.components.bonus*100)}%＋移轉增加{fmt(base.components.transfer*100)}%。</p>}<p>{result.shares?'各部分容積面積分別乘地主比例，再以同一銷售係數換算建坪。':'依這個提案的開發面積及分配條件換算。'}</p></>:<p>全基地{fmt(base.siteLand)}坪，全案{fmt(base.totalSaleArea)}建坪；以個人持有的{fmt(result.land)}坪土地占比換算。</p>}{result.shares&&<p>地主分配比例：基本{fmt(result.shares.base*100)}%、獎勵{fmt(result.shares.bonus*100)}%、移轉{fmt(result.shares.transfer*100)}%。</p>}<p>面積比例以這個提案全部開發面積為分母，不是權利價值比例。實際分回仍須核對契約、估價與選配。</p></details>}
   {result.over&&<p className="lc-alert">反推比例超過100%，請核對建坪口徑、容積與面積表；數字保留供核對，不代表條件已確認可行。</p>}
  </section>;
 }
@@ -88,21 +88,21 @@ export default function LandownerComparison(){
  useEffect(()=>{if(result)resultsRef.current?.scrollIntoView({behavior:'instant',block:'start'});},[result]);
  const changeA=v=>{setA(v);setResult(null);setError('');setExampleName('');},changeB=v=>{setB(v);setResult(null);setError('');setExampleName('');};
  const calculate=offer=>{try{return calculateProposal(land,offer);}catch(e){return {error:e.message};}};
- function submit(e){e.preventDefault();try{positive(land,'你的持分土地面積');const ra=calculate(a),rb=b?calculate(b):null;setResult({a:ra,b:rb,comparison:compareProposals(ra,rb)});if(!ra.error&&(!rb||!rb.error))trackInteraction('calculator_complete',b?'comparison':'single');setError('');}catch(e){setError(e.message);setResult(null);}}
+ function submit(e){e.preventDefault();try{positive(land,'個人持分土地面積');const ra=calculate(a),rb=b?calculate(b):null;setResult({a:ra,b:rb,comparison:compareProposals(ra,rb)});if(!ra.error&&(!rb||!rb.error))trackInteraction('calculator_complete',b?'comparison':'single');setError('');}catch(e){setError(e.message);setResult(null);}}
  function example(id){const item=landownerExamples.find(e=>e.id===id);trackInteraction('calculator_example',id);setLand(item.land);setA(structuredClone(item.a));setB(structuredClone(item.b));setResult(null);setError('');setExampleName(item.title);requestAnimationFrame(()=>document.getElementById('lc-form-start')?.scrollIntoView({behavior:'instant',block:'start'}));}
  function reset(){setLand('');setA(emptyOffer());setB(null);setResult(null);setError('');setExampleName('');}
  return <div className="lc-page">
   <section className="wrap lc-hero"><div><p className="lc-eyebrow">地主分配試算與比較</p><h1>地主分配試算<br/>各案條件與分回面積比較</h1><p className="lc-lead">分回六成、一坪換幾坪，都換成相同的建坪口徑。<br/>每個提案的容積、獎勵與移轉分法，都可以分開填。</p></div></section>
-  <section className="wrap lc-fill-help" aria-label="填寫協助"><p>不清楚提案怎麼分？可詢問三策 AI 助理，或帶資料請專員協助。</p><div><button type="button" onClick={()=>window.dispatchEvent(new CustomEvent('sanze:assistant-help',{detail:{question:'請帶我填寫地主試算頁，確認各提案的面積口徑及獎勵、移轉分配。'}}))}>詢問三策 AI 助理</button><a href="https://lin.ee/w8xSeSz" target="_blank" rel="noopener noreferrer">請三策專員協助</a></div></section>
-  <section id="lc-examples" className="wrap lc-examples" aria-labelledby="lc-examples-title"><p className="lc-eyebrow">對照情境，知道怎麼填</p><h2 id="lc-examples-title">手上的提案像哪一種？</h2><p className="lc-subtitle">以下都是假設範例。帶入會替換目前的數字，你可以修改成自己的條件，再按「查看比較結果」。</p><div className="lc-example-grid">{landownerExamples.map((item,i)=><article key={item.id} className={`lc-example-card lc-example-${item.id}`}>
+  <section className="wrap lc-fill-help" aria-label="填寫協助"><p>面積口徑與分配約定的填寫說明，可由三策 AI 助理提供；需核對完整提案時，可洽詢顧問服務。</p><div><button type="button" onClick={()=>window.dispatchEvent(new CustomEvent('sanze:assistant-help',{detail:{question:'請帶我填寫地主試算頁，確認各提案的面積口徑及獎勵、移轉分配。'}}))}>詢問三策 AI 助理</button><a href="https://lin.ee/w8xSeSz" target="_blank" rel="noopener noreferrer">請三策專員協助</a></div></section>
+  <section id="lc-examples" className="wrap lc-examples" aria-labelledby="lc-examples-title"><p className="lc-eyebrow">填寫情境與操作說明</p><h2 id="lc-examples-title">常見提案與填寫範例</h2><p className="lc-subtitle">以下都是假設範例。帶入會替換目前的數字，你可以修改成自己的條件，再按「查看比較結果」。</p><div className="lc-example-grid">{landownerExamples.map((item,i)=><article key={item.id} className={`lc-example-card lc-example-${item.id}`}>
  <div className="lc-example-cover"><div className="lc-example-category"><span>{['面積已知','開發條件不同','分配約定不同'][i]}</span><small>假設範例</small></div>{i===0&&<ExampleGraphic item={item}/>}</div>
  <div className="lc-example-reading"><h3>{item.title}</h3><p>{item.intro}</p>{i!==0&&<ExampleGraphic item={item} compact/>}{i!==0&&<dl className="lc-example-comparison">{item.result.split('｜').map(part=><div key={part}><dt>{part.split('：')[0]}</dt><dd>{part.split('：')[1]}</dd></div>)}</dl>}
- <details className="lc-help"><summary>這個例子怎麼填？</summary><ol>{item.steps.map(step=><li key={step}>{step}</li>)}</ol></details>
+ <details className="lc-help"><summary>範例填寫步驟</summary><ol>{item.steps.map(step=><li key={step}>{step}</li>)}</ol></details>
  <button type="button" onClick={()=>example(item.id)}>用這個例子開始</button></div>
  </article>)}</div></section>
   <div className="wrap lc-workspace"><form className="lc-form" onSubmit={submit} noValidate>
-   <section id="lc-form-start" className="lc-base"><div className="lc-section-label"><h2>你的土地</h2><button type="button" className="lc-example" onClick={()=>document.getElementById('lc-examples')?.scrollIntoView({behavior:'instant',block:'start'})}>看填寫範例</button></div><p className="lc-subtitle">兩案比較同一位地主的土地。容積與分配約定在各提案下方填寫。</p>{exampleName&&<p className="lc-example-loaded" role="status">已帶入範例「{exampleName}」。以下是範例數字，可修改成自己的條件。</p>}<NumberField id="land-ping" label="你的持分土地面積" unit="坪" value={land} onChange={v=>{setLand(v);setResult(null);setError('');setExampleName('');}} placeholder="例如20"/>
-    <details className="lc-help"><summary>權狀只有平方公尺和持分，怎麼換算？</summary><p>土地面積（平方公尺）×權利範圍×0.3025＝持分土地坪數。400㎡、持分1/20，就是6.05坪。多筆土地分別換算後相加；已是個人持有面積時，不再乘一次持分。</p></details>
+   <section id="lc-form-start" className="lc-base"><div className="lc-section-label"><h2>持分土地資料</h2><button type="button" className="lc-example" onClick={()=>document.getElementById('lc-examples')?.scrollIntoView({behavior:'instant',block:'start'})}>看填寫範例</button></div><p className="lc-subtitle">兩案比較同一位地主的土地。容積與分配約定在各提案下方填寫。</p>{exampleName&&<p className="lc-example-loaded" role="status">已帶入範例「{exampleName}」。以下是範例數字，可修改成自己的條件。</p>}<NumberField id="land-ping" label="個人持分土地面積" unit="坪" value={land} onChange={v=>{setLand(v);setResult(null);setError('');setExampleName('');}} placeholder="例如20"/>
+    <details className="lc-help"><summary>平方公尺與持分土地坪數換算</summary><p>土地面積（平方公尺）×權利範圍×0.3025＝持分土地坪數。400㎡、持分1/20，就是6.05坪。多筆土地分別換算後相加；已是個人持有面積時，不再乘一次持分。</p></details>
    </section>
    <div className={`lc-offers-grid${b ? " has-comparison" : ""}`}><OfferFields id="a" title="提案A" offer={a} onChange={changeA}/>
    {b?<OfferFields id="b" title="提案B" offer={b} onChange={changeB} onRemove={()=>changeB(null)}/>:<button className="lc-add" type="button" onClick={()=>changeB(emptyOffer())}><Plus size={18}/>加入提案B</button>}</div>
@@ -113,6 +113,6 @@ export default function LandownerComparison(){
    <p className="lc-scope">本頁比較面積條件。土地持分換算不代替權利變換估價；申請容積、預估係數與承諾坪數，仍須核對適用規定、核准結果與契約。</p>
   </aside></div>
   <section className="wrap lc-consult"><div><p className="lc-eyebrow">面積之外，也看實際利益</p><h2>樓層、補款與交屋條件</h2><p>獎勵或移轉的分配尚未確定、涉及權利價值、原容積保障、不同分區或特殊分法，請帶完整提案與三策討論。</p></div><a href="/contact">請三策協助核對條件</a></section>
-  <section className="wrap lc-notes"><details><summary>這份試算怎麼比較？</summary><p>各案有自己的容積、銷售係數或面積表，不能把兩個提案都套進其中一家的數字。容積分項模式使用基本容積率×（1＋獎勵比例＋移轉比例）；兩個增加比例都以基本容積為母數，原容積等特殊情形需另外核對。</p><p>三部分採相同比例時，以全部開發面積計算；分開分配時，基本、獎勵及移轉各自乘地主約定比例，再加總。沒有的項目須確認為0，尚未確認的比例不代填。按容積拆算時，各部分使用同一個提案的銷售係數。</p><p>面積表必須是同一基地、含公設且排除另外計價車位的資料。只提供總面積，無法拆成不同分配比例；須取得分項面積。全案面積依土地持分比例換算，是這份面積比較的前提，不代表權利變換的分配權值。</p><p>兩個提案都有估算範圍時，差額採各自範圍交叉計算，範圍重疊就不判定哪案一定較多。坪數相同，也不代表房地價值或整體條件相同。</p></details></section>
+  <section className="wrap lc-notes"><details><summary>計算方式與比較基準</summary><p>各案有自己的容積、銷售係數或面積表，不能把兩個提案都套進其中一家的數字。容積分項模式使用基本容積率×（1＋獎勵比例＋移轉比例）；兩個增加比例都以基本容積為母數，原容積等特殊情形需另外核對。</p><p>三部分採相同比例時，以全部開發面積計算；分開分配時，基本、獎勵及移轉各自乘地主約定比例，再加總。沒有的項目須確認為0，尚未確認的比例不代填。按容積拆算時，各部分使用同一個提案的銷售係數。</p><p>面積表必須是同一基地、含公設且排除另外計價車位的資料。只提供總面積，無法拆成不同分配比例；須取得分項面積。全案面積依土地持分比例換算，是這份面積比較的前提，不代表權利變換的分配權值。</p><p>兩個提案都有估算範圍時，差額採各自範圍交叉計算，範圍重疊就不判定哪案一定較多。坪數相同，也不代表房地價值或整體條件相同。</p></details></section>
  </div>;
 }
