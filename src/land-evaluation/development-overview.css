@@ -29,3 +29,10 @@
 @media(max-width:799px){
  .dev-overview{padding:0 22px;max-width:100%;min-width:0}.dev-hero{grid-template-columns:minmax(0,1fr);padding-top:36px;gap:12px}.dev-hero-copy{padding-bottom:0}.dev-overview .dev-hero h1{font-size:36px;margin:18px 0}.dev-overview .dev-lead{font-size:21px}.dev-overview .dev-hero-note{font-size:15px;margin:18px 0 22px}.dev-hero-note br{display:none}.dev-hero-figure{margin:0 auto;width:100%;max-width:480px}.dev-hero-foot{flex-wrap:wrap;gap:8px 18px;padding:18px 0}.dev-hero-foot p{flex-basis:100%;order:3}.dev-directions{padding-top:42px;scroll-margin-top:90px}.dev-section-title{display:block;margin-bottom:24px}.dev-overview .dev-section-title>p{margin-top:14px;max-width:none}.dev-overview h2{font-size:28px}.dev-finder{display:block}.dev-direction-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:14px 0;border-right:0;border-bottom:1px solid var(--dev-line);gap:6px}.dev-direction-list button{padding:12px 8px;border:0;gap:5px}.dev-direction-list button>strong{font-size:14px;line-height:1.65}.dev-direction-list button>span{font-size:11px}.dev-direction-list button[aria-selected=true]{border-radius:0 12px 0 0}.dev-direction-panel{display:block;padding:22px 0 30px}.dev-direction-art{max-width:440px;margin:0 auto 22px}.dev-direction-copy h3{font-size:24px}.dev-direction-copy>p{font-size:15px}.dev-input-summary{font-size:14px}.dev-input-summary>div{gap:10px}.dev-options{grid-template-columns:1fr}.dev-options strong{font-size:15px}.dev-options small{font-size:13px}.dev-principles{grid-template-columns:1fr;gap:24px;padding:42px 0}.dev-method-body p{font-size:15px}.dev-overview .dev-primary{max-width:100%;white-space:normal}
 }
+
+/* Mobile landing ends at the model; shared navigation and assistant remain available. */
+body:has(.dev-overview-mobile) main#main{padding-bottom:0}
+body:has(.dev-overview-mobile)>#root>footer{display:none}
+.dev-overview-mobile .dev-hero{padding-bottom:16px}
+
+.dev-overview-mobile .dev-lead br{display:block}
