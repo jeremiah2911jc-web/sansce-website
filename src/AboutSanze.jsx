@@ -28,7 +28,7 @@ export default function AboutSanze() {return <div className="as-page">
    <div className="wrap as-practice-layout">
      <div className="as-practice-intro">
        <p className="as-kicker">受託工作原則</p>
-       <h2 id="as-practice-title">依據資料說明條件，<br />依照約定執行工作</h2>
+       <h2 id="as-practice-title">三策如何辦理受託工作</h2>
        <p>評估須交代資料來源，委託須列明工作與費用；會議決議、文件及處理進度，留存紀錄供委託人查閱。</p>
      </div>
      <figure className="as-practice-photo">
