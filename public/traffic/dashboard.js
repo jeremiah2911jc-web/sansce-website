@@ -14,7 +14,7 @@ function locationName(key){
  return key==='overseas'?'海外・國家／地區未辨識':regionNames[key]||'地區未辨識';
 }
 const deviceNames={mobile:'手機',desktop:'電腦',tablet:'平板',unknown:'未識別裝置'};
-const sourceNames={threads_tagged:'Threads・專用連結',threads_referral:'Threads・來源辨識',google:'Google（標記或來源）',bing:'Bing（標記或來源）',yahoo:'Yahoo（標記或來源）',duckduckgo:'DuckDuckGo（標記或來源）',baidu:'百度（標記或來源）',facebook:'Facebook（標記或來源）',instagram:'Instagram（標記或來源）',line:'LINE（標記或來源）',other_campaign:'其他標記連結',other_referral:'其他網站',direct_unknown:'來源不明',internal:'站內延續／外部來源不明',unknown:'未記錄來源'};
+const sourceNames={threads_tagged:'連結標記為 Threads',threads_referral:'瀏覽器回報來自 Threads',google:'Google（標記或來源）',bing:'Bing（標記或來源）',yahoo:'Yahoo（標記或來源）',duckduckgo:'DuckDuckGo（標記或來源）',baidu:'百度（標記或來源）',facebook:'Facebook（標記或來源）',instagram:'Instagram（標記或來源）',line:'LINE（標記或來源）',other_campaign:'其他標記連結',other_referral:'其他網站',direct_unknown:'來源不明',internal:'站內延續／外部來源不明',unknown:'未記錄來源'};
 function renderDistributions(){
  if(!latestData)return;
  const period=$('distribution-period').value;
