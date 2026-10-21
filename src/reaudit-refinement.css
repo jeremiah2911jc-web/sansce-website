@@ -1,0 +1,37 @@
+/* Refinements tied to reading tasks, not a new site template. */
+.sx-process-steps summary .process-toggle{font-size:20px;transform:none!important;flex:none;width:22px;text-align:center}
+.sx-process-steps summary .process-toggle::before{content:'＋'}
+.sx-process-steps details[open]>summary .process-toggle::before{content:'−'}
+.rp-page details[open]>summary .rp-toggle{transform:none!important}
+.rp-page details[open]>summary .rp-toggle::after{transform:rotate(0deg)!important}
+.issue-table .issue-record{border:0;margin:12px 0 0;background:transparent}
+.issue-table .issue-record summary{font-size:15px;text-decoration:underline;text-underline-offset:5px;padding:7px 0;cursor:pointer;color:#36566b}
+.issue-table .issue-record p{font-size:16px;line-height:1.9;margin:10px 0 2px}
+.rp-search-tools{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;margin:25px 0}
+.rp-search-tools label{font-size:16px;font-weight:600;display:flex;flex-direction:column;gap:9px;color:#263d4b;min-width:0}
+.rp-search-tools :is(input,select){width:100%;height:52px;font:inherit;font-size:16px;line-height:1.4;padding:10px 14px;border:1px solid #9babad;border-radius:5px;color:#263d4b;background:#fff;min-width:0}
+.rp-search-tools p{grid-column:1/-1;font-size:14px;margin:0;line-height:1.8;color:#536168}
+.rp-page-controls{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:22px;border-top:1px solid #c9cecc;padding:20px 0}
+.rp-page-controls p{font-size:15px;margin:0}.rp-page-controls button{background:#263d4b;color:#fff;border:0;padding:13px 20px;font:inherit;border-radius:5px;cursor:pointer;min-height:48px}.rp-page-controls a{font-size:15px;text-decoration:underline;text-underline-offset:5px}
+.rp-local-further{padding-block:42px}.rp-local-further>p{max-width:760px}.rp-local-further dl{margin:24px 0 0}.rp-local-further dl>div{display:grid;grid-template-columns:150px 1fr;gap:24px;border-top:1px solid #c9cecc;padding:18px 0}.rp-local-further dt{font-size:18px;font-weight:650}.rp-local-further dd{margin:0;font-size:16px;line-height:1.85}.rp-local-further dt a{text-decoration:underline;text-underline-offset:5px}
+.knowledge-layout.service-reading-layout{max-width:1200px;gap:0}
+.service-task-nav{order:-1;display:flex;flex-wrap:wrap;gap:8px 28px;border-block:1px solid #b8c2c4;margin:0 0 34px;padding:16px 0;align-items:center}
+.service-task-nav a{font-size:16px;padding:6px 0;color:#263d4b;text-decoration:underline;text-underline-offset:6px}
+.service-edition{font-size:17px;line-height:1.95;max-width:100%;color:#34434a}
+.service-edition .service-copy-section{padding:22px 0;margin:0;min-width:0;border:0;scroll-margin-top:125px}
+.service-edition h2{font-size:clamp(23px,2.3vw,30px);line-height:1.5;color:#263d4b;margin:0 0 17px}
+.service-edition p{font-size:17px;line-height:1.95;margin:0 0 17px;white-space:normal;text-wrap:wrap}
+.service-edition p:last-child{margin-bottom:0}
+.service-evidence-photo{margin:0;min-width:0;align-self:start}.service-evidence-photo img{display:block;width:100%;height:auto;object-fit:cover;border-radius:12px}.service-evidence-photo figcaption{font-size:14px;line-height:1.8;color:#58656a;margin-top:10px}
+.urban-commission{display:grid;grid-template-columns:1.15fr 1fr;gap:50px;padding-bottom:24px;border-bottom:1px solid #bcc5c7}
+.urban-base{display:grid;grid-template-columns:1.15fr 1fr;gap:50px;background:#f1ede5;padding:22px 28px;margin-block:28px}
+.urban-work-phases{max-width:900px}.urban-work-phases p{padding:0 0 18px;border:0;background:transparent}
+.urban-rights,.urban-responsibility{display:grid;grid-template-columns:1fr 1fr;gap:50px;border-top:1px solid #c9cecc;margin-block:20px}
+.urban-edition>.service-copy-section{max-width:900px}
+.eligibility-record{border:1px solid #a7b6ba;padding:12px 30px;margin-bottom:32px}.eligibility-record>.service-copy-section+section{border-top:1px solid #c9cecc}
+.eligibility-visit{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;margin-bottom:18px}.eligibility-visit .service-copy-section:first-child{padding-top:0}.eligibility-edition>.service-copy-section{max-width:900px}.eligibility-preparation{border-top:2px solid #aa7659!important;margin-top:20px!important}
+.contract-edition>.service-copy-section{max-width:900px}.contract-review-register{margin-block:28px}.contract-review-register table{width:100%;border-collapse:collapse;table-layout:fixed}.contract-review-register caption{text-align:left;font-size:25px;font-weight:650;color:#263d4b;margin-bottom:18px}.contract-review-register thead th{background:#263d4b;color:#fff;padding:18px 24px;font-size:18px;text-align:left}.contract-review-register thead th:first-child{width:31%}.contract-review-register tbody th,.contract-review-register tbody td{padding:25px 24px;border-bottom:1px solid #c1cacd;text-align:left;vertical-align:top}.contract-review-register tbody th{background:#f1ede5}.contract-review-register h2{font-size:21px;margin:0}.contract-review-register p{font-size:17px}.contract-review-register tr{scroll-margin-top:130px}.contract-version{display:grid;grid-template-columns:1fr 1.1fr;gap:40px;align-items:start;margin-top:24px}.contract-version section{padding-top:0!important}
+.management-record{display:grid;grid-template-columns:1.05fr 1fr;gap:42px;align-items:start;margin:28px 0}.management-record section{padding:0!important}.management-phases p{padding-bottom:18px;border-bottom:1px solid #c9cecc}.management-commission{background:#f1ede5;padding:26px 30px!important;margin:20px 0!important}.management-commission p{max-width:850px}.management-boundaries{display:grid;grid-template-columns:1fr 1fr;gap:48px;border-block:1px solid #c0cbce;margin-block:20px}.management-edition>.service-copy-section{max-width:950px}
+@media(max-width:760px){.rp-search-tools{grid-template-columns:1fr;gap:16px}.rp-local-further dl>div{grid-template-columns:1fr;gap:9px}.rp-page-controls{align-items:flex-start}.service-task-nav{gap:10px 20px;margin-bottom:22px}.service-task-nav a{font-size:15px}.service-edition p{font-size:17px;line-height:1.9}.service-edition .service-copy-section{padding:20px 0;scroll-margin-top:85px}.urban-commission,.urban-base,.urban-rights,.urban-responsibility,.eligibility-visit,.contract-version,.management-record,.management-boundaries{display:block}.urban-commission{padding-bottom:14px}.urban-base{padding:8px 20px;margin:20px 0}.urban-work-phases p{padding:12px 16px}.eligibility-record{padding:0 20px;margin-bottom:26px}.eligibility-visit .service-copy-section:first-child{padding-top:22px}.contract-review-register thead{display:none}.contract-review-register tbody tr{display:block;margin-bottom:22px;border:1px solid #b8c4c8;scroll-margin-top:85px}.contract-review-register tbody th,.contract-review-register tbody td{display:block;width:auto;padding:18px 20px;border:0}.contract-review-register tbody th{border-bottom:1px solid #c9cecc}.contract-review-register h2{font-size:22px}.contract-version .service-evidence-photo{margin-top:20px}.management-record .service-evidence-photo{margin-top:24px}.management-commission{padding:22px 20px!important}.issue-table .issue-record p{font-size:16px}.lw-draft-guide ul{padding-left:22px}}
+
+.co-comparison-items details[open]>summary svg{transform:none!important}.co-comparison-items details[open]>summary svg path[d="M12 5v14"]{display:none}

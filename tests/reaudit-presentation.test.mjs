@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {newLandAssessment,newLayout,calculateLayout} from '../src/land-evaluation/generated/land.mjs';
+import {layoutPresentation} from '../src/land-evaluation/layout-presentation.mjs';
+import {programStatus,matchesProgram} from '../src/program-search.mjs';
+import {taipeiPrograms} from '../src/taipei-programs.js';
+import {taoyuanPrograms} from '../src/taoyuan-programs.js';
+test('a blank layout is an unfilled draft, never an approved result or a zero-area finding',()=>{const a=newLandAssessment('draft');const p=newLayout(a,'single');const r=calculateLayout(p,a);const before=JSON.stringify(r);const d=layoutPresentation(p,a,r);assert.equal(d.showAreas,false);assert.equal(d.violations.length,0);assert.match(d.status,/資料待補/);assert.equal(r.canAdopt,false);assert.equal(JSON.stringify(r),before);});
+test('unsupported confirmed use and changed source retain blocking findings even in an empty draft',()=>{const a=newLandAssessment('farm');a.intendedUse='farmhouse';const p=newLayout(a,'single');let r=calculateLayout(p,a);assert.match(layoutPresentation(p,a,r).violations.join(''),/農舍/);a.caseId='changed';r=calculateLayout(p,a);assert.match(layoutPresentation(p,a,r).violations.join(''),/來源已變更/);assert.equal(r.canAdopt,false);});
+test('expired application, exhausted quota and conditional budget are not labelled currently open',()=>{assert.equal(programStatus(taipeiPrograms.find(s=>s.code==='7599')),'closed');assert.equal(programStatus(taoyuanPrograms.find(s=>s.code==='耐震評估')),'closed');assert.equal(programStatus(taoyuanPrograms.find(s=>s.code==='微型修繕')),'announced');assert.equal(programStatus(taoyuanPrograms.find(s=>s.code==='中央補助')),'confirm');});
+test('search reaches full conditions, not only title, and intersects status',()=>{const s=taoyuanPrograms.find(s=>s.code==='危老審查');assert(matchesProgram(s,'高度 預審'));assert(!matchesProgram(s,'高度','closed'));assert(!matchesProgram(s,'中繼住宅'));});

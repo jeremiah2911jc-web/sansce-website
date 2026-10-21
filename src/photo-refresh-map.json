@@ -95,14 +95,14 @@
   },
   "/consulting": {
     "/images/redesign/consultation.jpg|": {
-      "id": "P010",
-      "src": "/images/refresh-20261020/p010.jpg",
-      "small": "/images/refresh-20261020/p010-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "顧問與住戶討論基地評估與重建規劃",
+      "id": "RA-entry",
+      "src": "/images/reaudit-20261021/entry.webp",
+      "small": "/images/reaudit-20261021/entry-960.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "住戶開啟老公寓入口大門",
       "role": "content",
-      "position": "50% 45%"
+      "position": "50% 50%"
     },
     "/images/redesign/site-inspection-v2.jpg|": {
       "id": "P011",
@@ -429,6 +429,16 @@
       "alt": "顧問與住戶討論新建住宅與市場資料",
       "role": "closing",
       "position": "50% 45%"
+    },
+    "/images/redesign/residential-grand-v2.jpg|": {
+      "id": "RA-market",
+      "src": "/images/reaudit-20261021/market.webp",
+      "small": "/images/reaudit-20261021/market-960.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "住宅銷售接待空間與空置座位",
+      "role": "content",
+      "position": "50% 50%"
     }
   },
   "/insights": {
@@ -593,6 +603,16 @@
       "alt": "住宅交易與家庭財務的工作情境",
       "role": "closing",
       "position": "50% 45%"
+    },
+    "/images/renewal-city-vision.jpg|": {
+      "id": "RA-registry-visit-v2",
+      "src": "/images/reaudit-20261021/registry-visit-v2.webp",
+      "small": "/images/reaudit-20261021/registry-visit-v2-960.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "民眾攜帶文件在登記服務櫃檯前等候",
+      "role": "content",
+      "position": "50% 50%"
     }
   },
   "/insights/public-urban-renewal-challenges": {
@@ -733,14 +753,14 @@
   },
   "/process": {
     "/images/editorial/community-meeting.webp|": {
-      "id": "P056",
-      "src": "/images/refresh-20261020/p056.jpg",
-      "small": "/images/refresh-20261020/p056-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "顧問與住戶討論委託範圍與工作安排",
+      "id": "RA-meeting-records",
+      "src": "/images/reaudit-20261021/meeting-records.webp",
+      "small": "/images/reaudit-20261021/meeting-records-960.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "社區人員整理會議公告與資料",
       "role": "content",
-      "position": "50% 45%"
+      "position": "50% 50%"
     },
     "/images/editorial/relocation-home.webp|": {
       "id": "P057",
