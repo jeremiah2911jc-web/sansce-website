@@ -2101,11 +2101,13 @@ import { publicText } from "/src/land-evaluation/public-copy.mjs";
 
 // ../../../../../../src/sanze-cases-desktop/src/lib/site/siteRoadConditions.ts
 var newSiteRoadConditions = () => ({ version: "site-road.v1", roadName: "", plannedWidth: "", openedWidth: "", frontage: "", connected: "unknown", status: "unknown", source: "", checkedAt: "" });
-function reviewSiteRoad(r) {
+function reviewSiteRoad(r, referenceDate = (/* @__PURE__ */ new Date()).toLocaleDateString("sv-SE", { timeZone: "Asia/Taipei" })) {
   const errors = [], notes = [];
   if (!r) return { errors, notes: ["\u57FA\u5730\u8DEF\u5BEC\u5C1A\u672A\u8F38\u5165\u78BA\u8A8D\uFF1B\u4FDD\u7559\u898F\u5283\u76EE\u6A19\u4F5C\u5047\u8A2D\uFF0C\u4E0D\u80FD\u8A8D\u5B9A\u9053\u8DEF\u8CC7\u683C\u3002"] };
   for (const k of ["plannedWidth", "openedWidth", "frontage"]) if (r[k].trim() && (!Number.isFinite(Number(r[k])) || Number(r[k]) <= 0)) errors.push({ plannedWidth: "\u8A08\u756B\u8DEF\u5BEC", openedWidth: "\u5BE6\u969B\u958B\u95E2\u5BEC\u5EA6", frontage: "\u540C\u8DEF\u6BB5\u57FA\u5730\u9762\u5BEC" }[k] + "\u9808\u5927\u65BC0\uFF1B\u672A\u77E5\u8ACB\u7559\u767D");
   if (r.status === "confirmed" && (!r.plannedWidth.trim() || !r.source.trim() || (!/^\d{4}-\d{2}-\d{2}$/.test(r.checkedAt) || !Number.isFinite(Date.parse(r.checkedAt)) || new Date(r.checkedAt).toISOString().slice(0, 10) !== r.checkedAt))) errors.push("\u78BA\u8A8D\u8DEF\u5BEC\u9808\u586B\u8A08\u756B\u8DEF\u5BEC\u3001\u67E5\u8B49\u4F86\u6E90\u53CA\u67E5\u8B49\u65E5\u671F");
+  if (r.status === "confirmed" && r.checkedAt > referenceDate) errors.push("\u8DEF\u5BEC\u67E5\u8B49\u65E5\u671F\u4E0D\u5F97\u665A\u65BC\u672C\u6B21\u8A55\u4F30\u65E5\u671F");
+  if (r.status === "confirmed" && r.checkedAt > (/* @__PURE__ */ new Date()).toLocaleDateString("sv-SE", { timeZone: "Asia/Taipei" })) errors.push("\u8DEF\u5BEC\u67E5\u8B49\u65E5\u671F\u4E0D\u5F97\u665A\u65BC\u76EE\u524D\u65E5\u671F");
   if (r.status !== "confirmed") notes.push("\u57FA\u5730\u9053\u8DEF\u8CC7\u6599\u5C1A\u5C6C" + (r.status === "assumed" ? "\u660E\u793A\u66AB\u63A1\u503C" : "\u5F85\u78BA\u8A8D") + "\uFF0C\u672A\u8A8D\u5B9A\u7B26\u5408\u7533\u8ACB\u8CC7\u683C\u3002");
   if (!r.openedWidth.trim() || !r.frontage.trim() || r.connected === "unknown") notes.push("\u5BE6\u969B\u958B\u95E2\u5BEC\u5EA6\u3001\u540C\u8DEF\u6BB5\u9762\u5BEC\u6216\u958B\u95E2\u9023\u901A\u5C1A\u7F3A\uFF0C\u4E0D\u56E0\u8A08\u756B\u8DEF\u5BEC\u5DF2\u78BA\u8A8D\u5373\u8A8D\u5B9A\u5176\u9918\u8CC7\u683C\u3002");
   return { errors, notes };
@@ -2290,9 +2292,9 @@ function reviewTdrApplication(t, c, requestedPercent, capPercent, otherAwardPerc
   return { city: t.city, method: t.method, landActive, cashActive, cashPercent, eligible, capPercent: cap, targetSqm, landTarget, cashTarget, donorSqm, cashSupplied, supplySqm, appliedSqm, appliedPercent: base > 0 ? appliedSqm / base * 100 : 0, actualLand, actualCash, cashCost, landCost, fees, totalCost: t.method === "unselected" ? null : cashActive && cashCost === null || landActive && landCost === null ? null : (cashCost ?? 0) + (landCost ?? 0) + fees, senders, errors, notes, gaps, stage: t.stage, valuationStatus: t.valuationStatus === "approved" && t.valuationSource.trim() && unitPrice !== null ? "approved" : "assumed" };
 }
 var esc = (x) => String(x).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-function renderTdrApplication(t, r) {
+function renderTdrApplication(t, r, financials = true) {
   if (t.quantityBasis === "permitted") return `<h3>\u65E2\u6709\u8A31\u53EF\u5BB9\u7A4D\u5C0D\u7167</h3><p>\u6587\u4EF6\u79FB\u5165\u91CF${r.supplySqm.toFixed(2)}\u33A1\uFF1B\u672C\u6B21\u63A1\u8A08${r.appliedSqm.toFixed(2)}\u33A1\uFF08${r.appliedPercent.toFixed(4)}%\uFF09\u3002</p>${[...r.errors, ...r.notes].map((n) => `<p>${esc(n)}</p>`).join("")}`;
-  return `<h3>\u5BB9\u79FB\u5730\u5340\u53CA\u53D6\u5F97\u65B9\u5F0F</h3><p>\u6CD5\u898F\u5730\u5340${r.city === "ntpc" ? "\u65B0\u5317\u5E02" : r.city === "taipei" ? "\u81FA\u5317\u5E02" : "\u5176\u4ED6"}\uFF0C\u65B9\u5F0F${esc(r.method)}\uFF0C\u91CF\u6E90${t.quantityBasis === "target" ? "\u898F\u5283\u76EE\u6A19" : "\u9001\u51FA\u5730\u53CA\u4EE3\u91D1\u6578\u91CF"}\u3002\u4EE3\u91D1${r.cashPercent}%\uFF1B\u672C\u6B21\u63A1\u8A08${r.appliedSqm.toFixed(2)}\u33A1\uFF08${r.appliedPercent.toFixed(4)}%\uFF09\u3002</p><p>\u9001\u51FA\u5730\u4F9B\u7D66${r.donorSqm.toFixed(2)}\u33A1\u3001\u4EE3\u91D1\u7533\u8ACB${r.cashSupplied === null ? "\u672A\u586B" : r.cashSupplied.toFixed(2)}\u33A1\uFF1B\u672C\u6B21\u914D\u7F6E\u9001\u51FA\u5730${r.actualLand.toFixed(2)}\u33A1\u3001\u4EE3\u91D1${r.actualCash.toFixed(2)}\u33A1\u3002\u672A\u9078\u65B9\u5F0F\u4E0D\u4EE3\u8868\u5DF2\u53D6\u5F97\uFF0C\u4F86\u6E90\u8207\u6838\u51C6\u5206\u958B\u3002</p><table><tr><th>\u9001\u51FA\u5730</th><th>\u7A2E\u985E</th><th>\u63DB\u5165\u91CF\u33A1</th><th>\u67E5\u6838</th></tr>${r.senders.map((p) => `<tr><td>${esc(p.parcel)}</td><td>${esc(p.kind)}</td><td>${p.volume.toFixed(2)}</td><td>${esc(p.issues.join("\uFF1B"))}</td></tr>`).join("")}</table><p>\u4EE3\u91D1${r.cashCost === null ? "\u672A\u4F30" : r.cashCost.toFixed(0) + "\u5143"}\uFF1B\u9001\u51FA\u5730\u53D6\u5F97\u6210\u672C${r.landCost === null ? "\u672A\u4F30" : r.landCost.toFixed(0) + "\u5143"}\uFF1B\u4F30\u50F9\u53CA\u5176\u4ED6\u898F\u8CBB${r.fees.toFixed(0)}\u5143\uFF1B\u53D6\u5F97\u6210\u672C\u5408\u8A08${r.totalCost === null ? "\u672A\u4F30\u5B8C\u6574" : r.totalCost.toFixed(0) + "\u5143"}\u3002\u4EE3\u91D1\u4F30\u50F9\u72C0\u614B${esc(r.valuationStatus)}\uFF0C\u4F86\u6E90${esc(t.valuationSource || "\u672A\u586B")}\u3002\u6210\u672C\u4E0D\u81EA\u52D5\u5012\u586B\u81F3\u5176\u4ED6\u6A21\u7D44\uFF0C\u907F\u514D\u91CD\u8907\u5217\u5E33\u3002</p>${[...r.errors, ...r.notes, ...r.gaps].map((n) => `<p>${esc(n)}</p>`).join("")}<p><a href="${tdrLaws[r.city === "taipei" ? "taipei" : "ntpc"]}">\u5730\u65B9\u5BB9\u79FB\u898F\u5247</a> \uFF0F <a href="${tdrLaws[r.city === "taipei" ? "taipeiProcedure" : "ntpcProcedure"]}">\u7533\u8ACB\u7A0B\u5E8F</a> \uFF0F <a href="${tdrLaws.central}">\u4E2D\u592E\u7B2C9\u30019-1\u689D</a></p>`;
+  return `<h3>\u5BB9\u79FB\u5730\u5340\u53CA\u53D6\u5F97\u65B9\u5F0F</h3><p>\u6CD5\u898F\u5730\u5340${r.city === "ntpc" ? "\u65B0\u5317\u5E02" : r.city === "taipei" ? "\u81FA\u5317\u5E02" : "\u5176\u4ED6"}\uFF0C\u65B9\u5F0F${esc(r.method)}\uFF0C\u91CF\u6E90${t.quantityBasis === "target" ? "\u898F\u5283\u76EE\u6A19" : "\u9001\u51FA\u5730\u53CA\u4EE3\u91D1\u6578\u91CF"}\u3002\u4EE3\u91D1${r.cashPercent}%\uFF1B\u672C\u6B21\u63A1\u8A08${r.appliedSqm.toFixed(2)}\u33A1\uFF08${r.appliedPercent.toFixed(4)}%\uFF09\u3002</p><p>\u9001\u51FA\u5730\u4F9B\u7D66${r.donorSqm.toFixed(2)}\u33A1\u3001\u4EE3\u91D1\u7533\u8ACB${r.cashSupplied === null ? "\u672A\u586B" : r.cashSupplied.toFixed(2)}\u33A1\uFF1B\u672C\u6B21\u914D\u7F6E\u9001\u51FA\u5730${r.actualLand.toFixed(2)}\u33A1\u3001\u4EE3\u91D1${r.actualCash.toFixed(2)}\u33A1\u3002\u672A\u9078\u65B9\u5F0F\u4E0D\u4EE3\u8868\u5DF2\u53D6\u5F97\uFF0C\u4F86\u6E90\u8207\u6838\u51C6\u5206\u958B\u3002</p><table><tr><th>\u9001\u51FA\u5730</th><th>\u7A2E\u985E</th><th>\u63DB\u5165\u91CF\u33A1</th><th>\u67E5\u6838</th></tr>${r.senders.map((p) => `<tr><td>${esc(p.parcel)}</td><td>${esc(p.kind)}</td><td>${p.volume.toFixed(2)}</td><td>${esc(p.issues.join("\uFF1B"))}</td></tr>`).join("")}</table>${financials ? `<p>\u4EE3\u91D1${r.cashCost === null ? "\u672A\u4F30" : r.cashCost.toFixed(0) + "\u5143"}\uFF1B\u9001\u51FA\u5730\u53D6\u5F97\u6210\u672C${r.landCost === null ? "\u672A\u4F30" : r.landCost.toFixed(0) + "\u5143"}\uFF1B\u4F30\u50F9\u53CA\u5176\u4ED6\u898F\u8CBB${r.fees.toFixed(0)}\u5143\uFF1B\u53D6\u5F97\u6210\u672C\u5408\u8A08${r.totalCost === null ? "\u672A\u4F30\u5B8C\u6574" : r.totalCost.toFixed(0) + "\u5143"}\u3002\u4EE3\u91D1\u4F30\u50F9\u72C0\u614B${esc(r.valuationStatus)}\uFF0C\u4F86\u6E90${esc(t.valuationSource || "\u672A\u586B")}\u3002\u6210\u672C\u4E0D\u81EA\u52D5\u5012\u586B\u81F3\u5176\u4ED6\u6A21\u7D44\uFF0C\u907F\u514D\u91CD\u8907\u5217\u5E33\u3002</p>` : ""}${[...r.errors, ...r.notes, ...r.gaps].map((n) => `<p>${esc(n)}</p>`).join("")}<p><a href="${tdrLaws[r.city === "taipei" ? "taipei" : "ntpc"]}">\u5730\u65B9\u5BB9\u79FB\u898F\u5247</a> \uFF0F <a href="${tdrLaws[r.city === "taipei" ? "taipeiProcedure" : "ntpcProcedure"]}">\u7533\u8ACB\u7A0B\u5E8F</a> \uFF0F <a href="${tdrLaws.central}">\u4E2D\u592E\u7B2C9\u30019-1\u689D</a></p>`;
 }
 
 // ../../../../../../src/sanze-cases-desktop/src/components/efficiency/TdrApplicationPanel.tsx
@@ -2302,7 +2304,8 @@ function TdrApplicationPanel({
   district,
   review,
   change,
-  roadConditions
+  roadConditions,
+  financials = true
 }) {
   const saved = assessment.tdrApplication ?? newTdrApplication(inferTdrCity(district)), t = applySiteRoad(saved, roadConditions), r = review;
   const edit = (patch) => {
@@ -2341,7 +2344,7 @@ function TdrApplicationPanel({
       [key]: e.target.value
     }), children: [
       /* @__PURE__ */ jsx("option", { value: "unknown", children: "\u7F3A\u6587\u4EF6\uFF0C\u4F9D\u76EE\u6A19\u5047\u8A2D\u521D\u4F30" }),
-      /* @__PURE__ */ jsx("option", { value: "yes", children: "\u4F9D\u6240\u9644\u8CC7\u6599\u78BA\u8A8D\u7B26\u5408" }),
+      /* @__PURE__ */ jsx("option", { value: "yes", children: "\u4F9D\u6240\u9644\u8CC7\u6599\u78BA\u8A8D\u7B26\u5408\uFF08\u898F\u5283\u5047\u8A2D\uFF09" }),
       /* @__PURE__ */ jsx("option", { value: "no", children: "\u5DF2\u77E5\u4E0D\u7B26\u5408\uFF0C\u63A1\u8A080" })
     ] })
   ] });
@@ -2369,7 +2372,7 @@ function TdrApplicationPanel({
         /* @__PURE__ */ jsxs(PublicSelect, { "aria-label": "\u5BB9\u79FB\u53D6\u5F97\u65B9\u5F0F", value: t.method, onChange: (e) => edit({
           method: e.target.value
         }), children: [
-          /* @__PURE__ */ jsx("option", { value: "unselected", children: "\u672A\u9078\u5B9A\uFF0C\u5148\u6309\u76EE\u6A19\u521D\u4F30" }),
+          /* @__PURE__ */ jsx("option", { value: "unselected", children: "\u53D6\u5F97\u65B9\u5F0F\u672A\u5B9A\uFF0C\u6309\u76EE\u6A19\u521D\u4F30" }),
           /* @__PURE__ */ jsx("option", { value: "land", children: "\u9001\u51FA\u57FA\u5730\uFF08\u571F\u5730\u6350\u8D08\uFF0F\u6B77\u53F2\u5EFA\u7269\u53E6\u6838\uFF09" }),
           /* @__PURE__ */ jsx("option", { value: "cash", children: "\u5168\u90E8\u7E73\u7D0D\u5BB9\u7A4D\u4EE3\u91D1" }),
           /* @__PURE__ */ jsx("option", { value: "mixed", children: "\u9001\u51FA\u57FA\u5730\uFF0B\u4EE3\u91D1\u6DF7\u5408" })
@@ -2520,7 +2523,7 @@ function TdrApplicationPanel({
               num("share", "\u7533\u8ACB\u6301\u5206%"),
               num("unitValue", "\u516C\u544A\u73FE\u503C\u5143\uFF0F\u33A1"),
               num("year", "\u516C\u544A\u73FE\u503C\u5E74\u5EA6\uFF08\u6C11\u570B\uFF09"),
-              num("purchaseCost", "\u53D6\u5F97\u6210\u672C\u5143\uFF08\u6574\u7B46\u7533\u8ACB\u6301\u5206\u7E3D\u50F9\uFF09"),
+              financials && num("purchaseCost", "\u53D6\u5F97\u6210\u672C\u5143\uFF08\u6574\u7B46\u7533\u8ACB\u6301\u5206\u7E3D\u50F9\uFF09"),
               /* @__PURE__ */ jsxs("label", { children: [
                 /* @__PURE__ */ jsx(FieldLabel, { children: "\u958B\u95E2\u72C0\u614B" }),
                 /* @__PURE__ */ jsxs(PublicSelect, { value: p.opening, onChange: (e) => send({
@@ -2547,7 +2550,7 @@ function TdrApplicationPanel({
                   eligible: e.target.value
                 }), children: [
                   /* @__PURE__ */ jsx("option", { value: "unknown", children: "\u76EE\u6A19\u5047\u8A2D\uFF0C\u5C1A\u672A\u8B49\u5BE6" }),
-                  /* @__PURE__ */ jsx("option", { value: "yes", children: "\u4F9D\u6240\u9644\u6587\u4EF6\u7B26\u5408" }),
+                  /* @__PURE__ */ jsx("option", { value: "yes", children: "\u4F9D\u6240\u9644\u6587\u4EF6\u7B26\u5408\uFF08\u8CC7\u683C\u5F85\u67E5\u8B49\uFF09" }),
                   /* @__PURE__ */ jsx("option", { value: "no", children: "\u4E0D\u7B26\u5408\uFF0F\u505C\u7528\u672C\u7B46\uFF0C\u4E0D\u5217\u4F9B\u7D66" })
                 ] })
               ] }),
@@ -2567,32 +2570,34 @@ function TdrApplicationPanel({
         })
       ] }),
       cash && /* @__PURE__ */ jsxs("details", { open: true, children: [
-        /* @__PURE__ */ jsx("summary", { children: "\u4EE3\u91D1\u7533\u8ACB\u8207\u4F30\u50F9\u8CC7\u6599" }),
+        /* @__PURE__ */ jsx("summary", { children: financials ? "\u4EE3\u91D1\u7533\u8ACB\u8207\u4F30\u50F9\u8CC7\u6599" : "\u4EE3\u91D1\u7533\u8ACB\u5BB9\u7A4D\u8207\u8CC7\u683C" }),
         condition("cashEligibility", "\u6298\u7E73\u4EE3\u91D1\u65B9\u5F0F\u8CC7\u683C"),
-        /* @__PURE__ */ jsx("p", { children: "\u4EE3\u91D1\u91CF\u4EE5\u5BB9\u7A4D\u6A13\u5730\u677F\u33A1\u8868\u793A\uFF1B\u4EE3\u91D1\u6BD4\u4F8B\u662F\u79FB\u5165\u5BB9\u7A4D\u91CF\u6BD4\u4F8B\u3002\u4F30\u50F9\u9808\u4E3B\u7BA1\u6A5F\u95DC\u59D4\u8A17\u4E09\u5BB6\u4EE5\u4E0A\u5C08\u696D\u4F30\u50F9\u8005\u67E5\u4F30\u8A55\u5B9A\uFF0C\u4E0D\u7528\u9001\u51FA\u5730\u516C\u544A\u73FE\u503C\u6BD4\u63DB\u7B97\u4EE3\u91D1\u3002\u898F\u5283\u55AE\u50F9\u53EF\u5148\u4F30\uFF0C\u4F46\u4E0D\u6A19\u70BA\u6838\u5B9A\u3002" }),
+        /* @__PURE__ */ jsx("p", { children: "\u4EE3\u91D1\u91CF\u4EE5\u5BB9\u7A4D\u6A13\u5730\u677F\u33A1\u8868\u793A\uFF1B\u4EE3\u91D1\u6BD4\u4F8B\u662F\u79FB\u5165\u5BB9\u7A4D\u91CF\u6BD4\u4F8B\u3002\u4F30\u50F9\u9808\u4E3B\u7BA1\u6A5F\u95DC\u59D4\u8A17\u4E09\u5BB6\u4EE5\u4E0A\u5C08\u696D\u4F30\u50F9\u8005\u67E5\u4F30\u8A55\u5B9A\uFF0C\u4E0D\u7528\u9001\u51FA\u5730\u516C\u544A\u73FE\u503C\u6BD4\u63DB\u7B97\u4EE3\u91D1\u3002\u898F\u5283\u55AE\u50F9\u5217\u70BA\u4F30\u7B97\uFF0C\u6838\u5B9A\u55AE\u50F9\u4F9D\u8A55\u5B9A\u6587\u4EF6\u8A18\u9304\u3002" }),
         /* @__PURE__ */ jsxs("div", { className: "planning-field-grid", children: [
           number("cashSqm", "\u4EE3\u91D1\u7533\u8ACB\u5BB9\u7A4D\u33A1\uFF08\u4F9D\u4F9B\u7D66\u91CF\u8A08\u7B97\u6642\u4F7F\u7528\uFF09"),
-          number("valuationUnitPrice", "\u6BCF\u5BB9\u7A4D\u33A1\u4EE3\u91D1\u4F30\u50F9\u5143"),
-          /* @__PURE__ */ jsxs("label", { children: [
-            /* @__PURE__ */ jsx(FieldLabel, { children: "\u4F30\u50F9\u72C0\u614B" }),
-            /* @__PURE__ */ jsxs(PublicSelect, { value: t.valuationStatus, onChange: (e) => edit({
-              valuationStatus: e.target.value
-            }), children: [
-              /* @__PURE__ */ jsx("option", { value: "assumed", children: "\u898F\u5283\u5047\u8A2D\uFF0C\u975E\u6B63\u5F0F\u4F30\u50F9" }),
-              /* @__PURE__ */ jsx("option", { value: "approved", children: "\u5DF2\u9644\u4E3B\u7BA1\u6A5F\u95DC\u8A55\u5B9A\u6587\u4EF6" })
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxs("label", { children: [
-            /* @__PURE__ */ jsx(FieldLabel, { children: "\u4F30\u50F9\uFF0F\u6838\u5B9A\u65E5\u671F" }),
-            /* @__PURE__ */ jsx("input", { type: "date", value: t.valuationDate, onChange: (e) => edit({
-              valuationDate: e.target.value
-            }) })
-          ] }),
-          number("appraisalFee", "\u4F30\u50F9\u53CA\u5354\u6AA2\u8CBB\u5143"),
-          number("otherFee", "\u5176\u4ED6\u7533\u8ACB\u898F\u8CBB\u5143"),
-          number("paidAmount", "\u5DF2\u7E73\uFF0F\u9810\u7E73\u4EE3\u91D1\u5143")
+          financials && /* @__PURE__ */ jsxs(Fragment, { children: [
+            number("valuationUnitPrice", "\u6BCF\u5BB9\u7A4D\u33A1\u4EE3\u91D1\u4F30\u50F9\u5143"),
+            /* @__PURE__ */ jsxs("label", { children: [
+              /* @__PURE__ */ jsx(FieldLabel, { children: "\u4F30\u50F9\u72C0\u614B" }),
+              /* @__PURE__ */ jsxs(PublicSelect, { value: t.valuationStatus, onChange: (e) => edit({
+                valuationStatus: e.target.value
+              }), children: [
+                /* @__PURE__ */ jsx("option", { value: "assumed", children: "\u898F\u5283\u5047\u8A2D\uFF0C\u975E\u6B63\u5F0F\u4F30\u50F9" }),
+                /* @__PURE__ */ jsx("option", { value: "approved", children: "\u5DF2\u9644\u4E3B\u7BA1\u6A5F\u95DC\u8A55\u5B9A\u6587\u4EF6" })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxs("label", { children: [
+              /* @__PURE__ */ jsx(FieldLabel, { children: "\u4F30\u50F9\uFF0F\u6838\u5B9A\u65E5\u671F" }),
+              /* @__PURE__ */ jsx("input", { type: "date", value: t.valuationDate, onChange: (e) => edit({
+                valuationDate: e.target.value
+              }) })
+            ] }),
+            number("appraisalFee", "\u4F30\u50F9\u53CA\u5354\u6AA2\u8CBB\u5143"),
+            number("otherFee", "\u5176\u4ED6\u7533\u8ACB\u898F\u8CBB\u5143"),
+            number("paidAmount", "\u5DF2\u7E73\uFF0F\u9810\u7E73\u4EE3\u91D1\u5143")
+          ] })
         ] }),
-        /* @__PURE__ */ jsxs("label", { children: [
+        financials && /* @__PURE__ */ jsxs("label", { children: [
           /* @__PURE__ */ jsx(FieldLabel, { children: "\u4F30\u50F9\u3001\u8A55\u5B9A\u53CA\u7E73\u6B3E\u4F86\u6E90" }),
           /* @__PURE__ */ jsx("textarea", { value: t.valuationSource, onChange: (e) => edit({
             valuationSource: e.target.value
@@ -2600,7 +2605,7 @@ function TdrApplicationPanel({
         ] }),
         /* @__PURE__ */ jsx("p", { children: t.city === "ntpc" ? "\u65B0\u5317\uFF1A\u66F8\u9762\uFF0F\u91CF\u9AD4\u5BE9\u67E5\u5F8C\u8FA6\u7406\u4F30\u50F9\uFF1B\u901A\u77E5\u7E73\u7D0D\u6216\u9810\u7E73\u4E26\u4F9D\u898F\u5B9A\u627E\u88DC\uFF0C\u5E02\u5E9C\u78BA\u8A8D\u5F8C\u6838\u767C\u8A31\u53EF\u3002" : "\u81FA\u5317\uFF1A\u7DDA\u4E0A\u53CA\u66F8\u9762\u7533\u8ACB\u3001\u5EFA\u7BC9\u8A08\u756B\u90FD\u5BE9\uFF0F\u6838\u5B9A\uFF0C\u4F9D\u4EE3\u91D1\u4F30\u50F9\u3001\u7E73\u6B3E\u53CA\u8A31\u53EF\u7A0B\u5E8F\uFF1B\u90FD\u66F4\u4F75\u8B8A\u66F4\u90FD\u8A08\u8207\u5FEB\u901F\u8ACB\u7167\u53E6\u6709\u6D41\u7A0B\u3002" })
       ] }),
-      t.method === "unselected" && /* @__PURE__ */ jsx("p", { children: "\u8ACB\u9078\u64C7\u6350\u8D08\u3001\u4EE3\u91D1\u6216\u6DF7\u5408\u65B9\u5F0F\uFF1B\u7559\u767D\u6642\u4F9D\u76EE\u6A19\u4F30\u7B97\u3002" })
+      t.method === "unselected" && /* @__PURE__ */ jsx("p", { children: "\u5BB9\u79FB\u53D6\u5F97\u65B9\u5F0F\u5C1A\u672A\u6307\u5B9A\uFF0C\u66AB\u4F9D\u76EE\u6A19\u91CF\u4F30\u7B97\uFF1B\u6350\u8D08\u3001\u4EE3\u91D1\u6216\u6DF7\u5408\u4F86\u6E90\u5F85\u78BA\u8A8D\u3002" })
     ] }),
     t.quantityBasis === "permitted" && /* @__PURE__ */ jsxs("label", { children: [
       /* @__PURE__ */ jsx(FieldLabel, { children: "\u65E2\u6709\u8A31\u53EF\u6587\u4EF6\u78BA\u8A8D" }),
@@ -2614,7 +2619,7 @@ function TdrApplicationPanel({
     r && /* @__PURE__ */ jsxs("details", { children: [
       /* @__PURE__ */ jsx("summary", { children: "\u5BB9\u79FB\u63DB\u7B97\u8207\u8CC7\u683C\u6AA2\u6838\u660E\u7D30" }),
       /* @__PURE__ */ jsx("div", { className: "burden-table basement-audit-table", dangerouslySetInnerHTML: {
-        __html: publicText(renderTdrApplication(t, r)).replaceAll("\u53D6\u5F97\u65B9\u5F0F\u5C1A\u672A\u9078\u5B9A\u3002", "\u53D6\u5F97\u65B9\u5F0F\u5C1A\u672A\u9078\u5B9A\u3002").replaceAll("unselected", "\u672A\u9078\u5B9A").replaceAll("assumed", "\u898F\u5283\u5047\u8A2D").replaceAll("\u6210\u672C\u4E0D\u81EA\u52D5\u5012\u586B\u81F3\u5176\u4ED6\u6A21\u7D44\uFF0C\u907F\u514D\u91CD\u8907\u5217\u5E33\u3002", "")
+        __html: publicText(renderTdrApplication(t, r, financials)).replaceAll("\u53D6\u5F97\u65B9\u5F0F\u5C1A\u672A\u9078\u5B9A\u3002", "\u53D6\u5F97\u65B9\u5F0F\u5C1A\u672A\u9078\u5B9A\u3002").replaceAll("unselected", "\u672A\u9078\u5B9A").replaceAll("assumed", "\u898F\u5283\u5047\u8A2D").replaceAll("\u6210\u672C\u4E0D\u81EA\u52D5\u5012\u586B\u81F3\u5176\u4ED6\u6A21\u7D44\uFF0C\u907F\u514D\u91CD\u8907\u5217\u5E33\u3002", "")
       } })
     ] }),
     /* @__PURE__ */ jsxs("p", { children: [
@@ -2631,12 +2636,13 @@ function isPermittedAward(x) {
   const a = x;
   return ["renewal", "danger"].includes(a.route) && ["baseSqm", "awardSqm", "approvedAt", "source"].every((k) => typeof a[k] === "string");
 }
-function reviewPermittedAward(a, route, base) {
+function reviewPermittedAward(a, route, base, referenceDate = (/* @__PURE__ */ new Date()).toLocaleDateString("sv-SE", { timeZone: "Asia/Taipei" })) {
   const errors = [];
   if (!a || !isPermittedAward(a)) return { errors: ["\u65E2\u6709\u6838\u51C6\u734E\u52F5\u8CC7\u6599\u4E0D\u5B8C\u6574"], percent: 0 };
   if (a.route !== route) errors.push("\u65E2\u6709\u6838\u51C6\u734E\u52F5\u8207\u6240\u9078\u91CD\u5EFA\u8DEF\u5F91\u4E0D\u4E00\u81F4");
   if (!a.source.trim() || !/^\d{4}-\d{2}-\d{2}$/.test(a.approvedAt) || !Number.isFinite(Date.parse(a.approvedAt))) errors.push("\u65E2\u6709\u6838\u51C6\u734E\u52F5\u9808\u586B\u6838\u51C6\u65E5\u671F\u53CA\u6587\u4EF6\u4F86\u6E90");
   if (Number.isFinite(Date.parse(a.approvedAt)) && new Date(a.approvedAt).toISOString().slice(0, 10) !== a.approvedAt) errors.push("\u734E\u52F5\u6838\u51C6\u65E5\u671F\u4E0D\u5B58\u5728");
+  if (a.approvedAt > referenceDate || a.approvedAt > (/* @__PURE__ */ new Date()).toLocaleDateString("sv-SE", { timeZone: "Asia/Taipei" })) errors.push("\u734E\u52F5\u6838\u51C6\u65E5\u671F\u4E0D\u5F97\u665A\u65BC\u672C\u6B21\u8A55\u4F30\u65E5\u671F\u6216\u76EE\u524D\u65E5\u671F");
   const approvedBase = Number(a.baseSqm), amount = Number(a.awardSqm);
   if (!a.baseSqm.trim() || !a.awardSqm.trim() || !Number.isFinite(approvedBase) || approvedBase <= 0 || !Number.isFinite(amount) || amount < 0) errors.push("\u6838\u51C6\u57FA\u6E96\u5BB9\u7A4D\u8207\u734E\u52F5\u9762\u7A4D\u9808\u70BA\u6709\u6548\u6578\u503C");
   if (Math.abs(approvedBase - base) > 0.01) errors.push("\u57FA\u5730\u6216\u57FA\u6E96\u5BB9\u7A4D\u5DF2\u8B8A\u66F4\uFF0C\u8207\u65E2\u6709\u734E\u52F5\u6838\u51C6\u57FA\u6E96\u4E0D\u4E00\u81F4\uFF0C\u9808\u91CD\u65B0\u6838\u5C0D\u6587\u4EF6");
@@ -2817,7 +2823,7 @@ function isRegulatoryReview(x) {
   return [REGULATORY_REVIEW_VERSION, "planning-law.2026-10-19.v2"].includes(p.version) && ["renewalLimitPercent", "tdrLimitPercent", "totalBonusLimitPercent", "tdrBasePoints", "tdrInternalPoints", "tdrExternalPoints", "cashTdrPercent", "bonusSource", "bicycleSource", "ordinaryCommonPercent", "ordinaryCommonSource"].every((k) => typeof p[k] === "string") && typeof p.renewalArea === "boolean" && ["counted", "documented"].includes(p.bicycleExemption) && ["statutory_assumption", "counted"].includes(p.motorcycleExemption) && ["loading", "other"].includes(p.communityUse) && ["counted", "parking"].includes(p.spareUse);
 }
 function resolveBonusLimits(p, rates, context) {
-  const roadReview = reviewSiteRoad(context?.roadConditions);
+  const roadReview = reviewSiteRoad(context?.roadConditions, p.bonusAssessment?.date);
   const notes = [...roadReview.notes], errors = [...roadReview.errors];
   const a = p.bonusAssessment, waivePoints = a?.tdrProfile === "special50" && (a.tdrApplication?.city ?? (context?.district ? inferTdrCity(context.district) : "ntpc")) === "ntpc", assessment = a && context && isBonusAssessment(a) ? assessBonuses(a.awardBasis === "permitted" ? { ...a, renewalMode: "quick", dangerMode: "quick" } : a, context, Number(p.cashTdrPercent) || 0, p.renewalArea) : void 0;
   if (a && assessment) {
@@ -2867,7 +2873,7 @@ function resolveBonusLimits(p, rates, context) {
   let renewal = Math.min(rates.renewal, renewalLimit), tdr2 = Math.min(rates.tdr, tdrLimit, points ?? Infinity), scale = rates.scale, danger2 = rates.danger;
   if (renewal < rates.renewal) notes.push(`\u90FD\u66F4\u76EE\u6A19${rates.renewal}%\u8D85\u904E\u672C\u6B21\u8DEF\u5F91\u4E0A\u9650\uFF0C\u66AB\u63A1${renewal}%\uFF0C\u4E0D\u4EE5\u8D85\u984D\u76EE\u6A19\u64F4\u5F35\u5BB9\u7A4D\u3002`);
   if (tdr2 < rates.tdr) notes.push(`\u5BB9\u79FB\u76EE\u6A19${rates.tdr}%\u53D7\u4E0A\u9650\uFF0F\u8A55\u9EDE\u9650\u5236\uFF0C\u66AB\u63A1${tdr2.toFixed(4)}%\u3002`);
-  const permitted = a?.awardBasis === "permitted" ? reviewPermittedAward(a.permittedAward, a.route, (context?.site ?? 0) * (context?.far ?? 0) / 100) : void 0;
+  const permitted = a?.awardBasis === "permitted" ? reviewPermittedAward(a.permittedAward, a.route, (context?.site ?? 0) * (context?.far ?? 0) / 100, a.date) : void 0;
   if (permitted) {
     errors.push(...permitted.errors);
     renewal = a.route === "renewal" ? permitted.percent : 0;
@@ -2944,7 +2950,8 @@ function reviewBasementVolume(p, v, aboveEquipmentExempt, equipmentCap, context)
 import { Fragment as Fragment2, jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
 function BonusAssessmentPanel({
   input,
-  edit
+  edit,
+  financials = true
 }) {
   const p = input.regulatoryReview ?? defaultRegulatoryReview(), a = p.bonusAssessment ?? newBonusAssessment(Number(input.danger) > 0), c = {
     site: Number(input.site),
@@ -3002,13 +3009,13 @@ function BonusAssessmentPanel({
       /* @__PURE__ */ jsx2("option", { value: "detail", children: "\u7D30\u9805\u8A55\u5B9A\uFF1A\u9078\u689D\u4EF6\u52A0\u7E3D" })
     ] })
   ] });
-  const items = (groups) => /* @__PURE__ */ jsx2("div", { className: "bonus-item-list", children: bonusItems.filter((d) => groups.includes(d.group)).map((d) => {
+  const items = (groups) => /* @__PURE__ */ jsx2("div", { className: "bonus-item-list", children: bonusItems.filter((d) => groups.includes(d.group) && (financials || d.formula !== "donation")).map((d) => {
     const e = a.entries[d.id], r = summary.rows.find((x) => x.id === d.id);
     return /* @__PURE__ */ jsxs2("details", { className: "bonus-item", children: [
       /* @__PURE__ */ jsxs2("summary", { children: [
         d.label,
         " \xB7 ",
-        r.selected ? `${f7(r.value)}% \xB7 ${r.status.replaceAll("", "")}` : "\u672A\u9078\u53D6"
+        r.selected ? `${f7(r.value)}% \xB7 ${r.status}` : "\u672A\u9078\u53D6"
       ] }),
       /* @__PURE__ */ jsxs2("p", { children: [
         d.condition,
@@ -3058,7 +3065,7 @@ function BonusAssessmentPanel({
             status: x.target.value
           }), children: [
             /* @__PURE__ */ jsx2("option", { value: "assumed", children: "\u76EE\u6A19\u5047\u8A2D" }),
-            /* @__PURE__ */ jsx2("option", { value: "verified", children: "\u5DF2\u9644\u8986\u6838\u4F86\u6E90" }),
+            /* @__PURE__ */ jsx2("option", { value: "verified", children: "\u5DF2\u9644\u8986\u6838\u4F86\u6E90\uFF08\u898F\u5283\u5047\u8A2D\uFF09" }),
             /* @__PURE__ */ jsx2("option", { value: "excluded", children: "\u5DF2\u77E5\u4E0D\u9069\u7528\uFF0C\u4E0D\u53D6\u5206" })
           ] })
         ] }),
@@ -3078,7 +3085,7 @@ function BonusAssessmentPanel({
       [k]: e.target.value
     }), children: [
       /* @__PURE__ */ jsx2("option", { value: "unknown", children: "\u5C1A\u7F3A\u8B49\u660E\uFF1A\u660E\u793A\u5047\u8A2D\u7E7C\u7E8C\u521D\u4F30" }),
-      /* @__PURE__ */ jsx2("option", { value: "yes", children: "\u4F9D\u6240\u9644\u4F86\u6E90\u8986\u6838\u7B26\u5408" }),
+      /* @__PURE__ */ jsx2("option", { value: "yes", children: "\u4F9D\u6240\u9644\u4F86\u6E90\u8986\u6838\u7B26\u5408\uFF08\u898F\u5283\u5047\u8A2D\uFF09" }),
       /* @__PURE__ */ jsx2("option", { value: "no", children: "\u5DF2\u77E5\u4E0D\u9069\u7528\uFF1A\u672C\u9805\u63A10" })
     ] })
   ] });
@@ -3158,26 +3165,29 @@ function BonusAssessmentPanel({
       /* @__PURE__ */ jsx2(PublicNumber2, { "aria-label": label, type: "number", min: "0", step: "any", disabled: m !== "quick" || !active || permitted && key !== "tdr", value: input[key], onChange: (e) => change({}, {
         [key]: e.target.value
       }) }),
-      /* @__PURE__ */ jsx2("small", { children: permitted && key !== "tdr" ? "\u4F9D\u6838\u51C6\u6587\u4EF6\u9762\u7A4D\u63A1\u8A08\uFF0C\u5FEB\u901F\u503C\u4FDD\u7559" : !active ? "\u6B64\u8DEF\u5F91\u672A\u63A1\u7528\uFF0C\u672C\u6B21\u4E0D\u52A0\u7E3D" : m === "detail" ? "\u76EE\u524D\u7531\u7D30\u9805\u52A0\u7E3D\uFF1B\u5FEB\u901F\u503C\u4FDD\u7559" : "\u898F\u5283\u76EE\u6A19" })
+      /* @__PURE__ */ jsx2("small", { children: permitted && key !== "tdr" ? "\u4F9D\u6838\u51C6\u6587\u4EF6\u9762\u7A4D\u63A1\u8A08\uFF0C\u5FEB\u901F\u503C\u4FDD\u7559" : !active ? "\u6B64\u8DEF\u5F91\u672A\u63A1\u7528\uFF0C\u672C\u6B21\u4E0D\u52A0\u7E3D" : m === "detail" ? "\u76EE\u524D\u7531\u7D30\u9805\u52A0\u7E3D\uFF1B\u5FEB\u901F\u503C\u4FDD\u7559" : "\u898F\u5283\u76EE\u6A19\uFF08\u8CC7\u683C\u5F85\u67E5\u8B49\uFF09" })
     ] }, key)) }),
-    /* @__PURE__ */ jsx2("p", { children: /* @__PURE__ */ jsxs2("strong", { children: [
-      "\u672C\u6B21\u63A1\u7528\uFF1A\u90FD\u66F4 ",
-      f7(effective.renewal),
-      "%\uFF08",
-      f7(base * effective.renewal / 100),
-      "\u33A1\uFF09\uFF0B\u5BB9\u79FB ",
-      f7(effective.tdr),
-      "%\uFF08",
-      f7(base * effective.tdr / 100),
-      "\u33A1\uFF09\uFF0B\u5371\u8001 ",
-      f7(effective.danger),
-      "%\uFF08",
-      f7(base * effective.danger / 100),
-      "\u33A1\uFF09\u3002"
-    ] }) }),
+    /* @__PURE__ */ jsxs2("p", { children: [
+      /* @__PURE__ */ jsxs2("strong", { children: [
+        "\u672C\u6B21\u63A1\u7528\uFF1A\u90FD\u66F4 ",
+        f7(effective.renewal),
+        "%\uFF08",
+        f7(base * effective.renewal / 100),
+        "\u33A1\uFF09\uFF0B\u5BB9\u79FB ",
+        f7(effective.tdr),
+        "%\uFF08",
+        f7(base * effective.tdr / 100),
+        "\u33A1\uFF09\uFF0B\u5371\u8001 ",
+        f7(effective.danger),
+        "%\uFF08",
+        f7(base * effective.danger / 100),
+        "\u33A1\uFF09\u3002"
+      ] }),
+      "\u90FD\u66F4\u984D\u5EA6\u4F9D\u8CC7\u683C\u8207\u6838\u5B9A\u6587\u4EF6\u78BA\u8A8D\u3002"
+    ] }),
     /* @__PURE__ */ jsxs2("details", { className: "le-advanced", children: [
       /* @__PURE__ */ jsx2("summary", { children: "\u5BB9\u79FB\u53D6\u5F97\u689D\u4EF6\u8207\u8CC7\u683C\u6AA2\u6838" }),
-      /* @__PURE__ */ jsx2(TdrApplicationPanel, { roadConditions: input.roadConditions, assessment: a, district: c.district ?? "", review: effective.application, change })
+      /* @__PURE__ */ jsx2(TdrApplicationPanel, { roadConditions: input.roadConditions, assessment: a, district: c.district ?? "", review: effective.application, change, financials })
     ] }),
     /* @__PURE__ */ jsxs2("details", { open: a.renewalMode === "detail", children: [
       /* @__PURE__ */ jsx2("summary", { children: "\u90FD\u66F4\u7D30\u9805\uFF1A\u4E2D\u592E\u734E\u52F5\uFF0B\u65B0\u5317\u5730\u65B9\u734E\u52F5" }),
@@ -3195,6 +3205,7 @@ function BonusAssessmentPanel({
       qualification("renewalQualification", "\u90FD\u66F4\u9069\u7528\u8CC7\u683C"),
       /* @__PURE__ */ jsx2("p", { children: "\u9700\u78BA\u8A8D\u4E8B\u696D\u8A08\u756B\u7BC4\u570D\u3001\u5408\u6CD5\u539F\u5EFA\u7269\u8207\u5BB9\u7A4D\u3001\u66F4\u65B0\u65B9\u5F0F\u53CA\u5404\u9805\u76EE\u689D\u4EF6\u3002\u4E2D\u592E\u734E\u52F5\u3001\u5730\u65B9\u734E\u52F5\u8207\u571F\u7BA1\uFF0F\u5176\u4ED6\u734E\u52F5\u4E0D\u5F97\u91CD\u8907\uFF1B\u7279\u6B8A\u539F\u5BB9\u7A4D\u3001\u9AD8\u6C2F\u6216\u8010\u9707\u5371\u96AA\u53CA\u7B56\u7565\u6027\u4E0A\u9650\u4E0D\u7531\u672C\u4E00\u822C\u8868\u81EA\u52D5\u8A8D\u5B9A\u3002" }),
       items(tdrCity === "ntpc" ? ["central", "local"] : ["central"]),
+      !financials && /* @__PURE__ */ jsx2("p", { children: "\u6350\u8D08\u57FA\u91D1\u734E\u52F5\u7684\u91D1\u984D\u8207\u8CBB\u7528\u65BC App \u8A66\u7B97\uFF1B\u65E2\u6709\u6838\u5B9A\u984D\u5EA6\u4F9D\u6587\u4EF6\u5C0D\u7167\u3002" }),
       /* @__PURE__ */ jsxs2("label", { children: [
         /* @__PURE__ */ jsx2(FieldLabel2, { children: "\u540C\u4E00\u4E8B\u9805\u91CD\u8907\u734E\u52F5\u6263\u9664\uFF08\u57FA\u6E96\u5BB9\u7A4D%\uFF09" }),
         /* @__PURE__ */ jsx2(PublicNumber2, { type: "number", min: "0", value: a.deduction, onChange: (e) => change({
@@ -3212,7 +3223,7 @@ function BonusAssessmentPanel({
     tdrCity === "ntpc" && /* @__PURE__ */ jsxs2("details", { open: a.tdrMode === "detail", children: [
       /* @__PURE__ */ jsx2("summary", { children: "\u5BB9\u79FB\u7D30\u9805\uFF1A\u57FA\u6E96\u91CF\u3001\u5167\u90E8\u689D\u4EF6\u3001\u5916\u90E8\u6539\u5584" }),
       qualification("tdrQualification", "\u63A5\u53D7\u57FA\u5730\u3001\u9053\u8DEF\u53CA\u79FB\u5165\u8CC7\u683C"),
-      /* @__PURE__ */ jsx2("p", { children: "\u61C9\u6838\u5C0D\u7981\u9650\u5206\u5340\u3001\u6BD7\u9130\u6587\u8CC7\u3001\u820A\u5EFA\u7167\uFF0F\u571F\u7BA1\u7981\u6B62\u3001\u57FA\u5730\u2265500\u33A1\u3001\u540C\u4E00\u8DEF\u6BB5\u9762\u5BEC\u53CA\u8DB3\u5BEC\u958B\u95E2\u9053\u8DEF\u3001\u66F4\u65B0\u55AE\u5143\u6216\u7279\u6B8A\u91CD\u5EFA\u4F8B\u5916\u3001\u9001\u51FA\u5730\u540C\u610F\uFF0F\u6B0A\u5229\u6E05\u7406\u6216\u4EE3\u91D1\u3002" }),
+      /* @__PURE__ */ jsx2("p", { children: "\u61C9\u6838\u5C0D\u7981\u9650\u5206\u5340\u3001\u6BD7\u9130\u6587\u8CC7\u3001\u820A\u5EFA\u7167\uFF0F\u571F\u7BA1\u7981\u6B62\u3001\u57FA\u5730\u2265500\u33A1\u3001\u540C\u4E00\u8DEF\u6BB5\u9762\u5BEC\u53CA\u8DB3\u5BEC\u958B\u95E2\u9053\u8DEF\u3001\u66F4\u65B0\u55AE\u5143\u6216\u7279\u6B8A\u91CD\u5EFA\u4F8B\u5916\u3001\u9001\u51FA\u5730\u540C\u610F\uFF0F\u6B0A\u5229\u6E05\u7406\u6216\u4EE3\u91D1\u3002\u672C\u6B21\u4E0A\u9650\u8DEF\u5F91\u63A1\u898F\u5283\u5047\u8A2D\uFF0C\u8CC7\u683C\u5F85\u6838\u5C0D\u3002" }),
       /* @__PURE__ */ jsx2("div", { className: "planning-field-grid", children: /* @__PURE__ */ jsxs2("label", { children: [
         /* @__PURE__ */ jsx2(FieldLabel2, { children: "\u5BB9\u79FB\u4E0A\u9650\u8DEF\u5F91" }),
         /* @__PURE__ */ jsxs2(PublicSelect2, { value: a.tdrProfile, onChange: (e) => change({
@@ -3262,7 +3273,7 @@ function BonusAssessmentPanel({
     /* @__PURE__ */ jsxs2("details", { open: a.dangerMode === "detail", children: [
       /* @__PURE__ */ jsx2("summary", { children: "\u5371\u8001\u7D30\u9805\uFF1A\u8CC7\u683C\u3001\u6838\u5FC3\u734E\u52F5\u3001\u6642\u7A0B\u53CA\u898F\u6A21" }),
       qualification("dangerQualification", "\u5371\u8001\u6CD5\u5B9A\u9069\u7528\u8CC7\u683C"),
-      /* @__PURE__ */ jsx2("p", { children: "\u90FD\u5E02\u8A08\u756B\u5167\u5408\u6CD5\u5EFA\u7BC9\uFF0C\u975E\u6307\u5B9A\u6B77\u53F2\u6587\u5316\u7B49\u50F9\u503C\uFF0C\u7B26\u5408\u5371\u8001\u689D\u4F8B\u7B2C3\u689D\u5371\u96AA\uFF0F\u8010\u9707\u689D\u4EF6\uFF0C\u4E26\u53D6\u5F97\u5168\u9AD4\u571F\u5730\u53CA\u5408\u6CD5\u5EFA\u7269\u6240\u6709\u6B0A\u4EBA\u540C\u610F\u3002\u7533\u8ACB\u671F\u9650\u73FE\u884C\u70BA2027-05-31\uFF1B\u4E00\u822C\u6838\u5FC3\u4E0A\u9650\u70BA\u57FA\u6E96130%\u6216\u5408\u6CD5\u539F\u5BB9\u7A4D115%\uFF0C\u6642\u7A0B\u53CA\u898F\u6A21\u5408\u8A08\u53E6\u965010%\u3002\u672C\u8868\u4F9D\u734E\u52F5\u7D30\u9805\u52A0\u7E3D\uFF1B\u542B\u9130\u5730\u6216\u90E8\u5206\u5408\u683C\u57FA\u5730\u6642\uFF0C\u4F9D\u53EF\u734E\u52F5\u57FA\u5730\u6BD4\u4F8B\u53CA\u4E00\u822C30%\u6838\u5FC3\u4E0A\u9650\u8A08\u7B97\u3002" }),
+      /* @__PURE__ */ jsx2("p", { children: "\u90FD\u5E02\u8A08\u756B\u5167\u5408\u6CD5\u5EFA\u7BC9\uFF0C\u975E\u6307\u5B9A\u6B77\u53F2\u6587\u5316\u7B49\u50F9\u503C\uFF0C\u7B26\u5408\u5371\u8001\u689D\u4F8B\u7B2C3\u689D\u5371\u96AA\uFF0F\u8010\u9707\u689D\u4EF6\uFF0C\u4E26\u53D6\u5F97\u5168\u9AD4\u571F\u5730\u53CA\u5408\u6CD5\u5EFA\u7269\u6240\u6709\u6B0A\u4EBA\u540C\u610F\u3002\u7533\u8ACB\u671F\u9650\u73FE\u884C\u70BA2027-05-31\uFF1B\u5371\u8001\u8CC7\u683C\u53E6\u4F9D\u7D50\u69CB\u8A55\u4F30\u53CA\u9069\u7528\u6587\u4EF6\u78BA\u8A8D\u3002\u4E00\u822C\u6838\u5FC3\u4E0A\u9650\u70BA\u57FA\u6E96130%\u6216\u5408\u6CD5\u539F\u5BB9\u7A4D115%\uFF0C\u6642\u7A0B\u53CA\u898F\u6A21\u5408\u8A08\u53E6\u965010%\u3002\u672C\u8868\u63A1\u734E\u52F5\u7D30\u9805\u52A0\u7E3D\uFF1B\u539F\u5BB9\u7A4D\u66FF\u4EE3\u8DEF\u5F91\u5C1A\u672A\u652F\u63F4\u3002\u542B\u9130\u5730\u6216\u90E8\u5206\u5408\u683C\u57FA\u5730\u6642\uFF0C\u4F9D\u53EF\u734E\u52F5\u57FA\u5730\u6BD4\u4F8B\u53CA\u4E00\u822C30%\u6838\u5FC3\u4E0A\u9650\u8A08\u7B97\u3002" }),
       /* @__PURE__ */ jsxs2("div", { className: "planning-field-grid", children: [
         /* @__PURE__ */ jsxs2("label", { children: [
           /* @__PURE__ */ jsx2(FieldLabel2, { children: "\u7B26\u5408\u689D\u4EF6\u7684\u5408\u6CD5\u539F\u5EFA\u7BC9\u5BB9\u7A4D\u33A1\uFF08\u5168\u5408\u683C\u539F\u57FA\u5730\u624D\u6838\u8F03\u9AD8\u4E0A\u9650\uFF09" }),
@@ -3873,7 +3884,7 @@ function BasementDemandPanel({
         "\u672C\u6B21\u958B\u6316\u7387\u4E0A\u9650",
         f(limit?.cap ?? 0),
         "%\u3002",
-        d.rule === "nangang_general" ? "\u9069\u7528\u5357\u6E2F\u4E00\u822C\u91CD\u5EFA\u3002" : "\u4F9D\u6240\u9078\u91CD\u5EFA\u8CC7\u683C\u3001\u5206\u5340\u8207\u57FA\u5730\u898F\u6A21\u6AA2\u8A0E\u3002",
+        d.rule === "nangang_general" ? "\u9069\u7528\u5357\u6E2F\u4E00\u822C\u91CD\u5EFA\u689D\u4EF6\uFF1B\u90FD\u66F4\u3001\u5371\u8001\u8CC7\u683C\u53E6\u6838\u3002" : "\u4F9D\u6240\u9078\u91CD\u5EFA\u8CC7\u683C\u3001\u5206\u5340\u8207\u57FA\u5730\u898F\u6A21\u6AA2\u8A0E\u3002",
         "\u500B\u5225\u90FD\u5E02\u8A08\u756B\u512A\u5148\uFF0C\u5C71\u5761\u5730\u6216\u653E\u5BEC\u6838\u51C6\u53E6\u6838\u3002",
         /* @__PURE__ */ jsx3("a", { href: "https://laws.gov.taipei/law/File/0000336021", children: "\u5357\u6E2F\u958B\u6316\u898F\u5247" }),
         /* @__PURE__ */ jsx3("span", { className: "sr-only", children: NANGANG_EXCAVATION_SOURCE })
@@ -3908,7 +3919,7 @@ function BasementDemandPanel({
       ] }),
       /* @__PURE__ */ jsxs3("details", { children: [
         /* @__PURE__ */ jsx3("summary", { children: "\u8A2D\u5099\u3001\u52D5\u7DDA\u8207\u641C\u5C0B\u7BC4\u570D" }),
-        /* @__PURE__ */ jsx3("p", { children: "\u4F9D\u6838\u5FC3\u3001\u8A2D\u5099\u623F\u8207\u8A2D\u5099\u5C3A\u5BF8\u9810\u7559\u5404\u5C64\u9762\u7A4D\u3002\u5347\u964D\u6A5F\u65B9\u6848\u9808\u53E6\u7559\u5730\u9762\u7121\u969C\u7919\u8ECA\u4F4D\u53CA\u9023\u7E8C\u901A\u8DEF\uFF1B\u6A5F\u68B0\u5C64\u9AD8\u4F9D\u6240\u9078\u8A2D\u5099\u9AD8\u5EA6\u3001\u6881\u53CA\u6A5F\u5751\u689D\u4EF6\u6AA2\u67E5\u3002" }),
+        /* @__PURE__ */ jsx3("p", { children: "\u5404\u5C64\u6838\u5FC3\u3001\u8A2D\u5099\u623F\u53CA\u8A2D\u5099\u5C3A\u5BF8\u63A1\u898F\u5283\u9810\u7559\u3002\u5347\u964D\u6A5F\u65B9\u6848\u9808\u53E6\u7559\u5730\u9762\u7121\u969C\u7919\u8ECA\u4F4D\u53CA\u9023\u7E8C\u901A\u8DEF\uFF1B\u6A5F\u68B0\u5C64\u9AD8\u4F9D\u6240\u9078\u8A2D\u5099\u9AD8\u5EA6\u3001\u6881\u53CA\u6A5F\u5751\u689D\u4EF6\u6AA2\u67E5\u3002" }),
         /* @__PURE__ */ jsxs3("div", { className: "planning-field-grid", children: [
           /* @__PURE__ */ jsxs3("label", { children: [
             /* @__PURE__ */ jsx3(FieldLabel3, { children: "\u5730\u4E0B\u5C64\u6578\u641C\u5C0B\u4E0A\u9650" }),
@@ -3938,7 +3949,7 @@ function BasementDemandPanel({
           ] })
         ] }),
         /* @__PURE__ */ jsxs3("p", { children: [
-          "\u641C\u5C0B\u5C64\u6578\u53EF\u4F9D\u5730\u8CEA\u3001\u5730\u4E0B\u7BA1\u7DDA\u3001\u9130\u623F\u53CA\u65BD\u5DE5\u689D\u4EF6\u8ABF\u6574\u3002\u8A2D\u5099\u623F\u7531B1\u8D77\u5217\uFF0C\u8D85\u904E\u8868\u5217\u5C64\u6578\u6CBF\u7528\u672B\u9805\uFF1B\u53EF\u4F9D\u8A2D\u5099\u9700\u6C42\u4FEE\u6B63\u3002\u672C\u6B21\u8F09\u4EBA\u96FB\u68AF",
+          "\u5C64\u6578\u70BA\u641C\u5C0B\u7BC4\u570D\uFF1B\u5730\u8CEA\u3001\u5730\u4E0B\u7BA1\u7DDA\u3001\u9130\u623F\u53CA\u65BD\u5DE5\u689D\u4EF6\u5F85\u6838\u5C0D\u3002\u8A2D\u5099\u623F\u7531B1\u8D77\u5217\uFF0C\u8D85\u904E\u8868\u5217\u5C64\u6578\u6CBF\u7528\u672B\u9805\uFF1B\u53EF\u4F9D\u8A2D\u5099\u9700\u6C42\u4FEE\u6B63\u3002\u672C\u6B21\u8F09\u4EBA\u96FB\u68AF",
           q ? quantityLiftSpaces(q).count : 2,
           "\u5EA7\uFF0C\u5730\u4E0B\u6BCF\u5C64\u6838\u5FC3",
           q ? quantityLiftSpaces(q).basementCore : 54,
@@ -3973,7 +3984,7 @@ function BasementDemandPanel({
             /* @__PURE__ */ jsx3("td", { children: t.cars === null ? "\u5F85\u8ABF\u6574" : `${t.cars}\uFF0F${t.mechanical}\u4F4D` })
           ] }, t.mode)) })
         ] }) }),
-        /* @__PURE__ */ jsx3("p", { children: "\u5148\u6BD4\u8F03\u5761\u9053\u5E73\u9762\uFF0C\u63A1\u901A\u904E\u6AA2\u6838\u4E14\u5730\u4E0B\u5C64\u6578\u8F03\u5C11\u8005\uFF1B\u540C\u5C64\u6578\u512A\u5148\u5C11\u6A5F\u68B0\u3001\u518D\u512A\u5148\u5761\u9053\u3002" })
+        /* @__PURE__ */ jsx3("p", { children: "\u65B9\u6848\u4F9D\u5761\u9053\u5E73\u9762\u914D\u7F6E\u6AA2\u6838\uFF0C\u63A1\u7B26\u5408\u9700\u6C42\u4E14\u5730\u4E0B\u5C64\u6578\u8F03\u5C11\u8005\uFF1B\u540C\u5C64\u6578\u4F9D\u6A5F\u68B0\u8ECA\u4F4D\u8F03\u5C11\u3001\u5761\u9053\u65B9\u6848\u7684\u9806\u5E8F\u9078\u53D6\u3002\u65E2\u6709\u5EFA\u7167\u7684\u8ECA\u4F4D\u3001\u6A13\u677F\u8207\u5730\u4E0B\u5C64\u6578\u50C5\u4F9B\u5C0D\u7167\u3002" })
       ] }),
       !review && limit?.errors.map((e) => /* @__PURE__ */ jsx3("p", { className: "planning-inline-error", children: e.replace("\u4F9D\u9700\u6C42\u6AA2\u8A0E\u9808\u5148\u586B\u500B\u6848\u958B\u6316\u7387\u4E0A\u9650\u53CA\u6CD5\u898F\uFF0F\u57FA\u5730\u8CC7\u6599\u4F86\u6E90\uFF1B\u4E0D\u81EA\u52D5\u595760%\u621680%", "\u8ACB\u586B\u5BEB\u500B\u6848\u958B\u6316\u7387\u4E0A\u9650\u53CA\u9069\u7528\u6CD5\u898F\u3002") }, e))
     ] })
@@ -5165,7 +5176,7 @@ function LegalParkingPanel({
       /* @__PURE__ */ jsxs4("p", { children: [
         "\u672C\u6B21\u91CF\u9AD4\u81F3\u5C11",
         escape.minimum,
-        "\u5EA7\u76F4\u901A\u6A13\u68AF\u3002\u5730\u4E0A\u901A\u9054\u6A13\u5C64\u6309",
+        "\u5EA7\u76F4\u901A\u6A13\u68AF\uFF1B\u6A13\u68AF\u6578\u91CF\u53E6\u4F9D\u907F\u96E3\u689D\u4EF6\u6AA2\u8A0E\u3002\u5730\u4E0A\u901A\u9054\u6A13\u5C64\u6309",
         escape.aboveType,
         "\u3001\u5730\u4E0B\u6309",
         escape.basementType,
@@ -5195,7 +5206,7 @@ function LegalParkingPanel({
             sharedEmergencyLift: Number(e.target.value) === 1
           }
         }), children: [
-          /* @__PURE__ */ jsx4("option", { value: "1", children: "1\u5EA7\uFF0C\u517C\u7528\u6240\u9700\u529F\u80FD" }),
+          /* @__PURE__ */ jsx4("option", { value: "1", children: "1\u5EA7\uFF0C\u517C\u7528\u6240\u9700\u529F\u80FD\uFF08\u8CC7\u683C\u5F85\u6838\uFF09" }),
           /* @__PURE__ */ jsx4("option", { value: "2", children: "2\u5EA7\uFF1A\u4E00\u822C\u53CA\u7DCA\u6025\u96FB\u68AF\u5206\u5217" }),
           /* @__PURE__ */ jsx4("option", { value: "3", children: "3\u5EA7" }),
           /* @__PURE__ */ jsx4("option", { value: "4", children: "4\u5EA7" })
@@ -5206,12 +5217,12 @@ function LegalParkingPanel({
         quantityLiftSpaces(input.quantityReserve).count,
         "\u5EA7\uFF0C\u5730\u4E0B\u6BCF\u5C64\u6838\u5FC3",
         f2(quantityLiftSpaces(input.quantityReserve).basementCore),
-        "\u33A1\uFF1B\u6A5F\u9053\u6BCF\u5EA77.5\u33A1\u70BA\u898F\u5283\u5C3A\u5BF8\u5047\u8A2D\u3002\u6BCF\u5EA7\u6A5F\u9053\u4F9D\u8F38\u5165\u6578\u91CF\u8A08\u5165\u6838\u5FC3\u9762\u7A4D\u3002"
+        "\u33A1\uFF1B\u6A5F\u9053\u6BCF\u5EA77.5\u33A1\u70BA\u898F\u5283\u5C3A\u5BF8\u5047\u8A2D\u3002\u6BCF\u5EA7\u6A5F\u9053\u4F9D\u8F38\u5165\u6578\u91CF\u9810\u7559\uFF1B\u517C\u7DCA\u6025\u53CA\u7121\u969C\u7919\u529F\u80FD\u5F85\u5716\u8AAA\u6838\u5C0D\u3002"
       ] })
     ] }),
     section === "basement" && /* @__PURE__ */ jsxs4("section", { className: "area-review-panel", "aria-label": "\u7121\u5761\u9053\u7121\u969C\u7919\u6AA2\u8A0E", children: [
       /* @__PURE__ */ jsx4("h3", { children: "\u7121\u5761\u9053\u6642\u7684\u5730\u9762\u7121\u969C\u7919\u8ECA\u4F4D" }),
-      /* @__PURE__ */ jsx4("p", { children: "\u4E00\u822C\u8ECA\u4F4D\u4ECD\u8A2D\u5730\u4E0B\uFF1B\u63A1\u6C7D\u8ECA\u5347\u964D\u6A5F\u6642\uFF0C\u4F9D\u672C\u6B21\u7121\u969C\u7919\u9700\u6C42\u53E6\u7559\u5730\u9762\u5E73\u9762\u8ECA\u4F4D\uFF0C\u5305\u542B\u65BC\u6C7D\u8ECA\u7E3D\u6578\u3002" }),
+      /* @__PURE__ */ jsx4("p", { children: "\u4E00\u822C\u8ECA\u4F4D\u4ECD\u8A2D\u5730\u4E0B\uFF1B\u63A1\u6C7D\u8ECA\u5347\u964D\u6A5F\u6642\uFF0C\u4F9D\u672C\u6B21\u7121\u969C\u7919\u9700\u6C42\u53E6\u7559\u5730\u9762\u5E73\u9762\u8ECA\u4F4D\uFF0C\u5305\u542B\u65BC\u6C7D\u8ECA\u7E3D\u6578\u3002\u7121\u969C\u7919\u901A\u8DEF\u9808\u53E6\u884C\u6AA2\u6838\u3002" }),
       /* @__PURE__ */ jsxs4("div", { className: "planning-field-grid", children: [
         /* @__PURE__ */ jsxs4("label", { children: [
           /* @__PURE__ */ jsx4(FieldLabel4, { children: "\u5730\u9762\u7121\u969C\u7919\u914D\u7F6E\u689D\u4EF6" }),
@@ -5239,14 +5250,14 @@ function LegalParkingPanel({
             }) }),
             /* @__PURE__ */ jsx4("span", { children: "\u33A1" })
           ] }),
-          /* @__PURE__ */ jsx4("small", { children: "\u7559\u767D\u63A1\u672C\u6B21\u898F\u5283\u5EFA\u7BC9\u9762\u7A4D\uFF0C\u53EF\u4F9D\u57FA\u5730\u53EF\u914D\u7F6E\u7BC4\u570D\u8ABF\u4F4E\u3002" })
+          /* @__PURE__ */ jsx4("small", { children: "\u7559\u767D\u63A1\u672C\u6B21\u898F\u5283\u5EFA\u7BC9\u9762\u7A4D\uFF0C\u53EF\u4F9D\u914D\u7F6E\u7BC4\u570D\u8ABF\u4F4E\uFF1B\u9000\u7E2E\u53CA\u6CD5\u5B9A\u7A7A\u5730\u4E0D\u5F97\u5360\u7528\u3002" })
         ] })
       ] }),
-      /* @__PURE__ */ jsx4("p", { children: "\u8ECA\u683C\u63093.5\xD76m\uFF0C\u53E6\u8A08\u8ECA\u9053\u8207\u7368\u7ACB\u901A\u8DEF\uFF1B\u7B49\u5019\u5340\u3001\u6A5F\u9053\u3001\u9580\u5EF3\u53CA\u5176\u4ED6\u7528\u9014\u4E0D\u91CD\u758A\u3002\u901A\u8DEF\u9810\u8A2D1.5m\xD74m\u3001\u5176\u4ED6\u7528\u901454\u33A1\u70BA\u898F\u5283\u5047\u8A2D\u3002" })
+      /* @__PURE__ */ jsx4("p", { children: "\u8ECA\u683C\u63093.5\xD76m\uFF0C\u53E6\u8A08\u8ECA\u9053\u8207\u7368\u7ACB\u901A\u8DEF\uFF1B\u7B49\u5019\u5340\u3001\u6A5F\u9053\u3001\u9580\u5EF3\u53CA\u5176\u4ED6\u7528\u9014\u4E0D\u91CD\u758A\u3002\u901A\u8DEF\u9810\u8A2D1.5m\xD74m\u3001\u5176\u4ED6\u7528\u901454\u33A1\u70BA\u898F\u5283\u5047\u8A2D\uFF1B\u6392\u4F4D\u5716\u5C1A\u5F85\u78BA\u8A8D\u3002\u5DF2\u77E5\u7121\u6CD5\u914D\u7F6E\u6642\uFF0C\u4E0D\u56E0\u53E6\u6709\u5BA2\u7528\u96FB\u68AF\u800C\u901A\u904E\u3002" })
     ] }),
     section === "basement" && !input.basementDemand?.enabled && /* @__PURE__ */ jsxs4("section", { className: "small-site-parking", "aria-label": "\u5C0F\u57FA\u5730\u66FF\u4EE3\u914D\u7F6E", children: [
       /* @__PURE__ */ jsx4("h3", { children: "\u505C\u8ECA\u65B9\u5F0F\u8207\u5206\u5C64\u914D\u7F6E" }),
-      /* @__PURE__ */ jsx4("p", { className: "planning-mode-result", children: "\u5148\u6AA2\u67E5\u5761\u9053\u5E73\u9762\u914D\u7F6E\uFF1B\u4E0D\u8DB3\u6642\u6BD4\u8F03\u66FF\u4EE3\u65B9\u5F0F\u3002\u66FF\u4EE3\u65B9\u6848\u9808\u6838\u500B\u6848\u6CD5\u898F\uFF0C\u8A08\u7B97\u4E0D\u7B49\u65BC\u5BE9\u8B70\u901A\u904E\u3002" }),
+      /* @__PURE__ */ jsx4("p", { className: "planning-mode-result", children: "\u4EE5\u5761\u9053\u5E73\u9762\u914D\u7F6E\u6AA2\u6838\u9700\u6C42\uFF0C\u4E0D\u8DB3\u6642\u6BD4\u8F03\u66FF\u4EE3\u65B9\u6848\u3002\u5404\u66FF\u4EE3\u65B9\u5F0F\u9808\u7B26\u5408\u500B\u6848\u6CD5\u898F\u53CA\u5FC5\u8981\u5BE9\u8B70\u689D\u4EF6\u3002" }),
       /* @__PURE__ */ jsx4("button", { type: "button", className: "secondary-btn", onClick: compareAlternatives, children: "\u6BD4\u8F03\u66FF\u4EE3\u914D\u7F6E" }),
       alternatives && /* @__PURE__ */ jsxs4("div", { className: "burden-table", children: [
         /* @__PURE__ */ jsxs4("table", { children: [
@@ -5444,7 +5455,7 @@ function LegalParkingPanel({
         }) }),
         "\u5C07\u4F30\u7B97\u5269\u9918\u5BB9\u91CF\u5168\u90E8\u63A1\u70BA\u589E\u8A2D\u8ECA\u4F4D"
       ] }),
-      input.basementDemand?.enabled && /* @__PURE__ */ jsx4("p", { children: "\u9700\u6C42\u641C\u5C0B\u4EE5\u6307\u5B9A\u589E\u8A2D\u8ECA\u4F4D\u91CD\u7B97\u6A13\u677F\u53CA\u5BB9\u7A4D\uFF1B\u4E0D\u5C07\u672A\u8208\u5EFA\u5BB9\u91CF\u76F4\u63A5\u63A1\u7528\u3002\u5DF2\u6709\u52FE\u9078\u8ACB\u5148\u53D6\u6D88\uFF0C\u518D\u81F3\u6236\u6578\u8207\u505C\u8ECA\u8ABF\u6574\u589E\u8A2D\u9700\u6C42\u3002" })
+      input.basementDemand?.enabled && /* @__PURE__ */ jsx4("p", { children: "\u9700\u6C42\u641C\u5C0B\u4F9D\u6307\u5B9A\u589E\u8A2D\u8ECA\u4F4D\u91CD\u7B97\u6A13\u677F\u53CA\u5BB9\u7A4D\u3002\u8ABF\u6574\u589E\u8A2D\u9700\u6C42\u6642\uFF0C\u9808\u53D6\u6D88\u5269\u9918\u5BB9\u91CF\u63A1\u7528\uFF0C\u4E26\u65BC\u300C\u6236\u6578\u8207\u505C\u8ECA\u300D\u586B\u5217\u9700\u6C42\uFF1B\u672A\u8208\u5EFA\u5BB9\u91CF\u4E0D\u7D0D\u5165\u63A1\u7528\u6578\u3002" })
     ] }),
     v && /* @__PURE__ */ jsxs4(Fragment4, { children: [
       /* @__PURE__ */ jsxs4("section", { className: "le-parking-overview", "aria-label": "\u505C\u8ECA\u914D\u7F6E\u521D\u4F30", children: [
@@ -5539,7 +5550,7 @@ function LegalParkingPanel({
       ] })
     ] }),
     v?.smallSite && /* @__PURE__ */ jsxs4(Fragment4, { children: [
-      /* @__PURE__ */ jsx4("p", { className: "planning-mode-result", children: v.smallSite.status === "conditional" ? "\u4F9D\u672C\u6B21\u8A2D\u5099\u8207\u914D\u7F6E\u689D\u4EF6\u8A66\u7B97\u3002" : "\u4F9D\u5DF2\u586B\u500B\u6848\u8CC7\u6599\u8A66\u7B97\u3002" }),
+      /* @__PURE__ */ jsx4("p", { className: "planning-mode-result", children: v.smallSite.status === "conditional" ? "\u4F9D\u898F\u5283\u8A2D\u5099\u8207\u914D\u7F6E\u689D\u4EF6\u8A66\u7B97\uFF0C\u500B\u6848\u5BE9\u8B70\u53CA\u6392\u4F4D\u5F85\u6838\u5C0D\u3002" : "\u4F9D\u5DF2\u586B\u500B\u6848\u8CC7\u6599\u8A66\u7B97\uFF0C\u5716\u8AAA\u5F85\u6838\u5C0D\u3002" }),
       /* @__PURE__ */ jsx4("div", { className: "burden-table", children: /* @__PURE__ */ jsxs4("table", { children: [
         /* @__PURE__ */ jsx4("thead", { children: /* @__PURE__ */ jsxs4("tr", { children: [
           /* @__PURE__ */ jsx4("th", { children: "\u6A13\u5C64" }),
@@ -5579,12 +5590,12 @@ function LegalParkingPanel({
             /* @__PURE__ */ jsx4("td", { children: f2(area2) })
           ] }, label)) })
         ] }),
-        /* @__PURE__ */ jsx4("p", { children: "\u5730\u9762\u505C\u8ECA\u3001\u901A\u8DEF\u3001\u7B49\u5019\u8207\u6A5F\u9053\u5F9E\u65E2\u6709\u5730\u4E0A\u7A7A\u9593\u5206\u914D\uFF0C\u4E0D\u53E6\u589E\u7E3D\u6A13\u677F\u6216\u5730\u4E0B\u514D\u8A08\u984D\u5EA6\u3002" })
+        /* @__PURE__ */ jsx4("p", { children: "\u5730\u9762\u505C\u8ECA\u3001\u901A\u8DEF\u3001\u7B49\u5019\u8207\u6A5F\u9053\u5F9E\u65E2\u6709\u5730\u4E0A\u7A7A\u9593\u5206\u914D\uFF0C\u4E0D\u53E6\u589E\u7E3D\u6A13\u677F\u6216\u5730\u4E0B\u514D\u8A08\u984D\u5EA6\u3002\u9762\u7A4D\u9810\u7B97\u901A\u904E\uFF1B\u6392\u4F4D\u53CA\u9023\u7E8C\u901A\u8DEF\u5F85\u5716\u8AAA\u6838\u5C0D\u3002" })
       ] }),
       /* @__PURE__ */ jsx4("ul", { children: v.smallSite.conditions.map((n) => /* @__PURE__ */ jsx4("li", { children: publicText3(n) }, n)) })
     ] }),
     v && z?.errors.length > 0 && /* @__PURE__ */ jsx4("p", { className: "planning-inline-error", role: "alert", children: z.errors.join("\uFF1B") }),
-    !v && /* @__PURE__ */ jsx4("p", { className: "planning-incomplete", children: z?.errors.join("\uFF1B") || "\u586B\u5165\u57FA\u5730\u689D\u4EF6\u5F8C\uFF0C\u9019\u88E1\u6703\u986F\u793A\u8ECA\u4F4D\u9700\u6C42\u8207\u5730\u4E0B\u5BA4\u5BB9\u91CF\u3002" }),
+    !v && /* @__PURE__ */ jsx4("p", { className: "planning-incomplete", children: z?.errors.join("\uFF1B") || "\u505C\u8ECA\u5BB9\u91CF\u8207\u5730\u4E0B\u5C64\u6578\u4F9D\u5DF2\u9078\u5B9A\u7684\u6CD5\u5B9A\u9700\u6C42\u53CA\u898F\u5283\u689D\u4EF6\u8A08\u7B97\u3002" }),
     /* @__PURE__ */ jsxs4("details", { children: [
       /* @__PURE__ */ jsx4("summary", { children: "\u505C\u8ECA\u898F\u5247\u4F86\u6E90" }),
       parkingSources.map(([label, url]) => /* @__PURE__ */ jsx4("p", { children: /* @__PURE__ */ jsx4("a", { href: url, target: "_blank", rel: "noreferrer", children: label }) }, url))
@@ -5626,7 +5637,7 @@ function CommonAllocationPolicyPanel({
     }
   });
   return /* @__PURE__ */ jsxs5("section", { "aria-label": "\u5171\u6709\u5206\u6524\u901A\u5247", children: [
-    /* @__PURE__ */ jsx5("h4", { children: "\u5171\u6709\u5206\u6524\u901A\u5247\uFF1A\u5148\u5B8C\u6210\u521D\u4F30\uFF0C\u518D\u8986\u6838\u6587\u4EF6" }),
+    /* @__PURE__ */ jsx5("h4", { children: "\u5171\u6709\u5206\u6524\u4F9D\u64DA\u8207\u898F\u5283\u5047\u8A2D" }),
     /* @__PURE__ */ jsx5("p", { children: "\u8A2D\u7F6E\u9700\u6C42\u3001\u5C3A\u5BF8\u53CA\u514D\u8A08\u5BB9\u7A4D\u4F9D\u5EFA\u6280\u898F\u5247\u8207\u6240\u5728\u5730\u898F\u5B9A\uFF1B\u5171\u6709\u767B\u8A18\u8207\u5206\u914D\u4F9D\u6C11\u6CD5799\u689D\u3001\u571F\u5730\u767B\u8A18\u898F\u524779\u53CA81\u689D\u3002\u4EE5\u4E0B\u670D\u52D9\u7BC4\u570D\u5728\u521D\u4F30\u6A21\u5F0F\u5C6C\u898F\u5283\u5047\u8A2D\uFF0CApp\u81EA\u52D5\u8A08\u7B97\u9762\u7A4D\uFF0C\u4E0D\u56E0\u7F3A\u5C11\u5206\u914D\u8868\u505C\u6B62\u521D\u4F30\u3002" }),
     /* @__PURE__ */ jsxs5("label", { children: [
       /* @__PURE__ */ jsx5(FieldLabel5, { children: "\u6AA2\u8A0E\u7528\u9014" }),
@@ -5696,7 +5707,7 @@ function CommonAllocationPolicyPanel({
           ] }),
           /* @__PURE__ */ jsxs5("tr", { children: [
             /* @__PURE__ */ jsx5("th", { children: "\u8CC7\u6599\u5C1A\u672A\u9F4A\u5168" }),
-            /* @__PURE__ */ jsx5("td", { children: "\u521D\u4F30\u7D50\u679C\u4FDD\u7559\u5047\u8A2D\u63D0\u793A\uFF1B\u4E0D\u5192\u7A31\u767B\u8A18\u5DF2\u78BA\u8A8D" })
+            /* @__PURE__ */ jsx5("td", { children: "\u898F\u5283\u521D\u4F30\u4FDD\u7559\u5047\u8A2D\uFF0C\u767B\u8A18\u7BC4\u570D\u5F85\u6587\u4EF6\u78BA\u8A8D" })
           ] })
         ] })
       ] }),
@@ -5733,7 +5744,7 @@ function AreaReviewPanel({
   return /* @__PURE__ */ jsxs6("section", { className: "area-review-panel", "aria-label": "\u7B2C162\u689D\u9010\u5C64\u8207\u767B\u8A18\u6AA2\u8A0E", children: [
     /* @__PURE__ */ jsx6("h3", { children: "\u7B2C162\u689D\u9010\u5C64\u514D\u8A08\u8207\u53EF\u767B\u8A18\u516C\u8A2D" }),
     /* @__PURE__ */ jsx6("p", { children: "\u68AF\u5EF3\u3001\u967D\u53F0\u5404\u4EE5\u8A72\u5C64\u6A13\u5730\u677F\u6AA2\u8A0E10%\uFF0C\u5408\u8A0815%\uFF1B\u6A13\u677F\u542B\u6A5F\u96FB\u53CA\u68AF\u5EF3\uFF0C\u967D\u53F0\u53E6\u5217\u3002\u5404\u5C64\u8D85\u9650\u8A08\u5BB9\uFF0C\u514D\u8A08\u984D\u5EA6\u4E0D\u8DE8\u5C64\u632A\u7528\u3002\u6A5F\u96FB\u7B49\u53E6\u53D7\u57FA\u5730\u5BB9\u7A4D10%\uFF0F15%\u7E3D\u91CF\u9650\u5236\u3002" }),
-    /* @__PURE__ */ jsx6("p", { children: review.floors ? "\u81EA\u8A02\u9010\u5C64\u9762\u7A4D\uFF0C\u8CC7\u683C\u53CA\u4F86\u6E90\u4ECD\u9808\u8207\u5716\u8AAA\u6838\u5C0D\u3002" : "\u4F9D\u898F\u5283\u5EFA\u7BC9\u9762\u7A4D\u63A8\u4F30\u5404\u5C64\u6A13\u677F\uFF0C\u4E26\u4F9D\u672C\u6B21\u967D\u53F0\u8207\u68AF\u5EF3\u8A2D\u5B9A\u6AA2\u8A0E\u3002" }),
+    /* @__PURE__ */ jsx6("p", { children: review.floors ? "\u81EA\u8A02\u9010\u5C64\u9762\u7A4D\uFF0C\u8CC7\u683C\u53CA\u4F86\u6E90\u4ECD\u9808\u8207\u5716\u8AAA\u6838\u5C0D\u3002" : "\u9010\u5C64\u6A13\u677F\u63A1\u898F\u5283\u63A8\u4F30\uFF1B\u967D\u53F0\u7A81\u51FA\u8207\u68AF\u5EF3\u6DE8\u6DF1\u8CC7\u683C\u5F85\u5716\u8AAA\u6838\u5C0D\u3002" }),
     !input.quantityReserve && /* @__PURE__ */ jsxs6("label", { children: [
       /* @__PURE__ */ jsx6(FieldLabel6, { children: "\u9010\u5C64\u914D\u7F6E\u4F86\u6E90" }),
       /* @__PURE__ */ jsx6("textarea", { "aria-label": "\u9010\u5C64\u914D\u7F6E\u4F86\u6E90", value: review.source ?? "", onChange: (e) => edit({
@@ -5841,7 +5852,7 @@ function AreaReviewPanel({
       review.commonPolicy ? /* @__PURE__ */ jsx6(CommonAllocationPolicyPanel, { input, result, edit }) : /* @__PURE__ */ jsxs6("details", { children: [
         /* @__PURE__ */ jsx6("summary", { children: "\u4F9D\u5206\u914D\u8868\u8F38\u5165\u505C\u8ECA\u76F8\u95DC\u623F\u5C4B\u6301\u5206\u9762\u7A4D" }),
         " ",
-        /* @__PURE__ */ jsx6("p", { children: "\u8ACB\u4F9D\u767B\u8A18\u8207\u5206\u914D\u6587\u4EF6\uFF0C\u586B\u5165\u6A5F\u8ECA\u3001\u81EA\u884C\u8ECA\u53CA\u793E\u5340\u505C\u8ECA\u7A7A\u9593\u8F49\u5217\u623F\u5C4B\u516C\u8A2D\u7684\u9762\u7A4D\u3002" }),
+        /* @__PURE__ */ jsx6("p", { children: "\u8ACB\u4F9D\u767B\u8A18\u8207\u5206\u914D\u6587\u4EF6\u586B\u5165\u8F49\u5217\u623F\u5C4B\u516C\u8A2D\u7684\u9762\u7A4D\uFF1B\u672A\u9644\u4F86\u6E90\u6642\u4E0D\u5F97\u63A1\u7528\u6B63\u6578\u3002" }),
         /* @__PURE__ */ jsx6("div", { className: "planning-field-grid", children: ["motorcycleSqm", "bicycleSqm", "communitySqm", "sharedRampSqm"].map((k, j) => /* @__PURE__ */ jsxs6("label", { children: [
           /* @__PURE__ */ jsx6(FieldLabel6, { children: ["\u6A5F\u8ECA\u7A7A\u9593\u5206\u6524\u623F\u5C4B\u33A1", "\u81EA\u884C\u8ECA\u7A7A\u9593\u5206\u6524\u623F\u5C4B\u33A1", "\u793E\u5340\u8ECA\u4F4D\u5206\u6524\u623F\u5C4B\u33A1", "\u5171\u7528\u5761\u9053\u5206\u6524\u623F\u5C4B\u33A1"][j] }),
           /* @__PURE__ */ jsx6(PublicNumber6, { type: "number", min: "0", value: review.registration?.parkingAllocation?.[k] ?? 0, onChange: (e) => edit({
@@ -6047,7 +6058,7 @@ function BasementAudit({ input, result, edit }) {
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsx7("p", { children: "\u820A1.536\u672A\u6263\u5730\u4E0B\u8A08\u5BB9\uFF1B1.367\u662F\u5728\u56FA\u5B9A\u5141\u5EFA\u5BB9\u7A4D\u5167\uFF0C\u5C07\u8A2D\u5099814.05\u3001\u81EA\u884C\u8ECA\u8207\u901A\u9053172.10\u3001\u9918\u88D51,058.51\u33A1\u66AB\u8A08\u5BB9\u5F8C\uFF0C\u9023\u52D5\u7E2E\u6E1B\u5730\u4E0A\u6A13\u677F\u3001\u6236\u6578\u3001\u505C\u8ECA\u53CA\u516C\u8A2D\u7684\u7D50\u679C\u3002\u53EF\u552E\u5DEE\u984D\u4E0D\u662F\u53EA\u6E1B\u53BB2,044.66\u33A1\uFF1B\u4E0B\u65B9\u67E5\u6838\u8868\u5217\u51FA\u5404\u767B\u8A18\u9805\u76EE\uFF0C\u672A\u522A\u9664\u6574\u7B46\u5730\u4E0B\u8A2D\u5099\u68AF\u9593\u3002" })
+      /* @__PURE__ */ jsx7("p", { children: "\u5730\u4E0B\u8A08\u5BB9\u5360\u7528\u5141\u5EFA\u5BB9\u7A4D\uFF0C\u4E26\u9023\u52D5\u8ABF\u6574\u5730\u4E0A\u6A13\u677F\u3001\u6236\u6578\u3001\u505C\u8ECA\u53CA\u516C\u8A2D\u3002\u53EF\u552E\u9762\u7A4D\u9808\u4F9D\u5404\u7528\u9014\u53CA\u767B\u8A18\u5206\u6524\u9010\u9805\u6838\u5C0D\u3002" })
     ] }) : null,
     /* @__PURE__ */ jsx7("div", { className: "burden-table basement-audit-table", children: /* @__PURE__ */ jsxs7("table", { children: [
       /* @__PURE__ */ jsxs7("colgroup", { children: [
@@ -6091,7 +6102,7 @@ function BasementAudit({ input, result, edit }) {
       ] })
     ] }) }),
     /* @__PURE__ */ jsxs7("details", { open: true, children: [
-      /* @__PURE__ */ jsx7("summary", { children: "\u8A2D\u5099\u68AF\u9593\u6709\u6C92\u6709\u88AB\u932F\u8AA4\u6392\u9664\uFF1A\u514D\u8A08\u8207\u767B\u8A18\u96D9\u8ECC\u6838\u5C0D" }),
+      /* @__PURE__ */ jsx7("summary", { children: "\u8A2D\u5099\u68AF\u9593\u514D\u8A08\u5BB9\u7A4D\u8207\u767B\u8A18\u9762\u7A4D\u6838\u5C0D" }),
       /* @__PURE__ */ jsxs7("p", { children: [
         "\u5730\u4E0A\u5DF2\u7528\u6A5F\u96FB\u514D\u8A08\u984D\u5EA6 ",
         f5(v.equipmentExempt),
@@ -6239,7 +6250,7 @@ function RegulatoryReviewPanel({
           /* @__PURE__ */ jsxs8(PublicSelect6, { value: p.bicycleExemption, onChange: (e) => change({
             bicycleExemption: e.target.value
           }), children: [
-            /* @__PURE__ */ jsx8("option", { value: "counted", children: "\u672A\u53D6\u5F97\u9069\u7528\u8CC7\u683C\uFF1A\u5148\u8A08\u5BB9" }),
+            /* @__PURE__ */ jsx8("option", { value: "counted", children: "\u514D\u8A08\u8CC7\u683C\u5F85\u78BA\u8A8D\uFF0C\u8A08\u5165\u5BB9\u7A4D" }),
             /* @__PURE__ */ jsx8("option", { value: "documented", children: "\u5DF2\u6838\u5C0D\u516C\u6709\uFF0F\u5168\u68DF\u793E\u5B85\u53CA\u500B\u6848\u571F\u7BA1\u514D\u8A08\u4F9D\u64DA" })
           ] })
         ] }),
@@ -6258,7 +6269,7 @@ function RegulatoryReviewPanel({
             communityUse: e.target.value
           }), children: [
             /* @__PURE__ */ jsx8("option", { value: "loading", children: "\u66AB\u6309\u4F9D\u6CD5\u8A2D\u7F6E\u88DD\u5378\uFF0F\u5783\u573E\u8ECA\u81E8\u505C\u514D\u8A08" }),
-            /* @__PURE__ */ jsx8("option", { value: "other", children: "\u5176\u4ED6\u672A\u78BA\u8A8D\u7528\u9014\uFF1A\u5148\u8A08\u5BB9" })
+            /* @__PURE__ */ jsx8("option", { value: "other", children: "\u5176\u4ED6\u7528\u9014\u5F85\u78BA\u8A8D\uFF0C\u8A08\u5165\u5BB9\u7A4D" })
           ] })
         ] }),
         /* @__PURE__ */ jsxs8("label", { children: [
@@ -6266,7 +6277,7 @@ function RegulatoryReviewPanel({
           /* @__PURE__ */ jsxs8(PublicSelect6, { value: p.spareUse, onChange: (e) => change({
             spareUse: e.target.value
           }), children: [
-            /* @__PURE__ */ jsx8("option", { value: "counted", children: "\u5148\u8A08\u5BB9\uFF0C\u4E0D\u5217\u623F\u5C4B\u53EF\u552E" }),
+            /* @__PURE__ */ jsx8("option", { value: "counted", children: "\u8A08\u5165\u5BB9\u7A4D\uFF0C\u66AB\u4E0D\u5217\u623F\u5C4B\u53EF\u552E" }),
             /* @__PURE__ */ jsx8("option", { value: "parking", children: "\u66AB\u4F5C\u505C\u8ECA\u5FC5\u8981\u7A7A\u9593\uFF0C\u7D0D\u6C7D\u8ECA40\u33A1\u4E0A\u9650" })
           ] })
         ] })

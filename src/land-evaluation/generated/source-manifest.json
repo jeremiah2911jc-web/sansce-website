@@ -1,7 +1,9 @@
 {
+  "sourceCommit": "8ff0bc1983be61961ea5a4d7b6c4888021bef1b3",
+  "scope": "land identity, laws, routes, layout and efficiency only; no financial UI or case persistence",
   "source": "三策案件版",
   "sourceRoot": "/Users/jeremiah/src/sanze-cases-desktop",
-  "generatedAt": "2026-10-19T15:35:04.184Z",
+  "generatedAt": "2026-10-21T08:59:51.324Z",
   "method": "esbuild directly bundles original App exports; website has no separate calculation fork; App source is authoritative",
   "sources": [
     {
@@ -9,32 +11,68 @@
       "sha256": "de2bdc061b61d537f7d12f6519f46e35113f0f246b6a06293a08b615454946cf"
     },
     {
+      "path": "src/cases/land-layout/model.ts",
+      "sha256": "105fdf07a0123b165504e5cd9a9c92d4d02d061be4662810fe4b086b6bd36e38"
+    },
+    {
+      "path": "src/cases/land-local/catalog.ts",
+      "sha256": "30635ed96aae999ff7d35eefca06d8fdee40a2a8e91f3b3b004d3c8b39af392f"
+    },
+    {
+      "path": "src/cases/land-local/registry.json",
+      "sha256": "668c4c2f0d8f4b5f2ae5767d0c25860b4a6de2c897027c9ac6a7cb6504e2c577"
+    },
+    {
+      "path": "src/cases/land-routes/catalog.ts",
+      "sha256": "8d0f7abca0a508bd98c352b364f4f49786e1ae97a716095b1badbeef8c03dc22"
+    },
+    {
+      "path": "src/cases/land-routes/model.ts",
+      "sha256": "16c38639f0ba23552e2fa0f989bfae52eec8997d46f86112b680b83682de4a10"
+    },
+    {
+      "path": "src/cases/land-rules/catalog.ts",
+      "sha256": "54d05017c267fec41ba55cab61d2e985b36ff4199438c9a74f4fc7a5361744b9"
+    },
+    {
+      "path": "src/cases/land-rules/engine.ts",
+      "sha256": "6af7220805c0838dcf0d606f27c8ab2a9d470f48b3c78f49735632ba9d207067"
+    },
+    {
+      "path": "src/cases/land-rules/types.ts",
+      "sha256": "95c91054806945b9e223687b4a888d28cdfdc8c3c99c20fe9e3f980461a2d211"
+    },
+    {
+      "path": "src/cases/landAssessment.ts",
+      "sha256": "f4ddf61a33dc1ff8e72da4f04de681464055b3d0c27d806cf83a166bd455172f"
+    },
+    {
       "path": "src/components/efficiency/AreaReviewPanel.tsx",
       "sha256": "f801358b510e2f1d15a0dd2db64f9136bc8dc124bb7d1566d195c08b650ce5e2"
     },
     {
       "path": "src/components/efficiency/BasementAudit.tsx",
-      "sha256": "1e01261d77678bbaadf0b81d8bf4938e899af6c98735237b6ab7874f71f151e7"
+      "sha256": "3602f49a52b6e8fa2f03351a92a1fa3158172d566b63315d45e54811fe381446"
     },
     {
       "path": "src/components/efficiency/BasementDemandPanel.tsx",
-      "sha256": "3a9bab267ab847f40ffe262257ee77b6869ad1e5f107be6ba497bc78a4cfd003"
+      "sha256": "e4b5be30ffebba1a7a57fb4651fb5fb852e84ca3b498220ac6f15632a6494737"
     },
     {
       "path": "src/components/efficiency/BonusAssessmentPanel.tsx",
-      "sha256": "bc11a49736f769416a6f0081b2c7edec46867920c73cf17a81c60052ee5e2e86"
+      "sha256": "4acaa538e2f8b8bc56d6793a9ebcc66bc6d0bf060308c8f8f32c3803f3478760"
     },
     {
       "path": "src/components/efficiency/CommonAllocationPolicyPanel.tsx",
-      "sha256": "c27922aaf84afe01cba403342ce187593935849ef24f817743d61ba6b952ada0"
+      "sha256": "bd125fbebdfa9c6f432e4f78af51dd8cc9ba3b3328c507b17642f3cf19e2c7bd"
     },
     {
       "path": "src/components/efficiency/LegalParkingPanel.tsx",
-      "sha256": "8067b1f103dda48ad2c7d88852fe0a5e2541f0fe72f6d0aa0c586d293bfc933d"
+      "sha256": "192f583733feb114d513a286c280a1dce9de1c213f0e0dc20edf2ec909446d70"
     },
     {
       "path": "src/components/efficiency/RegulatoryReviewPanel.tsx",
-      "sha256": "c3aed8504cf8a23d80c540b88b08281cb42c50e3703ed5c1042640e5299e3ff2"
+      "sha256": "8e5087d07f0f324891498834f3e1e4a1c71b5f7d6c17f01922c8013f11939f44"
     },
     {
       "path": "src/components/efficiency/SiteRoadConditionsPanel.tsx",
@@ -42,7 +80,7 @@
     },
     {
       "path": "src/components/efficiency/TdrApplicationPanel.tsx",
-      "sha256": "bf39044153c0d9967143733e5877ead1727084ff6825cb1b2800dd486e43b488"
+      "sha256": "91694535efb5e592551287a891215211ef20655ac17c6d64a541136446d595fc"
     },
     {
       "path": "src/lib/planning/article162.ts",
@@ -78,7 +116,7 @@
     },
     {
       "path": "src/lib/planning/permittedAward.ts",
-      "sha256": "4ab0f31a0593d786ba0759a3a2a351e071f4c8c91fd17988272f3c4bd6950480"
+      "sha256": "b1e40955a04436c0597c6fb9d47d91b5a555ff9307c0b3f1520edf3902558a05"
     },
     {
       "path": "src/lib/planning/planningAssumptions.ts",
@@ -94,7 +132,7 @@
     },
     {
       "path": "src/lib/planning/regulatoryReview.ts",
-      "sha256": "c11f3ebe6972cb1386e730df079b74df5baf0242c2b389f1b141093e52b8c446"
+      "sha256": "b7b8024f2601d1cc86f159571b1598f50fc2eadea85ce36358bab960c077856f"
     },
     {
       "path": "src/lib/planning/roofEnvelope.ts",
@@ -126,11 +164,11 @@
     },
     {
       "path": "src/lib/planning/tdrApplication.ts",
-      "sha256": "5e2f669c1feb1d3898fbe592ef4a333284864b4637ee8fe984154b608268f113"
+      "sha256": "6e7f2fe6ffbb36ee0147ef8413386fba39362090233dc76ea91d92e41be4304f"
     },
     {
       "path": "src/lib/site/siteRoadConditions.ts",
-      "sha256": "5d3af2edb07eb58ea9d9b27489ceaa3184cf1f976aab43553699cb324a55d5ae"
+      "sha256": "a647eb3c68058d4aa43318124e6e3ca64431705251637582111a52665c6c6fe2"
     },
     {
       "path": "src/lib/stableFingerprint.ts",
