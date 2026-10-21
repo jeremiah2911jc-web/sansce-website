@@ -1,3 +1,4 @@
+import {sourceNames,sourceLabel,sourceUnclear} from './source-labels.js';
 import {isTrafficExcluded,setTrafficExcluded} from './exclusion.js';
 const $=id=>document.getElementById(id);let token='',busy=false,latestData=null;const storage='sanze-traffic-owner';try{token=localStorage.getItem(storage)||'';}catch{}const fragment=new URLSearchParams(location.hash.slice(1));if(fragment.has('key')){token=fragment.get('key');history.replaceState(null,'',location.pathname);}if(fragment.get('exclude')==='1'){setTrafficExcluded(true);history.replaceState(null,'',location.pathname);}isTrafficExcluded();
 const number=n=>Number(n).toLocaleString('zh-TW');const names={"/reports":"案件報告登入入口","/landowner-comparison":"地主分配試算與比較","/":"首頁","/checkup":"案件健檢","/consulting":"都市更新顧問","/process":"服務流程","/programs":"雙北都更專案","/insights":"三策觀點","/about":"關於三策","/contact":"聯絡我們","/services/urban-renewal":"都市更新顧問：基地評估、地主整合與推動程序","/services/dangerous-old-rebuilding":"危老重建評估：確認適用資格與所有權人意願","/services/joint-construction":"合建顧問：核對分配、費用與契約條件","/services/project-management":"全案管理：專業團隊協調、文件與進度追蹤","/insights/renewal-distribution":"都更談分配，地主需要的是看得懂的答案","/insights/building-permit-extension":"建照期限延長，地主的交屋安排怎麼辦？","/insights/property-transfers-market":"房屋移轉量增加，能說房市回溫了嗎？"};
@@ -14,7 +15,7 @@ function locationName(key){
  return key==='overseas'?'海外・國家／地區未辨識':regionNames[key]||'地區未辨識';
 }
 const deviceNames={mobile:'手機',desktop:'電腦',tablet:'平板',unknown:'未識別裝置'};
-const sourceNames={threads_tagged:'連結標記為 Threads',threads_referral:'瀏覽器回報來自 Threads',google:'Google（標記或來源）',bing:'Bing（標記或來源）',yahoo:'Yahoo（標記或來源）',duckduckgo:'DuckDuckGo（標記或來源）',baidu:'百度（標記或來源）',facebook:'Facebook（標記或來源）',instagram:'Instagram（標記或來源）',line:'LINE（標記或來源）',other_campaign:'其他標記連結',other_referral:'其他網站',direct_unknown:'來源不明',internal:'站內延續／外部來源不明',unknown:'未記錄來源'};
+
 function renderDistributions(){
  if(!latestData)return;
  const period=$('distribution-period').value;
@@ -28,7 +29,7 @@ function renderDistributions(){
   for(const [key,name] of entries){
    const li=document.createElement('li');const title=document.createElement('span');title.textContent=name;
    const value=document.createElement('span');value.className='page-count';const count=document.createElement('b');const visitors=counts.get(key)||0;count.textContent=available?number(visitors)+unit:'—';
-   const share=document.createElement('small');share.textContent=available?(total?100*visitors/total:0).toFixed(1)+'%':'—';value.append(count,share);if(id==='sources')title.className='semantic-label '+(['unknown','direct_unknown','internal'].includes(key)?'tone-unknown':'tone-source');li.append(title,value);$(id).append(li);
+   const share=document.createElement('small');share.textContent=available?(total?100*visitors/total:0).toFixed(1)+'%':'—';value.append(count,share);if(id==='sources')title.className='semantic-label '+(sourceUnclear(key)?'tone-unknown':'tone-source');li.append(title,value);$(id).append(li);
   }
  }
  const total=(data?.locationPeriods?.[period]||data?.countyPeriods?.[period]||[]).reduce((sum,r)=>sum+Number(r.visitors),0);
@@ -56,17 +57,17 @@ function renderVisitorArrivals(){
   const card=document.createElement('article');card.className='visitor-arrival';card.id='visitor-'+String(row.visitorNumber).padStart(2,'0');
   const title=document.createElement('h3');title.textContent='訪客 '+String(row.visitorNumber).padStart(2,'0');
   const details=document.createElement('dl');
-  for(const [label,value,stamp] of [['當日首次來源',sourceNames[row.trafficSource]||'未記錄來源',null],['首次開啟頁面',names[row.entryPath||row.pages?.[0]?.path]||retiredNames[row.entryPath||row.pages?.[0]?.path]||row.entryPath||row.pages?.[0]?.path||'未取得',null],['裝置（估計）',deviceNames[row.deviceType]||'未識別裝置',null],['國家／地區（估計）',countryName(row.geoCountry||(row.locationKey?.startsWith('country:')?row.locationKey.slice(8):regionNames[row.locationKey]&&row.locationKey!=='overseas'&&row.locationKey!=='unknown'?'TW':null)),null],['城市／縣市（估計）',cityLabel({country:row.geoCountry,county:row.geoCounty,city:row.geoCity,region:row.geoRegion}),null],['首次頁面紀錄',time(row.firstSeen),row.firstSeen],['最後開啟頁面',time(row.lastSeen),row.lastSeen],['最後收到操作',row.lastActionAt?time(row.lastActionAt):'尚無操作回報',row.lastActionAt],['已記錄停留時間（估計）',formatStay(row.visibleMs)+(Number(row.durationTrackedViews)>0&&Number(row.durationTrackedViews)<Number(row.views)?'（部分瀏覽未取得停留時間）':''),null],['瀏覽次數',number(row.views)+' 次',null]]){
+  for(const [label,value,stamp] of [['當日首次來源',sourceLabel(row.trafficSource,row.sourceBasis),null],['首次開啟頁面',names[row.entryPath||row.pages?.[0]?.path]||retiredNames[row.entryPath||row.pages?.[0]?.path]||row.entryPath||row.pages?.[0]?.path||'未取得',null],['裝置（估計）',deviceNames[row.deviceType]||'未識別裝置',null],['國家／地區（估計）',countryName(row.geoCountry||(row.locationKey?.startsWith('country:')?row.locationKey.slice(8):regionNames[row.locationKey]&&row.locationKey!=='overseas'&&row.locationKey!=='unknown'?'TW':null)),null],['城市／縣市（估計）',cityLabel({country:row.geoCountry,county:row.geoCounty,city:row.geoCity,region:row.geoRegion}),null],['首次頁面紀錄',time(row.firstSeen),row.firstSeen],['最後開啟頁面',time(row.lastSeen),row.lastSeen],['最後收到操作',row.lastActionAt?time(row.lastActionAt):'尚無操作回報',row.lastActionAt],['已記錄停留時間（估計）',formatStay(row.visibleMs)+(Number(row.durationTrackedViews)>0&&Number(row.durationTrackedViews)<Number(row.views)?'（部分瀏覽未取得停留時間）':''),null],['瀏覽次數',number(row.views)+' 次',null]]){
    const group=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;if(label==='當日首次來源')group.className='visitor-entry-source';if(label.includes('（估計）')&&label!=='已記錄停留時間（估計）')group.className='visitor-location';
    if(stamp){const t=document.createElement('time');t.dateTime=stamp;t.textContent=value;dd.append(t);}else dd.textContent=value;
-   if(label==='當日首次來源')dd.className='data-badge '+(['direct_unknown','internal','unknown'].includes(row.trafficSource)||!row.trafficSource?'tone-unknown':'tone-source');
+   if(label==='當日首次來源')dd.className='data-badge '+(sourceUnclear(row.trafficSource)&&!['tag','referrer'].includes(row.sourceBasis)?'tone-unknown':'tone-source');
    if(label==='已記錄停留時間（估計）')dd.className='data-badge '+(!(Number(row.visibleMs)>0)||Number(row.durationTrackedViews)<Number(row.views)?'tone-unknown':'tone-stay');
    if(label==='瀏覽次數')dd.className='data-badge tone-views';
    group.append(dt,dd);details.append(group);
   }
   const heading=document.createElement('div');heading.className='visitor-arrival-heading';heading.append(title,details);card.append(heading);
   const evidence=document.createElement('p');evidence.className='visitor-evidence page-note';
-  evidence.textContent=(row.sourceBasis==='tag'?'來源依連結標記分類；標記可能被轉傳，不代表已證實從該平台點入。':row.sourceBasis==='referrer'?'來源依瀏覽器提供的來源網站分類，未使用連結標記判定。':row.trafficSource==='direct_unknown'?'未取得外部來源資訊；不能確認是直接輸入、社群或訊息連結。':row.trafficSource==='internal'?'首筆紀錄來自站內頁面或跨日延續；原本外部來源未知。':row.trafficSource==='threads_tagged'?'連結帶有 Threads 標記；連結可能被轉傳，不等於已證實從 Threads 點入。':row.trafficSource==='threads_referral'?'瀏覽器提供的來源網站為 Threads。':row.trafficSource==='unknown'||!row.trafficSource?'此筆未保存來源，不能事後還原。':'分類依連結標記或瀏覽器提供的來源；不代表已確認身分或搜尋關鍵字。')+' 同一編號只代表當日同一瀏覽器識別，不保證是一位真人。';
+  evidence.textContent=(row.sourceBasis==='tag'?'來源依連結標記分類；標記可能被轉傳，不代表已證實從該平台點入。':row.sourceBasis==='referrer'?'來源依瀏覽器提供的來源網站分類，未使用連結標記判定。':row.trafficSource==='direct_unknown'?'未取得外部來源資訊；不能確認是直接輸入、社群或訊息連結。':row.trafficSource==='internal'?'首筆紀錄來自站內頁面或跨日延續；原本外部來源未知。':row.trafficSource==='threads_tagged'?'連結帶有 Threads 標記；連結可能被轉傳，不等於已證實從 Threads 點入。':row.trafficSource==='threads_referral'?'瀏覽器提供的來源網站為 Threads。':row.trafficSource==='unknown'||!row.trafficSource?'此筆未保存來源，不能事後還原。':'此筆有記錄平台名稱，但未保留進站方式，無法區分瀏覽器回報或連結標記；不能事後補判。')+' 同一編號只代表當日同一瀏覽器識別，不保證是一位真人。';
   const disclosure=document.createElement('details');disclosure.className='visitor-disclosure';disclosure.id=card.id+'-details';disclosure.open=expanded.has(disclosure.id);const summary=document.createElement('summary');summary.textContent='瀏覽頁面與操作明細（'+number(row.pages?.length||0)+' 頁）';disclosure.append(summary);const detailBody=document.createElement('div');detailBody.className='visitor-detail-body';disclosure.append(detailBody);detailBody.append(evidence);
   const pages=document.createElement('div');pages.className='visitor-pages';const caption=document.createElement('h4');caption.textContent='瀏覽頁面';pages.append(caption);
   const items=document.createElement('ol');
