@@ -2383,11 +2383,13 @@ function landAreaRatios(totalFloorAreaSqm, saleableAreaSqm, siteAreaSqm) {
 
 // ../../../../../../src/sanze-cases-desktop/src/lib/site/siteRoadConditions.ts
 var newSiteRoadConditions = () => ({ version: "site-road.v1", roadName: "", plannedWidth: "", openedWidth: "", frontage: "", connected: "unknown", status: "unknown", source: "", checkedAt: "" });
-function reviewSiteRoad(r) {
+function reviewSiteRoad(r, referenceDate = (/* @__PURE__ */ new Date()).toLocaleDateString("sv-SE", { timeZone: "Asia/Taipei" })) {
   const errors = [], notes = [];
   if (!r) return { errors, notes: ["\u57FA\u5730\u8DEF\u5BEC\u5C1A\u672A\u8F38\u5165\u78BA\u8A8D\uFF1B\u4FDD\u7559\u898F\u5283\u76EE\u6A19\u4F5C\u5047\u8A2D\uFF0C\u4E0D\u80FD\u8A8D\u5B9A\u9053\u8DEF\u8CC7\u683C\u3002"] };
   for (const k of ["plannedWidth", "openedWidth", "frontage"]) if (r[k].trim() && (!Number.isFinite(Number(r[k])) || Number(r[k]) <= 0)) errors.push({ plannedWidth: "\u8A08\u756B\u8DEF\u5BEC", openedWidth: "\u5BE6\u969B\u958B\u95E2\u5BEC\u5EA6", frontage: "\u540C\u8DEF\u6BB5\u57FA\u5730\u9762\u5BEC" }[k] + "\u9808\u5927\u65BC0\uFF1B\u672A\u77E5\u8ACB\u7559\u767D");
   if (r.status === "confirmed" && (!r.plannedWidth.trim() || !r.source.trim() || (!/^\d{4}-\d{2}-\d{2}$/.test(r.checkedAt) || !Number.isFinite(Date.parse(r.checkedAt)) || new Date(r.checkedAt).toISOString().slice(0, 10) !== r.checkedAt))) errors.push("\u78BA\u8A8D\u8DEF\u5BEC\u9808\u586B\u8A08\u756B\u8DEF\u5BEC\u3001\u67E5\u8B49\u4F86\u6E90\u53CA\u67E5\u8B49\u65E5\u671F");
+  if (r.status === "confirmed" && r.checkedAt > referenceDate) errors.push("\u8DEF\u5BEC\u67E5\u8B49\u65E5\u671F\u4E0D\u5F97\u665A\u65BC\u672C\u6B21\u8A55\u4F30\u65E5\u671F");
+  if (r.status === "confirmed" && r.checkedAt > (/* @__PURE__ */ new Date()).toLocaleDateString("sv-SE", { timeZone: "Asia/Taipei" })) errors.push("\u8DEF\u5BEC\u67E5\u8B49\u65E5\u671F\u4E0D\u5F97\u665A\u65BC\u76EE\u524D\u65E5\u671F");
   if (r.status !== "confirmed") notes.push("\u57FA\u5730\u9053\u8DEF\u8CC7\u6599\u5C1A\u5C6C" + (r.status === "assumed" ? "\u660E\u793A\u66AB\u63A1\u503C" : "\u5F85\u78BA\u8A8D") + "\uFF0C\u672A\u8A8D\u5B9A\u7B26\u5408\u7533\u8ACB\u8CC7\u683C\u3002");
   if (!r.openedWidth.trim() || !r.frontage.trim() || r.connected === "unknown") notes.push("\u5BE6\u969B\u958B\u95E2\u5BEC\u5EA6\u3001\u540C\u8DEF\u6BB5\u9762\u5BEC\u6216\u958B\u95E2\u9023\u901A\u5C1A\u7F3A\uFF0C\u4E0D\u56E0\u8A08\u756B\u8DEF\u5BEC\u5DF2\u78BA\u8A8D\u5373\u8A8D\u5B9A\u5176\u9918\u8CC7\u683C\u3002");
   return { errors, notes };
@@ -2403,12 +2405,13 @@ function isPermittedAward(x) {
   const a = x;
   return ["renewal", "danger"].includes(a.route) && ["baseSqm", "awardSqm", "approvedAt", "source"].every((k) => typeof a[k] === "string");
 }
-function reviewPermittedAward(a, route, base) {
+function reviewPermittedAward(a, route, base, referenceDate = (/* @__PURE__ */ new Date()).toLocaleDateString("sv-SE", { timeZone: "Asia/Taipei" })) {
   const errors = [];
   if (!a || !isPermittedAward(a)) return { errors: ["\u65E2\u6709\u6838\u51C6\u734E\u52F5\u8CC7\u6599\u4E0D\u5B8C\u6574"], percent: 0 };
   if (a.route !== route) errors.push("\u65E2\u6709\u6838\u51C6\u734E\u52F5\u8207\u6240\u9078\u91CD\u5EFA\u8DEF\u5F91\u4E0D\u4E00\u81F4");
   if (!a.source.trim() || !/^\d{4}-\d{2}-\d{2}$/.test(a.approvedAt) || !Number.isFinite(Date.parse(a.approvedAt))) errors.push("\u65E2\u6709\u6838\u51C6\u734E\u52F5\u9808\u586B\u6838\u51C6\u65E5\u671F\u53CA\u6587\u4EF6\u4F86\u6E90");
   if (Number.isFinite(Date.parse(a.approvedAt)) && new Date(a.approvedAt).toISOString().slice(0, 10) !== a.approvedAt) errors.push("\u734E\u52F5\u6838\u51C6\u65E5\u671F\u4E0D\u5B58\u5728");
+  if (a.approvedAt > referenceDate || a.approvedAt > (/* @__PURE__ */ new Date()).toLocaleDateString("sv-SE", { timeZone: "Asia/Taipei" })) errors.push("\u734E\u52F5\u6838\u51C6\u65E5\u671F\u4E0D\u5F97\u665A\u65BC\u672C\u6B21\u8A55\u4F30\u65E5\u671F\u6216\u76EE\u524D\u65E5\u671F");
   const approvedBase = Number(a.baseSqm), amount = Number(a.awardSqm);
   if (!a.baseSqm.trim() || !a.awardSqm.trim() || !Number.isFinite(approvedBase) || approvedBase <= 0 || !Number.isFinite(amount) || amount < 0) errors.push("\u6838\u51C6\u57FA\u6E96\u5BB9\u7A4D\u8207\u734E\u52F5\u9762\u7A4D\u9808\u70BA\u6709\u6548\u6578\u503C");
   if (Math.abs(approvedBase - base) > 0.01) errors.push("\u57FA\u5730\u6216\u57FA\u6E96\u5BB9\u7A4D\u5DF2\u8B8A\u66F4\uFF0C\u8207\u65E2\u6709\u734E\u52F5\u6838\u51C6\u57FA\u6E96\u4E0D\u4E00\u81F4\uFF0C\u9808\u91CD\u65B0\u6838\u5C0D\u6587\u4EF6");
@@ -2794,7 +2797,7 @@ function isRegulatoryReview(x) {
   return [REGULATORY_REVIEW_VERSION, "planning-law.2026-10-19.v2"].includes(p.version) && ["renewalLimitPercent", "tdrLimitPercent", "totalBonusLimitPercent", "tdrBasePoints", "tdrInternalPoints", "tdrExternalPoints", "cashTdrPercent", "bonusSource", "bicycleSource", "ordinaryCommonPercent", "ordinaryCommonSource"].every((k) => typeof p[k] === "string") && typeof p.renewalArea === "boolean" && ["counted", "documented"].includes(p.bicycleExemption) && ["statutory_assumption", "counted"].includes(p.motorcycleExemption) && ["loading", "other"].includes(p.communityUse) && ["counted", "parking"].includes(p.spareUse);
 }
 function resolveBonusLimits(p, rates, context) {
-  const roadReview = reviewSiteRoad(context?.roadConditions);
+  const roadReview = reviewSiteRoad(context?.roadConditions, p.bonusAssessment?.date);
   const notes = [...roadReview.notes], errors = [...roadReview.errors];
   const a = p.bonusAssessment, waivePoints = a?.tdrProfile === "special50" && (a.tdrApplication?.city ?? (context?.district ? inferTdrCity(context.district) : "ntpc")) === "ntpc", assessment = a && context && isBonusAssessment(a) ? assessBonuses(a.awardBasis === "permitted" ? { ...a, renewalMode: "quick", dangerMode: "quick" } : a, context, Number(p.cashTdrPercent) || 0, p.renewalArea) : void 0;
   if (a && assessment) {
@@ -2844,7 +2847,7 @@ function resolveBonusLimits(p, rates, context) {
   let renewal = Math.min(rates.renewal, renewalLimit), tdr2 = Math.min(rates.tdr, tdrLimit, points ?? Infinity), scale = rates.scale, danger2 = rates.danger;
   if (renewal < rates.renewal) notes.push(`\u90FD\u66F4\u76EE\u6A19${rates.renewal}%\u8D85\u904E\u672C\u6B21\u8DEF\u5F91\u4E0A\u9650\uFF0C\u66AB\u63A1${renewal}%\uFF0C\u4E0D\u4EE5\u8D85\u984D\u76EE\u6A19\u64F4\u5F35\u5BB9\u7A4D\u3002`);
   if (tdr2 < rates.tdr) notes.push(`\u5BB9\u79FB\u76EE\u6A19${rates.tdr}%\u53D7\u4E0A\u9650\uFF0F\u8A55\u9EDE\u9650\u5236\uFF0C\u66AB\u63A1${tdr2.toFixed(4)}%\u3002`);
-  const permitted = a?.awardBasis === "permitted" ? reviewPermittedAward(a.permittedAward, a.route, (context?.site ?? 0) * (context?.far ?? 0) / 100) : void 0;
+  const permitted = a?.awardBasis === "permitted" ? reviewPermittedAward(a.permittedAward, a.route, (context?.site ?? 0) * (context?.far ?? 0) / 100, a.date) : void 0;
   if (permitted) {
     errors.push(...permitted.errors);
     renewal = a.route === "renewal" ? permitted.percent : 0;

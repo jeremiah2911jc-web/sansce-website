@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "scope": "preliminary rights, documents and area conditions only; no financial calculations or case persistence",
+  "sourceRoot": "/Users/jeremiah/src/sanze-cases-desktop",
+  "sourceCommit": "8ff0bc1983be61961ea5a4d7b6c4888021bef1b3",
+  "uncommittedSource": true,
+  "sources": [
+    {
+      "path": "src/cases/land-readjustment/model.mjs",
+      "sha256": "55af40b179207db861bfd4105a2af41a41d51efc45fc3bc1a735211f6191a88c"
+    },
+    {
+      "path": "src/cases/land-readjustment/conditions.mjs",
+      "sha256": "c9a5e1dd83eecbc2c6905548dc14abe88afd5cf5c7a3019bcc7f077b3bddc9bb"
+    },
+    {
+      "path": "src/cases/land-readjustment/statutory.mjs",
+      "sha256": "fbc0e24703bb7ebd704c52b31a222dc5a61995e03e93406669f819ea732cca95"
+    },
+    {
+      "path": "src/cases/land-readjustment/arithmetic.mjs",
+      "sha256": "d15ede043b43faa94659e4bfce0be4b0cc953bfd8975409bad16732d4ea8619f"
+    },
+    {
+      "path": "src/cases/land-readjustment/catalog.mjs",
+      "sha256": "c0d5e566d1d61386464b3bd3af901578c775eac3b1fbd333559e51aecef45b0b"
+    },
+    {
+      "path": "src/cases/land-readjustment/ntpc-catalog-data.mjs",
+      "sha256": "02f8be99d9eee07e376cb01771b06174cd6da8d2ce0b7ba6ab99bbb9184b1ef6"
+    },
+    {
+      "path": "src/cases/land-readjustment/ntpc-current-review.mjs",
+      "sha256": "e3c48d42c4c1894a977bec22145e1bcdf2e84d4064b6669fe687897b86022715"
+    },
+    {
+      "path": "src/cases/land-readjustment/ntpc-document-audit.mjs",
+      "sha256": "36cfc29d0f5817a4356f9c6139928bd01beeda4425c25977de28f9ceff2039a9"
+    }
+  ]
+}
