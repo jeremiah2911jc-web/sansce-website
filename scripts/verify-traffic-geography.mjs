@@ -1,0 +1,31 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';import {randomUUID}from'node:crypto';
+import{PGlite}from'/tmp/sanze-duration-sql-test/node_modules/@electric-sql/pglite/dist/index.js';
+import{resolveTrafficGeography,geographyAliases,countyRegion}from'../shared/traffic-geography.js';import{townships,countyNames}from'../shared/taiwan-geography-data.js';import{trafficMetadata}from'../api/_traffic-metadata.js';
+const db=new PGlite();await db.exec(`create role anon;create role authenticated;create role service_role bypassrls;
+create table public.sanze_site_pageviews(event_id uuid primary key,visitor_id uuid,path text,source_path text,created_at timestamptz default now(),geo_country text,geo_county text,geo_region text,geo_city text,device_type text,traffic_source text,visible_ms bigint,interaction_tracking boolean);
+create table public.sanze_visitor_actions(event_id uuid primary key,page_event_id uuid,action text,target text,created_at timestamptz default now());
+create table public.sanze_traffic_period(singleton boolean,started_at timestamptz);insert into public.sanze_traffic_period values(true,now()-interval '10 days');
+alter table public.sanze_site_pageviews enable row level security;revoke all on public.sanze_site_pageviews from public,anon,authenticated;grant select,insert,update on public.sanze_site_pageviews to service_role;`);
+const visitor=randomUUID(),historical=randomUUID();await db.query(`insert into public.sanze_site_pageviews values($1,$2,'/insights','/land-evaluation',now(),'TW','TPE','north','Banqiao','mobile','threads_referral',60000,true)`,[historical,visitor]);
+await db.exec(fs.readFileSync('docs/traffic/geography-correction-schema.sql','utf8'));
+let row=(await db.query('select * from public.sanze_site_pageviews where event_id=$1',[historical])).rows[0];assert.equal(row.geo_county,'NWT');assert.equal(row.geo_original.county,'TPE');assert.equal(row.geo_city,'Banqiao');assert.equal(row.visible_ms,60000);assert.equal(row.geo_resolution,'district_corrected');
+const before=JSON.stringify(row);await db.exec(fs.readFileSync('docs/traffic/geography-correction-schema.sql','utf8'));assert.equal(JSON.stringify((await db.query('select * from public.sanze_site_pageviews where event_id=$1',[historical])).rows[0]),before,'migration idempotent');
+let n=0;const cases=[];
+for(const [key,codes]of Object.entries(geographyAliases.counties))for(const code of codes)cases.push(['TW',code,key]);
+for(const [key,codes]of Object.entries(geographyAliases.districts))for(const code of codes)cases.push(['TW',code,key]);
+for(const code of Object.keys(countyNames))cases.push(['TW',code,null],['TW','TW-'+code,null]);
+cases.push(['TW','TPE','Banqiao'],['TW','TPE','Xinzhuang'],['TW','TPE','Tucheng'],['TW',null,'New Taipei City'],['TW','TXG','Taipei'],['TW',null,'Hsinchu'],['TW',null,'Chiayi'],['TW','TPE','Xinyi'],['TW','NWT','Xinyi'],['TW',null,'unknown place'],['US','TPE','Taipei'],[null,null,null]);
+for(const [country,code,city]of cases){const js=resolveTrafficGeography(country,code,city,'unknown');const sql=(await db.query('select * from public.sanze_resolve_geography($1,$2,$3,$4)',[country,code,city,'unknown'])).rows[0];assert.deepEqual(sql,js,JSON.stringify({country,code,city}));n++;}
+for(const city of ['Banqiao','Banciao','Panchiao','Xinzhuang','Tucheng','板橋區','新莊','土城區'])assert.equal(resolveTrafficGeography('TW','TPE',city).county,'NWT',city);
+assert.equal(resolveTrafficGeography('TW','TXG','Taipei').county,null);assert.equal(resolveTrafficGeography('TW',null,'Hsinchu').county,null);assert.equal(resolveTrafficGeography('TW','NWT','Xinyi').county,null);
+assert.equal(trafficMetadata({'x-vercel-ip-country':'TW','x-vercel-ip-country-region':'TPE','x-vercel-ip-city':'Banqiao'}).geo_original.county,'TPE');
+assert.equal(trafficMetadata({'x-vercel-ip-country':'US','x-vercel-ip-city':'Ashburn'}).geo_city,'Ashburn');
+// Current audience function, then revised grouping: multiple foreign cities and page topics dedup before aggregation.
+await db.exec(fs.readFileSync('docs/traffic/foreign-country-statistics-schema.sql','utf8'));
+const foreign=randomUUID(),foreign2=randomUUID();
+for(const [v,city]of [[foreign,'Ashburn'],[foreign,'New York City'],[foreign2,'Boardman']])await db.query(`insert into public.sanze_site_pageviews(event_id,visitor_id,path,source_path,geo_country,geo_region,geo_city,visible_ms,interaction_tracking) values($1,$2,'/insights','/insights/test','US','overseas',$3,10000,true)`,[randomUUID(),v,city]);
+const audience=(await db.query('select public.sanze_traffic_audience_content($1) a',[{'/insights/test':'測試'}])).rows[0].a;
+const us=audience.periods.today.filter(r=>r.country==='US');assert.equal(us.length,1);assert.equal(us[0].city,null);assert.equal(us[0].visitors,2);assert.equal(us[0].views,3);assert.equal(us[0].topics[0].visitors,2);assert.equal(us[0].pages[0].visitors,2);assert.equal(us[0].visibleMs,30000);assert.equal(audience.periods.today.find(r=>r.county==='NWT').visitors,1);
+assert.equal((await db.query(`select count(*) n from public.sanze_site_pageviews where geo_original->>'city' is not null`)).rows[0].n,4);
+assert.equal((await db.query(`select has_table_privilege('anon','public.sanze_site_pageviews','SELECT') p`)).rows[0].p,false);
+await db.close();console.log(`PASS geography: ${n} JS/SQL parity cases, ${Object.keys(countyNames).length} counties and ${townships.length} townships, Banqiao/Xinzhuang/Tucheng, conflicts/ambiguous names, raw preservation, unchanged metrics, idempotent backfill, foreign country/page/topic dedup and private access.`);

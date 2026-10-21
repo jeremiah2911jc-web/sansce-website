@@ -1,3 +1,4 @@
+import {trackInteraction} from '../interaction-tracking.js';
 import {publicText} from './public-copy.mjs';
 import {useEffect,useMemo,useRef,useState,useDeferredValue} from 'react';
 import {BonusAssessmentPanel,LegalParkingPanel,AreaReviewPanel,RegulatoryReviewPanel,SiteRoadConditionsPanel} from './generated/panels.mjs';
@@ -23,7 +24,7 @@ function EvaluationWorkspace(){
  useEffect(()=>{document.body.classList.remove('le-focus-result');setFocus(false);},[]);
  useEffect(()=>{if(!focus)return;const esc=e=>{if(e.key==='Escape')setFocus(false);};window.addEventListener('keydown',esc);return()=>window.removeEventListener('keydown',esc);},[focus]);
  function changeDistrict(value){setDistrict(value);edit({parkingDesign:newParkingDesign(value,'',Number(input.tdr)>0?'yes':'unknown'),basementDemand:defaultBasementDemand(value)});}
- function calculate(){const z=evaluate(input);if(z.errors.length||!z.values){setIssues(z.errors.length?z.errors:['規劃條件尚未完整，請核對後再計算。']);setSubmitted(null);requestAnimationFrame(()=>errorRef.current?.focus());return;}setIssues([]);setSubmitted({input:structuredClone(input),name:name.trim(),district,result:z,signature:serialized});requestAnimationFrame(()=>resultRef.current?.scrollIntoView({behavior:'smooth',block:'start'}));}
+ function calculate(){const z=evaluate(input);if(z.errors.length||!z.values){setIssues(z.errors.length?z.errors:['規劃條件尚未完整，請核對後再計算。']);setSubmitted(null);requestAnimationFrame(()=>errorRef.current?.focus());return;}trackInteraction('land_evaluation_complete','result');setIssues([]);setSubmitted({input:structuredClone(input),name:name.trim(),district,result:z,signature:serialized});requestAnimationFrame(()=>resultRef.current?.scrollIntoView({behavior:'smooth',block:'start'}));}
  function replace(mode){const untouched=JSON.stringify(input)===JSON.stringify(createInput())&&!name;if(!untouched){setReplaceChoice(mode);return;}applyReplacement(mode);}
  function applyReplacement(mode){setInput(createInput());setDistrict('新北市');setName('');setSubmitted(null);setIssues([]);setTab('base');setReplaceChoice('');setFocus(false);}
  const fields=(keys,group='')=><div className={'le-fields '+group}>{keys.map(k=><NumberField key={k} label={labels[k][0]} unit={labels[k][1]} value={input[k]} integer={['basementFloors','roofFloors','extraCars'].includes(k)} onChange={v=>edit({[k]:v})} hint={k==='excavationCap'?'尚未確認可留白；填入時請補充來源。':k==='unitPing'?'含地上公設與陽台，不含屋突及地下室。':undefined}/>)}</div>;

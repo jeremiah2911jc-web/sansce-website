@@ -39,6 +39,7 @@ export function makeTrafficHandler({env=process.env,dbFactory=createSupabaseAdmi
   if(b.trafficSource!==undefined&&!sourceCategories.has(b.trafficSource))return reply(res,400,{ok:false});
   if(b.sourceBasis!==undefined&&!['tag','referrer','internal','none'].includes(b.sourceBasis))return reply(res,400,{ok:false});
   const duration=b.type==='duration',action=b.type==='action';
+  if(action&&b.action==='land_evaluation_complete'&&b.path!=='/land-evaluation')return reply(res,400,{ok:false});
   if(action&&(!uuid.test(b.pageEventId)||!validTrafficAction(b.action,b.target)))return reply(res,400,{ok:false});
   if((b.type!==undefined&&!duration&&!action)||(duration&&(!Number.isSafeInteger(b.visibleMs)||b.visibleMs<0||b.visibleMs>43200000)))return reply(res,400,{ok:false});
   const rateKey=b.visitorId+(duration?':duration':action?':action':'');
