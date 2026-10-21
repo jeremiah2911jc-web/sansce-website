@@ -1,18 +1,18 @@
 .readable-tail,.readable-word{display:inline;white-space:nowrap}
 .readable-title-line{display:contents}
 .program-hero h1 .readable-tail,.program-hero h1 .readable-word{display:inline}
-main p,main td,main figcaption,footer p{text-wrap:pretty}
+main p,main td,main figcaption,footer p{text-wrap:wrap}
 .lc-base-result p .readable-tail{display:inline;margin:0;font:inherit;color:inherit}
 .design-faq-item button .readable-label,.design-faq-item button .readable-word,.design-faq-item button .readable-tail{font:inherit;color:inherit}
 @media(max-width:600px){
   .readable-tail,.readable-word{display:inline;white-space:nowrap}
   .readable-title-line{display:block;white-space:nowrap}
-  main p,main td,main figcaption,footer p{text-wrap:pretty}
+  main p,main td,main figcaption,footer p{text-wrap:wrap}
   .interior-page .page-intro h1{font-size:clamp(24px,7.6vw,31px);text-wrap:wrap;max-width:none}
   .insight-article-header h1{font-size:clamp(26px,7.5vw,32px);text-wrap:wrap}
   .insights-heading-line br,.insights-editor-note br,
   .design-section-heading p br,.design-compare p br,.design-calculator p br,.lc-hero p br,.lc-empty p br,.program-hero p br{display:none}
-  .insights-heading-line,.insights-editor-note p{max-width:none;text-wrap:pretty}
+  .insights-heading-line,.insights-editor-note p{max-width:none;text-wrap:wrap}
 }
 
 /* Shared by every article, including the magazine layout. Keep phone prose

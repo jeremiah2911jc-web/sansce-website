@@ -8,7 +8,11 @@ const covers={
  'building-permit-extension':['/images/editorial/construction-inspection.webp','工地人員檢查建築現況','/images/redesign/project-management.jpg','專業人員核對工地圖面與施工進度'],
  'property-transfers-market':['/images/renewal-city-vision.jpg','都市住宅與房屋市場環境','/images/editorial/shop-frontage.webp','街區中的住宅出入口與店面']
 };
-export function editorialPage(page){if(page.visual)return page;const [src,alt,detail,detailAlt]=covers[page.path.split('/').pop()];return {...page,visual:{hero:{small:src,large:src},alt,detail:{src:detail,alt:detailAlt,width:1536,height:1024},sideTitle:[page.label],navigation:page.sections.map(([title],i)=>[title,'#section-'+(i+1)])}};}
+const inlinePhotos={
+ '/insights/joint-construction-lower-floor-allocation':{src:'/images/refinement-20261021/low-floor-interior.webp',small:'/images/refinement-20261021/low-floor-interior-960.webp',alt:'低樓層住宅窗外的鄰棟距離與採光',caption:'比較可選樓層時，須連同鄰棟距離、採光與使用需求評估。',afterSection:1},
+ '/insights/transfer-development-rights-allocation':{src:'/images/refinement-20261021/tdr-review.webp',small:'/images/refinement-20261021/tdr-review-960.webp',alt:'建築量體模型與成本工作資料',caption:'新增容積的成本與分配約定，須與原有合作條件一併比較。',afterSection:1}
+};
+export function editorialPage(page){if(page.visual)return inlinePhotos[page.path]?{...page,visual:{...page.visual,inlinePhoto:inlinePhotos[page.path]}}:page;const [src,alt,detail,detailAlt]=covers[page.path.split('/').pop()];return {...page,visual:{hero:{small:src,large:src},alt,detail:{src:detail,alt:detailAlt,width:1536,height:1024},sideTitle:[page.label],navigation:page.sections.map(([title],i)=>[title,'#section-'+(i+1)])}};}
 const serviceCover={
  '案件健檢':['document-review','待核對的基地資料與圖面'],
  '服務流程':['community-meeting','住戶討論基地資料與工作安排'],
