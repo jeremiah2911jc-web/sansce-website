@@ -21,6 +21,9 @@ export function makeTrafficHandler({env=process.env,dbFactory=createSupabaseAdmi
    if(!/^[a-f0-9]{64}$/.test(expected))return reply(res,503,{message:'看板尚未啟用。'});
    const actual=createHash('sha256').update(token).digest('hex');
    if(!token||!timingSafeEqual(Buffer.from(actual),Buffer.from(expected)))return reply(res,401,{message:'請輸入看板存取碼。'});
+   if(req.query?.view==='online'||new URL(req.url||'/', 'https://www.sanzepm.com.tw').searchParams.get('view')==='online'){
+    try{const db=dbFactory();if(!db)throw Error();const {data,error}=await db.rpc('sanze_land_online');if(error||!data||!Number.isSafeInteger(data.count))throw Error();return reply(res,200,data);}catch{return reply(res,503,{message:'暫時無法取得在線人數。'});}
+   }
    try{
     const db=dbFactory();if(!db)throw Error();
     const {data,error}=await db.rpc('sanze_traffic_snapshot',{p_topics:trafficTopics});
@@ -42,11 +45,13 @@ export function makeTrafficHandler({env=process.env,dbFactory=createSupabaseAdmi
   if(action&&b.action==='land_evaluation_complete'&&b.path!=='/land-evaluation')return reply(res,400,{ok:false});
   if(action&&(!uuid.test(b.pageEventId)||!validTrafficAction(b.action,b.target)))return reply(res,400,{ok:false});
   if((b.type!==undefined&&!duration&&!action)||(duration&&(!Number.isSafeInteger(b.visibleMs)||b.visibleMs<0||b.visibleMs>43200000)))return reply(res,400,{ok:false});
+  const presence=duration&&b.isVisible!==undefined;
+  if(presence&&(b.path!=='/land-evaluation'||typeof b.isVisible!=='boolean'||!Number.isSafeInteger(b.reportSequence)||b.reportSequence<1))return reply(res,400,{ok:false});
   const rateKey=b.visitorId+(duration?':duration':action?':action':'');
   const stamp=now();for(const [k,v]of attempts)if(stamp-v.start>60000)attempts.delete(k);
   const rate=attempts.get(rateKey)||{start:stamp,count:0};if(rate.count>=(duration||action?120:30)||(!attempts.has(rateKey)&&attempts.size>=5000))return reply(res,429,{ok:false});rate.count++;attempts.set(rateKey,rate);
   if(action){try{const db=dbFactory();if(!db)throw Error();const {data,error}=await db.rpc('sanze_record_visitor_action',{p_event_id:b.eventId,p_page_event_id:b.pageEventId,p_visitor_id:b.visitorId,p_source_path:b.path,p_action:b.action,p_target:b.target});if(error)throw Error();return reply(res,data?200:409,{ok:!!data});}catch{return reply(res,503,{ok:false});}}
-  if(duration){try{const db=dbFactory();if(!db)throw Error();const {error}=await db.rpc('sanze_record_visible_duration',{p_event_id:b.eventId,p_visitor_id:b.visitorId,p_source_path:b.path,p_visible_ms:b.visibleMs});if(error)throw Error();return reply(res,200,{ok:true});}catch{return reply(res,503,{ok:false});}}
+  if(duration){try{const db=dbFactory();if(!db)throw Error();const {error}=await db.rpc(presence?'sanze_record_land_presence':'sanze_record_visible_duration',{p_event_id:b.eventId,p_visitor_id:b.visitorId,p_source_path:b.path,p_visible_ms:b.visibleMs,...(presence?{p_is_visible:b.isVisible,p_report_sequence:b.reportSequence}:{})});if(error)throw Error();return reply(res,200,{ok:true});}catch{return reply(res,503,{ok:false});}}
   try{const db=dbFactory();if(!db)throw Error();const {error}=await db.from('sanze_site_pageviews').upsert({event_id:b.eventId,visitor_id:b.visitorId,path:trafficPage(b.path),source_path:b.path,...(b.trafficSource!==undefined?{traffic_source:b.trafficSource}:{}),...(b.sourceBasis!==undefined?{source_basis:b.sourceBasis}:{}),...(b.durationTracking===true?{visible_ms:0}:{}),interaction_tracking:b.actionTracking===true,...trafficMetadata(req.headers)},{onConflict:'event_id',ignoreDuplicates:true});if(error)throw Error();return reply(res,200,{ok:true});}catch{return reply(res,503,{ok:false});}
  };
 }

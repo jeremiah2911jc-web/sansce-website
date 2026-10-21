@@ -93,9 +93,12 @@ export function trackPageView(){
  async function reportDuration(current){
   if(!current?.accepted)return;
   const metadata=visitorTrackingMetadata();if(metadata.excludeFromTraffic||metadata.visitorId!==current.visitorId)return;
-  const visibleMs=Math.floor(current.visibleMs);if(visibleMs<=current.lastReportedMs)return;
-  const body={...JSON.parse(current.body),type:'duration',visibleMs};
-  try{const response=await fetch('/api/site-traffic',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),keepalive:true,signal:AbortSignal.timeout(10000)});if(response.ok)current.lastReportedMs=Math.max(current.lastReportedMs,visibleMs);}catch{/* The next heartbeat resends the cumulative total; the server takes its maximum. */}
+  const visibleMs=Math.floor(current.visibleMs);
+  const presence=location.pathname.replace(/\/$/,'')==='/land-evaluation' && typeof window.matchMedia==='function' && window.matchMedia('(min-width: 800px) and (hover: hover) and (pointer: fine)').matches;
+  const isVisible=document.visibilityState==='visible'&&current.wasVisible===true;
+  if(visibleMs<=current.lastReportedMs&&(!presence||(!isVisible&&current.lastPresenceVisible===false)))return;
+  const body={...JSON.parse(current.body),type:'duration',visibleMs,...(presence?{isVisible,reportSequence:current.reportSequence=(current.reportSequence||0)+1}:{})};
+  try{const response=await fetch('/api/site-traffic',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),keepalive:true,signal:AbortSignal.timeout(10000)});if(response.ok){current.lastReportedMs=Math.max(current.lastReportedMs,visibleMs);if(presence&&body.reportSequence===(current.reportSequence||0))current.lastPresenceVisible=isVisible;}}catch{/* The next heartbeat resends the cumulative total; the server takes its maximum. */}
  }
  function record(continued=false){
   rollover();
@@ -103,6 +106,7 @@ export function trackPageView(){
   if(document.visibilityState!=='visible'){void reportDuration(visit);return;}
   if(!visit){visit=createVisit(continued);if(visit)visit.wasVisible=true;}
   void send(visit);
+  if(visit?.accepted&&location.pathname.replace(/\/$/,'')==='/land-evaluation')void reportDuration(visit);
  }
  globalThis.setInterval?.(()=>{rollover();accrue(visit);void send(visit);void reportDuration(visit);void flushActions(visit);},15000);
  window.addEventListener('pagehide',()=>{accrue(visit);if(visit)visit.wasVisible=false;void reportDuration(visit);void flushActions(visit);});
