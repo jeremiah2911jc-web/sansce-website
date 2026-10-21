@@ -106,7 +106,7 @@
       "dest": "/index.html"
     },
     {
-      "src": "/traffic/(dashboard\\.css|dashboard\\.js|exclusion\\.js)",
+      "src": "/traffic/(dashboard\\.css|dashboard\\.js|source-labels\\.js|exclusion\\.js)",
       "dest": "/traffic/$1",
       "headers": {
         "X-Robots-Tag": "noindex, nofollow",
