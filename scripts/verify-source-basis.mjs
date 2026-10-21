@@ -23,7 +23,7 @@ for(const period of ['today','week','total']){
 }
 assert.deepEqual((await db.query('select jsonb_agg(to_jsonb(p) order by event_id) data from sanze_site_pageviews p')).rows[0].data,before);
 for(const source of ['google','facebook','bing','yahoo','duckduckgo','baidu','instagram','line']){
- for(const basis of ['tag','referrer',null,'none']){const label=sourceLabel(source,basis);assert.ok(!label.includes('標記或來源'));assert.ok(label.includes(basis==='tag'?'連結標記為':basis==='referrer'?'瀏覽器回報來自':'進站方式未區分'));assert.equal(sourceUnclear(sourceKey(source,basis)),!['tag','referrer'].includes(basis));}
+ for(const basis of ['tag','referrer',null,'none']){const label=sourceLabel(source,basis);assert.ok(!label.includes('標記或來源'));assert.ok(label.includes(basis==='tag'?'網址註明來自':basis==='referrer'?'瀏覽器回報來自':'無法確認怎麼進站'));assert.equal(sourceUnclear(sourceKey(source,basis)),!['tag','referrer'].includes(basis));}
 }
 for(const [url,name]of [['https://www.google.com/search?q=private','google'],['https://l.facebook.com/','facebook']]){
 assert.equal(trafficSource('',url),name);assert.equal(trafficSourceBasis('',url),'referrer');
