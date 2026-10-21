@@ -1,0 +1,402 @@
+{
+  "date": "2026-10-21",
+  "site": "https://www.sanzepm.com.tw",
+  "productionTestDeployment": "https://sansce-website-8dbkwk0rb-jeremiah2911jc-webs-projects.vercel.app",
+  "commit": "4263d4595620e2661e8b4088095c53ee30d19441",
+  "userCap": 100,
+  "stoppedHigherStageOnUserInstruction": true,
+  "coldAssetCheck": {
+    "requests": 80,
+    "failed": 0,
+    "statuses": {
+      "200": 80
+    },
+    "p50Ms": 147.645708,
+    "p95Ms": 850.8850000000002,
+    "p99Ms": 902.9139160000004,
+    "maxMs": 902.9139160000004,
+    "bytes": 31840820
+  },
+  "results": [
+    {
+      "users": 1,
+      "passed": true,
+      "startAt": "2026-10-21T10:06:54.300Z",
+      "finishedAt": "2026-10-21T10:08:11.196Z",
+      "elapsedSeconds": 76.896,
+      "requests": {
+        "requests": 26,
+        "failed": 0,
+        "statuses": {
+          "200": 26
+        },
+        "p50Ms": 503.4102500000008,
+        "p95Ms": 965.8208750000003,
+        "p99Ms": 1057.9017919999987,
+        "maxMs": 1057.9017919999987,
+        "bytes": 190453
+      },
+      "byKind": {
+        "page": {
+          "requests": 1,
+          "failed": 0,
+          "statuses": {
+            "200": 1
+          },
+          "p50Ms": 27.454791000000114,
+          "p95Ms": 27.454791000000114,
+          "p99Ms": 27.454791000000114,
+          "maxMs": 27.454791000000114,
+          "bytes": 8296
+        },
+        "pageview": {
+          "requests": 1,
+          "failed": 0,
+          "statuses": {
+            "200": 1
+          },
+          "p50Ms": 965.8208750000003,
+          "p95Ms": 965.8208750000003,
+          "p99Ms": 965.8208750000003,
+          "maxMs": 965.8208750000003,
+          "bytes": 11
+        },
+        "presence": {
+          "requests": 5,
+          "failed": 0,
+          "statuses": {
+            "200": 5
+          },
+          "p50Ms": 499.66033400000015,
+          "p95Ms": 930.2035000000033,
+          "p99Ms": 930.2035000000033,
+          "maxMs": 930.2035000000033,
+          "bytes": 55
+        },
+        "online": {
+          "requests": 7,
+          "failed": 0,
+          "statuses": {
+            "200": 7
+          },
+          "p50Ms": 904.0989580000023,
+          "p95Ms": 1057.9017919999987,
+          "p99Ms": 1057.9017919999987,
+          "maxMs": 1057.9017919999987,
+          "bytes": 538
+        },
+        "health": {
+          "requests": 7,
+          "failed": 0,
+          "statuses": {
+            "200": 7
+          },
+          "p50Ms": 29.43908299999748,
+          "p95Ms": 35.76591699999699,
+          "p99Ms": 35.76591699999699,
+          "maxMs": 35.76591699999699,
+          "bytes": 58072
+        },
+        "dashboard": {
+          "requests": 2,
+          "failed": 0,
+          "statuses": {
+            "200": 2
+          },
+          "p50Ms": 958.8892500000002,
+          "p95Ms": 958.8892500000002,
+          "p99Ms": 958.8892500000002,
+          "maxMs": 958.8892500000002,
+          "bytes": 123448
+        },
+        "calculation": {
+          "requests": 2,
+          "failed": 0,
+          "statuses": {
+            "200": 2
+          },
+          "p50Ms": 925.0262079999957,
+          "p95Ms": 925.0262079999957,
+          "p99Ms": 925.0262079999957,
+          "maxMs": 925.0262079999957,
+          "bytes": 22
+        },
+        "leave": {
+          "requests": 1,
+          "failed": 0,
+          "statuses": {
+            "200": 1
+          },
+          "p50Ms": 898.8821660000103,
+          "p95Ms": 898.8821660000103,
+          "p99Ms": 898.8821660000103,
+          "maxMs": 898.8821660000103,
+          "bytes": 11
+        }
+      },
+      "peakOnline": 1,
+      "successfullyJoined": 1,
+      "calculations": 2,
+      "eventLoopP99Ms": 21.430271
+    },
+    {
+      "users": 25,
+      "passed": true,
+      "startAt": "2026-10-21T10:08:16.203Z",
+      "finishedAt": "2026-10-21T10:09:47.067Z",
+      "elapsedSeconds": 90.864,
+      "requests": {
+        "requests": 270,
+        "failed": 0,
+        "statuses": {
+          "200": 270
+        },
+        "p50Ms": 482.96020899998257,
+        "p95Ms": 939.2700000000041,
+        "p99Ms": 1039.4282910000038,
+        "maxMs": 1379.2508329999982,
+        "bytes": 400403
+      },
+      "byKind": {
+        "page": {
+          "requests": 25,
+          "failed": 0,
+          "statuses": {
+            "200": 25
+          },
+          "p50Ms": 30.328374999997322,
+          "p95Ms": 45.99550000000454,
+          "p99Ms": 49.04633300000569,
+          "maxMs": 49.04633300000569,
+          "bytes": 207400
+        },
+        "pageview": {
+          "requests": 25,
+          "failed": 0,
+          "statuses": {
+            "200": 25
+          },
+          "p50Ms": 494.0783749999973,
+          "p95Ms": 922.8291250000038,
+          "p99Ms": 1039.4282910000038,
+          "maxMs": 1039.4282910000038,
+          "bytes": 275
+        },
+        "presence": {
+          "requests": 126,
+          "failed": 0,
+          "statuses": {
+            "200": 126
+          },
+          "p50Ms": 500.11149999999907,
+          "p95Ms": 939.2700000000041,
+          "p99Ms": 955.4642080000194,
+          "maxMs": 988.5190000000002,
+          "bytes": 1386
+        },
+        "online": {
+          "requests": 9,
+          "failed": 0,
+          "statuses": {
+            "200": 9
+          },
+          "p50Ms": 493.11704199999804,
+          "p95Ms": 985.9532499999914,
+          "p99Ms": 985.9532499999914,
+          "maxMs": 985.9532499999914,
+          "bytes": 701
+        },
+        "health": {
+          "requests": 8,
+          "failed": 0,
+          "statuses": {
+            "200": 8
+          },
+          "p50Ms": 29.318790999997873,
+          "p95Ms": 40.3193339999998,
+          "p99Ms": 40.3193339999998,
+          "maxMs": 40.3193339999998,
+          "bytes": 66368
+        },
+        "dashboard": {
+          "requests": 2,
+          "failed": 0,
+          "statuses": {
+            "200": 2
+          },
+          "p50Ms": 605.9174170000042,
+          "p95Ms": 605.9174170000042,
+          "p99Ms": 605.9174170000042,
+          "maxMs": 605.9174170000042,
+          "bytes": 123448
+        },
+        "calculation": {
+          "requests": 50,
+          "failed": 0,
+          "statuses": {
+            "200": 50
+          },
+          "p50Ms": 481.90616699999373,
+          "p95Ms": 916.5270829999936,
+          "p99Ms": 1332.0443749999977,
+          "maxMs": 1332.0443749999977,
+          "bytes": 550
+        },
+        "leave": {
+          "requests": 25,
+          "failed": 0,
+          "statuses": {
+            "200": 25
+          },
+          "p50Ms": 827.3590419999964,
+          "p95Ms": 982.2127089999849,
+          "p99Ms": 1379.2508329999982,
+          "maxMs": 1379.2508329999982,
+          "bytes": 275
+        }
+      },
+      "peakOnline": 25,
+      "successfullyJoined": 25,
+      "calculations": 50,
+      "eventLoopP99Ms": 22.052863
+    },
+    {
+      "users": 100,
+      "passed": true,
+      "startAt": "2026-10-21T10:09:52.069Z",
+      "finishedAt": "2026-10-21T10:11:23.440Z",
+      "elapsedSeconds": 91.371,
+      "requests": {
+        "requests": 1021,
+        "failed": 0,
+        "statuses": {
+          "200": 1021
+        },
+        "p50Ms": 481.01083299997845,
+        "p95Ms": 933.2819170000148,
+        "p99Ms": 1108.9498330000206,
+        "maxMs": 1900.6372499999998,
+        "bytes": 1100046
+      },
+      "byKind": {
+        "page": {
+          "requests": 100,
+          "failed": 0,
+          "statuses": {
+            "200": 100
+          },
+          "p50Ms": 29.22825000001467,
+          "p95Ms": 39.98545800001011,
+          "p99Ms": 132.99441600000137,
+          "maxMs": 132.99441600000137,
+          "bytes": 829600
+        },
+        "pageview": {
+          "requests": 100,
+          "failed": 0,
+          "statuses": {
+            "200": 100
+          },
+          "p50Ms": 480.13383299999987,
+          "p95Ms": 933.2819170000148,
+          "p99Ms": 1091.6649169999873,
+          "maxMs": 1091.6649169999873,
+          "bytes": 1100
+        },
+        "presence": {
+          "requests": 500,
+          "failed": 0,
+          "statuses": {
+            "200": 500
+          },
+          "p50Ms": 489.2145409999939,
+          "p95Ms": 936.5622499999881,
+          "p99Ms": 1522.6484169999894,
+          "maxMs": 1900.6372499999998,
+          "bytes": 5500
+        },
+        "online": {
+          "requests": 9,
+          "failed": 0,
+          "statuses": {
+            "200": 9
+          },
+          "p50Ms": 466.88783300001523,
+          "p95Ms": 895.0359159999934,
+          "p99Ms": 895.0359159999934,
+          "maxMs": 895.0359159999934,
+          "bytes": 707
+        },
+        "health": {
+          "requests": 9,
+          "failed": 0,
+          "statuses": {
+            "200": 9
+          },
+          "p50Ms": 28.439833000011276,
+          "p95Ms": 32.36383299998124,
+          "p99Ms": 32.36383299998124,
+          "maxMs": 32.36383299998124,
+          "bytes": 74664
+        },
+        "dashboard": {
+          "requests": 3,
+          "failed": 0,
+          "statuses": {
+            "200": 3
+          },
+          "p50Ms": 620.4973340000142,
+          "p95Ms": 822.7619169999962,
+          "p99Ms": 822.7619169999962,
+          "maxMs": 822.7619169999962,
+          "bytes": 185175
+        },
+        "calculation": {
+          "requests": 200,
+          "failed": 0,
+          "statuses": {
+            "200": 200
+          },
+          "p50Ms": 493.4350829999894,
+          "p95Ms": 946.1600409999955,
+          "p99Ms": 1045.4749580000062,
+          "maxMs": 1057.9307090000075,
+          "bytes": 2200
+        },
+        "leave": {
+          "requests": 100,
+          "failed": 0,
+          "statuses": {
+            "200": 100
+          },
+          "p50Ms": 484.5260830000043,
+          "p95Ms": 936.2029589999584,
+          "p99Ms": 1470.0475829999777,
+          "maxMs": 1470.0475829999777,
+          "bytes": 1100
+        }
+      },
+      "peakOnline": 100,
+      "successfullyJoined": 100,
+      "calculations": 200,
+      "eventLoopP99Ms": 23.887871
+    }
+  ],
+  "databaseVerification": {
+    "expectedVisitors": 100,
+    "storedViews": 100,
+    "storedVisitors": 100,
+    "completedCalculations": 200,
+    "closedPages": 100,
+    "pagesWithAllReports": 100,
+    "deadlocks": 0
+  },
+  "full100OverlapSeconds": 60.127,
+  "limitations": [
+    "HTTP virtual users, not 100 full rendered browsers",
+    "Per user 75 seconds; entire 100-user stage about 91 seconds",
+    "No long-duration soak or maximum failure threshold tested",
+    "High-user scenario has frontend code already downloaded; cold bundle download check is separate",
+    "Test writes isolated in same database host; AI and reports not load-tested"
+  ]
+}
