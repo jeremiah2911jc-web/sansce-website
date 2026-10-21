@@ -1,4 +1,3 @@
-import {makeCapacityTestHandler} from './_capacity-test.js';
 import {trafficTopics} from '../shared/traffic-content.js';
 import {validTrafficAction} from '../shared/traffic-actions.js';
 import {reports} from './_report-records.js';
@@ -56,6 +55,4 @@ export function makeTrafficHandler({env=process.env,dbFactory=createSupabaseAdmi
   try{const db=dbFactory();if(!db)throw Error();const {error}=await db.from('sanze_site_pageviews').upsert({event_id:b.eventId,visitor_id:b.visitorId,path:trafficPage(b.path),source_path:b.path,...(b.trafficSource!==undefined?{traffic_source:b.trafficSource}:{}),...(b.sourceBasis!==undefined?{source_basis:b.sourceBasis}:{}),...(b.durationTracking===true?{visible_ms:0}:{}),interaction_tracking:b.actionTracking===true,...trafficMetadata(req.headers)},{onConflict:'event_id',ignoreDuplicates:true});if(error)throw Error();return reply(res,200,{ok:true});}catch{return reply(res,503,{ok:false});}
  };
 }
-const liveHandler=makeTrafficHandler();
-const capacityHandler=makeCapacityTestHandler(makeTrafficHandler);
-export default function(req,res){return req.headers['x-sanze-capacity-run']?capacityHandler(req,res):liveHandler(req,res);}
+export default makeTrafficHandler();
