@@ -6,5 +6,5 @@ const models={
 };
 export function DevelopmentModel({kind}){
  const [name,alt,width,height]=models[kind]||models.overview;
- return <img className="dev-model-image" src={'/images/land-evaluation/'+name+'.webp'} alt={alt} width={width} height={height} style={{aspectRatio:width+' / '+height}} loading={kind==='overview'?'eager':'lazy'} fetchPriority={kind==='overview'?'high':'auto'} decoding="async"/>;
+ return <img className="dev-model-image" src={'/images/land-evaluation/'+name+'.webp'} alt={alt} width={width} height={height} style={{aspectRatio:width+' / '+height}} loading={kind==='overview'?'eager':'lazy'} fetchpriority={kind==='overview'?'high':'auto'} decoding="async"/>;
 }
