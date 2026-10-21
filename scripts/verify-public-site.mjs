@@ -14,3 +14,5 @@ assert.equal(resolve(active,'/assets/example.js').dest,'/$1/$2');assert.equal(re
 for(const path of pages.slice(1))assert(read(`dist${path}/index.html`).includes(`href="https://www.sanzepm.com.tw${path}"`));
 assert(read('dist/sitemap.xml').includes('/checkup'));
 console.log('PASS: 10 public routes prepared; public website preserved and evaluation-system routes removed; unknown routes remain 404.');
+
+for(const file of ['dashboard.js','dashboard.css','exclusion.js','source-labels.js']){assert.equal(resolve(active,'/traffic/'+file).dest,'/traffic/$1');assert(existsSync('dist/traffic/'+file));}
