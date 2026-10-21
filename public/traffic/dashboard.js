@@ -14,7 +14,7 @@ function locationName(key){
  return key==='overseas'?'海外・國家／地區未辨識':regionNames[key]||'地區未辨識';
 }
 const deviceNames={mobile:'手機',desktop:'電腦',tablet:'平板',unknown:'未識別裝置'};
-const sourceNames={threads_tagged:'Threads・專用連結',threads_referral:'Threads・來源辨識',google:'Google（標記或來源）',bing:'Bing（標記或來源）',yahoo:'Yahoo（標記或來源）',duckduckgo:'DuckDuckGo（標記或來源）',baidu:'百度（標記或來源）',facebook:'Facebook（標記或來源）',instagram:'Instagram（標記或來源）',line:'LINE（標記或來源）',other_campaign:'其他標記連結',other_referral:'其他網站',direct_unknown:'來源不明',internal:'站內延續／外部來源不明',unknown:'未記錄來源'};
+const sourceNames={threads_tagged:'連結標記為 Threads',threads_referral:'瀏覽器回報來自 Threads',google:'Google（標記或來源）',bing:'Bing（標記或來源）',yahoo:'Yahoo（標記或來源）',duckduckgo:'DuckDuckGo（標記或來源）',baidu:'百度（標記或來源）',facebook:'Facebook（標記或來源）',instagram:'Instagram（標記或來源）',line:'LINE（標記或來源）',other_campaign:'其他標記連結',other_referral:'其他網站',direct_unknown:'來源不明',internal:'站內延續／外部來源不明',unknown:'未記錄來源'};
 function renderDistributions(){
  if(!latestData)return;
  const period=$('distribution-period').value;
@@ -34,7 +34,7 @@ function renderDistributions(){
  const total=(data?.locationPeriods?.[period]||data?.countyPeriods?.[period]||[]).reduce((sum,r)=>sum+Number(r.visitors),0);
  $('distribution-note').textContent=available?({today:'今日',week:'近七天',total:'累計'}[period]+'共 '+number(total)+unit+(period==='today'?'訪客。同一瀏覽器瀏覽多頁只計一位。':'訪客；每日訪客數加總，同一瀏覽器跨日回訪會再次計入。')):'暫時無法取得訪客分類，請稍後更新數據。';
  renderCountryCities(period);
- $('metadata-note').textContent=latestData.metadataStartedAt?'地區與裝置首次有紀錄：'+new Date(latestData.metadataStartedAt).toLocaleString('zh-TW',{timeZone:'Asia/Taipei'})+' 開始；舊紀錄只有區域，無法補算縣市；沒有縣市資料時保留區域並標示未辨識。':'地區與裝置分類已啟用，等待新的訪客紀錄；舊紀錄只有區域，無法補算縣市；沒有縣市資料時保留區域並標示未辨識。';
+ $('metadata-note').textContent=latestData.metadataStartedAt?'縣市已依城市名稱對照重整；不明與衝突資料不強行歸類。國外按國家合併。地區與裝置首次有紀錄：'+new Date(latestData.metadataStartedAt).toLocaleString('zh-TW',{timeZone:'Asia/Taipei'})+' 開始；舊紀錄只有區域，無法補算縣市；沒有縣市資料時保留區域並標示未辨識。':'地區與裝置分類已啟用，等待新的訪客紀錄；舊紀錄只有區域，無法補算縣市；沒有縣市資料時保留區域並標示未辨識。';
 }
 $('distribution-period').addEventListener('change',renderDistributions);
 
@@ -56,7 +56,7 @@ function renderVisitorArrivals(){
   const card=document.createElement('article');card.className='visitor-arrival';card.id='visitor-'+String(row.visitorNumber).padStart(2,'0');
   const title=document.createElement('h3');title.textContent='訪客 '+String(row.visitorNumber).padStart(2,'0');
   const details=document.createElement('dl');
-  for(const [label,value,stamp] of [['當日首次來源',sourceNames[row.trafficSource]||'未記錄來源',null],['首次開啟頁面',names[row.entryPath||row.pages?.[0]?.path]||retiredNames[row.entryPath||row.pages?.[0]?.path]||row.entryPath||row.pages?.[0]?.path||'未取得',null],['裝置（估計）',deviceNames[row.deviceType]||'未識別裝置',null],['國家／地區（估計）',countryName(row.geoCountry||(row.locationKey?.startsWith('country:')?row.locationKey.slice(8):regionNames[row.locationKey]&&row.locationKey!=='overseas'&&row.locationKey!=='unknown'?'TW':null)),null],['城市／縣市（估計）',cityLabel({county:row.geoCounty,city:row.geoCity,region:row.geoRegion}),null],['首次頁面紀錄',time(row.firstSeen),row.firstSeen],['最後開啟頁面',time(row.lastSeen),row.lastSeen],['最後收到操作',row.lastActionAt?time(row.lastActionAt):'尚無操作回報',row.lastActionAt],['已記錄停留時間（估計）',formatStay(row.visibleMs)+(Number(row.durationTrackedViews)>0&&Number(row.durationTrackedViews)<Number(row.views)?'（部分瀏覽未取得停留時間）':''),null],['瀏覽次數',number(row.views)+' 次',null]]){
+  for(const [label,value,stamp] of [['當日首次來源',sourceNames[row.trafficSource]||'未記錄來源',null],['首次開啟頁面',names[row.entryPath||row.pages?.[0]?.path]||retiredNames[row.entryPath||row.pages?.[0]?.path]||row.entryPath||row.pages?.[0]?.path||'未取得',null],['裝置（估計）',deviceNames[row.deviceType]||'未識別裝置',null],['國家／地區（估計）',countryName(row.geoCountry||(row.locationKey?.startsWith('country:')?row.locationKey.slice(8):regionNames[row.locationKey]&&row.locationKey!=='overseas'&&row.locationKey!=='unknown'?'TW':null)),null],['城市／縣市（估計）',cityLabel({country:row.geoCountry,county:row.geoCounty,city:row.geoCity,region:row.geoRegion}),null],['首次頁面紀錄',time(row.firstSeen),row.firstSeen],['最後開啟頁面',time(row.lastSeen),row.lastSeen],['最後收到操作',row.lastActionAt?time(row.lastActionAt):'尚無操作回報',row.lastActionAt],['已記錄停留時間（估計）',formatStay(row.visibleMs)+(Number(row.durationTrackedViews)>0&&Number(row.durationTrackedViews)<Number(row.views)?'（部分瀏覽未取得停留時間）':''),null],['瀏覽次數',number(row.views)+' 次',null]]){
    const group=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;if(label==='當日首次來源')group.className='visitor-entry-source';if(label.includes('（估計）')&&label!=='已記錄停留時間（估計）')group.className='visitor-location';
    if(stamp){const t=document.createElement('time');t.dateTime=stamp;t.textContent=value;dd.append(t);}else dd.textContent=value;
    if(label==='當日首次來源')dd.className='data-badge '+(['direct_unknown','internal','unknown'].includes(row.trafficSource)||!row.trafficSource?'tone-unknown':'tone-source');
@@ -76,15 +76,15 @@ function renderVisitorArrivals(){
   const journey=document.createElement('div');journey.className='visitor-journey';
   const journeyTitle=document.createElement('h4');journeyTitle.textContent='進站後的操作';journey.append(journeyTitle);
   const note=document.createElement('p');note.className='page-note';
-  note.textContent=row.timeline===undefined?'操作紀錄暫時無法取得。':!row.interactionTrackedViews?'這些頁面未啟用操作追蹤，只能列出已收到的開啟頁面；不能推定沒有操作。':Number(row.interactionTrackedViews)<Number(row.views)?'僅部分頁面啟用操作追蹤；缺漏的操作無法補算。':'依伺服器收到紀錄的時間排列；網路延遲可能改變先後。捲動表示頁面位置；點擊聯絡不代表已通話、傳訊或送出諮詢。新版服務切換、試算、助理開啟與聯絡面板操作自新版追蹤啟用後才記錄；舊資料不能補算。諮詢成功代表寄送服務已接受，不代表收件人已閱讀。';journey.append(note);
+  note.textContent=row.timeline===undefined?'操作紀錄暫時無法取得。':!row.interactionTrackedViews?'這些頁面未啟用操作追蹤，只能列出已收到的開啟頁面；不能推定沒有操作。':Number(row.interactionTrackedViews)<Number(row.views)?'僅部分頁面啟用操作追蹤；缺漏的操作無法補算。':'依伺服器收到紀錄的時間排列；網路延遲可能改變先後。捲動表示頁面位置；點擊聯絡不代表已通話、傳訊或送出諮詢。土地開發評估入口點擊與成功產出結果分別記錄；重算再次產出結果會再記一次，不等於不同使用者或不同案件。啟用前未記錄的操作無法補算。新版服務切換、試算、助理開啟與聯絡面板操作自新版追蹤啟用後才記錄；舊資料不能補算。諮詢成功代表寄送服務已接受，不代表收件人已閱讀。';journey.append(note);
   const steps=document.createElement('ol');steps.className='visitor-timeline';steps.setAttribute?.('aria-label','訪客操作時間順序');
   for(const step of row.timeline||[]){
    const item=document.createElement('li'),at=document.createElement('time'),body=document.createElement('div'),label=document.createElement('b'),page=document.createElement('span');at.dateTime=step.at;at.textContent=time(step.at);
-   const interactionLabels={service_select:{site:'切換服務：基地評估',contract:'切換服務：合建條件',checkup:'切換服務：案件健檢',management:'切換服務：全案管理'},stage_select:{integration:'查看階段：正在整合地主',association:'查看階段：更新會已成立',submitted:'查看階段：案件已經送件',blocked:'查看階段：推動遇到困難',feasibility:'查看需求：評估可行性',cooperation:'查看需求：整合與合作',progress:'查看需求：追蹤案件進度'},calculator_example:{fixed:'帶入範例：已知分回面積',development:'帶入範例：容積與比例不同',separate:'帶入範例：分項約定比例'},calculator_complete:{single:'試算完成：單一提案',comparison:'試算完成：兩案比較'},assistant_open:{launcher:'開啟三策助理',calculator:'在試算頁開啟三策助理'},assistant_question:{send:'送出助理提問（回覆結果另見 AI 統計）'},contact_open:{rail:'開啟聯絡面板',mobile:'從手機底列開啟聯絡面板'},contact_success:{accepted:'諮詢送出成功（伺服器確認寄送）'}};
+   const interactionLabels={tool_entry:{'/land-evaluation':'點擊土地開發評估入口（不代表完成計算）'},land_evaluation_complete:{result:'土地開發評估：成功產出一次計算結果'},service_select:{site:'切換服務：基地評估',contract:'切換服務：合建條件',checkup:'切換服務：案件健檢',management:'切換服務：全案管理'},stage_select:{integration:'查看階段：正在整合地主',association:'查看階段：更新會已成立',submitted:'查看階段：案件已經送件',blocked:'查看階段：推動遇到困難',feasibility:'查看需求：評估可行性',cooperation:'查看需求：整合與合作',progress:'查看需求：追蹤案件進度'},calculator_example:{fixed:'帶入範例：已知分回面積',development:'帶入範例：容積與比例不同',separate:'帶入範例：分項約定比例'},calculator_complete:{single:'試算完成：單一提案',comparison:'試算完成：兩案比較'},assistant_open:{launcher:'開啟三策助理',calculator:'在試算頁開啟三策助理'},assistant_question:{send:'送出助理提問（回覆結果另見 AI 統計）'},contact_open:{rail:'開啟聯絡面板',mobile:'從手機底列開啟聯絡面板'},contact_success:{accepted:'諮詢送出成功（伺服器確認寄送）'}};
    const destination=names[step.target]||retiredNames[step.target]||step.target;
    label.textContent=step.action==='pageview'?'開啟'+destination:step.action==='scroll'?'捲動位置達 '+step.target+'%':step.action==='service_click'?'點擊服務：'+destination:step.action==='checkup_click'?'點擊案件健檢':step.action==='contact_click'?({'/contact':'點擊聯絡／預約諮詢','line':'點擊 LINE 聯絡','phone':'點擊撥打電話','email':'點擊電子郵件'}[step.target]||'點擊聯絡'):(interactionLabels[step.action]?.[step.target]||'操作');
    if(step.action!=='pageview'){page.textContent='所在頁面：'+(names[step.path]||retiredNames[step.path]||step.path);body.append(label,page);}else body.append(label);
-   item.className='action-'+(['contact_click','contact_open','contact_success'].includes(step.action)?'contact':['service_click','checkup_click','service_select','stage_select','calculator_example','calculator_complete','assistant_open','assistant_question'].includes(step.action)?'service':step.action==='scroll'?'scroll':'page');item.append(at,body);steps.append(item);
+   item.className='action-'+(['contact_click','contact_open','contact_success'].includes(step.action)?'contact':['tool_entry','land_evaluation_complete','service_click','checkup_click','service_select','stage_select','calculator_example','calculator_complete','assistant_open','assistant_question'].includes(step.action)?'service':step.action==='scroll'?'scroll':'page');item.append(at,body);steps.append(item);
   }
   journey.append(steps);
   if(Number(row.timelineTotal)>(row.timeline||[]).length){const more=document.createElement('p');more.className='page-note';more.textContent='共 '+number(row.timelineTotal)+' 筆，顯示最早 '+number(row.timeline.length)+' 筆。';journey.append(more);}
@@ -144,12 +144,13 @@ function countryName(code){
  try{return new Intl.DisplayNames(['zh-Hant'],{type:'region'}).of(code)||code;}catch{return code;}
 }
 function cityLabel(row){
+ if(row.country&&row.country!=='TW')return '僅按國家統計';
  if(row.county&&regionNames[row.county])return regionNames[row.county];
  if(row.city)return row.city;
  const fallback=regionNames[(row.region||'')+'_unknown'];
  return fallback||'城市未辨識';
 }
-function geographyLabel(row){return countryName(row.country)+'／'+cityLabel(row);}
+function geographyLabel(row){return row.country&&row.country!=='TW'?countryName(row.country):countryName(row.country)+'／'+cityLabel(row);}
 function audienceRows(period){return latestData?.audienceContent?.periods?.[period]||[];}
 function renderCountryCities(period){
  const countries=$('countries');countries.replaceChildren();
@@ -175,7 +176,8 @@ function renderAudience(){
  const period=$('audience-period').value,all=audienceRows(period),unit=period==='today'?' 位':' 人次';
  fillAudienceSelect('audience-country',[...new Set(all.map(r=>r.country||'unknown'))].map(code=>[code,countryName(code==='unknown'?null:code)]),'全部國家／地區');
  const country=$('audience-country').value,countryRows=all.filter(r=>country==='all'||(r.country||'unknown')===country);
- fillAudienceSelect('audience-city',countryRows.map(r=>[r.key,geographyLabel(r)]),'全部城市／縣市');
+ fillAudienceSelect('audience-city',countryRows.filter(r=>r.country==='TW').map(r=>[r.key,geographyLabel(r)]),'全部台灣縣市');
+ $('audience-city').disabled=country!=='all'&&country!=='TW';
  const selected=$('audience-city').value,rows=countryRows.filter(r=>selected==='all'||r.key===selected);
  const visitors=rows.reduce((n,r)=>n+Number(r.visitors),0),views=rows.reduce((n,r)=>n+Number(r.views),0);
  $('audience-summary').textContent=({today:'今日',week:'近七天',total:'累計'}[period])+' · '+number(visitors)+unit+'訪客 · '+number(views)+' 次瀏覽 · '+rows.length+' 個地區';

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 const read=p=>readFileSync(p,'utf8');
-const paused=JSON.parse(read('vercel.paused.json'));const active=JSON.parse(read('vercel.json'));const candidate=JSON.parse(read('vercel.public.json'));assert.deepEqual(active,candidate);
+const paused=JSON.parse(read('vercel.paused.json'));const active=JSON.parse(read('vercel.json'));const candidate=JSON.parse(read('vercel.public.json'));const comparable={...active};if(process.env.VERCEL){if(comparable.version!==undefined){assert.equal(comparable.version,2);delete comparable.version;}if(comparable.name!==undefined){assert.equal(comparable.name,'sansce-website');delete comparable.name;}}assert.deepEqual(comparable,candidate);
 const resolve=(config,path)=>config.routes.find(r=>!r.continue&&new RegExp(`^(?:${r.src})$`).test(path));
 assert.equal(resolve(active,'/api/contact').dest,'/api/contact');
 assert.equal(resolve(paused,'/api/contact').dest,'/api/public-site-not-found');

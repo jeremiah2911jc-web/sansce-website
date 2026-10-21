@@ -1,6 +1,8 @@
 // Only fixed public destinations are collected; never store link text, queries or form values.
 export const servicePaths = ['/consulting','/services/urban-renewal','/services/dangerous-old-rebuilding','/services/joint-construction','/services/project-management'];
 export const interactionTargets = {
+ tool_entry:['/land-evaluation'],
+ land_evaluation_complete:['result'],
  service_select:['site','contract','checkup','management'],
  stage_select:['integration','association','submitted','blocked','feasibility','cooperation','progress'],
  calculator_example:['fixed','development','separate'],
@@ -22,6 +24,7 @@ export function trafficLinkAction(href,base){
   const u=new URL(href,base);
   if(['www.sanzepm.com.tw','sanzepm.com.tw'].includes(u.hostname)&&u.protocol==='https:'){
    const path=u.pathname.replace(/\/$/,'')||'/';
+   if(path==='/land-evaluation')return {action:'tool_entry',target:path};
    if(servicePaths.includes(path))return {action:'service_click',target:path};
    if(path==='/checkup')return {action:'checkup_click',target:path};
    if(path==='/contact')return {action:'contact_click',target:path};

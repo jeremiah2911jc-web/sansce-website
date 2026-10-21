@@ -1,5 +1,6 @@
 import {knowledgePages} from './knowledge-pages.js';
 const topics={
+ '/land-evaluation':'土地開發評估',
  '/insights/joint-construction-lower-floor-allocation':'合建樓層與選屋條件',
  '/insights/transfer-development-rights-allocation':'容積移轉與地主分配',
  '/insights/urban-renewal-ground-floor-shops':'店面價值與分配',
