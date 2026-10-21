@@ -15,5 +15,5 @@ async function send(path,action,target){const r={setHeader(){},end(){}};await ha
 assert.equal(await send('/','land_evaluation_complete','result'),400);assert.equal(writes,0);
 assert.equal(await send('/land-evaluation','land_evaluation_complete','result'),200);
 assert.equal(await send('/','tool_entry','/land-evaluation'),200);assert.equal(writes,2);
-const dashboard=fs.readFileSync('dist/traffic/dashboard.js','utf8');assert(dashboard.includes('點擊土地開發評估入口（不代表完成計算）'));assert(dashboard.includes('成功產出一次計算結果'));assert(dashboard.includes('不等於不同使用者或不同案件'));
+const dashboard=fs.readFileSync('dist/traffic/dashboard.js','utf8');assert(dashboard.includes('點擊土地開發評估入口（不代表完成計算）'));assert(dashboard.includes('成功產出一次計算結果'));assert(fs.readFileSync('dist/traffic/index.html','utf8').includes('不等於不同使用者或不同案件'));
 console.log('PASS land tracking: valid result only, repeat calculations counted, fixed destinations, origin page validation, content category and dashboard distinction.');
