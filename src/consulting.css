@@ -84,7 +84,7 @@
 .work-sheet>header{display:block;position:static;width:auto;min-width:0;padding:18px 20px;margin:0 0 22px;overflow-wrap:break-word}
 .work-sheet>header>span,.work-sheet>header>h3,.work-sheet>header>p{position:static;max-width:100%}
 .interior-page .checkup-services .card{padding:26px 28px}
-.checkup-services .card p:last-child{margin-bottom:0;text-wrap:pretty}
+.checkup-services .card p:last-child{margin-bottom:0;text-wrap:wrap}
 .keep-phrase{white-space:nowrap}
 .checkup-page-visual{align-items:stretch}
 .checkup-page-visual .work-photo{width:100%;min-height:0;aspect-ratio:auto}

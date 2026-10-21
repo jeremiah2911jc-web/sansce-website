@@ -189,24 +189,22 @@
       "position": "67% 45%"
     },
     "/images/editorial/urban-blocks.webp|": {
-      "id": "P019",
-      "src": "/images/refresh-20261020/p019.jpg",
-      "small": "/images/refresh-20261020/p019-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "顧問與住戶核對基地與社區重建",
-      "role": "content",
-      "position": "50% 45%"
+      "id": "refinement-home-observation",
+      "src": "/images/refinement-20261021/home-observation.webp",
+      "small": "/images/refinement-20261021/home-observation-960.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "屋主在老公寓核對窗邊牆面與居住現況",
+      "position": "50% 50%"
     },
     "/images/editorial/older-apartment-stair.webp|": {
-      "id": "P020",
-      "src": "/images/refresh-20261020/p020.jpg",
-      "small": "/images/refresh-20261020/p020-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "顧問與住戶核對基地與社區重建",
-      "role": "content",
-      "position": "50% 45%"
+      "id": "refinement-base-survey",
+      "src": "/images/refinement-20261021/base-survey.webp",
+      "small": "/images/refinement-20261021/base-survey-960.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "住宅街角的臨路、入口與測量工作",
+      "position": "50% 50%"
     },
     "/images/insights/public-renewal-neighborhood-1536.webp|article-card": {
       "id": "P021",
@@ -485,14 +483,13 @@
       "position": "50% 45%"
     },
     "/images/redesign/residential-grand-v2.jpg|": {
-      "id": "P033",
-      "src": "/images/refresh-20261020/p033.jpg",
-      "small": "/images/refresh-20261020/p033-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "新建住宅外觀與街道環境",
-      "role": "article-card",
-      "position": "50% 45%"
+      "id": "refinement-market-sales",
+      "src": "/images/refinement-20261021/market-sales.webp",
+      "small": "/images/refinement-20261021/market-sales-960.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "接待空間的建築模型與空置座位",
+      "position": "50% 50%"
     },
     "/images/editorial/urban-blocks.webp|": {
       "id": "P034",
@@ -555,14 +552,13 @@
       "position": "50% 45%"
     },
     "/images/renewal-city-vision.jpg|": {
-      "id": "P040",
-      "src": "/images/refresh-20261020/p040.jpg",
-      "small": "/images/refresh-20261020/p040-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "都市住宅與房屋市場環境",
-      "role": "article-card",
-      "position": "50% 45%"
+      "id": "refinement-transfer-registry",
+      "src": "/images/refinement-20261021/transfer-registry.webp",
+      "small": "/images/refinement-20261021/transfer-registry-960.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "分別核對交易與登記文件",
+      "position": "50% 50%"
     },
     "/images/editorial/relocation-home.webp|": {
       "id": "P041",

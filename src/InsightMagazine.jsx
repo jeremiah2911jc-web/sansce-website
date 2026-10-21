@@ -19,7 +19,7 @@ export function InsightBody({ page }) {
 export function InsightSection({ page, title, body, index }) {
   return <section id={'section-' + (index + 1)} className="sanze-feature-section">
     {title && (page.visual.storyPhotos ? <Readable as="h2">{title}</Readable> : <h2>{title}</h2>)}
-    <div className="feature-section-copy">{body.split('\n\n').map((paragraph, j) => <ArticleParagraph key={j} page={page} paragraph={paragraph} />)}<InsightInsert page={page} index={index} />{page.visual.storyComparison?.afterSection === index && <ArticleComparison comparison={page.visual.storyComparison} />}{page.visual.storyPhotos?.filter(photo => photo.afterSection === index).map(photo => <figure className="insight-story-photo" key={photo.src}><picture><source srcSet={`${photo.small} 768w, ${photo.src} 1536w`} sizes="(max-width: 760px) 100vw, 760px"/><img src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} loading="lazy"/></picture><figcaption>{photo.caption}</figcaption></figure>)}{index === 1 && page.visual.detail && <figure className="feature-mobile-detail"><DetailPhoto page={page} /></figure>}</div>
+    <div className="feature-section-copy">{body.split('\n\n').map((paragraph, j) => <ArticleParagraph key={j} page={page} paragraph={paragraph} />)}<InsightInsert page={page} index={index} />{page.visual.storyComparison?.afterSection === index && <ArticleComparison comparison={page.visual.storyComparison} />}{page.visual.storyPhotos?.filter(photo => photo.afterSection === index).map(photo => <figure className="insight-story-photo" key={photo.src}><picture><source srcSet={`${photo.small} 768w, ${photo.src} 1536w`} sizes="(max-width: 760px) 100vw, 760px"/><img src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} loading="lazy"/></picture><figcaption>{photo.caption}</figcaption></figure>)}{page.visual.inlinePhoto?.afterSection===index && <figure className="insight-inline-photo"><picture><source srcSet={`${page.visual.inlinePhoto.small} 960w, ${page.visual.inlinePhoto.src} 1536w`} sizes="(max-width:760px) 100vw, 820px"/><img src={page.visual.inlinePhoto.src} width="1536" height="1024" loading="lazy" alt={page.visual.inlinePhoto.alt}/></picture><figcaption>{page.visual.inlinePhoto.caption}</figcaption></figure>}{index === 1 && page.visual.detail && <figure className="feature-mobile-detail"><DetailPhoto page={page} /></figure>}</div>
   </section>;
 }
 
@@ -43,10 +43,10 @@ function ArticleComparison({ comparison }) {
 }
 
 function PlanDoor({ x, y, width = 36 }) {
-  return <g stroke="#36584a" strokeWidth="1.4" fill="none">
+  return <g stroke="#263d4b" strokeWidth="1.4" fill="none">
     <path d={`M${x},${y + 3} V${y - width}`} />
     <path d={`M${x},${y - width} A${width},${width} 0 0 1 ${x + width},${y}`} strokeWidth="1" />
-    <circle cx={x} cy={y} r="1.5" fill="#36584a" stroke="none" />
+    <circle cx={x} cy={y} r="1.5" fill="#263d4b" stroke="none" />
   </g>;
 }
 
@@ -54,29 +54,33 @@ function ShopPlan({ narrow = false }) {
   // One common coordinate scale and street datum; both shops have equal area.
   const x = narrow ? 74 : 90,y = narrow ? 40 : 130,w = narrow ? 160 : 240,h = 310 - y;
   const doorX = narrow ? 130 : 184;
-  return <svg viewBox="0 0 420 405" role="img" aria-label={narrow ? '較窄面寬、較深進深的店面，右側為獨立住宅入口' : '較寬面寬、較淺進深的店面'}>
-    <rect x={x} y={y} width={w} height={h} fill="#e8ede4" stroke="#36584a" strokeWidth="4" />
-    <rect x={x + 4} y={y + 4} width={w - 8} height={h - 8} fill="none" stroke="#8d9d8c" strokeWidth="0.7" />
-    <path d={`M${x + 4},310 H${doorX} M${doorX + 36},310 H${x + w - 4}`} stroke="#a48b5d" strokeWidth="3" />
-    <rect x={doorX} y="304" width="36" height="10" fill="#f4f6ef" />
+  return <svg viewBox={narrow?"0 0 420 405":"0 100 420 305"} role="img" aria-label={narrow ? '較窄面寬、較深進深的店面，右側為獨立住宅入口' : '較寬面寬、較淺進深的店面'}>
+    <rect x={x} y={y} width={w} height={h} fill="#ede9e1" stroke="#263d4b" strokeWidth="4" />
+    <rect x={x + 4} y={y + 4} width={w - 8} height={h - 8} fill="none" stroke="#8b969c" strokeWidth="0.7" />
+    <path d={`M${x + 4},310 H${doorX} M${doorX + 36},310 H${x + w - 4}`} stroke="#aa7659" strokeWidth="3" />
+    <rect x={doorX} y="304" width="36" height="10" fill="#f6f3ec" />
     <PlanDoor x={doorX} y={310} />
-    <text x={x + w / 2} y={y + h / 2 - 6} textAnchor="middle" fontSize="17" fill="#36584a">店面</text>
-    <text x={x + w / 2} y={y + h / 2 + 16} textAnchor="middle" fontSize="11" fill="#7d8b7b">相同面積</text>
-    {narrow && <g><rect x="246" y="40" width="84" height="270" fill="#eeeae0" stroke="#8c8c7c" strokeWidth="4" /><rect x="250" y="44" width="76" height="262" fill="none" stroke="#b2b1a1" strokeWidth="0.7" /><rect x="270" y="304" width="36" height="10" fill="#f4f6ef" /><PlanDoor x={270} y={310} /><text x="288" y="157" textAnchor="middle" fontSize="13" fill="#7f8173">住宅</text><text x="288" y="177" textAnchor="middle" fontSize="13" fill="#7f8173">入口</text></g>}
-    <g stroke="#98a58f" strokeWidth="0.8" fill="none">
+    <text x={x + w / 2} y={y + h / 2 - 6} textAnchor="middle" fontSize="17" fill="#263d4b">店面</text>
+    <text x={x + w / 2} y={y + h / 2 + 16} textAnchor="middle" fontSize="19" fill="#465761">相同面積</text>
+    {narrow && <g><rect x="246" y="40" width="84" height="270" fill="#f1ebe2" stroke="#63737d" strokeWidth="4" /><rect x="250" y="44" width="76" height="262" fill="none" stroke="#b5b6af" strokeWidth="0.7" /><rect x="270" y="304" width="36" height="10" fill="#f6f3ec" /><PlanDoor x={270} y={310} /><text x="288" y="157" textAnchor="middle" fontSize="19" fill="#465761">住宅</text><text x="288" y="177" textAnchor="middle" fontSize="19" fill="#465761">入口</text></g>}
+    <g stroke="#647780" strokeWidth="0.8" fill="none">
       <path d={`M${x},326 V347 M${x + w},326 V347 M${x},339 H${x + w}`} />
       <path d={`M${x - 3},343 l6,-8 M${x + w - 3},343 l6,-8`} />
       <path d={`M${x - 12},${y} H${x - 30} M${x - 12},310 H${x - 30} M${x - 23},${y} V310`} />
       <path d={`M${x - 27},${y + 3} l8,-6 M${x - 27},313 l8,-6`} />
     </g>
-    <text x={x + w / 2} y="359" textAnchor="middle" fontSize="11" fill="#73816e">面寬</text>
-    <text x={x - 39} y={y + h / 2} textAnchor="middle" fontSize="11" fill="#73816e" transform={`rotate(-90 ${x - 39} ${y + h / 2})`}>進深</text>
-    <path d="M44,374 H376" stroke="#bdc6b6" strokeWidth="1" />
-    <text x="210" y="397" textAnchor="middle" fontSize="12" fill="#73816e">街道</text>
+    <text x={x + w / 2} y="359" textAnchor="middle" fontSize="19" fill="#465761">面寬</text>
+    <text x={x - 39} y={y + h / 2} textAnchor="middle" fontSize="19" fill="#465761" transform={`rotate(-90 ${x - 39} ${y + h / 2})`}>進深</text>
+    <path d="M44,374 H376" stroke="#aeb7ba" strokeWidth="1" />
+    <text x="210" y="397" textAnchor="middle" fontSize="19" fill="#465761">街道</text>
   </svg>;
 }
 
 export function InsightInsert({ page, index }) {
   if (page.visual?.insert !== 'shop-frontage' || index !== 2) return null;
   return <figure className="insight-space-study" aria-labelledby="shop-study-title"><div className="space-study-kicker">店面條件觀察</div><h3 id="shop-study-title">同樣分回一樓，<br />商業條件可能不同。</h3><div className="space-study-pair"><div><ShopPlan /><p>配置 A｜面寬較寬</p></div><div><ShopPlan narrow /><p>配置 B｜進深較深</p></div></div><figcaption>同面積、不同面寬與進深的概念示意，非個案設計圖。兩圖採相同比例及臨街基準，住宅入口獨立設置；實際配置仍須依建築圖面評估。</figcaption></figure>;
+}
+
+export function ArticleReadingIndex({page}) {
+ return <details className="article-reading-index wrap"><summary>本文重點與段落目錄<span aria-hidden="true" /></summary><nav aria-label="本文段落">{page.sections.map(([title],i)=><a key={i} href={'#section-'+(i+1)}>{title}</a>)}</nav></details>;
 }

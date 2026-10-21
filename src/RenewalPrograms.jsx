@@ -21,6 +21,7 @@ const categories=[
 ];
 function AnimatedCardDetails({children,label}){
  const detailRef=useRef(null),animationRef=useRef(null),targetOpen=useRef(false);
+ const [expanded,setExpanded]=useState(false);
  useEffect(()=>()=>animationRef.current?.cancel(),[]);
  function toggle(event){
   const detail=detailRef.current;
@@ -30,6 +31,7 @@ function AnimatedCardDetails({children,label}){
   const opening=animationRef.current?!targetOpen.current:!detail.open;
   animationRef.current?.cancel();
   targetOpen.current=opening;
+  setExpanded(opening);
   detail.open=true;
   const to=opening?detail.getBoundingClientRect().height:detail.querySelector('summary').getBoundingClientRect().height;
   detail.style.overflow='hidden';
@@ -42,7 +44,7 @@ function AnimatedCardDetails({children,label}){
    animationRef.current=null;
   }).catch(()=>{});
  }
- return <details className="rp-card-details" ref={detailRef}><summary onClick={toggle}>{label}<span className="rp-toggle" aria-hidden="true">＋</span></summary>{children}</details>;
+ return <details className="rp-card-details" ref={detailRef} onToggle={e=>{if(!animationRef.current)setExpanded(e.currentTarget.open);}}><summary onClick={toggle}>{expanded ? (label==='查看方案內容'?'收合方案內容':'收合適用條件') : label}<span className="rp-toggle" aria-hidden="true">{expanded?'−':'＋'}</span></summary>{children}</details>;
 }
 function ProgramCard({scheme:s}){
  const Icon=categories.find(c=>c.name===s.kind).Icon;
@@ -61,9 +63,9 @@ export default function RenewalPrograms(){
  const citySchemes=schemes.filter(s=>city==='全部城市'||city===s.city);
  const shown=citySchemes.filter(s=>kind==='全部需求'||kind===s.kind);
  return <div className="programs-page rp-page">
- <section className="wrap rp-hero"><div className="rp-hero-copy"><Readable as="p" className="eyebrow">都更與危老方案</Readable><Readable as="h1">老屋重建，<br/>從社區條件找方案。</Readable><Readable as="p" className="rp-lead">從社區的情況出發，<br/>查詢臺北、新北、桃園、臺中、臺南與高雄可評估的方案。</Readable><div className="rp-hero-actions"><a className="cta" href="#program-list">{city==='全部城市'?'尋找適合的方案':`看${city}方案`}</a></div></div><figure className="rp-hero-image"><img fetchPriority="high" {...photoProps({src:"/images/editorial/urban-blocks.webp",alt:"新舊住宅與街廓的都市環境",width:"1672",height:"941"})}/><figcaption>基地、建物與整合條件，對照各方案的申請要求。</figcaption></figure></section>
+ <section className="wrap rp-hero"><div className="rp-hero-copy"><Readable as="p" className="eyebrow">都更與危老方案</Readable><Readable as="h1">都市更新與危老<br/>地方方案及申請條件</Readable><Readable as="p" className="rp-lead">查詢臺北、新北、桃園、臺中、臺南與高雄的重建、補助及安置方案，逐項核對資格、期限與應備文件。</Readable><div className="rp-hero-actions"><a className="cta" href="#program-list">{city==='全部城市'?'尋找適合的方案':`看${city}方案`}</a></div></div><figure className="rp-hero-image"><img fetchPriority="high" {...photoProps({src:"/images/editorial/urban-blocks.webp",alt:"新舊住宅與街廓的都市環境",width:"1672",height:"941"})}/><figcaption>基地、建物與整合條件，對照各方案的申請要求。</figcaption></figure></section>
  <section className="wrap rp-catalog" id="program-list" aria-labelledby="rp-catalog-title">
-  <div className="rp-catalog-head"><div><Readable as="p" className="eyebrow">專案與申請方向</Readable><Readable as="h2" id="rp-catalog-title">先選城市，再看社區需要的協助。</Readable></div><p className="rp-notice"><time dateTime="2026-10-20">資料查核：2026年10月20日</time><span>收錄申請、補助及程序協助；數量非城市方案總數。</span></p></div>
+  <div className="rp-catalog-head"><div><Readable as="p" className="eyebrow">專案與申請方向</Readable><Readable as="h2" id="rp-catalog-title">依城市與社區需求查詢</Readable></div><p className="rp-notice"><time dateTime="2026-10-20">資料查核：2026年10月20日</time><span>收錄申請、補助及程序協助；數量非城市方案總數。</span></p></div>
   <div className="rp-city-filter" role="group" aria-label="選擇城市">{['全部城市','臺北市','新北市','桃園市','臺中市','臺南市','高雄市'].map(v=><button type="button" key={v} aria-pressed={city===v} onClick={()=>chooseCity(v)}>{v}<span>{schemes.filter(s=>v==='全部城市'||s.city===v).length}</span></button>)}</div>
   {programRegions[city]&&<section className="rp-region-guide" aria-label="原縣市行政區對照" key={city}><p>{city}於2010年12月25日縣市合併。以下按合併前範圍分開列出，現行專案由{city}主管機關辦理。</p><details><summary>原縣市與行政區對照<span className="rp-toggle" aria-hidden="true">＋</span></summary><div className="rp-region-columns">{programRegions[city].groups.map(group=><section key={group.name}><h3>{group.name}<span>{group.districts.length}區</span></h3><p>{group.districts.join('、')}</p></section>)}</div><p className="rp-region-note">原縣市範圍供辨識所在地；能否申請仍依都市計畫範圍、土地分區、基地與建物條件判斷。原縣轄區也有都市計畫區，不能全部視為非都市土地。</p><a href={programRegions[city].source} target="_blank" rel="noopener noreferrer">市府行政區資料</a><a href={programRegions[city].history} target="_blank" rel="noopener noreferrer">縣市合併沿革</a></details></section>}
   {city==='臺北市'&&<section className="rp-taipei-guide" aria-labelledby="taipei-guide-title"><div className="rp-taipei-guide-heading"><h3 id="taipei-guide-title">臺北市社區的申請方向</h3></div><div className="rp-taipei-paths">{[['政府協助','希望政府協助評估','575、7599與更新會補助'],['重建與安全','房屋安全與重建途徑','防災都更、危老與整建住宅'],['老屋改善','暫不重建，改善老屋','整建維護、電梯與老宅延壽'],['搬遷安置','重建期間需要住處','中繼住宅的申請與費用']].map(([filter,title,description])=><a key={filter} href="#rp-results" onClick={()=>{chooseCity('臺北市');setKind(filter);}}><strong>{title}</strong><span>{description}</span></a>)}</div><details className="rp-taipei-update"><summary>5099與大街廓：最新政策進度<span className="rp-toggle" aria-hidden="true">＋</span></summary><p>市府2026年10月提出5099與大街廓更新方向，目前公告仍屬規劃推動。7599現行仍採75%、90%、90%門檻，不能直接改用五成意願；每年1月1日至8月31日受理，2026年本輪已截止。<a href={taipeiPolicySource} target="_blank" rel="noopener noreferrer">閱讀市府公告</a></p></details></section>}
