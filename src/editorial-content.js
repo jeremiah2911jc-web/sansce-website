@@ -3,7 +3,7 @@ const covers={
  'developer-launch-market-recovery':['/images/redesign/residential-grand-v2.jpg','住宅建築與城市開發環境','/images/editorial/construction-inspection.webp','工地人員檢查建築現況'],
  'urban-renewal-far-300':['/images/editorial/urban-blocks.webp','新舊住宅與街廓的都市環境','/images/redesign/site-inspection-v2.jpg','查看住宅基地與周邊環境'],
  'urban-renewal-one-for-one':['/images/editorial/family-floor-plan.webp','一家人檢視格局圖與現有居住空間','/images/editorial/relocation-home.webp','家人整理搬遷前的書籍與物品'],
- 'urban-renewal-consent-plan-changes':['/images/editorial/contract-review.webp','逐項檢閱合作文件的工作','/images/editorial/community-meeting.webp','住戶共同討論基地與重建計畫'],
+ 'urban-renewal-consent-plan-changes':['/images/editorial/contract-review.webp','逐項檢閱合作內容的工作','/images/editorial/community-meeting.webp','住戶共同討論基地與重建計畫'],
  'renewal-distribution':['/images/redesign/document-review.jpg','核對重建分配資料與圖面','/images/editorial/family-floor-plan.webp','核對新屋格局與家庭生活需求'],
  'building-permit-extension':['/images/editorial/construction-inspection.webp','工地人員檢查建築現況','/images/redesign/project-management.jpg','專業人員核對工地圖面與施工進度'],
  'property-transfers-market':['/images/renewal-city-vision.jpg','都市住宅與房屋市場環境','/images/editorial/shop-frontage.webp','街區中的住宅出入口與店面']

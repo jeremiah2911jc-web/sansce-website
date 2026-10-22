@@ -9,7 +9,7 @@ function FormattedText({text}){return text.split(/(\*\*[^*]+\*\*)/g).map((part,i
 function Answer({text}){return text.split(/(\[[^\]\n]+\]\(https?:\/\/[^\s)]+\))/g).map((part,i)=>{const m=part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);const href=m&&safeHref(m[2]);return href?<a key={i} href={href} target="_blank" rel="noopener noreferrer">{m[1]} </a>:<FormattedText key={i} text={part}/>;});}
 export default function WebsiteAssistant(){
  const isCalculator=typeof window!=='undefined'&&window.location.pathname.replace(/\/$/,'')==='/landowner-comparison';
- const welcome=()=>isCalculator?{...assistantWelcome(),content:assistantWelcome().content+' 本頁提供土地持分換算、面積口徑及容積分配條件的填寫說明。'}:assistantWelcome();
+ const welcome=()=>isCalculator?{...assistantWelcome(),content:assistantWelcome().content+' 本頁提供土地持分換算、坪數說法及容積分配條件的填寫說明。'}:assistantWelcome();
  const[open,setOpen]=useState(false),[messages,setMessages]=useState(()=>[welcome()]),[draft,setDraft]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState('');
  const[viewport,setViewport]=useState(null);
  const conversation=useRef(null),logRef=useRef(null),dialogRef=useRef(null);

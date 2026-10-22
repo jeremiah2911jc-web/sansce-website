@@ -95,12 +95,12 @@
   },
   "/consulting": {
     "/images/redesign/consultation.jpg|": {
-      "id": "RA-entry",
-      "src": "/images/reaudit-20261021/entry.webp",
-      "small": "/images/reaudit-20261021/entry-960.webp",
+      "id": "R22-entry",
+      "src": "/images/refinement-20261022/entry-inward.webp",
+      "small": "/images/refinement-20261022/entry-inward-960.webp",
       "width": 1536,
       "height": 1024,
-      "alt": "住戶開啟老公寓入口大門",
+      "alt": "住戶走入老公寓入口，鐵門向室內開啟",
       "role": "content",
       "position": "50% 50%"
     },
@@ -115,24 +115,24 @@
       "position": "50% 45%"
     },
     "/images/editorial/older-apartment-stair.webp|": {
-      "id": "P012",
-      "src": "/images/refresh-20261020/p012.jpg",
-      "small": "/images/refresh-20261020/p012-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "顧問與住戶核對基地評估與重建規劃",
+      "id": "R22-stair",
+      "src": "/images/refinement-20261022/stair-review.webp",
+      "small": "/images/refinement-20261022/stair-review-960.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "專業人員在老公寓平台查看樓梯、扶手與通行空間",
       "role": "content",
-      "position": "50% 45%"
+      "position": "50% 50%"
     },
     "/images/editorial/contract-review.webp|": {
-      "id": "P013",
-      "src": "/images/refresh-20261020/p013.jpg",
-      "small": "/images/refresh-20261020/p013-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "顧問與住戶核對基地評估與重建規劃",
+      "id": "R22-contract-tea",
+      "src": "/images/refinement-20261022/contract-tea.webp",
+      "small": "/images/refinement-20261022/contract-tea-960.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "顧問與屋主比較合作提案，桌上放有白瓷蓋碗與小茶杯",
       "role": "content",
-      "position": "50% 45%"
+      "position": "50% 50%"
     },
     "/images/editorial/construction-inspection.webp|": {
       "id": "P014",
@@ -302,7 +302,7 @@
       "small": "/images/refresh-20261020/p076-960.jpg",
       "width": 1672,
       "height": 940,
-      "alt": "屋主核對合作文件與提案條件",
+      "alt": "屋主核對合作內容與提案條件",
       "role": "article-card",
       "position": "50% 45%"
     },
@@ -342,7 +342,7 @@
       "small": "/images/refresh-20261020/p080-960.jpg",
       "width": 1672,
       "height": 941,
-      "alt": "屋主核對合作文件與提案條件",
+      "alt": "屋主核對合作內容與提案條件",
       "role": "dynamic-content",
       "position": "50% 45%"
     },
@@ -537,7 +537,7 @@
       "small": "/images/refresh-20261020/p037-960.jpg",
       "width": 1672,
       "height": 941,
-      "alt": "屋主核對合作文件與提案條件",
+      "alt": "屋主核對合作內容與提案條件",
       "role": "article-card",
       "position": "50% 45%"
     },
@@ -826,7 +826,7 @@
       "small": "/images/refresh-20261020/p062-960.jpg",
       "width": 1672,
       "height": 941,
-      "alt": "屋主核對合作文件與提案條件",
+      "alt": "屋主核對合作內容與提案條件",
       "role": "content",
       "position": "50% 45%"
     },

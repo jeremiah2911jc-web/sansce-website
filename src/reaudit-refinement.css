@@ -35,3 +35,24 @@
 @media(max-width:760px){.rp-search-tools{grid-template-columns:1fr;gap:16px}.rp-local-further dl>div{grid-template-columns:1fr;gap:9px}.rp-page-controls{align-items:flex-start}.service-task-nav{gap:10px 20px;margin-bottom:22px}.service-task-nav a{font-size:15px}.service-edition p{font-size:17px;line-height:1.9}.service-edition .service-copy-section{padding:20px 0;scroll-margin-top:85px}.urban-commission,.urban-base,.urban-rights,.urban-responsibility,.eligibility-visit,.contract-version,.management-record,.management-boundaries{display:block}.urban-commission{padding-bottom:14px}.urban-base{padding:8px 20px;margin:20px 0}.urban-work-phases p{padding:12px 16px}.eligibility-record{padding:0 20px;margin-bottom:26px}.eligibility-visit .service-copy-section:first-child{padding-top:22px}.contract-review-register thead{display:none}.contract-review-register tbody tr{display:block;margin-bottom:22px;border:1px solid #b8c4c8;scroll-margin-top:85px}.contract-review-register tbody th,.contract-review-register tbody td{display:block;width:auto;padding:18px 20px;border:0}.contract-review-register tbody th{border-bottom:1px solid #c9cecc}.contract-review-register h2{font-size:22px}.contract-version .service-evidence-photo{margin-top:20px}.management-record .service-evidence-photo{margin-top:24px}.management-commission{padding:22px 20px!important}.issue-table .issue-record p{font-size:16px}.lw-draft-guide ul{padding-left:22px}}
 
 .co-comparison-items details[open]>summary svg{transform:none!important}.co-comparison-items details[open]>summary svg path[d="M12 5v14"]{display:none}
+
+/* Company footer: preserve content while reducing repeated vertical spacing. */
+.site-footer{padding:34px 0 12px}
+.site-footer .footer-grid{gap:40px;padding-bottom:24px;align-items:flex-start}
+.site-footer .footer-grid h2{font-size:22px;line-height:1.5;margin:0 0 10px}
+.site-footer .footer-grid>div:first-child>p{font-size:17px;line-height:1.6;margin:0 0 8px}
+.site-footer .footer-grid>div:first-child>small{display:block;font-size:11px;line-height:1.5}
+.site-footer .scripture-quote{margin:14px 0 0;padding:2px 0 2px 14px}
+.site-footer .scripture-quote p{font-size:13px;line-height:1.8;margin:0}
+.site-footer .scripture-quote cite{font-size:12px;line-height:1.6;margin-top:5px}
+.site-footer .footer-grid>div:last-child{display:grid;gap:6px}
+.site-footer .footer-grid>div:last-child :is(a,p){font-size:13px;line-height:1.8;margin:0}
+.site-footer .footer-bottom{margin-top:18px;padding-block:14px}
+@media(max-width:760px){
+ .site-footer{padding:20px 0 10px}
+ .site-footer .footer-grid{gap:14px;padding-bottom:12px}
+ .site-footer .footer-grid h2{font-size:20px;margin-bottom:8px}
+ .site-footer .footer-grid>div:first-child>p{font-size:16px;margin-bottom:6px}
+ .site-footer .scripture-quote{margin-top:8px}
+ .site-footer .footer-bottom{margin-top:10px;padding-block:10px;gap:6px}
+}

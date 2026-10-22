@@ -7,7 +7,7 @@ function Photo({name,alt,caption}){return <figure className="service-evidence-ph
 const menus={
  'urban-renewal':[[0,'委託與成果'],[3,'基地及程序'],[4,'各階段工作'],[11,'諮詢資料']],
  'dangerous-old-rebuilding':[[2,'資格與產權'],[3,'全體同意'],[4,'規劃與出資'],[6,'準備資料']],
- 'joint-construction':[[0,'審閱範圍'],[3,'分配條件'],[5,'履約安排'],[7,'文件版本']],
+ 'joint-construction':[[0,'審閱範圍'],[3,'分配條件'],[5,'履約安排'],[7,'契約與方案版本']],
  'project-management':[[0,'委託範圍'],[2,'階段管理'],[4,'交付資料'],[5,'各方權責']]
 };
 export function ServicePageNavigation({page}) {return <nav className="service-task-nav" aria-label="服務重點導覽">{menus[page.path.split('/').pop()].map(([i,label])=><a key={i} href={`#section-${i+1}`}>{label}</a>)}</nav>;}

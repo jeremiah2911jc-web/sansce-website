@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-22",
+  "scope": [
+    "/consulting",
+    "/services/urban-renewal",
+    "/services/dangerous-old-rebuilding",
+    "/services/joint-construction",
+    "/services/project-management"
+  ],
+  "tool": "built-in image_gen",
+  "images": [
+    {
+      "name": "entry-inward",
+      "source": "exec-3b09ca50-64e4-4a2e-b97b-97fb98bbdba9.png",
+      "prompt": "Create one 1536x1024 horizontal photorealistic candid editorial photograph for a Taiwan urban renewal consulting website. Scene: dry street outside a modest 1980s Taipei apartment entrance, beige small ceramic tiles, natural bright diffuse daylight, realistic lived-in details. A single Taiwanese woman aged 38, round face, shoulder-length naturally curly black hair tied half-up, no glasses, light blue loose shirt and charcoal trousers, is stepping into the common entrance of her apartment. NOT an elderly couple, no other prominent people. Most important architectural constraint: ONE simple steel entrance door, clearly and correctly hinged to the LEFT jamb as viewed from outside; the leaf is already swung INWARD about 80 degrees into a spacious interior foyer, its FREE LATCH EDGE visibly located INSIDE the foyer. The right doorjamb and strike plate are visible on the opposite side of the opening. The leaf must physically connect to the left jamb via consistent vertical hinges; it must NOT fold, float, open into a wall, cross the jamb, or project into the sidewalk. Camera outside and slightly to the right, wide enough to show both doorjambs, the entire threshold, and the leaf positioned inside the foyer. The woman walks across the open threshold with both arms relaxed, not manipulating or awkwardly holding a knob. One foot inside and one outside with credible gait; free doorway remains unobstructed. Simple stone stair flight visible in the distance after a level spacious foyer, believable risers and handrails. Accurate human anatomy, two arms and hands, realistic neck and shoulders, natural skin. No additional screen doors or elaborate ornate gate mechanisms. No plants blocking hinge geometry. No wet reflective pavement, no rain, no watermark, no text, no logos, no cinematic color grading. Natural off-white, restrained navy and wood tones. It is an entry/use scene, not a staged portrait or luxury interior.",
+      "inspection": "Full image inspected. Left jamb hinges visibly fixed; leaf swings into foyer, free edge inside, right jamb strike aligned. Unblocked threshold, credible gait, dry pavement. Different curly-haired resident. No invented actual-site attribution."
+    },
+    {
+      "name": "stair-review",
+      "source": "exec-466b6ad9-9d67-45f1-8bba-44b4ed2d5460.png",
+      "prompt": "Generate one 1536x1024 horizontal natural photorealistic editorial photo for a Taiwan old-building feasibility service. An attractive, alert Taiwanese female building survey professional about 31, distinct angular face and very short straight pixie haircut, fitted charcoal work jacket, beige practical trousers and flat closed-toe shoes, standing on a spacious dry landing in a lived-in 1980s apartment stairwell. She is calmly observing the staircase and the connection of its handrail to the wall; her hands hold a plain closed slim clipboard down at her waist, no measuring tools, no pointing or pretending to measure. Clear believable terrazzo stairs with even riser heights and full-depth treads rise in a single consistent direction behind her; continuous metal handrail follows stair slope and joins correctly at landing. Show at least five treads and the full landing circulation. Ordinary daylight from stairwell window, off-white painted walls, subtle everyday wear; realistic scale and geometry, straight vertical walls, no doors, no irrelevant props, no wetness. Full upper body and both forearms visible, natural shoulders wrists hands and fingers. Not an elderly resident, no gray-haired couples, no formal male consultant. Realistic skin, no cinematic color grade, no glamour posing or over-smoothing, no text overlay or watermark.",
+      "inspection": "Full image inspected. Two natural hands hold closed clipboard at waist. No false measuring action. Stair treads, risers, railing slope and landing plausible. Young pixie-haired professional differs from other subjects."
+    },
+    {
+      "name": "contract-tea",
+      "source": "exec-e1ee5f1f-efe9-4cc0-9042-f7792f19917c.png",
+      "prompts": [
+        "Create a NEW 1536x1024 natural photorealistic editorial photo for a Taiwan joint-construction proposal comparison service. Reference images lock ONLY the fictional male consultant's face and appearance: retain same handsome clean-shaven facial features, dark swept-back low-tied hair, fitted navy suit white shirt and restrained dark tie. DO NOT reproduce the reference residents, elderly couple, composition or old documents. In a clear professional but modest daylight office, a NEW Taiwanese male homeowner age 34, compact muscular build, round face, close-cropped dark hair, small neat moustache, no glasses, muted rust overshirt, sits on the right side of a desk and studies a printed proposal with the consultant seated on the left. They compare a simple two-column conditions table and two flat plan sheets side by side on the desk, not a building model. Consultant's open left hand rests naturally next to the comparison sheet; his right index finger touches one line in the table. Homeowner's two hands rest naturally on his side of the table, no pens or artificial signatures. Medium three-quarter view with faces and all hand contact points plainly visible, natural anatomy, realistic skin and shoulders. Credible coherent paper edges, desk geometry, simple charts with tiny non-readable labels, no large text or numbers and no fabricated real-case promises. Natural warm white, wood and navy palette, soft daylight. No elderly people, repeated gray-haired couples, cropped-off hands, extra fingers, paper clipping through furniture, cinematic grade, halo, watermark or overlay.",
+        "Edit this consulting photograph, retaining the same fictional male consultant on the LEFT with all his facial features, tied-back hair, suit, posture, hands, pointing contact, and retaining the office, desk, papers, lighting and camera. Replace ONLY the homeowner on the RIGHT with a clearly different Taiwanese resident: a 57-year-old fully BALD man with a broad round face, medium tan complexion, a neatly trimmed full salt-and-pepper BEARD, NO eyeglasses, stocky build, muted deep teal knit shirt. His look must be unmistakably different from the original younger spiky-haired man with a small moustache. Preserve a calm attentive expression looking down at the comparison sheet, hands folded naturally on the table, correct fingers wrists forearms and shoulders. Match the surrounding natural daylight, skin texture and perspective; no pasted face look, no elderly couple, no text, no watermark. Everything else remains the same.",
+        "Edit only the tea ware in the foreground LEFT of this photograph. Replace the gray ceramic mug and its round coaster with a small rectangular natural bamboo tea tray holding ONE plain ivory-white porcelain gaiwan (lidded bowl, matching lid and saucer) and TWO small matching handleless ivory porcelain tasting cups. Arrange the tray entirely on an empty corner of the desk, away from all paper edges and the consultant's pointing hand; all bases physically touch the tray. The teaware must look properly sized and usable, with consistent clean rims, no handles on the tasting cups, the gaiwan lid centered and matching. No steam. Retain BOTH people exactly, including the bald bearded homeowner on the right and the fictional consultant on the left, all facial features, clothing, hands, pointing contact, papers, desk, office, light, framing and all background elements unchanged. Match natural daylight and realistic material texture. No watermark or text."
+      ],
+      "inspection": "Consultant retains approved fictional character. Bald bearded homeowner clearly differs from existing residents. Hands, pointing contact, paper edges, teaware and tray inspected. One white gaiwan and two small handleless cups replace gray mug; bases rest on tray outside paper area.",
+      "rejected": [
+        "exec-0f73016a-dbd5-42a7-a218-51fa02daa647.png: younger homeowner too similar to existing article resident",
+        "exec-8ed46b66-6d60-4ac6-9c9c-511dec336f97.png: resident fixed; gray mug changed at user request"
+      ]
+    }
+  ],
+  "retainedInspected": [
+    "/consulting: p011.jpg, outdoor consultant and homeowner, hands and architectural scale inspected",
+    "/consulting: p014.jpg, construction team with helmets and reflective vests, plan hand positions inspected",
+    "/services/dangerous-old-rebuilding: doorway-measure-v2.webp, tape endpoint and frame contacts inspected",
+    "/services/joint-construction: document-review-v3.webp, hand contact and flat plan edges inspected",
+    "/services/project-management: construction-record-v2.webp, checklist held while observing window, no unsupported measuring action",
+    "/services/urban-renewal: p068.jpg, consultant and homeowner checking plans outdoors; hand support, paper contact and dry ground inspected",
+    "/services/dangerous-old-rebuilding: older-apartment-stair.webp, existing stairwell entrance photo retained; stair and rail geometry checked in rendered page",
+    "/services/joint-construction: p062.jpg, consultant with different homeowner couple, hands and paper contact inspected",
+    "/services/project-management: p065.jpg, helmeted professionals on protected scaffold, hand and tablet contact inspected"
+  ],
+  "originalDirectory": "/Users/jeremiah/.codex/generated_images/01a16213-55df-7e21-8e75-f42c7794de40",
+  "outputDirectory": "public/images/refinement-20261022",
+  "previewValidation": {
+    "desktop": "1440px and native Safari checked",
+    "mobileWidths": [
+      360,
+      390,
+      430
+    ],
+    "newImages": "entry threshold, stair landing and white tea set visible at mobile crop",
+    "publication": "pending final preview approval"
+  }
+}
