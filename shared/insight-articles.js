@@ -1,7 +1,9 @@
+import {publicRenewal5099Article} from './public-renewal-5099-article.js';
 import {approvedNotStartedArticle} from './approved-not-started-article.js';
 import {rightsShortfallArticle} from './rights-shortfall-article.js';
 // Listing, metadata, sitemap and assistant knowledge share these article records.
 export const insightArticles = [
+publicRenewal5099Article,
 approvedNotStartedArticle,
 rightsShortfallArticle,
 {
