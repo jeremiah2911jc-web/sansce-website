@@ -1,6 +1,8 @@
+import {approvedNotStartedArticle} from './approved-not-started-article.js';
 import {rightsShortfallArticle} from './rights-shortfall-article.js';
 // Listing, metadata, sitemap and assistant knowledge share these article records.
 export const insightArticles = [
+approvedNotStartedArticle,
 rightsShortfallArticle,
 {
   "path": "/insights/joint-construction-lower-floor-allocation",

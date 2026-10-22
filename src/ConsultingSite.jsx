@@ -41,6 +41,7 @@ import './palette-navy-copper.css';
 import './palette-refinements.css';
 import './layout-quality.css';
 import './rights-shortfall.css';
+import './approved-not-started.css';
 import './design-refinement.css';
 import './reaudit-refinement.css';
 
