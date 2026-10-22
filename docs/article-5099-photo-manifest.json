@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-22",
+  "article": "/insights/public-urban-renewal-5099-threshold",
+  "tool": "image_gen (built-in)",
+  "referencesReviewed": [
+    "docs/photo-reference/approved-fictional-lead.png",
+    "docs/photo-reference/approved-home-consultation.png"
+  ],
+  "referenceRoot": "/Users/jeremiah/Documents/Codex/2026-10-05/referenced-chatgpt-conversation-this-is-an/work/sansce-website",
+  "images": [
+    {
+      "file": "public/images/insights/5099/notice.webp",
+      "original": "/Users/jeremiah/.codex/generated_images/01a16213-55df-7e21-8e75-f42c7794de40/exec-04981354-62f4-47cf-bf4e-6369a0931d8a.png",
+      "prompt": "Use case: photorealistic-natural. Generate ONE 1536x1024 horizontal editorial photograph for a Taiwanese urban renewal article explaining that an early willingness survey allows evaluation, rather than immediate demolition. A Taiwanese woman homeowner about 46 with a distinctly long oval face, straight chin-length black bob, thin bronze rectangular eyeglasses, muted olive cotton blouse, standing at the entrance of a modest bright neighborhood community room, reading a two-page preliminary housing proposal on a noticeboard. Three-quarter side view, head and hands fully visible near the central area so mobile cropping works. The noticeboard shows an architectural site plan and small neutral gray tables, no legible text, no voting marks or signatures, no political logos. She is thoughtfully comparing information, relaxed posture, left hand lightly holding a single sheet of paper by its lower edge, right arm resting by her side. Other people only distant blurred background silhouettes, no prominent consultant. Realistic lived-in Taiwan setting, dry tiled floor, natural daylight, warm white and restrained dark blue furnishings, realistic skin pores and material texture. Straight credible architectural geometry. No cinematic grading, halos, glamour retouch, watermark, overlay text, elderly couple, gray curly-haired residents, demolition machinery or dramatic protest. Anatomy precise: two arms, natural wrists, five fingers per hand with sensible contact on the paper.",
+      "inspection": "Inspected full image: visible left hand holds sheet at a credible edge; right arm relaxed downward; natural shoulder and elbow geometry. Noticeboard and dry floor plausible. No political logos or fabricated real-case attribution. Female resident differs from recent article residents."
+    },
+    {
+      "file": "public/images/insights/5099/household-small-cost.webp",
+      "original": "/Users/jeremiah/.codex/generated_images/01a16213-55df-7e21-8e75-f42c7794de40/exec-abe4316b-6a6d-4bae-9598-d4df949d7eb7.png",
+      "prompt": "Use case: photorealistic-natural. One 1536x1024 horizontal candid editorial photo for Taiwan homeowner redevelopment affordability. In a real modest Taiwanese home dining nook, one Taiwanese man age 61, broad square face, very short salt-and-pepper buzzcut with receding hairline, no glasses, clean-shaven, pale blue short-sleeve polo. He is seated in profile on the LEFT HALF at a small rectangular oak dining table, calmly comparing a household expense sheet with a housing proposal using a large desktop calculator. Right index finger pressing one calculator key, left open hand naturally resting flat beside a sheet. Calculator oriented toward him, paper and calculator lie flat on tabletop. Natural two arms, anatomically correct wrists and hands, visible contact points. No other people, no consultant. Distinct from any elderly curly-haired couple. Three-quarter medium shot shows upper body, arms, calculator, and papers at center. A wall shelf with simple household items and distant daylight balcony in background, subtle plants and lived-in details. Natural soft daylight, warm off-white, restrained navy and wood, realistic face and skin texture, credible perspective and simple furniture geometry. Small tables on paper but no legible figures or words, no bogus financial claims. No text overlay, watermark, cinematic color grading, artificial halos, overly posed expression, smiling into camera, wet floors, construction tools or signatures. Entire image natural documentary photograph, not a staged luxury office.",
+      "inspection": "Inspected full image: right index presses calculator oriented toward homeowner; left hand rests on document; fingers and arm joints plausible. Table and paper geometry credible. Different face, age and glasses from recent relocation homeowner; no consultant. No visible AI labels."
+    }
+  ]
+}
