@@ -64,6 +64,10 @@
       "dest": "/api/public-site-not-found"
     },
     {
+      "src": "/licenses/kaiyuan-small-seal-OFL\\.txt",
+      "dest": "/licenses/kaiyuan-small-seal-OFL.txt"
+    },
+    {
       "src": "/(assets|images)/(.*)",
       "dest": "/$1/$2"
     },
