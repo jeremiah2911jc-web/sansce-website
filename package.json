@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run prepare:private && vite build && node scripts/build-pages.mjs && npm run verify:public-site && npm run verify:seo && npm run verify:assets",
+    "build": "npm run prepare:private && vite build && node scripts/build-pages.mjs && npm run verify:public-site && npm run verify:seo && npm run verify:assets && node scripts/verify-article-layout.mjs",
     "preview": "vite preview",
     "verify:public-site": "node scripts/verify-public-site.mjs",
     "verify:contact": "node scripts/verify-contact.mjs",
