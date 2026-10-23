@@ -1,0 +1,212 @@
+{
+  "checkedAt": "2026-10-23T02:58:55.423Z",
+  "preview": "http://127.0.0.1:5184/land-evaluation",
+  "syntheticDataOnly": true,
+  "records": [
+    {
+      "check": "空白輸入阻擋",
+      "errors": "請核對下列條件後重新計算\n基地面積請填大於0的有效數值。\n查看相關設定\n法定建蔽率請填大於0的有效數值。\n查看相關設定\n基準容積率請填大於0的有效數值。\n查看相關設定",
+      "resultAbsent": true
+    },
+    {
+      "check": "缺漏定位",
+      "focused": "基地面積",
+      "setting": "基地與獎勵"
+    },
+    {
+      "check": "假設基地計算",
+      "overflow": false,
+      "sale": "2,389.27坪",
+      "status": "已完成本次試算，資格仍須核對"
+    },
+    {
+      "check": "改值後失效",
+      "resultAbsent": true,
+      "stale": "輸入已變更，請重新計算。\n\n舊結果已收起，避免截圖引用不同條件。\n\n重新計算",
+      "status": "條件已變更，結果待更新"
+    },
+    {
+      "check": "四模組切換保留集合住宅輸入",
+      "name": "第一批驗收｜假設基地",
+      "site": "1900",
+      "status": "條件已變更，結果待更新"
+    },
+    {
+      "check": "切換保留重劃方案與共用土地",
+      "name": "假設文件評估",
+      "overflow": false,
+      "sharedParcel": "納入\t共用土地\t登記面積（㎡）\t查證狀態\n\t假設驗收段 123-4\t1800\t待核對／假設"
+    },
+    {
+      "check": "人工土地清冊保留",
+      "area": "1800",
+      "parcel": "123-4",
+      "section": "假設驗收段"
+    },
+    {
+      "check": "桌面尺寸",
+      "assistantOutsideContent": true,
+      "navLabels": [
+        {
+          "overflow": false,
+          "text": "土地條件\n土地用途與變更"
+        },
+        {
+          "overflow": false,
+          "text": "建築規劃\n透天配置與坪效"
+        },
+        {
+          "overflow": false,
+          "text": "建築規劃\n集合住宅規劃"
+        },
+        {
+          "overflow": false,
+          "text": "整體開發\n市地重劃／區段徵收"
+        }
+      ],
+      "overflow": false,
+      "width": 1024
+    },
+    {
+      "check": "桌面尺寸",
+      "assistantOutsideContent": true,
+      "navLabels": [
+        {
+          "overflow": false,
+          "text": "土地條件\n土地用途與變更"
+        },
+        {
+          "overflow": false,
+          "text": "建築規劃\n透天配置與坪效"
+        },
+        {
+          "overflow": false,
+          "text": "建築規劃\n集合住宅規劃"
+        },
+        {
+          "overflow": false,
+          "text": "整體開發\n市地重劃／區段徵收"
+        }
+      ],
+      "overflow": false,
+      "width": 800
+    },
+    {
+      "check": "手機介紹邊界",
+      "heroImageLoaded": true,
+      "overflow": false,
+      "reminder": "評估工具請使用電腦操作\n請以電腦開啟本頁，輸入條件並進行試算。",
+      "visibleDirections": false,
+      "visibleInputs": 0,
+      "width": 360
+    },
+    {
+      "check": "手機介紹邊界",
+      "heroImageLoaded": true,
+      "overflow": false,
+      "reminder": "評估工具請使用電腦操作\n請以電腦開啟本頁，輸入條件並進行試算。",
+      "visibleDirections": false,
+      "visibleInputs": 0,
+      "width": 390
+    },
+    {
+      "check": "手機介紹邊界",
+      "heroImageLoaded": true,
+      "overflow": false,
+      "reminder": "評估工具請使用電腦操作\n請以電腦開啟本頁，輸入條件並進行試算。",
+      "visibleDirections": false,
+      "visibleInputs": 0,
+      "width": 430
+    },
+    {
+      "check": "收斂過程量測（後續已修正）",
+      "actionTop": 627.6015625,
+      "inputBottom": 648.5390625,
+      "overflow": false
+    },
+    {
+      "check": "最終版必要欄位與操作列",
+      "actionTop": 627.6015625,
+      "inputBottom": 624.1875,
+      "overflow": false
+    },
+    {
+      "check": "最終版缺漏定位",
+      "focus": "基地面積",
+      "statusInsideSettings": true
+    },
+    {
+      "check": "最終版假設基地結果",
+      "overflow": false,
+      "sale": "2,389.27坪"
+    },
+    {
+      "check": "最終版改值失效",
+      "resultAbsent": true,
+      "status": "條件已變更，結果待更新"
+    },
+    {
+      "check": "取消清除不改值",
+      "dialogAbsent": true,
+      "site": "1900"
+    },
+    {
+      "check": "最終版模組切換保留",
+      "name": "第一批驗收｜假設基地",
+      "site": "1900"
+    },
+    {
+      "check": "最終版桌面尺寸",
+      "assistantOutside": true,
+      "controlHeights": [
+        52,
+        52,
+        52,
+        52,
+        52
+      ],
+      "overflow": false,
+      "width": 1024
+    },
+    {
+      "check": "最終版桌面尺寸",
+      "assistantOutside": true,
+      "controlHeights": [
+        52,
+        52,
+        52,
+        52,
+        52
+      ],
+      "overflow": false,
+      "width": 800
+    },
+    {
+      "check": "原生Safari最終版",
+      "sameSale": true,
+      "sameGross": true,
+      "sameRatio": true
+    },
+    {
+      "check": "最終版手機介紹",
+      "overflow": false,
+      "visibleDirections": false,
+      "visibleInputs": 0,
+      "width": 360
+    },
+    {
+      "check": "最終版手機介紹",
+      "overflow": false,
+      "visibleDirections": false,
+      "visibleInputs": 0,
+      "width": 390
+    },
+    {
+      "check": "最終版手機介紹",
+      "overflow": false,
+      "visibleDirections": false,
+      "visibleInputs": 0,
+      "width": 430
+    }
+  ]
+}

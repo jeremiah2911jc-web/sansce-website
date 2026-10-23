@@ -1,0 +1,141 @@
+/* The evaluation workspace shares a palette and controls, while each tool keeps
+   its own document, parcel and planning structure. Scope every change here. */
+.dev-tool-shell .land-evaluation {
+  --le-ink:#263d4b;--le-green:#263d4b;--le-muted:#5e696e;
+  --le-line:#d5d2c9;--le-control-line:#b6bebd;--le-paper:#fffefa;
+  --le-soft:#efeee7;--le-radius:5px;
+  max-width:none;margin-inline:0;width:100%;padding:24px 0 56px;
+}
+.dev-tool-shell .dev-tool-bar {display:block;padding:0 0 12px;gap:0}
+.dev-workspace-top {display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:12px}
+.dev-session-label {font-size:12px;color:var(--dev-muted)}
+.dev-tool-nav {display:grid;grid-template-columns:1fr 1fr 1fr 1.2fr;gap:0;border:1px solid #b8bfc0;border-radius:5px;overflow:hidden}
+.dev-tool-nav button {display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;min-height:74px;padding:12px 20px;font:inherit;text-align:left;color:#263d4b;background:#fffefa;border:0;border-right:1px solid #d5d2c9;cursor:pointer}
+.dev-tool-nav button:last-child {border-right:0}
+.dev-tool-nav button span {font-size:11px;color:#626c70;letter-spacing:.04em}
+.dev-tool-nav button strong {font-size:16px;font-weight:500;line-height:1.6}
+.dev-tool-nav button:hover {background:#ece8df}
+.dev-tool-nav button[aria-current=page] {background:#263d4b;color:#fffefa}
+.dev-tool-nav button[aria-current=page] span {color:#d5e0e5}
+.dev-tool-nav button:focus-visible {outline:3px solid #a47453;outline-offset:-4px}
+.dev-tool-shell .dev-tool-nav {margin:0;padding:0}
+.dev-tool-shell .dev-tool-trail {margin:0;padding:0;border:0;background:none}
+.dev-sharing-note {font-size:12px;line-height:1.8;color:#5e696e;margin:8px 0 0}
+.dev-tool-shell .land-evaluation .le-intro {align-items:flex-start;gap:24px;padding-bottom:18px;margin-bottom:20px}
+.interior-page .dev-tool-shell .land-evaluation .le-intro h1 {font-size:30px;line-height:1.4;margin:6px 0 8px}
+.dev-tool-shell .land-evaluation .le-intro .le-eyebrow {font-size:12px;color:#84583f}
+.dev-tool-shell .land-evaluation .le-intro .le-session-note {font-size:12px;margin-top:7px}
+.dev-tool-shell .land-evaluation .le-intro>button {margin-top:10px;font-size:13px;color:#765347}
+.dev-tool-shell .land-evaluation .le-identity {grid-template-columns:minmax(240px,1fr) minmax(220px,.6fr);max-width:850px;gap:24px;margin-bottom:20px}
+.dev-tool-shell .land-evaluation .le-identity .le-field {gap:6px}
+.le-case-heading {display:grid;grid-template-columns:.9fr 1.1fr;gap:32px;align-items:start;padding:0 0 14px}
+.dev-tool-shell .land-evaluation .le-case-heading .le-intro {display:block;padding:0;margin:0;border:0}
+.dev-tool-shell .land-evaluation .le-case-heading .le-eyebrow {display:none}
+.interior-page .dev-tool-shell .land-evaluation .le-case-heading h1 {margin:0 0 8px;font-size:28px}
+.dev-tool-shell .land-evaluation .le-case-heading .le-intro>button {margin-top:6px;padding:4px 0}
+.dev-tool-shell .land-evaluation .le-case-heading .le-identity {grid-template-columns:minmax(0,1fr) minmax(0,.7fr);max-width:none;gap:8px 20px;margin:0}
+.dev-tool-shell .land-evaluation .le-region-note {grid-column:1/-1;font-size:12px;line-height:1.7;margin:0}
+.dev-tool-shell .land-evaluation label {color:#263d4b}
+.dev-tool-shell .land-evaluation :is(input:not([type=checkbox]),select,textarea) {color:#263d4b;border-color:#b6bebd;background-color:#fffefa}
+.dev-tool-shell .land-evaluation :is(.le-number,.planning-number-unit) {border-color:#b6bebd;background-color:#fffefa}
+.dev-tool-shell .land-evaluation :is(.le-number,.planning-number-unit)>input:not([type=checkbox]) {background:none;border:0}
+.dev-tool-shell .land-evaluation :is(input,select,textarea):focus,
+.dev-tool-shell .land-evaluation :is(.le-number,.planning-number-unit):focus-within {outline-color:#84583f}
+.dev-tool-shell .land-evaluation :is(input,select,textarea):disabled {background:#eeede7;color:#697274;border-color:#d4d7d2;-webkit-text-fill-color:#697274}
+.dev-tool-shell .land-evaluation .le-workspace {grid-template-columns:164px minmax(0,1fr);gap:28px;padding-top:18px}
+.dev-tool-shell .land-evaluation .le-tabs {top:104px;padding-right:10px;gap:4px}
+.dev-tool-shell .land-evaluation .le-tabs>p {padding-bottom:8px}
+.dev-tool-shell .land-evaluation .le-tabs button {padding:10px 12px;min-height:44px;border-radius:4px}
+.dev-tool-shell .land-evaluation .le-tabs button[aria-current=step] {background:#e9e3da;color:#263d4b;text-decoration:none}
+.dev-tool-shell .land-evaluation .le-tabs button:hover {background:#efebe3}
+.dev-tool-shell .land-evaluation .le-section-heading {margin-bottom:10px;padding-bottom:0}
+.interior-page .dev-tool-shell .land-evaluation .le-section-heading h2 {font-size:24px;line-height:1.5}
+.dev-tool-shell .land-evaluation .le-section-heading p {margin-top:6px}
+.dev-tool-shell .land-evaluation :is(.le-fields,.planning-field-grid,.burden-fields,.site-road-fields) {gap:18px 24px}
+.dev-tool-shell .land-evaluation .le-base-fields {margin-top:10px}
+.dev-tool-shell .land-evaluation :is(.workflow-panel,.area-review-panel,.legal-parking-panel) {margin-top:24px;padding-top:22px}
+.dev-tool-shell .land-evaluation details summary {font-size:14px}
+.dev-tool-shell .land-evaluation details[open]>summary {color:#84583f}
+.dev-tool-shell .land-evaluation .le-form-section {outline-offset:6px;scroll-margin-top:110px}
+.le-input-status {display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px 18px;margin:0 0 22px;background:#efeee7;border-radius:5px}
+.le-input-status>div:first-child {display:flex;flex-direction:column;gap:4px}
+.le-input-status strong {font-size:14px;font-weight:600;color:#263d4b}
+.le-input-status span {font-size:12px;line-height:1.8;color:#5e696e}
+.le-input-status.is-stale {background:#f4ead8}
+.le-input-status.is-stale strong {color:#76521b}
+.le-missing-links {display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:flex-end}
+.dev-tool-shell .land-evaluation .le-tabs .le-input-status {display:block;padding:12px;margin:14px 0 6px}
+.dev-tool-shell .land-evaluation .le-tabs .le-input-status strong {font-size:13px;line-height:1.8}
+.dev-tool-shell .land-evaluation .le-tabs .le-input-status span {font-size:12px;line-height:1.8}
+.dev-tool-shell .land-evaluation .le-tabs .le-missing-links {display:flex;flex-direction:column;align-items:stretch;gap:4px;margin-top:10px}
+.dev-tool-shell .land-evaluation .le-tabs .le-missing-links button {min-height:30px;padding:4px 0;font-size:12px;text-decoration:none;border-bottom:1px solid #d8cbb7;border-radius:0;background:none;color:#785623}
+.dev-tool-shell .le-missing-links button {padding:4px 0;border:0;border-bottom:1px solid #a88a60;background:none;color:#785623;font-size:12px;line-height:1.8;white-space:nowrap}
+.dev-tool-shell .land-evaluation .le-errors .le-issue-link {display:flex;flex-wrap:wrap;gap:4px 16px;padding:6px 0;border:0;background:none;text-align:left;font-size:14px;color:#843e30}
+.le-issue-link>span {text-decoration:underline;text-underline-offset:4px;font-size:12px;white-space:nowrap}
+.dev-tool-shell .land-evaluation .le-calculate {position:sticky;bottom:18px;z-index:15;padding:10px 20px;margin:30px 0 0;border:1px solid #b8bfc0;border-radius:5px;background:#fffefa;box-shadow:0 3px 12px #263d4b0c;gap:16px}
+.dev-tool-shell .land-evaluation .le-calculate strong {font-size:15px}
+.dev-tool-shell .land-evaluation .le-calculate p {font-size:12px;line-height:1.7}
+.le-calculate-actions {display:flex;align-items:center;gap:18px;flex:none}
+.dev-tool-shell .land-evaluation .le-calculate button {min-width:0}
+.dev-tool-shell .land-evaluation .le-calculate .le-primary {min-height:48px;padding:10px 22px;white-space:nowrap}
+.dev-tool-shell .land-evaluation .le-calculate .le-text-button {font-size:12px}
+.dev-tool-shell .land-evaluation .le-before-results {margin-top:12px}
+.dev-tool-shell .land-evaluation .le-stale {background:#f4ead8;border-color:#c5ab7c}
+.dev-tool-shell .land-evaluation .le-results-wrap {margin-top:30px}
+.dev-tool-shell .dev-work-outline {top:78px;margin:0 0 18px;padding:10px 0;background:#f6f3ec;gap:16px}
+.dev-tool-shell .dev-work-outline>div {gap:4px 14px}
+.dev-tool-shell .dev-work-outline button {padding:6px 8px;border:0;border-radius:3px;color:#5e696e}
+.dev-tool-shell .dev-work-outline button[aria-current=location] {background:#e9e3da;color:#263d4b;font-weight:600}
+.dev-preparation {display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,.25fr);gap:28px;padding:16px 0 18px;margin-bottom:8px;border-bottom:1px solid #d5d2c9}
+.dev-preparation>div>strong {font-size:14px;font-weight:600;color:#263d4b}
+.interior-page .dev-tool-shell .land-evaluation .dev-preparation p {font-size:13px;line-height:1.9;margin:6px 0 0;color:#5e696e;max-width:760px}
+.dev-preparation-state {display:flex;flex-direction:column;gap:3px;border-left:1px solid #d5d2c9;padding-left:22px;align-self:center}
+.dev-preparation-state>span {font-size:12px;color:#5e696e;line-height:1.8}
+.dev-preparation-state>strong {font-size:20px!important;font-variant-numeric:tabular-nums}
+.dev-preparation-state>.dev-state-pending {color:#785623}
+.interior-page .dev-tool-shell .land-evaluation .lw-section {padding:24px 0}
+.interior-page .dev-tool-shell .land-evaluation .lw-section h2 {font-size:23px;scroll-margin-top:200px}
+.interior-page .dev-tool-shell .land-evaluation .lw-fields {gap:18px 24px;margin:16px 0}
+.dev-tool-shell .land-evaluation .lw-fields>.le-field {display:grid;grid-template-rows:minmax(24px,auto) 52px;gap:8px;align-content:start}
+.dev-tool-shell .land-evaluation .lw-fields>.le-field:has(textarea) {grid-template-rows:auto minmax(90px,auto)}
+.dev-tool-shell .land-evaluation .lw-fields>.le-field>.le-selected-caption {grid-row:3;align-self:start}
+.dev-tool-shell .land-evaluation .lw-fields>.le-field>input,
+.dev-tool-shell .land-evaluation .lw-fields>.le-field>select {margin:0}
+.dev-tool-shell .land-evaluation :is(.lw-message,.lw-result>p,.lw-route>p)[role=status] {padding:12px 16px;background:#efeee7;border-radius:4px}
+.dev-tool-shell .land-evaluation table thead th {color:#263d4b;background:#eeebe3;font-size:inherit;font-weight:600}
+
+@media(min-width:800px){
+ /* Keep the labelled assistant inside the existing right gutter, outside fields. */
+ body:has(.dev-tool-shell:not([hidden])) .website-assistant {right:8px!important}
+ body:has(.dev-tool-shell:not([hidden])) .website-assistant .assistant-launcher {flex-direction:column;gap:10px!important;width:44px!important;min-width:44px!important;min-height:0!important;padding:12px 8px!important;border-radius:8px!important}
+ body:has(.dev-tool-shell:not([hidden])) .website-assistant .assistant-launcher-mark,
+ body:has(.dev-tool-shell:not([hidden])) .website-assistant .assistant-mark {width:24px!important;height:24px!important}
+ body:has(.dev-tool-shell:not([hidden])) .website-assistant .assistant-launcher>span:last-child {writing-mode:vertical-rl;font-size:12px!important;letter-spacing:.08em}
+ .dev-overview .dev-hero {grid-template-columns:1.2fr .8fr;gap:36px;padding-top:30px}
+ .dev-overview .dev-hero-copy {padding:0 0 22px}
+ .dev-overview .dev-hero h1 {font-size:44px;margin:14px 0}
+ .dev-overview .dev-lead {font-size:21px;line-height:1.6}
+ .dev-overview .dev-lead br {display:none}
+ .dev-overview .dev-hero-note {margin:14px 0 20px;font-size:14px}
+ .dev-overview .dev-hero-figure {max-width:360px;justify-self:end}
+ .dev-overview .dev-hero-foot {padding:16px 0}
+ .dev-overview .dev-directions {padding-top:40px}
+ .dev-overview .dev-section-title {margin-bottom:24px}
+ .dev-overview .dev-direction-panel {padding-block:26px}
+ .dev-overview .dev-principles {padding-block:48px}
+}
+@media(min-width:800px) and (max-width:1100px){
+ .dev-tool-nav button {padding:10px 12px;min-height:70px}
+ .dev-tool-nav button strong {font-size:14px}
+ .dev-session-label {display:none}
+ .dev-tool-shell .land-evaluation .le-workspace {grid-template-columns:132px minmax(0,1fr);gap:22px}
+ .dev-tool-shell .land-evaluation .le-calculate {padding-inline:14px}
+ .dev-tool-shell .land-evaluation .le-calculate>div:first-child>p {max-width:190px}
+ .le-input-status {align-items:flex-start;flex-direction:column;gap:8px}
+ .le-missing-links {justify-content:flex-start}
+ .le-calculate-actions {gap:10px;flex-wrap:wrap;justify-content:flex-end}
+ .dev-tool-shell .land-evaluation .le-calculate .le-primary {padding-inline:16px}
+ .dev-overview .dev-hero {gap:20px}
+ .dev-overview .dev-hero h1 {font-size:38px}
+}
+@media(prefers-reduced-motion:reduce){.dev-tool-shell * {scroll-behavior:auto!important}}
