@@ -19,7 +19,7 @@ const {render}=await import(pathToFileURL(resolve(bundleDir,'render.mjs')).href)
 const template=readFileSync('dist/index.html','utf8');
 const stylesheet=readdirSync('dist/assets').find(f=>/^ConsultingSite-.*\.css$/.test(f));
 if(!stylesheet)throw Error('Public stylesheet missing');
-const organization={'@type':'Organization','@id':`${origin}/#organization`,name:'三策專案管理顧問有限公司',legalName:'三策專案管理顧問有限公司',alternateName:['三策','三策專案管理顧問','Sanze'],taxID:'62250642',sameAs:['https://findbiz.nat.gov.tw/fts/company/62250642'],url:origin+'/',logo:origin+'/logo-sanze.png',description:'都市更新與都更案件健檢、危老重建及合建諮詢、地主整合與全案管理顧問服務。',telephone:'+886-2-2250-8202',email:'sanze.consulting@gmail.com'};
+const organization={'@type':'Organization','@id':`${origin}/#organization`,name:'三策專案管理顧問有限公司',legalName:'三策專案管理顧問有限公司',alternateName:['三策','三策專案管理顧問','Sanze'],taxID:'62250642',sameAs:['https://findbiz.nat.gov.tw/fts/company/62250642'],url:origin+'/',logo:origin+'/images/brand/logo-20261023.png',description:'都市更新與都更案件健檢、危老重建及合建諮詢、地主整合與全案管理顧問服務。',telephone:'+886-2-2250-8202',email:'sanze.consulting@gmail.com'};
 const assistantPages=[];
 for(const path of ['',...Object.keys(pages)]){
  const url=`${origin}/${path}`;

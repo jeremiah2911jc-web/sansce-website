@@ -28,5 +28,9 @@ for(const page of pages){
 for(const file of readdirSync('dist/assets').filter(f=>f.endsWith('.css'))){
  for(const match of readFileSync('dist/assets/'+file,'utf8').matchAll(/url\(["']?(\/[^)'"\s]+)["']?\)/g))asset(match[1],'/');
 }
+// Manifest icons and conventional browser fallbacks are not regular HTML images.
+const manifest=JSON.parse(readFileSync('dist/site.webmanifest','utf8'));
+for(const icon of manifest.icons||[])asset(icon.src,'/');
+for(const path of ['/favicon.ico','/favicon-white.ico','/favicon-16x16.png','/favicon-16x16-white.png','/favicon-32x32.png','/favicon-32x32-white.png','/apple-touch-icon.png','/apple-touch-icon-white.png','/icon-192.png','/icon-512.png','/logo.png','/logo-sanze.png'])asset(path,'/');
 asset('/licenses/kaiyuan-small-seal-OFL.txt','/land-evaluation');
 console.log(`PASS: ${pages.length} pages and ${assets.size} local assets exist and pass the production route allowlist.`);
