@@ -12,12 +12,15 @@
     "verify:seo": "node scripts/verify-seo.mjs",
     "verify:assets": "node scripts/verify-public-assets.mjs",
     "sync:land-core": "node scripts/sync-land-evaluation-core.mjs",
+    "verify:evaluation-delivery": "node scripts/verify-evaluation-delivery.mjs",
     "verify:land-evaluation": "node scripts/verify-land-evaluation.mjs",
     "prepare:private": "node scripts/prepare-private-reports.mjs",
     "verify:land-integration": "node scripts/verify-land-integration.mjs",
     "verify:readjustment-statutory": "node scripts/verify-statutory-core.mjs",
     "verify:readjustment": "node scripts/verify-readjustment.mjs",
-    "sync:readjustment-core": "node scripts/sync-readjustment-core.mjs"
+    "sync:readjustment-core": "node scripts/sync-readjustment-core.mjs",
+    "verify:evaluation-phase3": "node scripts/verify-evaluation-phase3.mjs",
+    "verify:evaluation-phase4": "node scripts/verify-evaluation-phase4.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",

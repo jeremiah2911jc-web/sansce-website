@@ -28,4 +28,5 @@ for(const page of pages){
 for(const file of readdirSync('dist/assets').filter(f=>f.endsWith('.css'))){
  for(const match of readFileSync('dist/assets/'+file,'utf8').matchAll(/url\(["']?(\/[^)'"\s]+)["']?\)/g))asset(match[1],'/');
 }
+asset('/licenses/kaiyuan-small-seal-OFL.txt','/land-evaluation');
 console.log(`PASS: ${pages.length} pages and ${assets.size} local assets exist and pass the production route allowlist.`);
