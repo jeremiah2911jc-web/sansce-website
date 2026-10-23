@@ -16,3 +16,8 @@
 驗收：107項交付／三案比較／案件檔既有檢查通過，公開預覽建置、29頁SEO、152資產與公開路由通過。IAB桌機四模組切換、下載／匯入按鈕可見且無瀏覽器錯誤；手機介紹頁維持原範圍。Safari因前景正在使用，這輪尚未完成原生Safari複核，未宣稱已通過。
 
 畫面見overview.png。
+
+
+## 說明精簡版正式發布完成（2026-10-23）
+
+PR #24 已通過website CI及Vercel預覽，合併main為3bcb06cddddc73370385b05bb217810d49995a93。正式部署dpl_9ExWHvWpZ35Kcje4UrpNyBeSqay8為Ready並綁定www.sanzepm.com.tw。正式頁舊暫存說明已移除，四模組切換及下載／匯入按鈕實測正常，瀏覽器無錯誤；正式評估頁、篆體浮水印及授權檔均HTTP200。沒有填入實際案件或變動計算核心。畫面證據：evaluation-copy-audit-20261023/production.png。
