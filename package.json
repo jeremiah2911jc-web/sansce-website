@@ -12,6 +12,7 @@
     "verify:seo": "node scripts/verify-seo.mjs",
     "verify:assets": "node scripts/verify-public-assets.mjs",
     "sync:land-core": "node scripts/sync-land-evaluation-core.mjs",
+    "verify:evaluation-delivery": "node scripts/verify-evaluation-delivery.mjs",
     "verify:land-evaluation": "node scripts/verify-land-evaluation.mjs",
     "prepare:private": "node scripts/prepare-private-reports.mjs",
     "verify:land-integration": "node scripts/verify-land-integration.mjs",
