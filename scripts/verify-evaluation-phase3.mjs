@@ -1,0 +1,30 @@
+import assert from 'node:assert/strict';
+import {createInput,exampleInput,evaluate} from '../src/land-evaluation/model.mjs';
+import {createScenario,collectiveSignature,freshScenarioResult,scenarioDifferences,comparisonDelivery,comparisonMetrics,baseConditionsMatch,nextScenarioCode} from '../src/land-evaluation/collective-comparison.mjs';
+import {serializeDraft,parseDraft} from '../src/land-evaluation/local-draft.mjs';
+import {landJudgement,readjustmentJudgement} from '../src/land-evaluation/judgement.mjs';
+import {newLandAssessment,newLandFact,evaluateLand} from '../src/land-evaluation/generated/land.mjs';
+import {newReadjustmentPlan,evaluateReadjustment} from '../src/land-evaluation/generated/readjustment.mjs';
+let count=0;const test=(name,fn)=>{fn();count++;};
+const a=createScenario({input:exampleInput(),name:'合成驗收',district:'新北市'},'A','a'),b=createScenario(a,'B','b'),c=createScenario(a,'C','c');
+b.input.unitPing='50';c.input.extraCars='20';
+const plans=[a,b,c],snapshots=Object.fromEntries(plans.map(p=>[p.id,{...p,result:evaluate(p.input),signature:collectiveSignature(p),calculatedAt:'2026-10-23T00:00:00Z'}]));
+test('copies retain independent nested input',()=>{b.input.quantityReserve.basementReservePercent=31;assert.notEqual(a.input.quantityReserve.basementReservePercent,31);b.input.quantityReserve.basementReservePercent=a.input.quantityReserve.basementReservePercent;});
+test('three codes exhausted',()=>assert.equal(nextScenarioCode(plans),null));
+test('three outputs use unchanged core',()=>{const report=comparisonDelivery(plans,snapshots);assert(report);for(const [i,p] of plans.entries())assert.equal(report.metrics[i][1],evaluate(p.input).values.salePing);});
+test('all requested metrics retain unknowns',()=>{assert.equal(comparisonMetrics.length,15);const fixed={input:createInput(),result:{values:{units:0}}};assert.equal(comparisonMetrics.find(m=>m.label==='車戶比').value(fixed),null);assert.equal(comparisonMetrics.find(m=>m.label==='最大必要地下樓板').value(fixed),null);});
+test('changed input invalidates only its result and blocks full report',()=>{const changed={...b,input:{...b.input,unitPing:'51'}};assert(!freshScenarioResult(changed,snapshots.b));assert(freshScenarioResult(a,snapshots.a));assert.equal(comparisonDelivery([a,changed,c],snapshots),null);});
+test('missing and errored results block full report',()=>{assert.equal(comparisonDelivery(plans,{...snapshots,c:null}),null);assert.equal(comparisonDelivery(plans,{...snapshots,c:{...snapshots.c,result:{values:null}}}),null);});
+test('differences identify product change and base mismatch',()=>{assert(scenarioDifferences(a,b).some(r=>r[0]==='每戶地上分攤'));assert(baseConditionsMatch(a,b));assert(!baseConditionsMatch(a,{...b,input:{...b.input,site:'100'}}));});
+test('tagged signatures preserve unknown versus zero',()=>{assert.notEqual(collectiveSignature({input:{value:NaN}}),collectiveSignature({input:{value:0}}));});
+const state={'collective.input':c.input,'collective.name':c.name,'collective.district':c.district,'collective.scenarios':plans.map(p=>({...p,result:snapshots[p.id].result})),'collective.active':'c'};
+test('three input plans restore with active input, no outputs',()=>{const restored=parseDraft(serializeDraft(state,'r','r')).data;assert.equal(restored['collective.scenarios'].length,3);assert.equal(restored['collective.active'],'c');assert.equal(restored['collective.input'].extraCars,'20');assert(restored['collective.scenarios'].every(p=>!Object.hasOwn(p,'result')));});
+for(const patch of [{'collective.scenarios':[a,b,c,{...a,id:'d'}]},{'collective.scenarios':[a,{...b,id:'a'}]},{'collective.scenarios':[a,{...b,code:'A'}]},{'collective.active':'missing'}])test('reject corrupt scenario list',()=>assert.throws(()=>parseDraft(serializeDraft({...state,...patch},'r','r'))));
+test('legacy phase2 input still restores',()=>assert.equal(parseDraft(serializeDraft({'collective.input':a.input},'r','r')).data['collective.input'].site,a.input.site));
+const land=newLandAssessment('synthetic');land.parcels.push(newLandFact('unknown'));const lr=evaluateLand(land);
+test('land judgement keeps original core result and unknowns',()=>{const before=structuredClone(lr),j=landJudgement(land,lr);assert(j.gaps.length);assert(j.actions.length);assert.deepEqual(lr,before);});
+for(const system of ['public','private','expropriation'])for(const track of ['owner','acquisition']){
+ const p={...newReadjustmentPlan('s',system),track,manualArea:'100',shareNumerator:'1',shareDenominator:'2'},r=evaluateReadjustment(p,land),before=structuredClone(r),j=readjustmentJudgement(p,land,r);
+ test('six tracks preserve unknown allocation and core gates',()=>{assert(j.directions.some(x=>x.detail.includes('待確認')));assert(j.gaps.length);assert.deepEqual(r,before);assert(j.actions.length);if(track==='acquisition')assert(j.actions.some(x=>x.title==='確認實際取得與承接範圍'));});
+}
+console.log(`PASS ${count} phase3 checks: independent scenarios, fresh results, input-only restore, invalid drafts, six-track judgement and unchanged core.`);

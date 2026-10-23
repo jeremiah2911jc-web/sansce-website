@@ -1,3 +1,4 @@
+import {landJudgement,readjustmentJudgement} from './judgement.mjs';
 import sourceManifest from './generated/source-manifest.json' with {type:'json'};
 import readjustmentManifest from './generated/readjustment-manifest.json' with {type:'json'};
 import {planningFields,PLANNING_VERSION} from './generated/core.mjs';
@@ -25,6 +26,7 @@ export function collectiveDelivery(snapshot){
 }
 export function landDelivery(a,review){
  const r=review.result,s=summary('土地用途與變更','土地用途與變更初核','依逐筆土地及用途條件初核，非許可結果',RULE_VERSION);
+ s.judgement=landJudgement(a,r);
  const findings=r.parcels.flatMap(p=>p.findings),states={conditional:'條件對照',pending:'待補資料',blocked:'目前不符',review:'專案覆核'};
  s.metrics=[['土地筆數',a.parcels.length,'筆'],['已填登記面積',a.parcels.filter(p=>p.areaSqm!==''&&Number.isFinite(Number(p.areaSqm))).reduce((t,p)=>t+Number(p.areaSqm),0),'㎡'],['面積待補',a.parcels.filter(p=>!p.areaSqm).length,'筆']];
  s.conditions=[['土地管制體系',landRegimes[a.entry]||a.entry],['預定用途',intendedUses[a.intendedUse]||a.intendedUse],['配置形式',buildingForms[a.buildingForm]||a.buildingForm],['目標與限制',text(a.targetNote)]];
@@ -47,7 +49,7 @@ export function layoutDelivery(input,a,r,presentation){
  return s;
 }
 export function readjustmentDelivery(p,land,r){
- const s=summary('市地重劃／區段徵收',p.name,r.status,READJUSTMENT_VERSION);
+ const s=summary('市地重劃／區段徵收',p.name,r.status,READJUSTMENT_VERSION);s.judgement=readjustmentJudgement(p,land,r);
  s.metrics=[['納入面積',r.includedArea,'㎡'],['持分換算權利範圍',r.rightsArea,'㎡'],[r.areaLabel,r.allocationArea,'㎡'],['待確認條件',r.pending,'項'],['已記錄文件依據',r.recorded,'項']];
  s.conditions=[['制度／主線',`${systems[p.system]}／${perspectives[p.track]}`],['計畫名稱',p.planName||'待確認'],['主管機關',p.authority||'待確認'],['評估基準日',p.referenceDate],['分配資料口徑',p.allocationMode==='average'?'平均負擔假設':p.allocationMode==='document'?'文件記載／明示面積':p.allocationMode==='statutory'?'法定公式核算':'尚無面積資料'],['確認狀態',r.canConfirm?'具備本次確認條件，機關核准仍依原件':'條件與文件仍待確認']];
  s.charts=[{title:'本案面積對照',unit:'㎡',note:'各列為不同階段或口徑的面積，不相加；分回位置與選配另依文件。',rows:[['納入面積',r.includedArea],['持分權利範圍',r.rightsArea],[r.areaLabel,r.allocationArea]]}];

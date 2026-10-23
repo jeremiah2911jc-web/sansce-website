@@ -1,3 +1,5 @@
+import {JudgementPanel} from './JudgementPanel.jsx';
+import {readjustmentJudgement} from './judgement.mjs';
 import {useResultMotion} from './ResultMotion.jsx';
 import {useDraftState} from './LocalDraft.jsx';
 import {EvaluationDelivery} from './EvaluationDelivery.jsx';
@@ -66,6 +68,7 @@ export function ReadjustmentWorkbench({land,onLand,onLandDraft,initialTrack='own
     {result.errors.length>0&&<ul className="ra-errors" role="alert">{result.errors.map(x=><li key={x}>{x}</li>)}</ul>}
     <div className={"ra-measures"+(p.parcelIds.length?" ra-four-measures":"")}>{p.parcelIds.length>0&&<div><span>納入地號登記面積合計</span><strong>{format(result.registeredArea)}<small>㎡</small></strong></div>}<div><span>本方案納入面積</span><strong>{format(result.includedArea)}<small>㎡</small></strong></div><div><span>持分換算權利範圍</span><strong>{format(result.rightsArea)}<small>㎡</small></strong></div><div><span>{result.areaLabel}</span><strong>{format(result.allocationArea)}<small>㎡</small></strong></div></div>
     <div className="lw-table"><table><thead><tr><th>核對項目</th><th>狀態</th><th>本案條件與缺件</th></tr></thead><tbody>{result.findings.map(x=><tr key={x.id}><th>{x.title}</th><td><span className={'ra-status ra-'+x.state}>{stateLabels[x.state]}</span></td><td>{x.detail}</td></tr>)}</tbody></table></div>
+    <JudgementPanel model={readjustmentJudgement(p,land,result)}/>
     <EvaluationDelivery getSummary={()=>readjustmentDelivery(p,land,result)} charts={readjustmentDelivery(p,land,result).charts}/>
     <details><summary>核對版本紀錄（{item.history.length}）</summary>{item.history.map(s=><section className="lw-frozen" key={s.id}><h3>{s.input.name} · {perspectives[s.input.track]}</h3><p>{s.confirmed?'本次文件核對已確認':'待核紀錄'} · {s.signature===signature?'來源與本次輸入一致':'來源或輸入已變更，保留當時結果'} · {new Date(s.createdAt).toLocaleString('zh-TW')}</p><p>{s.result.status} · {s.result.areaLabel} {format(s.result.allocationArea)}㎡ · 待確認 {s.result.pending}項</p><details><summary>當時輸入、計畫版本與核對結果</summary><pre className="ra-snapshot">{JSON.stringify({計畫:s.input.planName,公告版本:s.published?.edition.label??'手動文件',制度:systems[s.input.system],主線:perspectives[s.input.track],面積依據:s.input.areaSource,核對:s.result.findings},null,2)}</pre></details></section>)}</details>
     <button className="le-secondary" disabled={!result.canCreateLand||!item.history.at(-1)?.confirmed||item.history.at(-1)?.signature!==signature} onClick={draftLand}>建立分回後土地草稿</button><p className="ra-footnote">必要文件、逐筆範圍及分配面積完成核對後，另建土地草稿並保留原地號；新基地的地籍、管制體系、可建範圍及用途仍須核對。成本、收購價格與財務計算留在 App。</p>
