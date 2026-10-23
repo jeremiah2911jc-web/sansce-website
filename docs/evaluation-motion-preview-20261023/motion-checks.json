@@ -1,0 +1,91 @@
+{
+  "mid": {
+    "bars": [
+      {
+        "animation": "evaluation-bar",
+        "text": "地上計容5,280.43㎡",
+        "transform": "matrix(0.829395, 0, 0, 1, 0, 0)"
+      },
+      {
+        "animation": "evaluation-bar",
+        "text": "地下計容119.57㎡",
+        "transform": "matrix(0.690558, 0, 0, 1, 0, 0)"
+      },
+      {
+        "animation": "evaluation-bar",
+        "text": "未使用容積<0.01㎡",
+        "transform": "matrix(0.462053, 0, 0, 1, 0, 0)"
+      },
+      {
+        "animation": "evaluation-bar",
+        "text": "地上樓板（不含陽台）7,037.15㎡",
+        "transform": "matrix(0.554595, 0, 0, 1, 0, 0)"
+      },
+      {
+        "animation": "evaluation-bar",
+        "text": "陽台338.36㎡",
+        "transform": "matrix(0.25765, 0, 0, 1, 0, 0)"
+      },
+      {
+        "animation": "evaluation-bar",
+        "text": "地下室1,123.42㎡",
+        "transform": "matrix(0, 0, 0, 1, 0, 0)"
+      }
+    ],
+    "result": "2,389.27坪"
+  },
+  "reduced": {
+    "animatedBars": 0,
+    "button": "none",
+    "state": "static"
+  },
+  "print": {
+    "bars": [
+      {
+        "animation": "none",
+        "opacity": "1",
+        "transform": "none"
+      },
+      {
+        "animation": "none",
+        "opacity": "1",
+        "transform": "none"
+      },
+      {
+        "animation": "none",
+        "opacity": "1",
+        "transform": "none"
+      },
+      {
+        "animation": "none",
+        "opacity": "1",
+        "transform": "none"
+      },
+      {
+        "animation": "none",
+        "opacity": "1",
+        "transform": "none"
+      },
+      {
+        "animation": "none",
+        "opacity": "1",
+        "transform": "none"
+      }
+    ],
+    "tools": "none"
+  },
+  "widths": [
+    {
+      "scrollWidth": 1280,
+      "width": 1280
+    },
+    {
+      "scrollWidth": 1024,
+      "width": 1024
+    },
+    {
+      "scrollWidth": 800,
+      "width": 800
+    }
+  ]
+}

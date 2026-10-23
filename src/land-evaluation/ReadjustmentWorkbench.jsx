@@ -1,3 +1,4 @@
+import {useResultMotion} from './ResultMotion.jsx';
 import {useDraftState} from './LocalDraft.jsx';
 import {EvaluationDelivery} from './EvaluationDelivery.jsx';
 import {readjustmentDelivery} from './delivery-model.mjs';
@@ -19,7 +20,7 @@ export function ReadjustmentWorkbench({land,onLand,onLandDraft,initialTrack='own
  const [city,setCity]=useDraftState('readjustment.city','新北市'),[system,setSystem]=useDraftState('readjustment.system','public'),[catalogId,setCatalogId]=useDraftState('readjustment.catalogId',''),[editionId,setEditionId]=useDraftState('readjustment.editionId',''),[ownItems,setOwnItems]=useDraftState('readjustment.items',[]),[ownActive,setOwnActive]=useDraftState('readjustment.active',''),[message,setMessage]=useState(''),[remove,setRemove]=useState(false);
  const items=itemsValue??ownItems,active=activeValue??ownActive,setItems=onItemsChange??setOwnItems,setActive=onActiveChange??setOwnActive;
  const entry=publishedPlans.find(x=>x.id===catalogId),edition=entry?.versions.find(x=>x.id===editionId),item=items.find(x=>x.input.id===active),p=item?.input;
- const result=p?evaluateReadjustment(p,land):null,signature=p?readjustmentSignature(p,land):'',published=p?getPublishedPlan(p.catalogId,p.catalogVersion):null;
+ const result=p?evaluateReadjustment(p,land):null,signature=p?readjustmentSignature(p,land):'',published=p?getPublishedPlan(p.catalogId,p.catalogVersion):null;const resultMotion=useResultMotion(signature);
  const update=patch=>{setItems(xs=>xs.map(x=>x.input.id===active?{...x,input:{...x.input,...patch}}:x));setMessage('');};
  const edit=(key,value)=>update({[key]:value});
  const filtered=publishedPlans.filter(x=>x.city===city&&x.system===system&&(scope==='all'||x.assessmentReview?.scope===scope)&&[x.name,x.district,...(x.aliases??[])].join(' ').toLowerCase().includes(search.trim().toLowerCase()));
@@ -61,7 +62,7 @@ export function ReadjustmentWorkbench({land,onLand,onLandDraft,initialTrack='own
     </div>
     {p.allocationMode==='statutory'&&<StatutoryFields plan={p} result={result.statutoryResult} change={v=>edit('statutory',v)} Field={Field} Choice={Choice}/>}
    </section>
-   <section className="lw-section ra-results"><div className="lw-section-top"><div><h2>本次條件核對</h2><p role="status">{result.status} · 文件依據 {result.recorded}／{result.documentCount}項 · 待確認 {result.pending}項 · 障礙 {result.blocked}項</p></div><button className={result.canConfirm?"le-primary":"le-secondary"} onClick={confirm} disabled={!result.canRecord}>{result.canConfirm?'確認本次核對結果':'保留待核紀錄'}</button></div>
+   <section {...resultMotion} className="lw-section ra-results result-motion"><div className="lw-section-top"><div><h2>本次條件核對</h2><p role="status">{result.status} · 文件依據 {result.recorded}／{result.documentCount}項 · 待確認 {result.pending}項 · 障礙 {result.blocked}項</p></div><button className={result.canConfirm?"le-primary":"le-secondary"} onClick={confirm} disabled={!result.canRecord}>{result.canConfirm?'確認本次核對結果':'保留待核紀錄'}</button></div>
     {result.errors.length>0&&<ul className="ra-errors" role="alert">{result.errors.map(x=><li key={x}>{x}</li>)}</ul>}
     <div className={"ra-measures"+(p.parcelIds.length?" ra-four-measures":"")}>{p.parcelIds.length>0&&<div><span>納入地號登記面積合計</span><strong>{format(result.registeredArea)}<small>㎡</small></strong></div>}<div><span>本方案納入面積</span><strong>{format(result.includedArea)}<small>㎡</small></strong></div><div><span>持分換算權利範圍</span><strong>{format(result.rightsArea)}<small>㎡</small></strong></div><div><span>{result.areaLabel}</span><strong>{format(result.allocationArea)}<small>㎡</small></strong></div></div>
     <div className="lw-table"><table><thead><tr><th>核對項目</th><th>狀態</th><th>本案條件與缺件</th></tr></thead><tbody>{result.findings.map(x=><tr key={x.id}><th>{x.title}</th><td><span className={'ra-status ra-'+x.state}>{stateLabels[x.state]}</span></td><td>{x.detail}</td></tr>)}</tbody></table></div>
