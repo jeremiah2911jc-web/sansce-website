@@ -1,3 +1,5 @@
+import {CaseFileControls} from './CaseFileControls.jsx';
+import {validateCaseData} from './case-file.mjs';
 import {Component,createContext,useCallback,useContext,useEffect,useRef,useState} from 'react';
 import {DRAFT_KEY,parseDraft,persistDraft,comparable,contentKey} from './local-draft.mjs';
 import manifest from './generated/source-manifest.json';
@@ -22,11 +24,17 @@ export function LocalDraftProvider({children}){
  const touch=useCallback(key=>touched.current.add(key),[]);
  const clearScope=useCallback(prefix=>{for(const key of Object.keys(data.current))if(key.startsWith(prefix)){delete data.current[key];changed.current.delete(key);touched.current.delete(key);}},[]);
 
+ function importCase(file){
+  const next=validateCaseData(file.data);
+  let saved;try{saved=persistDraft(localStorage,lastRaw.current,next,true,RULES,crypto.randomUUID());}catch(e){throw Error(e.code==='DRAFT_CONFLICT'?'另一分頁的暫存已變更，請先處理頁頂分頁版本；本次尚未載入。':'本機儲存未完成，本次尚未載入，畫面與原暫存保留。');}
+  clearTimeout(timer.current);data.current=next;changed.current.clear();touched.current.clear();dirty.current=false;paused.current=false;conflict.current=false;lastRaw.current=saved.raw;
+  setNeedsRecovery(false);setSavedAt(saved.savedAt);setError('');setStatus('imported');setRestored(true);setVersionChanged(file.rules!==RULES);setGeneration(x=>x+1);document.body.classList.remove('le-focus-result');
+ }
  function fresh(){clearTimeout(timer.current);try{localStorage.removeItem(DRAFT_KEY);}catch{setError('無法刪除本機暫存；尚未建立新評估。');return;}data.current={};changed.current.clear();touched.current.clear();dirty.current=false;paused.current=false;lastRaw.current=null;setNeedsRecovery(false);setSavedAt('');setError('');setStatus('idle');setRestored(false);setGeneration(x=>x+1);}
  function removeSaved(){clearTimeout(timer.current);try{localStorage.removeItem(DRAFT_KEY);lastRaw.current=null;dirty.current=false;setSavedAt('');setStatus('idle');setError('');}catch{setStatus('error');setError('無法刪除本機暫存，原資料仍保留。');}}
  function keepThis(){try{lastRaw.current=localStorage.getItem(DRAFT_KEY);paused.current=false;conflict.current=false;dirty.current=true;flush();}catch{setError('無法存取本機暫存。');}}
  useEffect(()=>{const hide=()=>{if(document.visibilityState==='hidden')flush();};const storage=e=>{if(e.key!==DRAFT_KEY||e.newValue===lastRaw.current)return;paused.current=true;conflict.current=true;setStatus('conflict');setError('另一個分頁已更新暫存。本頁輸入保留，請選擇要繼續哪一份。');};window.addEventListener('pagehide',flush);document.addEventListener('visibilitychange',hide);window.addEventListener('storage',storage);return()=>{flush();window.removeEventListener('pagehide',flush);document.removeEventListener('visibilitychange',hide);window.removeEventListener('storage',storage);};},[flush]);
- const context={data,register,touch,clearScope,needsRecovery,status,error,savedAt,restored,versionChanged,fresh,removeSaved,flush,keepThis,reload:()=>location.reload()};
+ const context={rules:RULES,importCase,data,register,touch,clearScope,needsRecovery,status,error,savedAt,restored,versionChanged,fresh,removeSaved,flush,keepThis,reload:()=>location.reload()};
  return <DraftContext.Provider value={context}><DraftBoundary key={generation} pause={()=>{paused.current=true;}} restart={fresh}>{children}</DraftBoundary></DraftContext.Provider>;
 }
 export const useDraft=()=>useContext(DraftContext);
@@ -40,6 +48,6 @@ export function useDraftState(key,initial){
 }
 export function DraftControls(){
  const d=useDraft(),[remove,setRemove]=useState(false);
- if(d.needsRecovery)return <section className="draft-controls" role="alert"><div><strong>本機暫存暫時無法讀取</strong><p>{d.error}原暫存尚未覆寫，你仍可查看評估工具。</p></div><div><button type="button" onClick={d.reload}>重新讀取暫存</button><button type="button" onClick={d.fresh}>建立新評估</button></div></section>;
- return <section className="draft-controls" aria-label="本機暫存"><div role="status"><strong>{d.status==='saved'?'已暫存於此瀏覽器':d.status==='saving'?'正在暫存':d.status==='restored'?'已恢復輸入，請重新檢核':d.status==='conflict'?'暫存有其他分頁版本':d.status==='error'?'本機暫存未完成':'輸入後自動暫存於此瀏覽器'}</strong>{d.savedAt&&<span>{new Date(d.savedAt).toLocaleString('zh-TW')}</span>}<span>{d.error|| (d.versionChanged?'規則已變更；結果及確認紀錄不會自動沿用。':'僅保存本機輸入與方案，不上傳；清除網站資料或更換瀏覽器後無法恢復。')}</span></div>{d.status==='conflict'?<div><button type="button" onClick={d.reload}>載入另一分頁的暫存</button><button type="button" onClick={d.keepThis}>改存本頁輸入</button></div>:<div>{d.status==='error'&&<button type="button" onClick={d.keepThis}>重試暫存</button>}{d.savedAt&&<button type="button" onClick={()=>setRemove(true)}>刪除本機暫存</button>}</div>}{remove&&<div className="draft-remove" role="alertdialog" aria-label="刪除本機暫存"><p>刪除此瀏覽器的暫存，畫面輸入仍保留；再次修改後會重新暫存。</p><button type="button" onClick={()=>{d.removeSaved();setRemove(false);}}>確認刪除暫存</button><button type="button" onClick={()=>setRemove(false)}>取消</button></div>}</section>;
+ if(d.needsRecovery)return <section className="draft-controls" role="alert"><div><strong>本機暫存暫時無法讀取</strong><p>{d.error}原暫存尚未覆寫，你仍可查看評估工具。</p></div><div><button type="button" onClick={d.reload}>重新讀取暫存</button><button type="button" onClick={d.fresh}>建立新評估</button></div><CaseFileControls/></section>;
+ return <section className="draft-controls" aria-label="本機暫存"><div role="status"><strong>{d.status==='saved'?'已暫存於此瀏覽器':d.status==='saving'?'正在暫存':d.status==='imported'?'案件輸入已載入，請重新計算核對':d.status==='restored'?'已恢復輸入，請重新檢核':d.status==='conflict'?'暫存有其他分頁版本':d.status==='error'?'本機暫存未完成':'輸入後自動暫存於此瀏覽器'}</strong>{d.savedAt&&<span>{new Date(d.savedAt).toLocaleString('zh-TW')}</span>}<span>{d.error|| (d.versionChanged?'規則已變更；結果及確認紀錄不會自動沿用。':'僅保存本機輸入與方案，不上傳；清除網站資料或更換瀏覽器後無法恢復。')}</span></div>{d.status==='conflict'?<div><button type="button" onClick={d.reload}>載入另一分頁的暫存</button><button type="button" onClick={d.keepThis}>改存本頁輸入</button></div>:<div>{d.status==='error'&&<button type="button" onClick={d.keepThis}>重試暫存</button>}{d.savedAt&&<button type="button" onClick={()=>setRemove(true)}>刪除本機暫存</button>}</div>}<CaseFileControls/>{remove&&<div className="draft-remove" role="alertdialog" aria-label="刪除本機暫存"><p>刪除此瀏覽器的暫存，畫面輸入仍保留；再次修改後會重新暫存。</p><button type="button" onClick={()=>{d.removeSaved();setRemove(false);}}>確認刪除暫存</button><button type="button" onClick={()=>setRemove(false)}>取消</button></div>}</section>;
 }

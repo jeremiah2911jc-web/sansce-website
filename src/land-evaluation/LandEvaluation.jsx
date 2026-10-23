@@ -1,3 +1,4 @@
+import {OfficialSources} from './OfficialSources.jsx';
 import {useCollectiveScenarios,ScenarioControls,CollectiveComparison} from './CollectiveScenarios.jsx';
 import {collectiveSignature} from './collective-comparison.mjs';
 import {useResultMotion} from './ResultMotion.jsx';
@@ -63,6 +64,7 @@ function EvaluationWorkspace(){
  {replaceChoice&&<div className="le-replace" role="alertdialog" aria-label="確認替換輸入"><p>{workspace.entries.length>1?'清除目前方案的輸入與結果；其他方案保留。':'清除後無法還原本次輸入與結果。'}</p><button className="le-primary" onClick={()=>applyReplacement(replaceChoice)}>確認清除</button><button className="le-secondary" onClick={()=>setReplaceChoice('')}>取消</button></div>}
 
 
+ <OfficialSources city={district}/>
  <ScenarioControls workspace={workspace} snapshots={snapshots} onActivate={activateScenario} onDuplicate={duplicateScenario} onRemove={removeScenario} onCompare={compare}/>
  <div className="le-workspace"><nav className="le-tabs" aria-label="土地評估設定"><p>評估設定</p>{tabs.map(([id,label])=><button type="button" key={id} aria-current={tab===id?'step':undefined} onClick={()=>setTab(id)}>{label}</button>)}<div className={'le-input-status'+(stale?' is-stale':'')}><div role="status"><strong>{stale?'條件已變更，結果待更新':submitted?'已完成本次試算，資格仍須核對':missing.length?'先填基地基本資料':'基本資料已填，請核對其餘規劃條件'}</strong><span>{stale?'前次結果已收起；重新計算後再引用。':'其餘規劃條件依各組設定檢核。'}</span></div>{missing.length>0&&<div className="le-missing-links" aria-label="待填基本資料">{missing.map(x=><button type="button" key={x.key} onClick={()=>locate(x)}>填寫{x.label}</button>)}</div>}</div><button type="button" onClick={()=>document.getElementById('le-app-intro')?.scrollIntoView({behavior:'smooth'})}>完整版 App</button></nav>
  <section className="le-form-section" ref={sectionRef} tabIndex={-1} aria-label={tabs.find(([id])=>id===tab)[1]}>

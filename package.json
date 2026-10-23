@@ -19,7 +19,8 @@
     "verify:readjustment-statutory": "node scripts/verify-statutory-core.mjs",
     "verify:readjustment": "node scripts/verify-readjustment.mjs",
     "sync:readjustment-core": "node scripts/sync-readjustment-core.mjs",
-    "verify:evaluation-phase3": "node scripts/verify-evaluation-phase3.mjs"
+    "verify:evaluation-phase3": "node scripts/verify-evaluation-phase3.mjs",
+    "verify:evaluation-phase4": "node scripts/verify-evaluation-phase4.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",

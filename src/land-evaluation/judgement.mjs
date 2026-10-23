@@ -1,14 +1,15 @@
+import {landFindingTarget,readjustmentFindingTarget} from './field-location.mjs';
 import {REVIEWED_AT} from './generated/land.mjs';
 import {documentItems,systems,perspectives} from './generated/readjustment.mjs';
 const states={conditional:'條件對照',pending:'待補資料',blocked:'目前不符',review:'專案覆核',recorded:'已記錄依據'};
 const unique=rows=>[...new Map(rows.map(r=>[r.title+'／'+r.detail,r])).values()];
-const item=(title,detail,status)=>({title,detail,status:states[status]||status||'下一步'});
+const item=(title,detail,status,target=null)=>({title,detail,status:states[status]||status||'下一步',...(target?{target}:{})});
 const num=n=>typeof n==='number'&&Number.isFinite(n)?n.toLocaleString('zh-TW',{maximumFractionDigits:2}):'待確認';
 export function landJudgement(a,r){
- const findings=r.parcels.flatMap(p=>p.findings.map(f=>({...f,identity:p.identity}))),routes=r.parcels.flatMap(p=>p.routes.map(route=>({...route,identity:p.identity})));
+ const findings=r.parcels.flatMap(p=>p.findings.map(f=>({...f,identity:p.identity,parcelId:p.parcelId}))),routes=r.parcels.flatMap(p=>p.routes.map(route=>({...route,identity:p.identity})));
  const limits=findings.filter(f=>f.status==='blocked').map(f=>item(f.identity+'／'+f.title,f.detail,f.status));
- const gaps=findings.filter(f=>['pending','review'].includes(f.status)).map(f=>item(f.identity+'／'+f.title,f.detail+(f.id==='community'?' 會影響開發途徑與累計規模判斷。':' 會影響本案用途、途徑或許可的採用前提。'),f.status));
- for(const [i,p] of a.parcels.entries())if(p.areaSqm===''||p.areaSqm==null)gaps.push(item('第'+(i+1)+'筆土地／登記面積待補','配置與土地坪效的面積分母無法完整確認，請依謄本或正式資料填入。','pending'));
+ const gaps=findings.filter(f=>['pending','review'].includes(f.status)).map(f=>item(f.identity+'／'+f.title,f.detail+(f.id==='community'?' 會影響開發途徑與累計規模判斷。':' 會影響本案用途、途徑或許可的採用前提。'),f.status,landFindingTarget(f,f.parcelId)));
+ for(const [i,p] of a.parcels.entries())if(p.areaSqm===''||p.areaSqm==null)gaps.push(item('第'+(i+1)+'筆土地／登記面積待補','配置與土地坪效的面積分母無法完整確認，請依謄本或正式資料填入。','pending',{module:'land',parcelId:p.id,label:'登記面積（㎡）'}));
  const directions=routes.filter(r=>r.status!=='blocked').map(r=>item(r.identity+'／'+r.title,r.reason,r.status));
  const actions=[];
  if(findings.some(f=>f.id==='identity')||!a.parcels.length)actions.push(item('逐筆核對土地身分','取得地籍、使用分區或使用地編定資料，填入來源、日期及適用地號；向所在地官方查詢窗口核對。'));
@@ -18,7 +19,7 @@ export function landJudgement(a,r){
 }
 export function readjustmentJudgement(p,land,r){
  const limits=[...r.errors.map(t=>item('輸入與適用限制',t,'blocked')),...r.findings.filter(f=>f.state==='blocked').map(f=>item(f.title,f.detail,f.state))];
- const gaps=r.findings.filter(f=>['pending','review'].includes(f.state)).map(f=>item(f.title,f.detail+' 會影響本案權利、分配或後續採用條件。',f.state));
+ const gaps=r.findings.filter(f=>['pending','review'].includes(f.state)).map(f=>item(f.title,f.detail+' 會影響本案權利、分配或後續採用條件。',f.state,readjustmentFindingTarget(f,p,land,documentItems(p.system,p.track))));
  const mode=p.allocationMode==='average'?'平均負擔假設概估，不能當成個人核定分配':p.allocationMode==='statutory'?'本次法定數量公式核算，仍須個案分配文件對照':p.allocationMode==='document'?(p.areaStatus==='documented'?'文件記載面積；適用範圍及效力依原件覆核':'明示規劃假設面積，非核定分配'):'尚無可採用的分配面積資料';
  const directions=[item(p.track==='acquisition'?'先辨識取得標的及可承接權利':'先核對個人權利與分配口徑',`${systems[p.system]}／${perspectives[p.track]}。納入${num(r.includedArea)}㎡；持分權利範圍${num(r.rightsArea)}㎡。`),item('本次分配面積的身分',`${mode}；${r.areaLabel}：${num(r.allocationArea)}㎡。`,r.allocationArea==null?'pending':'review')];
  const actions=[],authority=p.authority?.trim()||'本案公告所載辦理單位／地方地政主管機關';
