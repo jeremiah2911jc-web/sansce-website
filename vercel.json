@@ -72,7 +72,7 @@
       "dest": "/$1/$2"
     },
     {
-      "src": "/(logo-sanze\\.png|favicon\\.ico|favicon-16x16\\.png|favicon-32x32\\.png|apple-touch-icon\\.png|site\\.webmanifest|sitemap\\.xml)",
+      "src": "/(logo\\.png|icon-192\\.png|icon-512\\.png|logo-sanze\\.png|favicon\\.ico|favicon-16x16\\.png|favicon-32x32\\.png|apple-touch-icon\\.png|site\\.webmanifest|sitemap\\.xml)",
       "dest": "/$1"
     },
     {
