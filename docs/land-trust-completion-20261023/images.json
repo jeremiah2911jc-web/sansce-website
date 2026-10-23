@@ -1,0 +1,24 @@
+[
+  {
+    "name": "funding",
+    "source": "/Users/jeremiah/.codex/generated_images/01a1668f-741f-72b2-b9f0-4f5ab40163ca/exec-c24bbec5-69b7-4a5f-b239-5d6d4b4a1a7c.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "tool": "built-in image_gen",
+    "qa": "逐張檢查：無人物或手部，文件/桌面/建築/圍籬透視合理，乾燥地面，沒有案件名稱、銀行品牌或可辨識個資；不指稱特定實際案件。",
+    "output": "/Users/jeremiah/Documents/Codex/2026-10-23/sanze-evaluation-phase4/public/images/insights/land-trust-completion/funding.webp"
+  },
+  {
+    "name": "site",
+    "source": "/Users/jeremiah/.codex/generated_images/01a1668f-741f-72b2-b9f0-4f5ab40163ca/exec-d3aba4d5-beec-4093-9561-4d5cb6053196.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "tool": "built-in image_gen",
+    "qa": "逐張檢查：無人物或手部，文件/桌面/建築/圍籬透視合理，乾燥地面，沒有案件名稱、銀行品牌或可辨識個資；不指稱特定實際案件。",
+    "output": "/Users/jeremiah/Documents/Codex/2026-10-23/sanze-evaluation-phase4/public/images/insights/land-trust-completion/site.webp"
+  }
+]
