@@ -111,13 +111,13 @@
  body:has(.dev-tool-shell:not([hidden])) .website-assistant .assistant-launcher-mark,
  body:has(.dev-tool-shell:not([hidden])) .website-assistant .assistant-mark {width:24px!important;height:24px!important}
  body:has(.dev-tool-shell:not([hidden])) .website-assistant .assistant-launcher>span:last-child {writing-mode:vertical-rl;font-size:12px!important;letter-spacing:.08em}
- .dev-overview .dev-hero {grid-template-columns:1.2fr .8fr;gap:36px;padding-top:30px}
+ .dev-overview .dev-hero {grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:24px;padding-top:30px}
  .dev-overview .dev-hero-copy {padding:0 0 22px}
  .dev-overview .dev-hero h1 {font-size:44px;margin:14px 0}
  .dev-overview .dev-lead {font-size:21px;line-height:1.6}
- .dev-overview .dev-lead br {display:none}
+ .dev-overview .dev-lead br,.dev-overview .dev-hero-note br {display:none}
  .dev-overview .dev-hero-note {margin:14px 0 20px;font-size:14px}
- .dev-overview .dev-hero-figure {max-width:360px;justify-self:end}
+ .dev-overview .dev-hero-figure {width:100%;max-width:440px;justify-self:start}
  .dev-overview .dev-hero-foot {padding:16px 0}
  .dev-overview .dev-directions {padding-top:40px}
  .dev-overview .dev-section-title {margin-bottom:24px}
