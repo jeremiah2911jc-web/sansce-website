@@ -41,3 +41,11 @@ main p,main td,main figcaption,footer p{text-wrap:wrap}
  .insight-reading-layout .knowledge-body section>p+p{margin-top:1.2em}
  .insight-reading-layout .knowledge-body section{margin-bottom:2.25rem}
 }
+
+/* Article index titles use reviewed phrase boundaries at every card width. */
+.insights-entry h2 .insight-title-phrase{display:inline-block;max-width:100%;white-space:nowrap}
+.insights-entry-copy>p{white-space:normal;word-break:normal;line-break:strict;text-wrap:wrap;text-align:left}
+
+.insight-article-header h1 .article-heading-word,.sanze-feature-copy h1 .article-heading-word,.sanze-feature-section h2 .article-heading-word{display:inline!important;white-space:nowrap!important}
+
+.home-article-title .article-heading-word{display:inline!important;white-space:nowrap!important}
