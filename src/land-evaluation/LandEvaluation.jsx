@@ -1,5 +1,5 @@
 import {useResultMotion} from './ResultMotion.jsx';
-import {LocalDraftProvider,DraftControls,useDraft,useDraftState} from './LocalDraft.jsx';
+import {LocalDraftProvider,DraftControls,useDraftState} from './LocalDraft.jsx';
 import {EvaluationDelivery} from './EvaluationDelivery.jsx';
 import {collectiveDelivery} from './delivery-model.mjs';
 import {DevelopmentOverview,developmentTools} from './DevelopmentOverview.jsx';
@@ -22,12 +22,11 @@ function SelectField({label,value,options,onChange}){return <label className="le
 function useDesktopTool(){const [desktop,setDesktop]=useState(()=>typeof matchMedia==='function'&&matchMedia('(min-width: 800px) and (hover: hover) and (pointer: fine)').matches);useEffect(()=>{const m=matchMedia('(min-width: 800px) and (hover: hover) and (pointer: fine)'),fn=()=>setDesktop(m.matches);m.addEventListener('change',fn);return()=>m.removeEventListener('change',fn);},[]);return desktop;}
 export default function LandEvaluation(){return <LocalDraftProvider><LandEvaluationPage/></LocalDraftProvider>;}
 function LandEvaluationPage(){
- const [section,setSection]=useDraftState('nav.section','land'),[view,setView]=useDraftState('nav.view','overview'),[opened,setOpened]=useDraftState('nav.opened',false),[track,setTrack]=useDraftState('nav.track','owner');const workspaceRef=useRef(null);const desktop=useDesktopTool();const tool=developmentTools[section]||developmentTools.land;const draftState=useDraft();
+ const [section,setSection]=useDraftState('nav.section','land'),[view,setView]=useDraftState('nav.view','overview'),[opened,setOpened]=useDraftState('nav.opened',false),[track,setTrack]=useDraftState('nav.track','owner');const workspaceRef=useRef(null);const desktop=useDesktopTool();const tool=developmentTools[section]||developmentTools.land;
  function choose(value){document.body.classList.remove('le-focus-result');setSection(value);requestAnimationFrame(()=>workspaceRef.current?.scrollIntoView({behavior:'instant',block:'start'}));}
  function enter(value,options={}){if(!desktop)return;setTrack(options.track??'owner');setOpened(true);setView('tool');choose(value);requestAnimationFrame(()=>workspaceRef.current?.focus({preventScroll:true}));}
  function overview(){document.body.classList.remove('le-focus-result');setView('overview');requestAnimationFrame(()=>{document.getElementById('dev-directions')?.scrollIntoView({behavior:'instant'});document.getElementById('dev-direction-title')?.focus({preventScroll:true});});}
  useEffect(()=>{document.title='土地開發評估｜三策專案管理顧問有限公司';},[]);
- if(desktop&&(draftState.pending||draftState.needsRecovery))return <DraftControls/>;
  return <>{desktop&&<DraftControls/>}<div hidden={desktop&&view!=='overview'}><DevelopmentOverview onEnter={enter} canOperate={desktop}/></div>{opened&&<div hidden={!desktop||view!=='tool'} className="dev-tool-shell"><header className="dev-tool-bar" ref={workspaceRef} tabIndex={-1} aria-label="評估工作區"><div className="dev-workspace-top"><nav className="dev-tool-trail" aria-label="評估位置"><button type="button" onClick={overview}>評估總覽</button><span>{tool.family}</span><strong>{tool.title}</strong></nav><span className="dev-session-label">輸入自動暫存於本機</span></div><nav className="dev-tool-nav" aria-label="切換評估工具">{Object.entries(developmentTools).map(([id,t])=><button type="button" key={id} aria-current={section===id?'page':undefined} onClick={()=>choose(id)}><span>{t.family}</span><strong>{t.title}</strong></button>)}</nav><p className="dev-sharing-note">土地用途、透天與重劃共用本次土地資料；集合住宅另填基地條件。切換工具保留各自輸入，本機暫存可於下次開啟時恢復。</p></header><div className="le-entry-section" hidden={section==='collective'}><LandWorkbench section={section} onSection={choose} readjustmentTrack={track}/></div><div className="le-entry-section" hidden={section!=='collective'}><EvaluationWorkspace/></div></div>}{desktop&&<TrialUseNotice/>}</>;
 }
 function TrialUseNotice(){return <section className="le-use-notice" aria-labelledby="le-use-notice-title"><h2 id="le-use-notice-title">試算使用說明</h2><div><p>本頁試算係依使用者輸入資料及設定條件計算，供開發可行性初步評估與方案比較參考。實際開發規模、法令適用、工程造價、融資及銷售條件，應依個案資料、主管機關審查及相關專業評估確認。</p><p>試算結果不構成投資建議、契約承諾，亦不保證開發利益或審查結果。據以進行投資、簽約或申請前，應就個案條件完成必要查核與評估。</p></div></section>;}
