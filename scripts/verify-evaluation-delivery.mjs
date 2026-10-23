@@ -1,12 +1,14 @@
 import assert from 'node:assert/strict';
 import {serializeDraft,parseDraft,encodeValue,decodeValue,comparable,MAX_DRAFT_SIZE,persistDraft,DRAFT_KEY} from '../src/land-evaluation/local-draft.mjs';
-import {collectiveDelivery,landDelivery,layoutDelivery,readjustmentDelivery,displayNumber} from '../src/land-evaluation/delivery-model.mjs';
+import {collectiveDelivery,landDelivery,layoutDelivery,readjustmentDelivery,displayNumber,displayRuleVersion} from '../src/land-evaluation/delivery-model.mjs';
 import {publicText} from '../src/land-evaluation/public-copy.mjs';
 import {createInput,exampleInput,evaluate} from '../src/land-evaluation/model.mjs';
 import {newLandAssessment,newLandFact,newLegalInputs,evaluateLand,newLayout,newHouse,newFloor,calculateLayout} from '../src/land-evaluation/generated/land.mjs';
 import {newReadjustmentPlan,evaluateReadjustment} from '../src/land-evaluation/generated/readjustment.mjs';
 import {layoutPresentation} from '../src/land-evaluation/layout-presentation.mjs';
 let cases=0;function test(name,fn){fn();cases++;}
+for(const [raw,expected] of [['autonomousPlanning.2026-10-17.v1／來源 8ff0bc19','2026-10-17 · V1'],['land-law.2026-10-21.4／來源 8ff0bc19','2026-10-21 · V4'],['land-layout.2026-10-21.1／來源 8ff0bc19','2026-10-21 · V1'],['land-readjustment.preview.2026-10-21.6／來源 8ff0bc19','2026-10-21 · V6']])test('public version retains date and revision without internal identifier',()=>assert.equal(displayRuleVersion(raw),expected));
+test('unknown public version does not invent a date or revision',()=>assert.equal(displayRuleVersion('unknown'),'版本待確認'));
 const input=createInput();input.quantityReserve.basementReservePercent=NaN;input.basementDemand=undefined;
 const source={'nav.section':'collective','collective.input':input,'land.plans':[{input:{id:'p'},history:[{confirmed:true,result:{area:999}}]}],'readjustment.items':[{input:{id:'r'},history:[{confirmed:true}]}],submitted:{values:{salePing:999}},unknown:'excluded'};
 const serialized=serializeDraft(source,'rules1','revision1','2026-10-23T00:00:00Z');const restored=parseDraft(serialized);

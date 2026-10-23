@@ -1,0 +1,91 @@
+{
+  "readjustment": [
+    {
+      "page": 1,
+      "textCharacters": 443,
+      "outsidePage": 0
+    },
+    {
+      "page": 2,
+      "textCharacters": 521,
+      "outsidePage": 0
+    },
+    {
+      "page": 3,
+      "textCharacters": 563,
+      "outsidePage": 0
+    },
+    {
+      "page": 4,
+      "textCharacters": 737,
+      "outsidePage": 0
+    },
+    {
+      "page": 5,
+      "textCharacters": 757,
+      "outsidePage": 0
+    },
+    {
+      "page": 6,
+      "textCharacters": 149,
+      "outsidePage": 0
+    }
+  ],
+  "comparison": [
+    {
+      "page": 1,
+      "textCharacters": 609,
+      "outsidePage": 0
+    },
+    {
+      "page": 2,
+      "textCharacters": 786,
+      "outsidePage": 0
+    },
+    {
+      "page": 3,
+      "textCharacters": 659,
+      "outsidePage": 0
+    },
+    {
+      "page": 4,
+      "textCharacters": 682,
+      "outsidePage": 0
+    },
+    {
+      "page": 5,
+      "textCharacters": 670,
+      "outsidePage": 0
+    },
+    {
+      "page": 6,
+      "textCharacters": 1458,
+      "outsidePage": 0
+    },
+    {
+      "page": 7,
+      "textCharacters": 1699,
+      "outsidePage": 0
+    },
+    {
+      "page": 8,
+      "textCharacters": 1679,
+      "outsidePage": 0
+    },
+    {
+      "page": 9,
+      "textCharacters": 1698,
+      "outsidePage": 0
+    },
+    {
+      "page": 10,
+      "textCharacters": 1792,
+      "outsidePage": 0
+    },
+    {
+      "page": 11,
+      "textCharacters": 1797,
+      "outsidePage": 0
+    }
+  ]
+}

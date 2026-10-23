@@ -5,6 +5,7 @@ import {planningFields,PLANNING_VERSION} from './generated/core.mjs';
 import {RULE_VERSION,LAYOUT_VERSION,REVIEWED_AT,landRegimes,intendedUses,buildingForms,lawSources} from './generated/land.mjs';
 import {systems,perspectives,READJUSTMENT_VERSION,documentItems,getPublishedPlan,formulaSources} from './generated/readjustment.mjs';
 import {publicText} from './public-copy.mjs';
+export function displayRuleVersion(value){const match=String(value||'').match(/(\d{4}-\d{2}-\d{2})\.(?:v)?(\d+)(?=\D|$)/i);return match?`${match[1]} · V${match[2]}`:'版本待確認';}
 export const displayNumber=(n,d=2)=>typeof n==='number'&&Number.isFinite(n)?(n>0&&n<10**-d?'<'+(10**-d):n.toLocaleString('zh-TW',{maximumFractionDigits:d})):'待確認';
 const text=v=>v===null||v===undefined||v===''?'未填／待確認':String(v);
 const distinct=items=>[...new Set(items.filter(Boolean).map(publicText))];
