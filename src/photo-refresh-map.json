@@ -228,10 +228,10 @@
     },
     "/images/insights/tdr-allocation-hero.webp|article-card": {
       "id": "P023",
-      "src": "/images/refresh-20261020/p023.jpg",
-      "small": "/images/refresh-20261020/p023-960.jpg",
-      "width": 1672,
-      "height": 941,
+      "src": "/images/audit-20261023/p023.webp",
+      "small": "/images/audit-20261023/p023-960.webp",
+      "width": 1536,
+      "height": 1024,
       "alt": "以建築模型與資料比較開發量體及分配",
       "role": "article-card",
       "position": "50% 45%"
@@ -248,10 +248,10 @@
     },
     "/images/insights/ground-floor-shop-1536.webp|article-card": {
       "id": "P071",
-      "src": "/images/refresh-20261020/p071.jpg",
-      "small": "/images/refresh-20261020/p071-960.jpg",
-      "width": 1672,
-      "height": 941,
+      "src": "/images/audit-20261023/p071.webp",
+      "small": "/images/audit-20261023/p071-960.webp",
+      "width": 1536,
+      "height": 1024,
       "alt": "老公寓一樓店面與行人通行空間",
       "role": "article-card",
       "position": "50% 45%"
@@ -278,10 +278,10 @@
     },
     "/images/editorial/family-floor-plan.webp|article-card": {
       "id": "P074",
-      "src": "/images/refresh-20261020/p074.jpg",
-      "small": "/images/refresh-20261020/p074-960.jpg",
-      "width": 1672,
-      "height": 941,
+      "src": "/images/audit-20261023/p074.webp",
+      "small": "/images/audit-20261023/p074-960.webp",
+      "width": 1536,
+      "height": 1024,
       "alt": "家人在住家中討論新屋格局與生活需求",
       "role": "article-card",
       "position": "50% 45%"
@@ -338,10 +338,10 @@
     },
     "/images/editorial/contract-review.webp|": {
       "id": "P080",
-      "src": "/images/refresh-20261020/p080.jpg",
-      "small": "/images/refresh-20261020/p080-960.jpg",
-      "width": 1672,
-      "height": 941,
+      "src": "/images/audit-20261023/p080.webp",
+      "small": "/images/audit-20261023/p080-960.webp",
+      "width": 1536,
+      "height": 1024,
       "alt": "屋主核對合作文件與提案條件",
       "role": "dynamic-content",
       "position": "50% 45%"
@@ -368,20 +368,20 @@
     },
     "/images/redesign/consultation.jpg|": {
       "id": "P083",
-      "src": "/images/refresh-20261020/p083.jpg",
-      "small": "/images/refresh-20261020/p083-960.jpg",
-      "width": 1672,
-      "height": 941,
+      "src": "/images/audit-20261023/p083.webp",
+      "small": "/images/audit-20261023/p083-960.webp",
+      "width": 1536,
+      "height": 1024,
       "alt": "顧問與住戶討論基地與社區重建",
       "role": "dynamic-content",
       "position": "50% 45%"
     },
     "/images/editorial/community-meeting.webp|home-stage": {
       "id": "P084",
-      "src": "/images/refresh-20261020/p084.jpg",
-      "small": "/images/refresh-20261020/p084-960.jpg",
-      "width": 1672,
-      "height": 941,
+      "src": "/images/audit-20261023/p084.webp",
+      "small": "/images/audit-20261023/p084-960.webp",
+      "width": 1536,
+      "height": 1024,
       "alt": "顧問與住戶討論基地與社區重建",
       "role": "dynamic-content",
       "position": "50% 45%"
@@ -474,10 +474,10 @@
     },
     "/images/insights/tdr-allocation-hero.webp|": {
       "id": "P031",
-      "src": "/images/refresh-20261020/p031.jpg",
-      "small": "/images/refresh-20261020/p031-960.jpg",
-      "width": 1672,
-      "height": 941,
+      "src": "/images/audit-20261023/p031.webp",
+      "small": "/images/audit-20261023/p031-960.webp",
+      "width": 1536,
+      "height": 1024,
       "alt": "以建築模型與資料比較開發量體及分配",
       "role": "article-card",
       "position": "50% 45%"
@@ -523,20 +523,20 @@
     },
     "/images/insights/selection-discussion-1536.webp|": {
       "id": "P036",
-      "src": "/images/refresh-20261020/p036.jpg",
-      "small": "/images/refresh-20261020/p036-960.jpg",
-      "width": 1672,
-      "height": 941,
+      "src": "/images/audit-20261023/p036.webp",
+      "small": "/images/audit-20261023/p036-960.webp",
+      "width": 1536,
+      "height": 1024,
       "alt": "顧問與住戶討論地主權益與重建問題",
       "role": "article-card",
       "position": "50% 45%"
     },
     "/images/editorial/contract-review.webp|": {
       "id": "P037",
-      "src": "/images/refresh-20261020/p037.jpg",
-      "small": "/images/refresh-20261020/p037-960.jpg",
-      "width": 1672,
-      "height": 941,
+      "src": "/images/audit-20261023/p037.webp",
+      "small": "/images/audit-20261023/p037-960.webp",
+      "width": 1536,
+      "height": 1024,
       "alt": "屋主核對合作文件與提案條件",
       "role": "article-card",
       "position": "50% 45%"
@@ -664,10 +664,10 @@
   "/insights/urban-renewal-consent-plan-changes": {
     "/images/editorial/community-meeting.webp|": {
       "id": "P048",
-      "src": "/images/refresh-20261020/p048.jpg",
-      "small": "/images/refresh-20261020/p048-960.jpg",
-      "width": 1672,
-      "height": 941,
+      "src": "/images/audit-20261023/p048.webp",
+      "small": "/images/audit-20261023/p048-960.webp",
+      "width": 1536,
+      "height": 1024,
       "alt": "顧問與住戶討論重建提案變更與住戶意見",
       "role": "content",
       "position": "50% 45%"
@@ -822,10 +822,10 @@
   "/services/joint-construction": {
     "/images/editorial/contract-review.webp|": {
       "id": "P062",
-      "src": "/images/refresh-20261020/p062.jpg",
-      "small": "/images/refresh-20261020/p062-960.jpg",
-      "width": 1672,
-      "height": 941,
+      "src": "/images/audit-20261023/p062.webp",
+      "small": "/images/audit-20261023/p062-960.webp",
+      "width": 1536,
+      "height": 1024,
       "alt": "屋主核對合作文件與提案條件",
       "role": "content",
       "position": "50% 45%"
@@ -886,10 +886,10 @@
   "/services/urban-renewal": {
     "/images/redesign/site-inspection-v2.jpg|": {
       "id": "P068",
-      "src": "/images/refresh-20261020/p068.jpg",
-      "small": "/images/refresh-20261020/p068-960.jpg",
-      "width": 1672,
-      "height": 941,
+      "src": "/images/audit-20261023/p068.webp",
+      "small": "/images/audit-20261023/p068-960.webp",
+      "width": 1536,
+      "height": 1024,
       "alt": "顧問與住戶討論社區整合與更新工作",
       "role": "content",
       "position": "50% 45%"
