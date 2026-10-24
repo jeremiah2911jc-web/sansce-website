@@ -24,9 +24,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// ../../../../../../src/sanze-cases-desktop/node_modules/polygon-clipping/dist/polygon-clipping.umd.js
+// ../../../../src/sanze-cases-desktop/node_modules/polygon-clipping/dist/polygon-clipping.umd.js
 var require_polygon_clipping_umd = __commonJS({
-  "../../../../../../src/sanze-cases-desktop/node_modules/polygon-clipping/dist/polygon-clipping.umd.js"(exports, module) {
+  "../../../../src/sanze-cases-desktop/node_modules/polygon-clipping/dist/polygon-clipping.umd.js"(exports, module) {
     (function(global, factory) {
       typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, global.polygonClipping = factory());
     })(exports, (function() {
@@ -40,7 +40,7 @@ var require_polygon_clipping_umd = __commonJS({
           },
           trys: [],
           ops: []
-        }, f7, y, t, g;
+        }, f8, y, t, g;
         return g = {
           next: verb(0),
           "throw": verb(1),
@@ -54,9 +54,9 @@ var require_polygon_clipping_umd = __commonJS({
           };
         }
         function step(op) {
-          if (f7) throw new TypeError("Generator is already executing.");
+          if (f8) throw new TypeError("Generator is already executing.");
           while (_) try {
-            if (f7 = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (f8 = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
               case 0:
@@ -106,7 +106,7 @@ var require_polygon_clipping_umd = __commonJS({
             op = [6, e];
             y = 0;
           } finally {
-            f7 = t = 0;
+            f8 = t = 0;
           }
           if (op[0] & 5) throw op[1];
           return {
@@ -759,10 +759,10 @@ var require_polygon_clipping_umd = __commonJS({
       const epsilon = 11102230246251565e-32;
       const splitter = 134217729;
       const resulterrbound = (3 + 8 * epsilon) * epsilon;
-      function sum2(elen, e, flen, f7, h) {
+      function sum3(elen, e, flen, f8, h) {
         let Q, Qnew, hh, bvirt;
         let enow = e[0];
-        let fnow = f7[0];
+        let fnow = f8[0];
         let eindex = 0;
         let findex = 0;
         if (fnow > enow === fnow > -enow) {
@@ -770,7 +770,7 @@ var require_polygon_clipping_umd = __commonJS({
           enow = e[++eindex];
         } else {
           Q = fnow;
-          fnow = f7[++findex];
+          fnow = f8[++findex];
         }
         let hindex = 0;
         if (eindex < elen && findex < flen) {
@@ -781,7 +781,7 @@ var require_polygon_clipping_umd = __commonJS({
           } else {
             Qnew = fnow + Q;
             hh = Q - (Qnew - fnow);
-            fnow = f7[++findex];
+            fnow = f8[++findex];
           }
           Q = Qnew;
           if (hh !== 0) {
@@ -797,7 +797,7 @@ var require_polygon_clipping_umd = __commonJS({
               Qnew = Q + fnow;
               bvirt = Qnew - Q;
               hh = Q - (Qnew - bvirt) + (fnow - bvirt);
-              fnow = f7[++findex];
+              fnow = f8[++findex];
             }
             Q = Qnew;
             if (hh !== 0) {
@@ -819,7 +819,7 @@ var require_polygon_clipping_umd = __commonJS({
           Qnew = Q + fnow;
           bvirt = Qnew - Q;
           hh = Q - (Qnew - bvirt) + (fnow - bvirt);
-          fnow = f7[++findex];
+          fnow = f8[++findex];
           Q = Qnew;
           if (hh !== 0) {
             h[hindex++] = hh;
@@ -930,7 +930,7 @@ var require_polygon_clipping_umd = __commonJS({
         bvirt = u3 - _j;
         u[2] = _j - (u3 - bvirt) + (_i - bvirt);
         u[3] = u3;
-        const C1len = sum2(4, B, 4, u, C1);
+        const C1len = sum3(4, B, 4, u, C1);
         s1 = acx * bcytail;
         c = splitter * acx;
         ahi = c - (c - acx);
@@ -960,7 +960,7 @@ var require_polygon_clipping_umd = __commonJS({
         bvirt = u3 - _j;
         u[2] = _j - (u3 - bvirt) + (_i - bvirt);
         u[3] = u3;
-        const C2len = sum2(C1len, C1, 4, u, C2);
+        const C2len = sum3(C1len, C1, 4, u, C2);
         s1 = acxtail * bcytail;
         c = splitter * acxtail;
         ahi = c - (c - acxtail);
@@ -990,7 +990,7 @@ var require_polygon_clipping_umd = __commonJS({
         bvirt = u3 - _j;
         u[2] = _j - (u3 - bvirt) + (_i - bvirt);
         u[3] = u3;
-        const Dlen = sum2(C2len, C2, 4, u, D);
+        const Dlen = sum3(C2len, C2, 4, u, D);
         return D[Dlen - 1];
       }
       function orient2d(ax, ay, bx, by, cx, cy) {
@@ -2089,17 +2089,17 @@ var require_polygon_clipping_umd = __commonJS({
   }
 });
 
-// ../../../../../../src/sanze-cases-desktop/src/components/efficiency/BonusAssessmentPanel.tsx
+// ../sanze-release-app/src/components/efficiency/BonusAssessmentPanel.tsx
 import { FieldLabel as FieldLabel2, PublicNumber as PublicNumber2 } from "/src/land-evaluation/PublicFields.jsx";
 import { PublicSelect as PublicSelect2 } from "/src/land-evaluation/PublicSelect.jsx";
 import { publicText as publicText2 } from "/src/land-evaluation/public-copy.mjs";
 
-// ../../../../../../src/sanze-cases-desktop/src/components/efficiency/TdrApplicationPanel.tsx
+// ../sanze-release-app/src/components/efficiency/TdrApplicationPanel.tsx
 import { FieldLabel, PublicNumber } from "/src/land-evaluation/PublicFields.jsx";
 import { PublicSelect } from "/src/land-evaluation/PublicSelect.jsx";
 import { publicText } from "/src/land-evaluation/public-copy.mjs";
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/site/siteRoadConditions.ts
+// ../sanze-release-app/src/lib/site/siteRoadConditions.ts
 var newSiteRoadConditions = () => ({ version: "site-road.v1", roadName: "", plannedWidth: "", openedWidth: "", frontage: "", connected: "unknown", status: "unknown", source: "", checkedAt: "" });
 function reviewSiteRoad(r, referenceDate = (/* @__PURE__ */ new Date()).toLocaleDateString("sv-SE", { timeZone: "Asia/Taipei" })) {
   const errors = [], notes = [];
@@ -2117,7 +2117,7 @@ function applySiteRoad(t, r) {
   return { ...t, roadWidth: r.plannedWidth, roadFrontage: r.frontage, roadOpened: r.connected === "no" || r.openedWidth.trim() && Number(r.openedWidth) < 8 ? "no" : r.openedWidth.trim() && r.connected === "yes" ? "yes" : "unknown" };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/tdrApplication.ts
+// ../sanze-release-app/src/lib/planning/tdrApplication.ts
 var TDR_APPLICATION_VERSION = "tdr-application.2026-10-19.v1";
 var inferTdrCity = (district) => district.includes("\u65B0\u5317") ? "ntpc" : /臺北|台北/.test(district) ? "taipei" : "other";
 var newTdrApplication = (city) => ({ version: TDR_APPLICATION_VERSION, city, method: "unselected", cashPercent: "", quantityBasis: "target", taipeiCap: "general30", taipeiRequested: "30", receiverUnitValue: "", senderParcels: [], cashSqm: "", valuationUnitPrice: "", valuationStatus: "assumed", valuationDate: "", valuationSource: "", appraisalFee: "", otherFee: "", paidAmount: "", stage: "planning", receiverEligibility: "unknown", methodEligibility: "unknown", roadWidth: "", roadOpened: "unknown", roadFrontage: "", specialRoadApproved: false, taipeiLocation: "unknown", source: "" });
@@ -2130,7 +2130,7 @@ function isTdrApplication(x) {
 }
 function tdrCashPercent(t, legacy) {
   if (!t) return legacy;
-  return t.method === "cash" ? 100 : t.method === "land" || t.method === "unselected" ? 0 : t.cashPercent.trim() ? Number(t.cashPercent) : 50;
+  return t.method === "cash" ? 100 : t.method === "land" || t.method === "unselected" ? 0 : t.cashPercent.trim() ? Number(t.cashPercent) : NaN;
 }
 var tdrLaws = { ntpc: "https://web.law.ntpc.gov.tw/Scripts/FLAWDAT0202.aspx?fcode=C0150015", ntpcProcedure: "https://web.law.ntpc.gov.tw/Scripts/FLAWDAT0202.aspx?fcode=C0150122", ntpcPoints: "https://web.law.ntpc.gov.tw/Scripts/FLAWDAT0202.aspx?fcode=C0150118", taipei: "https://laws.gov.taipei/Law/LawSearch/LawArticleContent/FL074357", taipeiProcedure: "https://udd.gov.taipei/events/f3gxcu9-10547", central: "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0070028" };
 function reviewTdrApplication(t, c, requestedPercent, capPercent, otherAwardPercent = 0) {
@@ -2164,7 +2164,7 @@ function reviewTdrApplication(t, c, requestedPercent, capPercent, otherAwardPerc
   if (!Number.isFinite(cashPercent) || cashPercent < 0 || cashPercent > 100) errors.push("\u4EE3\u91D1\u6BD4\u4F8B\u9808\u70BA0\u81F3100%");
   if (t.method === "mixed" && (cashPercent <= 0 || cashPercent >= 100)) errors.push("\u6DF7\u5408\u65B9\u5F0F\u4EE3\u91D1\u6BD4\u4F8B\u9808\u5927\u65BC0\u4E14\u5C0F\u65BC100%\uFF1B\u7D14\u4EE3\u91D1\u8ACB\u9078\u5168\u4EE3\u91D1");
   if (t.method === "unselected") gaps.push("\u5C1A\u672A\u9078\u5B9A\u53D6\u5F97\u65B9\u5F0F\uFF0C\u50C5\u8A66\u7B97\u76EE\u6A19\u5BB9\u7A4D\uFF0C\u672A\u78BA\u8A8D\u9001\u51FA\u5730\u6216\u4EE3\u91D1\u69CB\u6210");
-  if (t.method === "mixed" && !t.cashPercent.trim()) gaps.push("\u6DF7\u5408\u65B9\u5F0F\u6BD4\u4F8B\u672A\u586B\uFF0C\u66AB\u63A1\u4EE3\u91D150%\u4F5C\u660E\u793A\u5047\u8A2D");
+  if (t.method === "mixed" && !t.cashPercent.trim()) errors.push("\u6DF7\u5408\u65B9\u5F0F\u6BD4\u4F8B\u672A\u586B\uFF0C\u4E0D\u8A08\u7B97\u4EE3\u91D1\u8207\u9001\u51FA\u5730\u5206\u914D");
   if (t.city === "taipei" && t.method !== "unselected" && cashPercent < 50) errors.push("\u81FA\u5317\u5E02\u4E00\u822C\u90FD\u5E02\u8A08\u756B\u5BB9\u79FB\u81F3\u5C1150%\u4EE3\u91D1\uFF1B\u4E0D\u53EF\u7528\u5168\u9001\u51FA\u5730\u6350\u8D08\u6216\u4F4E\u65BC50%\u4EE3\u91D1\u69CB\u6210");
   if (t.receiverEligibility === "no" || t.methodEligibility === "no") {
     eligible = false;
@@ -2297,7 +2297,7 @@ function renderTdrApplication(t, r, financials = true) {
   return `<h3>\u5BB9\u79FB\u5730\u5340\u53CA\u53D6\u5F97\u65B9\u5F0F</h3><p>\u6CD5\u898F\u5730\u5340${r.city === "ntpc" ? "\u65B0\u5317\u5E02" : r.city === "taipei" ? "\u81FA\u5317\u5E02" : "\u5176\u4ED6"}\uFF0C\u65B9\u5F0F${esc(r.method)}\uFF0C\u91CF\u6E90${t.quantityBasis === "target" ? "\u898F\u5283\u76EE\u6A19" : "\u9001\u51FA\u5730\u53CA\u4EE3\u91D1\u6578\u91CF"}\u3002\u4EE3\u91D1${r.cashPercent}%\uFF1B\u672C\u6B21\u63A1\u8A08${r.appliedSqm.toFixed(2)}\u33A1\uFF08${r.appliedPercent.toFixed(4)}%\uFF09\u3002</p><p>\u9001\u51FA\u5730\u4F9B\u7D66${r.donorSqm.toFixed(2)}\u33A1\u3001\u4EE3\u91D1\u7533\u8ACB${r.cashSupplied === null ? "\u672A\u586B" : r.cashSupplied.toFixed(2)}\u33A1\uFF1B\u672C\u6B21\u914D\u7F6E\u9001\u51FA\u5730${r.actualLand.toFixed(2)}\u33A1\u3001\u4EE3\u91D1${r.actualCash.toFixed(2)}\u33A1\u3002\u672A\u9078\u65B9\u5F0F\u4E0D\u4EE3\u8868\u5DF2\u53D6\u5F97\uFF0C\u4F86\u6E90\u8207\u6838\u51C6\u5206\u958B\u3002</p><table><tr><th>\u9001\u51FA\u5730</th><th>\u7A2E\u985E</th><th>\u63DB\u5165\u91CF\u33A1</th><th>\u67E5\u6838</th></tr>${r.senders.map((p) => `<tr><td>${esc(p.parcel)}</td><td>${esc(p.kind)}</td><td>${p.volume.toFixed(2)}</td><td>${esc(p.issues.join("\uFF1B"))}</td></tr>`).join("")}</table>${financials ? `<p>\u4EE3\u91D1${r.cashCost === null ? "\u672A\u4F30" : r.cashCost.toFixed(0) + "\u5143"}\uFF1B\u9001\u51FA\u5730\u53D6\u5F97\u6210\u672C${r.landCost === null ? "\u672A\u4F30" : r.landCost.toFixed(0) + "\u5143"}\uFF1B\u4F30\u50F9\u53CA\u5176\u4ED6\u898F\u8CBB${r.fees.toFixed(0)}\u5143\uFF1B\u53D6\u5F97\u6210\u672C\u5408\u8A08${r.totalCost === null ? "\u672A\u4F30\u5B8C\u6574" : r.totalCost.toFixed(0) + "\u5143"}\u3002\u4EE3\u91D1\u4F30\u50F9\u72C0\u614B${esc(r.valuationStatus)}\uFF0C\u4F86\u6E90${esc(t.valuationSource || "\u672A\u586B")}\u3002\u6210\u672C\u4E0D\u81EA\u52D5\u5012\u586B\u81F3\u5176\u4ED6\u6A21\u7D44\uFF0C\u907F\u514D\u91CD\u8907\u5217\u5E33\u3002</p>` : ""}${[...r.errors, ...r.notes, ...r.gaps].map((n) => `<p>${esc(n)}</p>`).join("")}<p><a href="${tdrLaws[r.city === "taipei" ? "taipei" : "ntpc"]}">\u5730\u65B9\u5BB9\u79FB\u898F\u5247</a> \uFF0F <a href="${tdrLaws[r.city === "taipei" ? "taipeiProcedure" : "ntpcProcedure"]}">\u7533\u8ACB\u7A0B\u5E8F</a> \uFF0F <a href="${tdrLaws.central}">\u4E2D\u592E\u7B2C9\u30019-1\u689D</a></p>`;
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/components/efficiency/TdrApplicationPanel.tsx
+// ../sanze-release-app/src/components/efficiency/TdrApplicationPanel.tsx
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 function TdrApplicationPanel({
   assessment,
@@ -2332,7 +2332,7 @@ function TdrApplicationPanel({
       }
     });
   };
-  const number = (key, label) => /* @__PURE__ */ jsxs("label", { children: [
+  const number2 = (key, label) => /* @__PURE__ */ jsxs("label", { children: [
     /* @__PURE__ */ jsx(FieldLabel, { children: label }),
     /* @__PURE__ */ jsx(PublicNumber, { "aria-label": label, type: "number", min: "0", step: "any", value: t[key] ?? "", onChange: (e) => edit({
       [key]: e.target.value
@@ -2349,8 +2349,8 @@ function TdrApplicationPanel({
     ] })
   ] });
   const land = t.method === "land" || t.method === "mixed", cash = t.method === "cash" || t.method === "mixed";
-  const editSender = (id, patch) => edit({
-    senderParcels: t.senderParcels.map((p) => p.id === id ? {
+  const editSender = (id2, patch) => edit({
+    senderParcels: t.senderParcels.map((p) => p.id === id2 ? {
       ...p,
       ...patch
     } : p)
@@ -2388,10 +2388,10 @@ function TdrApplicationPanel({
           /* @__PURE__ */ jsx("option", { value: "supply", children: "\u4F9D\u5DF2\u586B\u9001\u51FA\u5730\u53CA\u4EE3\u91D1\u7533\u8ACB\u91CF\u9650\u5236" })
         ] })
       ] }),
-      t.method === "mixed" && number("cashPercent", "\u4EE3\u91D1\u5360\u7576\u6B21\u79FB\u5165\u5BB9\u7A4D\u6BD4\u4F8B%\uFF08\u975E\u91D1\u984D\u6BD4\uFF09")
+      t.method === "mixed" && number2("cashPercent", "\u4EE3\u91D1\u5360\u7576\u6B21\u79FB\u5165\u5BB9\u7A4D\u6BD4\u4F8B%\uFF08\u975E\u91D1\u984D\u6BD4\uFF09")
     ] }),
     t.quantityBasis === "permitted" ? /* @__PURE__ */ jsxs("div", { className: "planning-field-grid", children: [
-      number("permittedSqm", "\u65E2\u6709\u8A31\u53EF\u79FB\u5165\u5BB9\u7A4D\u33A1"),
+      number2("permittedSqm", "\u65E2\u6709\u8A31\u53EF\u79FB\u5165\u5BB9\u7A4D\u33A1"),
       /* @__PURE__ */ jsxs("label", { children: [
         /* @__PURE__ */ jsx(FieldLabel, { children: "\u65E2\u6709\u5BB9\u79FB\u8A31\u53EF\u6587\u865F\u53CA\u6587\u4EF6\u4F86\u6E90" }),
         /* @__PURE__ */ jsx("textarea", { "aria-label": "\u65E2\u6709\u5BB9\u79FB\u8A31\u53EF\u6587\u865F\u53CA\u6587\u4EF6\u4F86\u6E90", value: t.permittedSource ?? "", onChange: (e) => edit({
@@ -2416,7 +2416,7 @@ function TdrApplicationPanel({
               /* @__PURE__ */ jsx("option", { value: "qualified40", children: "\u7B26\u5408\u4E2D\u592E\u7B2C8\u689D\u589E\u52A0\u5730\u5340\u689D\u4EF640%\uFF08\u9808\u9644\u4F9D\u64DA\uFF09" })
             ] })
           ] }),
-          number("taipeiRequested", "\u81FA\u5317\u7D30\u9805\u7533\u8ACB\u76EE\u6A19%"),
+          number2("taipeiRequested", "\u81FA\u5317\u7D30\u9805\u7533\u8ACB\u76EE\u6A19%"),
           /* @__PURE__ */ jsxs("label", { children: [
             /* @__PURE__ */ jsx(FieldLabel, { children: "\u81FA\u5317\u63A5\u53D7\u57FA\u5730\u4F4D\u7F6E\u689D\u4EF6" }),
             /* @__PURE__ */ jsxs(PublicSelect, { value: t.taipeiLocation, onChange: (e) => edit({
@@ -2488,7 +2488,7 @@ function TdrApplicationPanel({
         /* @__PURE__ */ jsx("summary", { children: "\u9001\u51FA\u57FA\u5730\u8CC7\u6599\u8207\u63DB\u5165\u91CF" }),
         /* @__PURE__ */ jsx("p", { children: "\u4EE5\u7533\u8ACB\u7576\u671F\u516C\u544A\u73FE\u503C\u63DB\u7B97\uFF0C\u516C\u544A\u73FE\u503C\u4E0D\u662F\u8CFC\u5730\u6210\u4EA4\u50F9\u6216\u5BB9\u7A4D\u4EE3\u91D1\u4F30\u50F9\u3002\u591A\u7B46\u5404\u6309\u5BE6\u969B\u6301\u5206\u53CA\u9762\u7A4D\u8A08\u7B97\uFF1B\u63A5\u53D7\u57FA\u5730\u516C\u544A\u73FE\u503C\u9808\u4F9D\u57FA\u5730\u9762\u7A4D\u52A0\u6B0A\uFF0C\u5206\u5340\u5BB9\u7A4D\u7387\u4E0D\u540C\u6642\u53E6\u6838\u52A0\u6B0A\u3002" }),
         condition("landEligibility", "\u9001\u51FA\u5730\uFF0F\u6350\u8D08\u65B9\u5F0F\u8CC7\u683C"),
-        number("receiverUnitValue", "\u63A5\u53D7\u57FA\u5730\u9762\u7A4D\u52A0\u6B0A\u516C\u544A\u73FE\u503C\u5143\uFF0F\u33A1"),
+        number2("receiverUnitValue", "\u63A5\u53D7\u57FA\u5730\u9762\u7A4D\u52A0\u6B0A\u516C\u544A\u73FE\u503C\u5143\uFF0F\u33A1"),
         /* @__PURE__ */ jsx("button", { className: "secondary-btn", onClick: () => edit({
           senderParcels: [...t.senderParcels, newTdrSender()]
         }), children: "\u65B0\u589E\u9001\u51FA\u5730\u865F" }),
@@ -2574,9 +2574,9 @@ function TdrApplicationPanel({
         condition("cashEligibility", "\u6298\u7E73\u4EE3\u91D1\u65B9\u5F0F\u8CC7\u683C"),
         /* @__PURE__ */ jsx("p", { children: "\u4EE3\u91D1\u91CF\u4EE5\u5BB9\u7A4D\u6A13\u5730\u677F\u33A1\u8868\u793A\uFF1B\u4EE3\u91D1\u6BD4\u4F8B\u662F\u79FB\u5165\u5BB9\u7A4D\u91CF\u6BD4\u4F8B\u3002\u4F30\u50F9\u9808\u4E3B\u7BA1\u6A5F\u95DC\u59D4\u8A17\u4E09\u5BB6\u4EE5\u4E0A\u5C08\u696D\u4F30\u50F9\u8005\u67E5\u4F30\u8A55\u5B9A\uFF0C\u4E0D\u7528\u9001\u51FA\u5730\u516C\u544A\u73FE\u503C\u6BD4\u63DB\u7B97\u4EE3\u91D1\u3002\u898F\u5283\u55AE\u50F9\u5217\u70BA\u4F30\u7B97\uFF0C\u6838\u5B9A\u55AE\u50F9\u4F9D\u8A55\u5B9A\u6587\u4EF6\u8A18\u9304\u3002" }),
         /* @__PURE__ */ jsxs("div", { className: "planning-field-grid", children: [
-          number("cashSqm", "\u4EE3\u91D1\u7533\u8ACB\u5BB9\u7A4D\u33A1\uFF08\u4F9D\u4F9B\u7D66\u91CF\u8A08\u7B97\u6642\u4F7F\u7528\uFF09"),
+          number2("cashSqm", "\u4EE3\u91D1\u7533\u8ACB\u5BB9\u7A4D\u33A1\uFF08\u4F9D\u4F9B\u7D66\u91CF\u8A08\u7B97\u6642\u4F7F\u7528\uFF09"),
           financials && /* @__PURE__ */ jsxs(Fragment, { children: [
-            number("valuationUnitPrice", "\u6BCF\u5BB9\u7A4D\u33A1\u4EE3\u91D1\u4F30\u50F9\u5143"),
+            number2("valuationUnitPrice", "\u6BCF\u5BB9\u7A4D\u33A1\u4EE3\u91D1\u4F30\u50F9\u5143"),
             /* @__PURE__ */ jsxs("label", { children: [
               /* @__PURE__ */ jsx(FieldLabel, { children: "\u4F30\u50F9\u72C0\u614B" }),
               /* @__PURE__ */ jsxs(PublicSelect, { value: t.valuationStatus, onChange: (e) => edit({
@@ -2592,9 +2592,9 @@ function TdrApplicationPanel({
                 valuationDate: e.target.value
               }) })
             ] }),
-            number("appraisalFee", "\u4F30\u50F9\u53CA\u5354\u6AA2\u8CBB\u5143"),
-            number("otherFee", "\u5176\u4ED6\u7533\u8ACB\u898F\u8CBB\u5143"),
-            number("paidAmount", "\u5DF2\u7E73\uFF0F\u9810\u7E73\u4EE3\u91D1\u5143")
+            number2("appraisalFee", "\u4F30\u50F9\u53CA\u5354\u6AA2\u8CBB\u5143"),
+            number2("otherFee", "\u5176\u4ED6\u7533\u8ACB\u898F\u8CBB\u5143"),
+            number2("paidAmount", "\u5DF2\u7E73\uFF0F\u9810\u7E73\u4EE3\u91D1\u5143")
           ] })
         ] }),
         financials && /* @__PURE__ */ jsxs("label", { children: [
@@ -2630,7 +2630,7 @@ function TdrApplicationPanel({
   ] });
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/permittedAward.ts
+// ../sanze-release-app/src/lib/planning/permittedAward.ts
 function isPermittedAward(x) {
   if (!x || typeof x !== "object") return false;
   const a = x;
@@ -2649,7 +2649,7 @@ function reviewPermittedAward(a, route, base, referenceDate = (/* @__PURE__ */ n
   return { errors, percent: errors.length ? 0 : amount / base * 100 };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/bonusAssessment.ts
+// ../sanze-release-app/src/lib/planning/bonusAssessment.ts
 var BONUS_VERSION = "bonus-assessment.2026-10-19.v1";
 var newBonusAssessment = (danger2 = false, date = (/* @__PURE__ */ new Date()).toLocaleDateString("sv-SE", { timeZone: "Asia/Taipei" })) => ({ version: BONUS_VERSION, route: danger2 ? "danger" : "renewal", renewalMode: "quick", tdrMode: "quick", dangerMode: "quick", date, entries: {}, renewalQualification: "unknown", tdrQualification: "unknown", dangerQualification: "unknown", source: "", deduction: "0", tdrProfile: "general", dangerOriginal: "", dangerEligibleSite: "", dangerAdjacentSite: "" });
 var central = "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0070027";
@@ -2697,7 +2697,7 @@ var bonusItems = [
   { id: "t-cash", group: "internal", label: "\u767E\u5206\u4E4B\u767E\u6298\u7E73\u4EE3\u91D1", law: tdr, options: yes(10), condition: "100%\u6298\u4EE3\u91D1\u6642\u9001\u51FA\u57FA\u5730\u4F4D\u7F6E\u6574\u7D44\u4EE510\u5206\u53D6\u4EE3\uFF1B\u4E0D\u518D\u52A0\u8A08\u5176\u4ED6\u9001\u51FA\u57FA\u5730\u4F4D\u7F6E\u7D30\u76EE\u3002" },
   { id: "t-plaza", group: "internal", label: "\u5EE3\u5834\u5F0F\u958B\u653E\u7A7A\u9593", law: tdr, options: opts([["\u6CD5\u5B9A\u7A7A\u5730\u226540%\uFF1A8\u5206", 8], ["30\u81F3\u672A\u905440%\uFF1A6\u5206", 6], ["20\u81F3\u672A\u905430%\uFF1A4\u5206", 4], ["10\u81F3\u672A\u905420%\uFF1A2\u5206", 2]]), condition: "\u7B26\u5408\u5EFA\u6280283\u689D\u53CA\u65B0\u5317\u90FD\u5BE9\uFF0C\u9806\u5E73\u3001\u8857\u9053\u5BB6\u5177\u3001\u6A19\u793A\u3001\u898F\u7D04\u53CA\u7DAD\u8B77\u57FA\u91D1\uFF1B\u4E0D\u5F97\u91CD\u8907\u958B\u653E\u7A7A\u9593\u734E\u52F5\u3001\u6CD5\u5B9A\u9000\u7E2E\u3002" },
   { id: "t-walk", group: "internal", label: "\u6CBF\u8857\u6B65\u9053\u5F0F\u958B\u653E\u7A7A\u9593", law: tdr, options: opts([["\u55AE\u50741.5\u81F3\u672A\u90544m\uFF1A1\u5206", 1], ["\u5169\u50741.5\u81F3\u672A\u90544m\uFF1A2\u5206", 2], ["\u4E09\u50741.5\u81F3\u672A\u90544m\uFF1A3\u5206", 3], ["\u55AE\u5074\u22654m\uFF1A2\u5206", 2], ["\u5169\u5074\u22654m\uFF1A4\u5206", 4], ["\u4E09\u5074\u22654m\uFF1A6\u5206", 6]]), condition: "\u540C\u958B\u653E\u7A7A\u9593\u516C\u5171\u4F7F\u7528\u3001\u7DAD\u8B77\u53CA\u4E0D\u5F97\u91CD\u8907\u689D\u4EF6\uFF1B\u540C\u4E00\u7BC4\u570D\u4E0D\u91CD\u8907\u7B97\u5EE3\u5834\u8207\u6B65\u9053\u3002" },
-  ...[["t-social", "\u6350\u8D08\u793E\u6703\u4F4F\u5B85"], ["t-care", "\u6350\u8D08\u516C\u5171\u6258\u80B2"], ["t-elder", "\u6350\u8D08\u8001\u4EBA\u5B89\u990A"]].map(([id, label]) => ({ id, label, group: "internal", law: tdr, options: yes(2), condition: "\u57FA\u5730\u22653000\u33A1\uFF1B\u7B26\u5408\u65B0\u5317\u7D30\u524748\u689D\u3001\u51FA\u5165\u53E3\u3001\u505C\u8ECA\u3001\u5C64\u9AD8\u3001\u7DAD\u8B77\u57FA\u91D1\u53CA\u76EE\u7684\u4E8B\u696D\uFF0F\u63A5\u7BA1\u6A5F\u95DC\u540C\u610F\u3002" })),
+  ...[["t-social", "\u6350\u8D08\u793E\u6703\u4F4F\u5B85"], ["t-care", "\u6350\u8D08\u516C\u5171\u6258\u80B2"], ["t-elder", "\u6350\u8D08\u8001\u4EBA\u5B89\u990A"]].map(([id2, label]) => ({ id: id2, label, group: "internal", law: tdr, options: yes(2), condition: "\u57FA\u5730\u22653000\u33A1\uFF1B\u7B26\u5408\u65B0\u5317\u7D30\u524748\u689D\u3001\u51FA\u5165\u53E3\u3001\u505C\u8ECA\u3001\u5C64\u9AD8\u3001\u7DAD\u8B77\u57FA\u91D1\u53CA\u76EE\u7684\u4E8B\u696D\uFF0F\u63A5\u7BA1\u6A5F\u95DC\u540C\u610F\u3002" })),
   { id: "t-ex-infra", group: "external", label: "\u5354\u52A9\u958B\u95E2\u516C\u5171\u8A2D\u65BD", law: tdr, options: opts([["\u9130\u63A5\u57FA\u5730\u56DB\u5468\uFF1A4\u5206", 4], ["500m\u5167\u57FA\u5730\u5916\u570D\uFF1A2\u5206", 2]]), condition: "\u6B0A\u7BA1\u540C\u610F\uFF1B\u958B\u95E2\u9762\u7A4D>\u7533\u8ACB\u79FB\u5165\u6A13\u5730\u677F\u9762\u7A4D1/2\u4E14\u2265500\u33A1\u3002" },
   { id: "t-ex-price", group: "external", label: "\u74B0\u5883\u6539\u5584\u50F9\u91D1", law: tdr, options: yes(1), formula: "percent", amount: "\u76EE\u6A19\u7A4D\u5206%", condition: "\u50F9\u91D1\uFF1D\u57FA\u5730\u9762\u7A4D\xD7\u6CD5\u5B9A\u5BB9\u7A4D\u7387\xD71.31\xD720000\u5143\xD7\u7A4D\u5206\u6578\uFF1B\u53D7\u5916\u90E8\u5408\u8A08\u4E0A\u9650\uFF08\u52A0\u8A08\u5F8C\u5167\u90E8\u689D\u4EF61/3\uFF09\u63A7\u5236\u3002" },
   { id: "t-ex-green", group: "external", label: "\u516C\u5171\u81EA\u884C\u8ECA\uFF0F\u5019\u8ECA\u4EAD", law: tdr, options: yes(1), condition: "4\xD740m\u62166\xD720m\u4EE5\u4E0A\u3001\u5EFA\u7F6E\u7DAD\u8B77\u8CBB200\u842C\u5143\uFF1B\u57FA\u6E96\u5916\u589E\u52A0\u5BB9\u7A4D\u22656000\u33A1\u52A0\u500D\u7559\u8A2D\uFF0C\u4EA4\u901A\u5C40\u8A55\u4F30\u540C\u610F\u3002" },
@@ -2716,7 +2716,7 @@ var bonusItems = [
 function isBonusAssessment(x) {
   if (!x || typeof x !== "object") return false;
   const a = x;
-  return (a.awardBasis === void 0 || ["target", "permitted"].includes(a.awardBasis)) && (a.permittedAward === void 0 || isPermittedAward(a.permittedAward)) && (a.tdrApplication === void 0 || isTdrApplication(a.tdrApplication)) && (a.tdrApplications === void 0 || a.tdrApplications && typeof a.tdrApplications === "object" && !Array.isArray(a.tdrApplications) && Object.entries(a.tdrApplications).every(([k, v]) => ["ntpc", "taipei", "other"].includes(k) && isTdrApplication(v) && v.city === k)) && (a.distinctSpaces === void 0 || typeof a.distinctSpaces === "boolean") && a.version === BONUS_VERSION && ["renewal", "danger", "none"].includes(a.route) && ["renewalMode", "tdrMode", "dangerMode"].every((k) => ["quick", "detail"].includes(a[k])) && ["date", "source", "deduction", "dangerOriginal", "dangerEligibleSite", "dangerAdjacentSite"].every((k) => typeof a[k] === "string") && /^\d{4}-\d{2}-\d{2}$/.test(a.date) && ["general", "forty", "hillside", "narrow", "special50"].includes(a.tdrProfile) && ["renewalQualification", "tdrQualification", "dangerQualification"].every((k) => ["unknown", "yes", "no"].includes(a[k])) && !!a.entries && typeof a.entries === "object" && !Array.isArray(a.entries) && Object.entries(a.entries).every(([id, e]) => bonusItems.some((d) => d.id === id) && e && typeof e.choice === "string" && (e.choice === "" || bonusItems.find((d) => d.id === id).options.some((o) => o[0] === e.choice)) && ["amount", "amount2", "amount3", "share", "source"].every((k) => e[k] === void 0 || typeof e[k] === "string") && (e.status === void 0 || ["assumed", "verified", "excluded"].includes(e.status)));
+  return (a.awardBasis === void 0 || ["target", "permitted"].includes(a.awardBasis)) && (a.permittedAward === void 0 || isPermittedAward(a.permittedAward)) && (a.tdrApplication === void 0 || isTdrApplication(a.tdrApplication)) && (a.tdrApplications === void 0 || a.tdrApplications && typeof a.tdrApplications === "object" && !Array.isArray(a.tdrApplications) && Object.entries(a.tdrApplications).every(([k, v]) => ["ntpc", "taipei", "other"].includes(k) && isTdrApplication(v) && v.city === k)) && (a.distinctSpaces === void 0 || typeof a.distinctSpaces === "boolean") && a.version === BONUS_VERSION && ["renewal", "danger", "none"].includes(a.route) && ["renewalMode", "tdrMode", "dangerMode"].every((k) => ["quick", "detail"].includes(a[k])) && ["date", "source", "deduction", "dangerOriginal", "dangerEligibleSite", "dangerAdjacentSite"].every((k) => typeof a[k] === "string") && /^\d{4}-\d{2}-\d{2}$/.test(a.date) && ["general", "forty", "hillside", "narrow", "special50"].includes(a.tdrProfile) && ["renewalQualification", "tdrQualification", "dangerQualification"].every((k) => ["unknown", "yes", "no"].includes(a[k])) && !!a.entries && typeof a.entries === "object" && !Array.isArray(a.entries) && Object.entries(a.entries).every(([id2, e]) => bonusItems.some((d) => d.id === id2) && e && typeof e.choice === "string" && (e.choice === "" || bonusItems.find((d) => d.id === id2).options.some((o) => o[0] === e.choice)) && ["amount", "amount2", "amount3", "share", "source"].every((k) => e[k] === void 0 || typeof e[k] === "string") && (e.status === void 0 || ["assumed", "verified", "excluded"].includes(e.status)));
 }
 function assessBonuses(a, c, cash, updateArea) {
   const errors = [], notes = [], base = c.site * c.far / 100;
@@ -2725,7 +2725,7 @@ function assessBonuses(a, c, cash, updateArea) {
   if (city !== "ntpc") notes.push("\u76EE\u524D\u975E\u65B0\u5317\uFF1A\u65B0\u5317\u5730\u65B9\u90FD\u66F4\u734E\u52F5\u3001\u5BB9\u79FB\u8A55\u9EDE\u8207\u4EE3\u91D1\u500D\u6578\u4E0D\u5957\u7528\u3002\u81FA\u5317\u5BB9\u79FB\u53E6\u6309\u8CC7\u683C\u3001\u4E0A\u9650\u53CA\u53D6\u5F97\u65B9\u5F0F\u8A55\u4F30\uFF0C\u672A\u5EFA\u81FA\u5317\u5730\u65B9\u90FD\u66F4\u734E\u52F5\u7D30\u9805\u3002");
   const renewalActive = a.route === "renewal" && a.renewalMode === "detail" && a.renewalQualification !== "no", dangerActive = a.route === "danger" && a.dangerMode === "detail" && a.dangerQualification !== "no", tdrActive = a.tdrMode === "detail" && a.tdrQualification !== "no" && !(city === "ntpc" && a.tdrProfile === "special50");
   let validate = dangerActive;
-  const selected = (id) => !!a.entries[id]?.choice && a.entries[id]?.status !== "excluded";
+  const selected = (id2) => !!a.entries[id2]?.choice && a.entries[id2]?.status !== "excluded";
   const num = (x, label, fallback = 0) => {
     if (!x?.trim()) return fallback;
     const n = Number(x);
@@ -2735,46 +2735,50 @@ function assessBonuses(a, c, cash, updateArea) {
     }
     return n;
   };
-  const eligible = a.dangerEligibleSite.trim() ? Math.min(c.site, num(a.dangerEligibleSite, "\u5408\u683C\u539F\u57FA\u5730")) : c.site, adjacent = num(a.dangerAdjacentSite, "\u5408\u4F75\u9130\u5730"), eligibleTotal = Math.min(c.site, eligible + Math.min(adjacent, eligible, 1e3));
-  if (!a.dangerEligibleSite.trim()) notes.push("\u5371\u8001\u539F\u5408\u683C\u57FA\u5730\u672A\u63D0\u4F9B\uFF0C\u898F\u6A21\u521D\u4F30\u66AB\u4EE5\u5168\u57FA\u5730\u8996\u70BA\u5408\u683C\u539F\u57FA\u5730\uFF1B\u5982\u542B\u9130\u5730\u9808\u62C6\u5206\u3002");
+  const eligible = a.dangerEligibleSite.trim() ? Math.min(c.site, num(a.dangerEligibleSite, "\u5408\u683C\u539F\u57FA\u5730")) : NaN, adjacent = num(a.dangerAdjacentSite, "\u5408\u4F75\u9130\u5730"), eligibleTotal = Math.min(c.site, eligible + Math.min(adjacent, eligible, 1e3));
+  if (dangerActive && bonusItems.some((d) => d.formula === "dangerSize" && selected(d.id)) && (!a.dangerEligibleSite.trim() || !a.dangerAdjacentSite.trim())) errors.push("\u5371\u8001\u539F\u5408\u683C\u57FA\u5730\u53CA\u9130\u5730\u9762\u7A4D\u672A\u586B\uFF0C\u4E0D\u80FD\u5047\u5B9A\u5168\u57FA\u5730\u5408\u683C\uFF1B\u7121\u9130\u5730\u8ACB\u660E\u586B0\u3002");
   if (adjacent > Math.min(eligible, 1e3)) notes.push("\u5408\u4F75\u9130\u5730\u8D85\u904E\u539F\u5408\u683C\u57FA\u5730\u62161000\u33A1\u90E8\u5206\u4E0D\u5217\u5371\u8001\u734E\u52F5\u3002");
-  const rows = bonusItems.map((d) => {
+  const rows5 = bonusItems.map((d) => {
     const e = a.entries[d.id], option = d.options.find((o) => o[0] === e?.choice);
-    let value = option?.[2] ?? 0;
+    let value2 = option?.[2] ?? 0;
     const messages = [];
     if (!option || e?.status === "excluded") return { id: d.id, label: d.label, group: d.group, selected: false, value: 0, messages, condition: d.condition, law: d.law, status: "\u672A\u9078\u53D6" };
     validate = d.group === "danger" ? dangerActive : ["central", "local"].includes(d.group) ? renewalActive : tdrActive;
     if (city !== "ntpc" && ["internal", "external", "local"].includes(d.group)) return { id: d.id, label: d.label, group: d.group, selected: true, value: 0, messages: ["\u975E\u65B0\u5317\u6848\u4EF6\uFF0C\u4E0D\u63A1\u65B0\u5317\u5730\u65B9\u9805\u76EE\u6216\u8A55\u9EDE"], condition: d.condition, law: d.law, status: "\u4E0D\u9069\u7528\u672C\u5730\u5340" };
-    const amount = num(d.id === "t-base" && c.roadConditions ? c.roadConditions.plannedWidth : e?.amount, d.label), share = num(e?.share, d.label + "\u9069\u7528\u6BD4\u4F8B", 100);
+    const amount = num(d.id === "t-base" && c.roadConditions ? c.roadConditions.plannedWidth : e?.amount, d.label), share = ["u-old", "u-unsafe", "l-old", "d-old", "d-unsafe"].includes(d.id) ? e?.share?.trim() ? num(e.share, d.label + "\u9069\u7528\u6BD4\u4F8B") : NaN : 100;
+    if (validate && !Number.isFinite(share)) errors.push(d.label + "\u9069\u7528\u6BD4\u4F8B\u672A\u586B\uFF1B\u4E0D\u63A1\u5168\u6848100%");
+    if (validate && d.amount && !(d.id === "t-base" && c.roadConditions ? c.roadConditions.plannedWidth : e?.amount)?.trim()) errors.push(d.label + "\u8A08\u7B97\u91CF\u672A\u586B");
+    if (validate && ["public", "donation"].includes(d.formula ?? "") && !e?.amount2?.trim()) errors.push(d.label + "\u7B2C\u4E8C\u8A08\u7B97\u91CF\u672A\u586B");
+    if (validate && d.formula === "public" && !e?.amount3?.trim()) errors.push(d.label + "\u7B2C\u4E09\u8A08\u7B97\u91CF\u672A\u586B");
     if (share > 100 && validate) errors.push(d.label + "\u9069\u7528\u6BD4\u4F8B\u4E0D\u5F97\u8D85\u904E100%");
-    if (d.formula === "area") value = base > 0 ? amount * value / base * 100 : 0;
+    if (d.formula === "area") value2 = base > 0 ? amount * value2 / base * 100 : 0;
     if (d.formula === "public") {
       const sender = num(e?.amount2, d.label + "\u516C\u5171\u8A2D\u65BD\u516C\u544A\u73FE\u503C"), receiver = num(e?.amount3, d.label + "\u57FA\u5730\u516C\u544A\u73FE\u503C");
-      value = c.site > 0 && receiver > 0 ? amount * sender / receiver / c.site * 100 : 0;
+      value2 = c.site > 0 && receiver > 0 ? amount * sender / receiver / c.site * 100 : 0;
       if (!sender || !receiver) messages.push("\u516C\u544A\u73FE\u503C\u672A\u9F4A\uFF0C\u8A72\u9805\u51480\uFF1B\u7531App\u4F9D\u9762\u7A4D\u53CA\u73FE\u503C\u6BD4\u8A08\u7B97");
     }
     if (d.formula === "donation") {
       const total = num(e?.amount2, "\u5168\u57FA\u5730\u516C\u544A\u73FE\u503C\u7E3D\u984D");
-      value = total > 0 ? amount / total / 1.4 * 100 : 0;
+      value2 = total > 0 ? amount / total / 1.4 * 100 : 0;
       if (!total) messages.push("\u5168\u57FA\u5730\u516C\u544A\u73FE\u503C\u7E3D\u984D\u672A\u586B\uFF0C\u8A72\u9805\u51480");
     }
-    if (d.formula === "size") value = c.site >= 1e4 ? 30 : c.site >= 3e3 ? 5 + Math.floor((c.site - 3e3) / 100) * 0.3 : 0;
+    if (d.formula === "size") value2 = c.site >= 1e4 ? 30 : c.site >= 3e3 ? 5 + Math.floor((c.site - 3e3) / 100) * 0.3 : 0;
     if (d.formula === "time") {
       const first = a.date >= "2019-05-15" && a.date < "2024-05-15", second = a.date >= "2024-05-15" && a.date < "2029-05-15";
-      value = first ? value === 1 ? 10 : 7 : second ? value === 1 ? 5 : 3.5 : 0;
+      value2 = first ? value2 === 1 ? 10 : 7 : second ? value2 === 1 ? 5 : 3.5 : 0;
     }
-    if (d.formula === "tdrBase") value = amount >= 8 ? Math.min(20, Math.floor(amount)) : 0;
+    if (d.formula === "tdrBase") value2 = amount >= 8 ? Math.min(20, Math.floor(amount)) : 0;
     if (d.formula === "tdrMatrix") {
       const col = c.site >= 1e4 ? 5 : c.site >= 6e3 ? 4 : c.site >= 4e3 ? 3 : c.site >= 2e3 ? 2 : c.site >= 1500 ? 1 : 0;
-      value = c.site >= 500 ? [[0, 1, 1, 2, 3, 4], [0, 1, 2, 3, 4, 5], [1, 2, 3, 4, 5, 6]][value][col] : 0;
+      value2 = c.site >= 500 ? [[0, 1, 1, 2, 3, 4], [0, 1, 2, 3, 4, 5], [1, 2, 3, 4, 5, 6]][value2][col] : 0;
     }
-    if (d.formula === "percent") value = amount;
-    if (d.formula === "dangerSize") value = eligibleTotal >= 200 ? Math.min(10, 2 + Math.floor((eligibleTotal - 200) / 100) * 0.5) : 0;
+    if (d.formula === "percent") value2 = amount;
+    if (d.formula === "dangerSize") value2 = eligibleTotal >= 200 ? Math.min(10, 2 + Math.floor((eligibleTotal - 200) / 100) * 0.5) : 0;
     if (d.formula === "dangerTime") {
-      value = a.date < "2017-05-12" ? 0 : a.date < "2020-05-12" ? 10 : a.date < "2021-05-12" ? 8 : a.date < "2022-05-12" ? 6 : a.date < "2023-05-12" ? 4 : a.date < "2024-05-12" ? 2 : a.date < "2025-05-12" ? 1 : 0;
+      value2 = a.date < "2017-05-12" ? 0 : a.date < "2020-05-12" ? 10 : a.date < "2021-05-12" ? 8 : a.date < "2022-05-12" ? 6 : a.date < "2023-05-12" ? 4 : a.date < "2024-05-12" ? 2 : a.date < "2025-05-12" ? 1 : 0;
     }
     const disallow = (reason) => {
-      value = 0;
+      value2 = 0;
       messages.push(reason);
     };
     if (["u-green", "u-smart", "d-green", "d-smart"].includes(d.id) && ["4", "5"].includes(e.choice) && c.site >= 500) disallow("\u57FA\u5730\u2265500\u33A1\uFF0C\u9285\uFF0F\u5408\u683C\u4E0D\u9069\u7528");
@@ -2789,30 +2793,30 @@ function assessBonuses(a, c, cash, updateArea) {
     if (d.id === "u-agreement") messages.push("\u9700\u53E6\u6838\u226520\u9580\u724C\u53CA\u5831\u6838\u6642\u5168\u9AD4\u540C\u610F\uFF0C\u4E0D\u80FD\u4EE5\u5EFA\u865F\u6578\u4EE3\u66FF");
     if (d.id === "u-green" && ["4", "5"].includes(e.choice)) messages.push("\u53E6\u9808\u7B26\u5408\u7B2C7\u689D\u7B2C1\u9805\u7B2C3\u6B3E\u66F4\u65B0\u65B9\u5F0F\uFF0C\u4F9D\u6240\u9078\u76EE\u6A19\u5047\u8A2D");
     if (d.amount && !e?.amount?.trim()) messages.push("\u7F3A\u8A08\u7B97\u91CF\uFF0C\u8A72\u9805\u51480\uFF0C\u5176\u9918\u9078\u9805\u7E7C\u7E8C\u52A0\u7E3D");
-    value = Math.min(d.cap ?? Infinity, value) * Math.min(share, 100) / 100;
-    if (["d-old", "d-unsafe"].includes(d.id) && eligibleTotal > 0) value *= eligible / eligibleTotal;
-    return { id: d.id, label: d.label, group: d.group, selected: true, value, messages, condition: d.condition, law: d.law, status: e?.status === "verified" && e.source?.trim() ? "\u9644\u8986\u6838\u4F86\u6E90\uFF08\u975E\u6838\u5B9A\uFF09" : "\u76EE\u6A19\u5047\u8A2D" };
+    value2 = Math.min(d.cap ?? Infinity, value2) * Math.min(share, 100) / 100;
+    if (["d-old", "d-unsafe"].includes(d.id) && eligibleTotal > 0) value2 *= eligible / eligibleTotal;
+    return { id: d.id, label: d.label, group: d.group, selected: true, value: value2, messages, condition: d.condition, law: d.law, status: e?.status === "verified" && e.source?.trim() ? "\u9644\u8986\u6838\u4F86\u6E90\uFF08\u975E\u6838\u5B9A\uFF09" : "\u76EE\u6A19\u5047\u8A2D" };
   });
-  const sum2 = (ids) => rows.filter((r) => ids.includes(r.id)).reduce((t, r) => t + r.value, 0), group2 = (name) => rows.filter((r) => r.group === name).reduce((t, r) => t + r.value, 0);
+  const sum3 = (ids) => rows5.filter((r) => ids.includes(r.id)).reduce((t, r) => t + r.value, 0), group2 = (name) => rows5.filter((r) => r.group === name).reduce((t, r) => t + r.value, 0);
   validate = renewalActive;
   const localRaw = group2("local"), localApplied = Math.min(20, localRaw), deduction = num(a.deduction, "\u91CD\u8907\u734E\u52F5\u6263\u9664");
   const renewalRaw = group2("central") + localApplied, renewal = Math.max(0, Math.min(50, renewalRaw - deduction));
   validate = tdrActive;
-  const b = sum2(["t-base"]), internal = group2("internal") - b, factor = city === "ntpc" ? 1 + (updateArea ? 0.3 : 0) + (cash >= 100 ? 0.3 : cash >= 80 ? 0.2 : cash >= 60 ? 0.1 : 0) : 1, externalRaw = group2("external"), external = Math.min(externalRaw, internal * factor / 3), ntpcTdrRaw = (b + internal) * factor + external, tdrRaw = city === "ntpc" ? ntpcTdrRaw : city === "taipei" ? num(a.tdrApplication?.taipeiRequested, "\u81FA\u5317\u7533\u8ACB\u76EE\u6A19", c.tdrTarget ?? 30) : 0;
+  const b = sum3(["t-base"]), internal = group2("internal") - b, factor = city === "ntpc" ? 1 + (updateArea ? 0.3 : 0) + (cash >= 100 ? 0.3 : cash >= 80 ? 0.2 : cash >= 60 ? 0.1 : 0) : 1, externalRaw = group2("external"), external = Math.min(externalRaw, internal * factor / 3), ntpcTdrRaw = (b + internal) * factor + external, tdrRaw = city === "ntpc" ? ntpcTdrRaw : city === "taipei" ? num(a.tdrApplication?.taipeiRequested, "\u81FA\u5317\u7533\u8ACB\u76EE\u6A19", c.tdrTarget ?? 30) : 0;
   const tdrCap = city === "taipei" ? a.tdrApplication?.taipeiCap === "qualified40" ? 40 : 30 : { general: 30, forty: 40, hillside: 20, narrow: 15, special50: 30 }[a.tdrProfile];
   validate = dangerActive;
-  const coreFirst = sum2(["d-old", "d-unsafe", "d-small", "d-setback", "d-seismic"]), coreLater = sum2(["d-green", "d-smart", "d-access", "d-infra"]), original = num(a.dangerOriginal, "\u5408\u6CD5\u539F\u5BB9\u7A4D"), coreCap = eligibleTotal === c.site && eligible === c.site ? Math.max(30, base > 0 ? (original * 1.15 / base - 1) * 100 : 30) : 30, core = Math.min(coreCap, coreFirst + coreLater), extra = Math.min(10, sum2(["d-size", "d-time"])), dangerTotal = c.site > 0 ? (core + extra) * eligibleTotal / c.site : 0;
+  const coreFirst = sum3(["d-old", "d-unsafe", "d-small", "d-setback", "d-seismic"]), coreLater = sum3(["d-green", "d-smart", "d-access", "d-infra"]), original = num(a.dangerOriginal, "\u5408\u6CD5\u539F\u5BB9\u7A4D"), coreCap = eligibleTotal === c.site && eligible === c.site ? Math.max(30, base > 0 ? (original * 1.15 / base - 1) * 100 : 30) : 30, core = Math.min(coreCap, coreFirst + coreLater), extra = Math.min(10, sum3(["d-size", "d-time"])), dangerTotal = c.site > 0 ? (core + extra) * eligibleTotal / c.site : 0;
   if (original > 0 && (eligible !== c.site || eligibleTotal !== c.site)) notes.push("\u5371\u8001\u542B\u9130\u5730\u6216\u90E8\u5206\u5408\u683C\u57FA\u5730\uFF1A\u539F\u5BB9\u7A4D115%\u66FF\u4EE3\u8DEF\u5F91\u5C1A\u672A\u9010\u57FA\u5730\u62C6\u7B97\uFF0C\u672C\u6B21\u50C5\u63A1\u4E00\u822C\u57FA\u6E96\u6838\u5FC3\u4E0A\u965030%\uFF0C\u4E0D\u4EE5\u5168\u57FA\u5730\u6BCD\u6578\u91CD\u8907\u6298\u7B97\u6216\u64F4\u5F35\u539F\u5BB9\u7A4D\u3002");
   if (a.route === "danger" && a.date > "2027-05-31") notes.push("\u8D85\u904E\u73FE\u884C\u5371\u8001\u8A08\u756B\u7533\u8ACB\u671F\u96502027-05-31\uFF0C\u5371\u8001\u63A1\u8A080\uFF1B\u9700\u6CD5\u898F\u5EF6\u9577\u624D\u53EF\u518D\u8A55\u4F30\u3002");
   notes.push(`\u90FD\u66F4\u4E2D\u592E${group2("central").toFixed(2)}%\uFF0B\u5730\u65B9${localRaw.toFixed(2)}%\uFF08\u4E00\u822C\u5730\u65B9\u965020%\uFF0C\u63A1${localApplied.toFixed(2)}%\uFF09\uFF0D\u91CD\u8907\u6263\u9664${deduction}%\uFF1B\u7E3D\u734E\u52F5\u4E00\u822C\u965050%\u3002\u7279\u6B8A\u539F\u5BB9\u7A4D\u3001\u6D77\u7802\uFF0F\u8010\u9707\u5371\u96AA\u3001\u7B56\u7565\u6027\u8DEF\u5F91\u53CA\u820A\u6848\u904E\u6E21\u53E6\u9700\u5C08\u6848\u4F9D\u64DA\uFF0C\u672C\u8868\u4E0D\u81EA\u52D5\u653E\u5BEC\u3002`);
   if (city === "ntpc") notes.push(`\u5BB9\u79FB\u57FA\u6E96${b}%\uFF0B\u5167\u90E8${internal}%\uFF0C\u52A0\u8A08\u4FC2\u6578${factor}\uFF1B\u5916\u90E8\u539F${externalRaw}%\uFF0F\u63A1${external}%\uFF0C\u4E0D\u8D85\u52A0\u8A08\u5F8C\u5167\u90E81/3\u3002\u4E0A\u9650\u8DEF\u5F91${tdrCap}%\uFF1B40%\u3001\u5C71\u5761\u3001\u7A84\u8DEF\u53CA\u514D\u8A55\u5B9A\u9808\u53E6\u8B49\u8CC7\u683C\uFF0C\u4E0D\u80FD\u628A\u52FE\u9078\u8996\u70BA\u6838\u51C6\u3002`);
   notes.push(`\u5371\u8001\u7B2C3\u20136\u689D\u5408\u8A08${coreFirst}%\u5148\u9069\u7528\u3001\u7B2C7\u201310\u689D${coreLater}%\u88DC\u81F3\u6838\u5FC3\u4E0A\u9650${coreCap.toFixed(2)}%\uFF1B\u6642\u7A0B\u8207\u898F\u6A21\u53E6\u63A1${extra}%\uFF0C\u5169\u8005\u5408\u8A08\u226410%\u3002\u539F\u5408\u683C\u57FA\u5730${eligible}\u33A1\u3001\u53EF\u52A0\u9130\u5730${eligibleTotal - eligible}\u33A1\uFF0F\u5168\u57FA\u5730${c.site}\u33A1\uFF0C\u6BD4\u4F8B\u63A1\u8A08${c.site > 0 ? eligibleTotal / c.site * 100 : 0}%\u3002\u4E0D\u5F97\u758A\u52A0\u90FD\u66F4\u53CA\u5176\u4ED6\u6CD5\u4EE4\u5BB9\u7A4D\u734E\u52F5\u3002`);
-  return { rows, notes, errors, renewalRaw, localRaw, localApplied, renewal, tdrBase: b, tdrInternal: internal, tdrExternalRaw: externalRaw, tdrExternal: external, tdrFactor: factor, tdrRaw, tdrCap, tdr: Math.min(tdrCap, tdrRaw), dangerCoreFirst: coreFirst, dangerCoreLater: coreLater, dangerCoreCap: coreCap, dangerExtra: extra, danger: a.date > "2027-05-31" ? 0 : dangerTotal };
+  return { rows: rows5, notes, errors, renewalRaw, localRaw, localApplied, renewal, tdrBase: b, tdrInternal: internal, tdrExternalRaw: externalRaw, tdrExternal: external, tdrFactor: factor, tdrRaw, tdrCap, tdr: Math.min(tdrCap, tdrRaw), dangerCoreFirst: coreFirst, dangerCoreLater: coreLater, dangerCoreCap: coreCap, dangerExtra: extra, danger: a.date > "2027-05-31" ? 0 : dangerTotal };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/regulatoryReview.ts
-var REGULATORY_REVIEW_VERSION = "planning-law.2026-10-19.v3";
-var defaultRegulatoryReview = () => ({ version: REGULATORY_REVIEW_VERSION, renewalLimitPercent: "50", tdrLimitPercent: "30", totalBonusLimitPercent: "", tdrBasePoints: "", tdrInternalPoints: "", tdrExternalPoints: "", renewalArea: false, cashTdrPercent: "0", bonusSource: "", bicycleExemption: "counted", bicycleSource: "", motorcycleExemption: "statutory_assumption", communityUse: "loading", spareUse: "counted", ordinaryCommonPercent: "0", ordinaryCommonSource: "" });
+// ../sanze-release-app/src/lib/planning/regulatoryReview.ts
+var REGULATORY_REVIEW_VERSION = "planning-law.2026-10-24.v4";
+var defaultRegulatoryReview = () => ({ version: REGULATORY_REVIEW_VERSION, renewalLimitPercent: "", tdrLimitPercent: "", totalBonusLimitPercent: "", tdrBasePoints: "", tdrInternalPoints: "", tdrExternalPoints: "", renewalArea: false, cashTdrPercent: "0", bonusSource: "", bicycleExemption: "counted", bicycleSource: "", motorcycleExemption: "statutory_assumption", communityUse: "loading", spareUse: "counted", ordinaryCommonPercent: "0", ordinaryCommonSource: "" });
 function isRegulatoryReview(x) {
   if (!x || typeof x !== "object") return false;
   const p = x;
@@ -2820,7 +2824,7 @@ function isRegulatoryReview(x) {
   if (["shelterArea", "shelterEquipment", "shelterSource"].some((k) => p[k] !== void 0 && typeof p[k] !== "string")) return false;
   if (p.siteGeometry && (!p.siteGeometry || typeof p.siteGeometry !== "object" || !["length", "width", "source", "front", "back", "left", "right", "aboveWidth", "basementWidth"].every((k) => typeof p.siteGeometry[k] === "string"))) return false;
   if (p.auditHistory !== void 0 && (!Array.isArray(p.auditHistory) || p.auditHistory.length > 10 || !p.auditHistory.every((h) => h && typeof h.label === "string" && ["sale", "allowed", "basement", "equipmentCounted", "bikeCounted", "spareCounted"].every((k) => typeof h[k] === "number" && Number.isFinite(h[k]) && h[k] >= 0) && h.allowed > 0))) return false;
-  return [REGULATORY_REVIEW_VERSION, "planning-law.2026-10-19.v2"].includes(p.version) && ["renewalLimitPercent", "tdrLimitPercent", "totalBonusLimitPercent", "tdrBasePoints", "tdrInternalPoints", "tdrExternalPoints", "cashTdrPercent", "bonusSource", "bicycleSource", "ordinaryCommonPercent", "ordinaryCommonSource"].every((k) => typeof p[k] === "string") && typeof p.renewalArea === "boolean" && ["counted", "documented"].includes(p.bicycleExemption) && ["statutory_assumption", "counted"].includes(p.motorcycleExemption) && ["loading", "other"].includes(p.communityUse) && ["counted", "parking"].includes(p.spareUse);
+  return [REGULATORY_REVIEW_VERSION, "planning-law.2026-10-19.v3", "planning-law.2026-10-19.v2"].includes(p.version) && ["renewalLimitPercent", "tdrLimitPercent", "totalBonusLimitPercent", "tdrBasePoints", "tdrInternalPoints", "tdrExternalPoints", "cashTdrPercent", "bonusSource", "bicycleSource", "ordinaryCommonPercent", "ordinaryCommonSource"].every((k) => typeof p[k] === "string") && typeof p.renewalArea === "boolean" && ["counted", "documented"].includes(p.bicycleExemption) && ["statutory_assumption", "counted"].includes(p.motorcycleExemption) && ["loading", "other"].includes(p.communityUse) && ["counted", "parking"].includes(p.spareUse);
 }
 function resolveBonusLimits(p, rates, context) {
   const roadReview = reviewSiteRoad(context?.roadConditions, p.bonusAssessment?.date);
@@ -2840,7 +2844,10 @@ function resolveBonusLimits(p, rates, context) {
     }
   }
   const read = (x, label, fallback, max = 1e3) => {
-    if (!x.trim()) return fallback;
+    if (!x.trim()) {
+      errors.push(label + "\u672A\u586B\uFF1B\u4E0D\u5957\u9810\u8A2D\u6BD4\u4F8B");
+      return NaN;
+    }
     const n = Number(x);
     if (!Number.isFinite(n) || n < 0 || n > max) {
       errors.push(label + "\u9808\u586B\u6709\u6548\u975E\u8CA0\u6578");
@@ -2848,14 +2855,12 @@ function resolveBonusLimits(p, rates, context) {
     }
     return n;
   };
-  let renewalLimit = read(p.renewalLimitPercent, "\u90FD\u66F4\u734E\u52F5\u4E0A\u9650", 50), tdrLimit = read(p.tdrLimitPercent, "\u5BB9\u79FB\u4E0A\u9650", 30);
+  let renewalLimit = rates.renewal > 0 ? read(p.renewalLimitPercent, "\u90FD\u66F4\u734E\u52F5\u4E0A\u9650", NaN) : 0, tdrLimit = rates.tdr > 0 ? read(p.tdrLimitPercent, "\u5BB9\u79FB\u4E0A\u9650", NaN) : 0;
   if (renewalLimit > 50 && !p.bonusSource.trim()) {
-    renewalLimit = 50;
-    notes.push("\u8D85\u904E\u4E00\u822C\u90FD\u66F450%\u4E0A\u9650\u7684\u7279\u5225\u8DEF\u5F91\u5C1A\u7121\u4F9D\u64DA\uFF0C\u5148\u4F9D\u4E00\u822C\u4E0A\u9650\u521D\u4F30\uFF1B\u539F\u76EE\u6A19\u4FDD\u7559\u3002");
+    errors.push("\u8D85\u904E\u4E00\u822C\u90FD\u66F450%\u4E0A\u9650\u7684\u7279\u5225\u8DEF\u5F91\u7F3A\u4F9D\u64DA\uFF1B\u672A\u81EA\u52D5\u6539\u621050%\u3002");
   }
   if (tdrLimit > 30 && !p.bonusSource.trim()) {
-    tdrLimit = 30;
-    notes.push("\u8D85\u904E\u4E00\u822C\u5BB9\u79FB30%\u4E0A\u9650\u7684\u9069\u7528\u4F9D\u64DA\u672A\u586B\uFF0C\u5148\u630930%\u521D\u4F30\u3002");
+    errors.push("\u8D85\u904E\u4E00\u822C\u5BB9\u79FB30%\u4E0A\u9650\u7684\u9069\u7528\u4F9D\u64DA\u672A\u586B\uFF1B\u672A\u81EA\u52D5\u6539\u621030%\u3002");
   }
   if (a && assessment) tdrLimit = a.tdrMode === "detail" || a.tdrApplication ? assessment.tdrCap : Math.min(tdrLimit, assessment.tdrCap);
   let points = null;
@@ -2892,10 +2897,10 @@ function resolveBonusLimits(p, rates, context) {
   } else if (totalLimit !== null && renewal + tdr2 + scale + danger2 > totalLimit) {
     tdr2 = Math.min(tdr2, Math.max(0, totalLimit - renewal - scale - danger2));
     if (renewal + scale + danger2 > totalLimit) {
-      const f7 = totalLimit / (renewal + scale + danger2);
-      renewal *= f7;
-      scale *= f7;
-      danger2 *= f7;
+      const f8 = totalLimit / (renewal + scale + danger2);
+      renewal *= f8;
+      scale *= f8;
+      danger2 *= f8;
     }
     notes.push(`\u4F9D\u660E\u793A\u500B\u6848\u5408\u8A08\u4E0A\u9650${totalLimit}%\u9650\u5236\u734E\u52F5\u53CA\u5BB9\u79FB\uFF1B\u4F86\u6E90${p.bonusSource.trim() || "\u672A\u586B\uFF0C\u5C6C\u4FDD\u5B88\u898F\u5283\u5047\u8A2D"}\u3002`);
   }
@@ -2946,7 +2951,7 @@ function reviewBasementVolume(p, v, aboveEquipmentExempt, equipmentCap, context)
   return { shelterOnlyExempt, shelterArea, shelterEquipment, pools: { ...v }, shared, served, parkingCap, carPool, motoPool, bikePool, communityPool, carExempt, mergedEquipment, globalEquipmentExempt, equipmentCounted, parkingCounted, bicycleCounted, motorcycleCounted, communityCounted, spareCounted, counted, exempt, notes, balanced: Math.abs(counted + exempt - v.basement) < 0.02 };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/components/efficiency/BonusAssessmentPanel.tsx
+// ../sanze-release-app/src/components/efficiency/BonusAssessmentPanel.tsx
 import { Fragment as Fragment2, jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
 function BonusAssessmentPanel({
   input,
@@ -2978,11 +2983,11 @@ function BonusAssessmentPanel({
       }
     }
   });
-  const entry = (id, x) => change({
+  const entry = (id2, x) => change({
     entries: {
       ...a.entries,
-      [id]: {
-        ...a.entries[id] ?? {
+      [id2]: {
+        ...a.entries[id2] ?? {
           choice: ""
         },
         ...x
@@ -2997,9 +3002,10 @@ function BonusAssessmentPanel({
     tdr: Number(input.tdr),
     danger: Number(input.danger),
     scale: Number(input.scale)
-  }, c), f7 = (x) => x.toLocaleString("zh-TW", {
+  }, c), f8 = (x) => x.toLocaleString("zh-TW", {
     maximumFractionDigits: 2
   });
+  const summaryIncomplete = !input.site.trim() || !input.far.trim() || effective.errors.length > 0 || !permitted && (a.route === "renewal" && a.renewalMode === "quick" && !input.renewal.trim() || a.route === "danger" && a.dangerMode === "quick" && !input.danger.trim()) || a.tdrMode === "quick" && !input.tdr.trim();
   const mode = (k, label) => /* @__PURE__ */ jsxs2("label", { children: [
     /* @__PURE__ */ jsx2(FieldLabel2, { children: label }),
     /* @__PURE__ */ jsxs2(PublicSelect2, { "aria-label": label, disabled: permitted && k !== "tdrMode", value: a[k], onChange: (e) => change({
@@ -3015,7 +3021,7 @@ function BonusAssessmentPanel({
       /* @__PURE__ */ jsxs2("summary", { children: [
         d.label,
         " \xB7 ",
-        r.selected ? `${f7(r.value)}% \xB7 ${r.status}` : "\u672A\u9078\u53D6"
+        r.selected ? `${f8(r.value)}% \xB7 ${r.status}` : "\u672A\u9078\u53D6"
       ] }),
       /* @__PURE__ */ jsxs2("p", { children: [
         d.condition,
@@ -3032,7 +3038,7 @@ function BonusAssessmentPanel({
             choice: x.target.value
           }), children: [
             /* @__PURE__ */ jsx2("option", { value: "", children: "\u4E0D\u9078\u53D6" }),
-            d.options.map(([id, label]) => /* @__PURE__ */ jsx2("option", { value: id, children: label }, id))
+            d.options.map(([id2, label]) => /* @__PURE__ */ jsx2("option", { value: id2, children: label }, id2))
           ] })
         ] }),
         d.amount && /* @__PURE__ */ jsxs2("label", { children: [
@@ -3054,7 +3060,7 @@ function BonusAssessmentPanel({
           }) })
         ] }),
         ["u-old", "u-unsafe", "l-old", "d-old", "d-unsafe"].includes(d.id) && /* @__PURE__ */ jsxs2("label", { children: [
-          /* @__PURE__ */ jsx2(FieldLabel2, { children: "\u9069\u7528\u57FA\u6E96\u5BB9\u7A4D\u6BD4\u4F8B%\uFF08\u7A7A\u767D\u66AB\u63A1\u5168\u6848100%\uFF09" }),
+          /* @__PURE__ */ jsx2(FieldLabel2, { children: "\u9069\u7528\u57FA\u6E96\u5BB9\u7A4D\u6BD4\u4F8B%\uFF08\u9808\u586B\uFF0C\u7A7A\u767D\u4E0D\u63A1100%\uFF09" }),
           /* @__PURE__ */ jsx2(PublicNumber2, { "aria-label": d.label + "\u9069\u7528\u6BD4\u4F8B", type: "number", min: "0", max: "100", value: e?.share ?? "", onChange: (x) => entry(d.id, {
             share: x.target.value
           }) })
@@ -3167,20 +3173,20 @@ function BonusAssessmentPanel({
       }) }),
       /* @__PURE__ */ jsx2("small", { children: permitted && key !== "tdr" ? "\u4F9D\u6838\u51C6\u6587\u4EF6\u9762\u7A4D\u63A1\u8A08\uFF0C\u5FEB\u901F\u503C\u4FDD\u7559" : !active ? "\u6B64\u8DEF\u5F91\u672A\u63A1\u7528\uFF0C\u672C\u6B21\u4E0D\u52A0\u7E3D" : m === "detail" ? "\u76EE\u524D\u7531\u7D30\u9805\u52A0\u7E3D\uFF1B\u5FEB\u901F\u503C\u4FDD\u7559" : "\u898F\u5283\u76EE\u6A19\uFF08\u8CC7\u683C\u5F85\u67E5\u8B49\uFF09" })
     ] }, key)) }),
-    /* @__PURE__ */ jsxs2("p", { children: [
+    summaryIncomplete ? /* @__PURE__ */ jsx2("p", { role: "status", children: "\u734E\u52F5\u8207\u5BB9\u79FB\u8CC7\u6599\u672A\u9F4A\uFF0C\u66AB\u4E0D\u986F\u793A\u63A1\u7528\u5C0F\u8A08\uFF1B\u672A\u586B\u4E0D\u8996\u70BA0\u3002" }) : /* @__PURE__ */ jsxs2("p", { children: [
       /* @__PURE__ */ jsxs2("strong", { children: [
         "\u672C\u6B21\u63A1\u7528\uFF1A\u90FD\u66F4 ",
-        f7(effective.renewal),
+        f8(effective.renewal),
         "%\uFF08",
-        f7(base * effective.renewal / 100),
+        f8(base * effective.renewal / 100),
         "\u33A1\uFF09\uFF0B\u5BB9\u79FB ",
-        f7(effective.tdr),
+        f8(effective.tdr),
         "%\uFF08",
-        f7(base * effective.tdr / 100),
+        f8(base * effective.tdr / 100),
         "\u33A1\uFF09\uFF0B\u5371\u8001 ",
-        f7(effective.danger),
+        f8(effective.danger),
         "%\uFF08",
-        f7(base * effective.danger / 100),
+        f8(base * effective.danger / 100),
         "\u33A1\uFF09\u3002"
       ] }),
       "\u90FD\u66F4\u984D\u5EA6\u4F9D\u8CC7\u683C\u8207\u6838\u5B9A\u6587\u4EF6\u78BA\u8A8D\u3002"
@@ -3193,9 +3199,9 @@ function BonusAssessmentPanel({
       /* @__PURE__ */ jsx2("summary", { children: "\u90FD\u66F4\u7D30\u9805\uFF1A\u4E2D\u592E\u734E\u52F5\uFF0B\u65B0\u5317\u5730\u65B9\u734E\u52F5" }),
       /* @__PURE__ */ jsxs2("p", { children: [
         "\u7D30\u9805\u5408\u8A08 ",
-        f7(summary.renewalRaw),
+        f8(summary.renewalRaw),
         "%\uFF0C\u6263\u91CD\u8907\u5F8C\u53CA\u4E00\u822C\u4E0A\u9650\u63A1 ",
-        f7(summary.renewal),
+        f8(summary.renewal),
         "%\u3002\u53D6\u503C\u65B9\u5F0F\u70BA",
         a.renewalMode === "detail" ? "\u7D30\u9805\uFF0C\u5DF2\u9023\u52D5" : "\u5FEB\u901F\uFF0C\u4EE5\u4E0B\u50C5\u4F9B\u672C\u6B21\u64CD\u4F5C\uFF0C\u4E0D\u5F71\u97FF\u5FEB\u901F\u503C",
         "\uFF1B\u76EE\u524D\u8DEF\u5F91",
@@ -3214,9 +3220,9 @@ function BonusAssessmentPanel({
       ] }),
       /* @__PURE__ */ jsxs2("p", { children: [
         "\u5730\u65B9\u5C0F\u8A08",
-        f7(summary.localRaw),
+        f8(summary.localRaw),
         "%\uFF0C\u4E00\u822C\u5730\u65B9\u63A1",
-        f7(summary.localApplied),
+        f8(summary.localApplied),
         "%\uFF0F20%\u4E0A\u9650\uFF1B\u7279\u5225\u7B56\u7565\u8DEF\u5F91\u53E6\u9644\u4F9D\u64DA\u6838\u7B97\u3002"
       ] })
     ] }),
@@ -3250,21 +3256,21 @@ function BonusAssessmentPanel({
       /* @__PURE__ */ jsxs2("p", { children: [
         a.tdrProfile === "special50" ? "\u6B64\u70BA\u514D\u91CF\u9AD4\u8A55\u5B9A\u8DEF\u5F91\uFF0C\u4EE5\u4E0B\u8A55\u9EDE\u50C5\u4F9B\u8FFD\u6EAF\uFF1B\u672C\u6B21\u6539\u4F9D\u5FEB\u901F\u76EE\u6A19\u53CA\u500B\u5225\u3001\u5408\u8A08\u4E0A\u9650\u63A1\u8A08\u3002" : "",
         "\u57FA\u6E96",
-        f7(summary.tdrBase),
+        f8(summary.tdrBase),
         "%\uFF0B\u5167\u90E8",
-        f7(summary.tdrInternal),
+        f8(summary.tdrInternal),
         "%\uFF1B\u52A0\u8A08\u4FC2\u6578",
         summary.tdrFactor,
         "\uFF1B\u5916\u90E8",
-        f7(summary.tdrExternalRaw),
+        f8(summary.tdrExternalRaw),
         "%\u53D7\u5167\u90E81/3\u9650\u5236\u63A1",
-        f7(summary.tdrExternal),
+        f8(summary.tdrExternal),
         "%\uFF1B\u8A55\u5B9A",
-        f7(summary.tdrRaw),
+        f8(summary.tdrRaw),
         "%\uFF0C\u672C\u8DEF\u5F91\u4E0A\u9650",
         summary.tdrCap,
         "%\uFF0C\u7D30\u9805\u63A1",
-        f7(summary.tdr),
+        f8(summary.tdr),
         "%\u3002\u53D6\u503C\u65B9\u5F0F\u70BA",
         a.tdrMode === "detail" ? "\u7D30\u9805\uFF0C\u5DF2\u9023\u52D5" : "\u5FEB\u901F\uFF0C\u7D30\u9805\u4E0D\u5F71\u97FF\u63A1\u7528",
         "\u3002"
@@ -3282,7 +3288,7 @@ function BonusAssessmentPanel({
           }) })
         ] }),
         /* @__PURE__ */ jsxs2("label", { children: [
-          /* @__PURE__ */ jsx2(FieldLabel2, { children: "\u5371\u8001\u5408\u683C\u539F\u5EFA\u7BC9\u57FA\u5730\u33A1\uFF08\u7A7A\u767D\u66AB\u63A1\u5168\u57FA\u5730\uFF09" }),
+          /* @__PURE__ */ jsx2(FieldLabel2, { children: "\u5371\u8001\u5408\u683C\u539F\u5EFA\u7BC9\u57FA\u5730\u33A1\uFF08\u9808\u4F9D\u8CC7\u6599\u586B\u5BEB\uFF09" }),
           /* @__PURE__ */ jsx2(PublicNumber2, { type: "number", min: "0", value: a.dangerEligibleSite, onChange: (e) => change({
             dangerEligibleSite: e.target.value
           }) })
@@ -3297,15 +3303,15 @@ function BonusAssessmentPanel({
       items(["danger"]),
       /* @__PURE__ */ jsxs2("p", { children: [
         "\u7B2C3\u20136\u689D",
-        f7(summary.dangerCoreFirst),
+        f8(summary.dangerCoreFirst),
         "%\uFF0C\u7B2C7\u201310\u689D",
-        f7(summary.dangerCoreLater),
+        f8(summary.dangerCoreLater),
         "%\uFF0C\u6838\u5FC3\u4E0A\u9650",
-        f7(summary.dangerCoreCap),
+        f8(summary.dangerCoreCap),
         "%\uFF1B\u6642\u7A0B\u8207\u898F\u6A21\u63A1",
-        f7(summary.dangerExtra),
+        f8(summary.dangerExtra),
         "%\uFF1B\u6309\u53EF\u734E\u52F5\u57FA\u5730\u6BD4\u4F8B\u5F8C\u7D30\u9805\u5408\u8A08",
-        f7(summary.danger),
+        f8(summary.danger),
         "%\u3002",
         a.route !== "danger" ? "\u672C\u6848\u672A\u9078\u5371\u8001\u8DEF\u5F91\uFF0C\u4EE5\u4E0A\u50C5\u4FDD\u7559\u4E0D\u52A0\u7E3D\u3002" : a.dangerMode === "detail" ? "\u5DF2\u7531\u7D30\u9805\u5E36\u5165\u8A08\u7B97\u3002" : "\u76EE\u524D\u4ECD\u63A1\u5FEB\u901F\u76EE\u6A19\uFF0C\u7D30\u9805\u4FDD\u7559\u3002"
       ] }),
@@ -3330,12 +3336,12 @@ function BonusAssessmentPanel({
   ] });
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/components/efficiency/LegalParkingPanel.tsx
+// ../sanze-release-app/src/components/efficiency/LegalParkingPanel.tsx
 import { FieldLabel as FieldLabel4, PublicNumber as PublicNumber4 } from "/src/land-evaluation/PublicFields.jsx";
 import { PublicSelect as PublicSelect4 } from "/src/land-evaluation/PublicSelect.jsx";
 import { publicText as publicText3 } from "/src/land-evaluation/public-copy.mjs";
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/escapeStairs.ts
+// ../sanze-release-app/src/lib/planning/escapeStairs.ts
 function reviewEscapeStairs(i) {
   const aboveTwo = i.aboveFloors >= 8 || i.abovePlate > 240;
   const basementTwo = i.basementPlates.some((a) => a >= 200);
@@ -3352,7 +3358,7 @@ function reviewEscapeStairs(i) {
   };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/roofEnvelope.ts
+// ../sanze-release-app/src/lib/planning/roofEnvelope.ts
 function isRoofEnvelope(x) {
   if (!x || typeof x !== "object") return false;
   const r = x;
@@ -3370,7 +3376,7 @@ function reviewRoofEnvelope(r, c) {
   return { errors, high, highByFloors, highByHeight, rate, projectionLimit, projection, totalArea, totalHeight, maxHeight, registered: totalArea * c.registrationPercent / 100, registrationPercent: c.registrationPercent, floors, buildingHeight: c.buildingHeight, aboveFloors: c.aboveFloors, source: r.source, assumptions: "\u672C\u6B21\u6309\u4E0A\u4E0B\u5C0D\u4F4D\u7684\u540C\u6295\u5F71\u6A13\u677F\u521D\u4F30\uFF0C\u6C34\u5E73\u6295\u5F71\u806F\u96C6\u4E0D\u4E58\u5C64\u6578\uFF1B\u7E3D\u6A13\u677F\u624D\u4F9D\u5C4B\u7A81\u5C64\u6578\u52A0\u7E3D\u300215%\uFF0F12.5%\u662F\u6295\u5F71\u4E0A\u9650\uFF0C\u4E0D\u662F\u5BE6\u969B\u9700\u6C42\u3002\u672A\u5C0725\u33A1\u5C0F\u57FA\u5730\u4F8B\u5916\u3001\u9732\u81FA\u3001\u5E73\u53F0\u3001\u958B\u653E\u69CB\u67B6\u6216\u6C34\u7BB1\u4E0A\u65B9\u7A7A\u9593\u53E6\u52A0\u53EF\u767B\u8A18\u6A13\u677F\uFF1B\u5408\u683C\u5C4B\u7A81\u5167\u8A2D\u5099\u4E0D\u91CD\u8907\u5217\u5165\u5730\u4E0A\u6A5F\u96FB15%\u6C60\u3002" };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/quantityAreaAudit.ts
+// ../sanze-release-app/src/lib/planning/quantityAreaAudit.ts
 var BASELINE_VERSION = "planning-area-baseline.v1";
 var saleKeys = ["ordinary", "registeredEquipment", "registeredLobby", "balcony", "registeredRoof", "basementEquipmentSale", "shelterCommon", "parkingHousingCommon"];
 var contextKeys = ["aboveFloors", "sale", "allowed", "basement", "floors", "equipment", "lobby", "roof", "aboveSale", "basementSale", "units", "cars", "motos", "equipmentArea", "bikeArea", "communityArea", "rampTotal", "lossArea", "basementUnassigned"];
@@ -3380,7 +3386,7 @@ function isAreaBaseline(x) {
   return a.format === BASELINE_VERSION && (a.commonRatioReference === void 0 || Number.isFinite(a.commonRatioReference.low) && Number.isFinite(a.commonRatioReference.high) && a.commonRatioReference.low >= 0 && a.commonRatioReference.high <= 100 && a.commonRatioReference.high >= a.commonRatioReference.low && typeof a.commonRatioReference.source === "string") && ["caseId", "label", "source", "sourceSha256", "formulaCommit"].every((k) => typeof a[k] === "string") && /^[a-f0-9]{64}$/.test(a.sourceSha256) && /^[a-f0-9]{40}$/.test(a.formulaCommit) && !!a.values && [...saleKeys, ...contextKeys].every((k) => Number.isFinite(a.values[k]) && a.values[k] >= 0) && a.values.allowed > 0 && Number.isInteger(a.values.floors) && Math.abs(saleKeys.reduce((t, k) => t + a.values[k], 0) - a.values.sale) < 0.04;
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/quantityPlanning.ts
+// ../sanze-release-app/src/lib/planning/quantityPlanning.ts
 var QUANTITY_VERSION = "quantity-reserve.2026-10-19.v1";
 function isQuantityReserve(x) {
   if (!x || typeof x !== "object") return false;
@@ -3419,11 +3425,11 @@ function calculateQuantityPlanning(i, run) {
   return { ...last, values: null, errors: [...last?.errors ?? [], "\u6A13\u5C64\u8207\u5FC5\u8981\u7A7A\u9593\u9810\u7559\u672A\u6536\u6582\uFF0C\u8ACB\u8ABF\u6574\u6A13\u677F\u5047\u8A2D"] };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/components/efficiency/BasementDemandPanel.tsx
+// ../sanze-release-app/src/components/efficiency/BasementDemandPanel.tsx
 import { FieldLabel as FieldLabel3, PublicNumber as PublicNumber3 } from "/src/land-evaluation/PublicFields.jsx";
 import { PublicSelect as PublicSelect3 } from "/src/land-evaluation/PublicSelect.jsx";
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/smallSiteParking.ts
+// ../sanze-release-app/src/lib/planning/smallSiteParking.ts
 var SMALL_SITE_VERSION = "small-site.2026-10-19.v1";
 var defaultGroundAccessibility = () => ({ available: true, routeWidth: 1.5, routeLength: 4, otherArea: 54 });
 var defaultSmallSiteParking = () => ({ version: SMALL_SITE_VERSION, groundAccessibility: defaultGroundAccessibility(), mechanicalType: "stacked", warehouseAisleWidth: 3, warehouseTransferArea: 20, warehouseEquipmentArea: 12, access: "ramp", mechanical: false, allocation: "b1", groundCars: 0, targetCars: 0, groundArea: 0, liftCount: 1, shaftWidth: 3.5, shaftLength: 5.7, waitingWidth: 6, waitingDepth: 6, landingArea: 20, twoWheelLiftArea: 9, mechanicalSpaces: 2, mechanicalWidth: 2.5, mechanicalLength: 5.5, mechanicalClearHeight: 1.8, mechanicalHeight: 4, overhead: 0.3, pit: 0.6, targetMechanical: 0, localReview: "unknown", reviewSource: "", tdrPoints: "" });
@@ -3512,7 +3518,7 @@ function allocateSmallSite(s, c) {
   const accessArea = s.access === "lift" ? s.shaftWidth * s.shaftLength * s.liftCount + s.landingArea + s.twoWheelLiftArea : c.rampArea;
   function simulate(floors2, mechanicalTarget) {
     let motos = c.motos, bikes = c.bikes, mechanical = mechanicalTarget, flat = c.requested - groundCars - mechanicalTarget, accessibleLeft = Math.max(0, c.accessible - groundCars);
-    const rows = [];
+    const rows5 = [];
     const quantityFloors = [];
     let capacity = groundCars, mechanicalArea = 0, warehouseArea = 0, flatArea = 0, equipmentArea = 0, lossArea = 0, spareArea = 0;
     for (let j = 0; j < floors2; j++) {
@@ -3556,7 +3562,7 @@ function allocateSmallSite(s, c) {
       equipmentArea += eq + (j === 0 ? c.bicycleLiftArea : 0);
       lossArea += turn;
       spareArea += shelterOnly;
-      rows.push({ label: `B${j + 1}`, flat: takeFlat + takeAccessible, mechanical: takeMechanical, motos: takeM, bikes: takeB, plate, used: slab, remaining: plate - slab });
+      rows5.push({ label: `B${j + 1}`, flat: takeFlat + takeAccessible, mechanical: takeMechanical, motos: takeM, bikes: takeB, plate, used: slab, remaining: plate - slab });
       quantityFloors.push({ label: `B${j + 1}`, cars: takeMechanical + takeFlat + takeAccessible, equipment: eq + (j === 0 ? c.bicycleLiftArea : 0), ramp: accessArea, fixed: fixed - (j === 0 ? c.bicycleLiftArea : 0), loss: turn, slab, shelterOnly });
     }
     if (motos || bikes || mechanical || flat || accessibleLeft) return null;
@@ -3564,8 +3570,8 @@ function allocateSmallSite(s, c) {
     mechanicalArea += warehouseArea;
     const carArea = flatArea + mechanicalArea, motoArea = c.motos * c.motoModule + c.motoAccessibleExtra, bikeArea = c.bikes * c.motoModule, communityArea = c.community * c.carModule;
     const parkingArea = carArea + motoArea + bikeArea + communityArea + rampTotal + lossArea;
-    const smallSite = { status: s.localReview === "confirmed" ? "documented" : "conditional", access: s.access, rows, groundArea, waitingArea, groundReview, conditions };
-    return { smallSite, quantityFloors, flatCars: cars - mechanicalTarget, mechanicalCars: mechanicalTarget, mechanicalArea, undergroundFlatCars: cars - groundCars - mechanicalTarget, groundCars, cars, capacity, floors: floors2, neededFloors: floors2, basement, carArea, motoArea, bikeArea, communityArea, parkingArea, basementCommon: basement - parkingArea, equipmentArea, rampTotal, lossArea, spareArea, b1Capacity: rows[0].flat + rows[0].mechanical, otherCapacity: rows.length > 1 ? Math.min(...rows.slice(1).map((r) => r.flat + r.mechanical)) : 0 };
+    const smallSite = { status: s.localReview === "confirmed" ? "documented" : "conditional", access: s.access, rows: rows5, groundArea, waitingArea, groundReview, conditions };
+    return { smallSite, quantityFloors, flatCars: cars - mechanicalTarget, mechanicalCars: mechanicalTarget, mechanicalArea, undergroundFlatCars: cars - groundCars - mechanicalTarget, groundCars, cars, capacity, floors: floors2, neededFloors: floors2, basement, carArea, motoArea, bikeArea, communityArea, parkingArea, basementCommon: basement - parkingArea, equipmentArea, rampTotal, lossArea, spareArea, b1Capacity: rows5[0].flat + rows5[0].mechanical, otherCapacity: rows5.length > 1 ? Math.min(...rows5.slice(1).map((r) => r.flat + r.mechanical)) : 0 };
   }
   function fit(floors2) {
     if (!automaticMechanical) return simulate(floors2, fixedMechanical);
@@ -3576,10 +3582,10 @@ function allocateSmallSite(s, c) {
     return null;
   }
   let needed;
-  for (let f7 = 1; f7 <= 30; f7++) {
-    if (s.floorPlates && f7 > s.floorPlates.length) break;
-    if (fit(f7)) {
-      needed = f7;
+  for (let f8 = 1; f8 <= 30; f8++) {
+    if (s.floorPlates && f8 > s.floorPlates.length) break;
+    if (fit(f8)) {
+      needed = f8;
       break;
     }
   }
@@ -3605,7 +3611,7 @@ function allocateSmallSite(s, c) {
   return { errors, notes, values, capacityFailure: false };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/basementDemand.ts
+// ../sanze-release-app/src/lib/planning/basementDemand.ts
 var BASEMENT_DEMAND_VERSION = "basement-demand.2026-10-19.v1";
 var defaultBasementDemand = (district = "") => ({ version: BASEMENT_DEMAND_VERSION, enabled: true, mechanicalType: "stacked", rule: /新北/.test(district) ? "ntpc_general" : /臺北|台北/.test(district) ? "taipei_general" : "documented", source: "", maxFloors: "30", allowAlternatives: true });
 var isBasementDemand = (x) => !!x && typeof x === "object" && x.version === BASEMENT_DEMAND_VERSION && typeof x.enabled === "boolean" && (x.mechanicalType === void 0 || ["stacked", "warehouse"].includes(x.mechanicalType)) && ["documented", "ntpc_general", "taipei_general", "nangang_general", "nangang_rebuild"].includes(x.rule) && (x.stricterCap === void 0 || typeof x.stricterCap === "string") && (x.stricterSource === void 0 || typeof x.stricterSource === "string") && (x.taipeiPlanUnspecified === void 0 || typeof x.taipeiPlanUnspecified === "boolean") && (x.taipeiZone === void 0 || ["res12", "res34", "commercial", "industrial", "protected", "public", "other"].includes(x.taipeiZone)) && ["source", "maxFloors"].every((k) => typeof x[k] === "string") && typeof x.allowAlternatives === "boolean" && (x.warehouse === void 0 || ["aisleWidth", "transferArea", "equipmentArea", "levels", "equipmentHeight"].every((k) => Number.isFinite(x.warehouse[k]) && x.warehouse[k] >= 0));
@@ -3672,27 +3678,27 @@ function calculateDemandBasement(i, run) {
     const small = { ...defaultSmallSiteParking(), ...i.parkingDesign?.smallSite, ...i.basementDemand?.warehouse ? { warehouseAisleWidth: i.basementDemand.warehouse.aisleWidth, warehouseTransferArea: i.basementDemand.warehouse.transferArea, warehouseEquipmentArea: i.basementDemand.warehouse.equipmentArea, mechanicalSpaces: i.basementDemand.warehouse.levels, mechanicalHeight: i.basementDemand.warehouse.equipmentHeight } : {}, mechanicalType: i.basementDemand?.mechanicalType ?? "stacked", access: mode.access, mechanical: mode.mechanical, accessibleRoute: i.parkingDesign?.smallSite?.accessibleRoute ?? "ground" };
     const height = mode.mechanical ? Math.max(Number(i.parkingDesign.floorHeight), small.mechanicalHeight + small.overhead - small.pit) : Number(i.parkingDesign.floorHeight);
     let lastErrors = [];
-    for (let f7 = 1; f7 <= limit.maxFloors; f7++) {
-      const candidate = { ...plain, quantityReserve: q, basementMode: "manual", basementFloors: String(f7), excavation: String(limit.cap), excavationCap: String(limit.cap), excavationReference: limit.source, parkingDesign: { ...i.parkingDesign, rampWidthMode: "statutory", fullVolumeSearch: true, smallSite: small, fillRemaining: false, floorHeight: String(Math.round(height * 100) / 100) } };
+    for (let f8 = 1; f8 <= limit.maxFloors; f8++) {
+      const candidate = { ...plain, quantityReserve: q, basementMode: "manual", basementFloors: String(f8), excavation: String(limit.cap), excavationCap: String(limit.cap), excavationReference: limit.source, parkingDesign: { ...i.parkingDesign, rampWidthMode: "statutory", fullVolumeSearch: true, smallSite: small, fillRemaining: false, floorHeight: String(Math.round(height * 100) / 100) } };
       const result = run(candidate);
       lastErrors = result.errors;
       if (result.values && !result.errors.length && result.values.unused <= result.values.allowed * (1 - Number(i.volumeUse) / 100) + 0.02) {
         candidates.push({ input: candidate, result, rank, name: mode.name });
-        trials.push({ mode: mode.name, floors: f7, cars: result.values.cars, mechanical: result.parking?.values?.mechanicalCars ?? 0, errors: [] });
+        trials.push({ mode: mode.name, floors: f8, cars: result.values.cars, mechanical: result.parking?.values?.mechanicalCars ?? 0, errors: [] });
         break;
       }
-      if (f7 === limit.maxFloors) trials.push({ mode: mode.name, floors: null, cars: null, mechanical: null, errors: [...new Set(lastErrors)] });
+      if (f8 === limit.maxFloors) trials.push({ mode: mode.name, floors: null, cars: null, mechanical: null, errors: [...new Set(lastErrors)] });
     }
   }
   candidates.sort((a, b) => a.result.values.floors - b.result.values.floors || (a.result.parking?.values?.mechanicalCars ?? 0) - (b.result.parking?.values?.mechanicalCars ?? 0) || a.rank - b.rank);
   const selected = candidates[0];
   if (!selected) return { ...run({ ...plain, excavation: String(limit.cap) }), values: null, errors: ["\u5728\u76EE\u524D\u57FA\u5730\u958B\u6316\u7BC4\u570D\u3001\u8A2D\u5099\u5C3A\u5BF8\u8207\u641C\u5C0B\u5C64\u6578\u5167\uFF0C\u6C92\u6709\u5B8C\u6210\u505C\u8ECA\u53CA\u5BB9\u7A4D\u6AA2\u6838\u7684\u65B9\u6848\uFF1B\u8ACB\u6AA2\u67E5\u500B\u6848\u9650\u5236\u53CA\u5177\u540D\u5FC5\u8981\u7A7A\u9593\u3002", ...new Set(trials.flatMap((t) => t.errors))], notes: [...limit.notes, ...trials.map((t) => `${t.mode}\uFF1A${t.errors.join("\uFF1B")}`)] };
-  const rows = selected.result.parking?.values?.quantityFloors ?? [], actualMaxPlate = Math.max(...rows.map((r) => r.slab)), actualExcavationPercent = actualMaxPlate / Number(i.site) * 100;
+  const rows5 = selected.result.parking?.values?.quantityFloors ?? [], actualMaxPlate = Math.max(...rows5.map((r) => r.slab)), actualExcavationPercent = actualMaxPlate / Number(i.site) * 100;
   const review = { resolved: { excavation: selected.input.excavation, excavationCap: selected.input.excavationCap, excavationReference: selected.input.excavationReference, basementFloors: selected.input.basementFloors, basementMode: selected.input.basementMode, parkingDesign: selected.input.parkingDesign, quantityReserve: selected.input.quantityReserve }, capPercent: limit.cap, source: limit.source, actualMaxPlate, actualExcavationPercent, mode: selected.name, trials };
   return { ...selected.result, basementDemandReview: review, notes: [...limit.notes, `\u5730\u4E0B\u9700\u6C42\u6AA2\u8A0E\uFF1A\u958B\u6316\u4E0A\u9650${limit.cap}%\uFF08${(Number(i.site) * limit.cap / 100).toFixed(2)}\u33A1\uFF09\uFF1B\u4F9D\u5FC5\u8981\u7A7A\u9593\u9010\u5C64\u52A0\u7E3D\uFF0C\u6700\u5927\u5BE6\u7528\u6A13\u677F${actualMaxPlate.toFixed(2)}\u33A1\uFF08${actualExcavationPercent.toFixed(2)}%\uFF09\uFF0C\u63A1${selected.name}\u3001\u5730\u4E0B${selected.result.values.floors}\u5C64\u3002`, ...trials.map((t) => `${t.mode}\uFF1A${t.floors === null ? "\u672C\u641C\u5C0B\u7BC4\u570D\u672A\u901A\u904E" : `\u81F3\u5C11\u5730\u4E0B${t.floors}\u5C64\u3001\u6C7D\u8ECA${t.cars}\u4F4D\u3001\u6A5F\u68B0${t.mechanical}\u4F4D`}\u3002`), "\u9078\u64C7\u9806\u5E8F\uFF1A\u5148\u6BD4\u8F03\u5761\u9053\u5E73\u9762\uFF0C\u6309\u5B8C\u6574\u9700\u6C42\u9078\u5730\u4E0B\u5C64\u6578\u8F03\u5C11\u8005\uFF1B\u540C\u5C64\u6578\u512A\u5148\u5C11\u6A5F\u68B0\u3001\u518D\u512A\u5148\u5761\u9053\u3002\u672A\u4F7F\u7528\u5EFA\u7167\u539F\u8ECA\u4F4D\u6216\u5730\u4E0B\u5C64\u6578\u4F5C\u76EE\u6A19\uFF1B\u7121\u5761\u9053\u65B9\u6848\u50C5\u4F8B\u5916\u7559\u5FC5\u8981\u5730\u9762\u7121\u969C\u7919\u8ECA\u4F4D\uFF0C\u5305\u542B\u65BC\u7E3D\u9700\u6C42\uFF1B\u4E0D\u589E\u52A0\u4E00\u822C\u5730\u9762\u505C\u8ECA\u3002", "\u672A\u53D6\u5F97\u5730\u8CEA\u3001\u65BD\u5DE5\u53CA\u5BE6\u969B\u5E73\u9762\u8CC7\u6599\uFF1B\u672C\u7D50\u679C\u70BA\u9762\u7A4D\u914D\u7F6E\u5019\u9078\uFF0C\u641C\u5C0B\u4E0A\u9650\u4E0D\u662F\u5DE5\u7A0B\u53EF\u884C\u6DF1\u5EA6\uFF0C\u5347\u964D\u6A5F\u53CA\u6A5F\u68B0\u8A2D\u5099\u5C64\u9AD8\u8207\u7121\u969C\u7919\u5BA2\u68AF\u901A\u8DEF\u4ECD\u9808\u5716\u8AAA\u8986\u6838\u3002", ...selected.result.notes] };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/components/efficiency/BasementDemandPanel.tsx
+// ../sanze-release-app/src/components/efficiency/BasementDemandPanel.tsx
 import { Fragment as Fragment3, jsx as jsx3, jsxs as jsxs3 } from "react/jsx-runtime";
 var f = (n) => n.toLocaleString("zh-TW", {
   maximumFractionDigits: 2
@@ -3991,34 +3997,756 @@ function BasementDemandPanel({
   ] });
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/components/efficiency/LegalParkingPanel.tsx
+// ../sanze-release-app/src/components/efficiency/LegalParkingPanel.tsx
 import { useEffect, useState } from "react";
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/planningAssumptions.ts
-function discloseMissingPlanningInputs(input) {
-  const defaults = { site: ["1000", "\u57FA\u5730\u9762\u7A4D\u672A\u63D0\u4F9B\uFF0C\u66AB\u4EE51,000\u33A1\u5EFA\u7ACB\u5047\u8A2D\u60C5\u5883\uFF0C\u4E26\u975E\u672C\u6848\u767B\u8A18\u9762\u7A4D"], coverage: ["50", "\u5EFA\u853D\u7387\u672A\u63D0\u4F9B\uFF0C\u66AB\u63A150%\uFF0C\u672A\u78BA\u8A8D\u571F\u7BA1"], far: ["300", "\u57FA\u6E96\u5BB9\u7A4D\u7387\u672A\u63D0\u4F9B\uFF0C\u66AB\u63A1300%\uFF0C\u672A\u78BA\u8A8D\u571F\u7BA1"], coverageUse: ["80", "\u5EFA\u7BC9\u9762\u7A4D\u4F7F\u7528\u7387\u66AB\u63A180%"], volumeUse: ["100", "\u5BB9\u7A4D\u4F7F\u7528\u76EE\u6A19\u66AB\u63A1100%"], equipment: ["0", "\u8A2D\u5099\u5148\u6309\u5177\u540D\u623F\u9593\u9700\u6C42\u914D\u7F6E\uFF0C\u4E0D\u4EE5\u514D\u8A08\u4E0A\u9650\u586B\u6EFF"], lobby: ["0", "\u7F3A\u68AF\u5EF3\u914D\u7F6E\u8CC7\u6599\uFF0C\u9762\u7A4D\u66AB\u4E0D\u589E\u52A0"], balcony: ["0", "\u7F3A\u967D\u53F0\u914D\u7F6E\u8CC7\u6599\uFF0C\u9762\u7A4D\u66AB\u4E0D\u589E\u52A0"], roofRate: ["0", "\u7F3A\u5C4B\u7A81\u914D\u7F6E\u8CC7\u6599\uFF0C\u9762\u7A4D\u66AB\u4E0D\u589E\u52A0"], roofFloors: ["0", "\u7F3A\u5C4B\u7A81\u914D\u7F6E\u8CC7\u6599\uFF0C\u66AB\u4E0D\u53E6\u589E\u5C4B\u7A81\u5C64"], roofHeight: ["3", "\u5C4B\u7A81\u5C64\u9AD8\u66AB\u63A13m"], unitPing: ["30", "\u6BCF\u6236\u5730\u4E0A\u5206\u6524\u9762\u7A4D\u66AB\u63A130\u576A"], excavation: ["60", "\u958B\u6316\u7387\u66AB\u63A160%\uFF0C\u672A\u78BA\u8A8D\u500B\u6848\u4E0A\u9650"], reserve: ["0", "\u8A2D\u5099\u68AF\u9593\u6539\u4F9D\u5177\u540D\u7A7A\u9593\u9810\u7559\uFF0C\u6C92\u6709\u901A\u7528\u6CD5\u5B9A\u6700\u4F4E\u516C\u8A2D\u6BD4\u4F8B"], basementFloors: ["4", "\u7F3A\u5730\u4E0B\u5C64\u6578\uFF0C\u5047\u8A2D\u56FA\u5B9A4\u5C64\u521D\u4F30\uFF1B\u4E0D\u81EA\u52D5\u589E\u52A0"], carPing: ["8", "\u6C7D\u8ECA\u4F4D\u542B\u8ECA\u9053\u66AB\u63A18\u576A\uFF0F\u4F4D\uFF0C\u672A\u7D93\u5E7E\u4F55\u6392\u4F4D"], motoSqm: ["2.75", "\u6A5F\u8ECA\u542B\u901A\u9053\u66AB\u63A12.75\u33A1\uFF0F\u4F4D"], carPerUnit: ["0", "\u4E0D\u53E6\u52A0\u5E02\u5834\u6C7D\u8ECA\u9700\u6C42\uFF0C\u6CD5\u5B9A\u9700\u6C42\u512A\u5148"], motoPerUnit: ["1", "\u6A5F\u8ECA\u66AB\u6309\u6BCF\u62361\u4F4D"], localParkingUnit: ["1", "\u5730\u65B9\u6BCF\u6236\u6C7D\u8ECA\u898F\u5247\u672A\u63D0\u4F9B\uFF0C\u66AB\u63091\u4F4D\u60C5\u5883"], basementSalePercent: ["100", "\u5730\u4E0B\u5177\u540D\u623F\u5C4B\u8A2D\u5099\u68AF\u9593\u6309100%\u623F\u5C4B\u670D\u52D9\u5047\u8A2D\uFF0C\u505C\u8ECA\u53E6\u5217"] };
-  const next = { ...input };
-  const notes = [];
-  for (const [k, [value, note]] of Object.entries(defaults)) {
-    if (typeof input[k] === "string" && !input[k].trim()) {
-      next[k] = value;
-      notes.push("\u660E\u793A\u5047\u8A2D\uFF1A" + note + "\u3002");
+// ../sanze-release-app/src/lib/mixed-zone/documentCase.ts
+var DOCUMENT_CASE_VERSION = "document-case.2026-10-24.v1";
+var documentTopics = { land: "\u571F\u5730\u7BC4\u570D\u3001\u516C\u8A2D\u6392\u9664\u53CA\u63A1\u8A08\u4F9D\u64DA", original: "\u539F\u5BB9\u7A4D\u9069\u7528\u571F\u5730\u8207\u7C3D\u8B49", awards: "\u734E\u52F5\u8CC7\u683C\u3001\u5206\u9805\u6BCD\u6578\u53CA\u4E0A\u9650", transfer: "\u5BB9\u79FB\u4F86\u6E90\u3001\u63A5\u53D7\u57FA\u5730\u8207\u8A31\u53EF", use: "\u7528\u9014\u8A31\u53EF\u3001\u4F4F\u5B85\u57FA\u6E96\u9650\u5236\u8207\u5171\u7528\u7A7A\u9593", layout: "\u8DE8\u5340\u914D\u7F6E\u3001\u9053\u8DEF\u3001\u9000\u7E2E\u3001\u9AD8\u5EA6\u8207\u505C\u8ECA" };
+var newDocumentEvidence = () => ({ source: "", date: "", status: "unknown", finding: "" });
+var newDocumentGroup = () => ({ id: crypto.randomUUID(), name: "", area: "", far: "", originalMode: "unknown", original: "", evidence: newDocumentEvidence() });
+var newDocumentAmount = () => ({ id: crypto.randomUUID(), name: "", groupId: "", method: "area", area: "", percent: "", base: "", evidence: newDocumentEvidence() });
+var newDocumentFloor = () => ({ id: crypto.randomUUID(), building: "", levels: "", count: "", area: "", use: "unknown", residentialBase: "", evidence: newDocumentEvidence() });
+var text = (v) => typeof v === "string" && v.length <= 12e3;
+var one = (v, a) => typeof v === "string" && a.includes(v);
+var obj = (v) => !!v && typeof v === "object" && !Array.isArray(v);
+var fields = (v, ks) => ks.every((k) => text(v[k]));
+var evidence = (v) => obj(v) && fields(v, ["source", "date", "finding"]) && one(v.status, ["unknown", "documented", "reviewed"]);
+var rows = (v, fn) => Array.isArray(v) && v.length <= 300 && new Set(v.map((r) => r?.id)).size === v.length && v.every((r) => obj(r) && text(r.id) && !!r.id && fn(r));
+function isDocumentCase(v) {
+  if (!obj(v)) return false;
+  const amount = (r) => fields(r, ["name", "groupId", "area", "percent", "base"]) && one(r.method, ["area", "percent"]) && evidence(r.evidence);
+  return v.version === DOCUMENT_CASE_VERSION && fields(v, ["name", "edition", "assessmentDate", "source", "declaredTotal"]) && one(v.designMode, ["unknown", "residential", "mixed", "nonresidential"]) && one(v.awardMode, ["unknown", "none", "items"]) && one(v.transferMode, ["unknown", "none", "items"]) && rows(v.groups, (r) => fields(r, ["name", "area", "far", "original"]) && one(r.originalMode, ["unknown", "none", "replace"]) && evidence(r.evidence)) && rows(v.awards, amount) && rows(v.transfers, amount) && rows(v.floors, (r) => fields(r, ["building", "levels", "count", "area", "residentialBase"]) && one(r.use, ["unknown", "residential", "retail", "office", "shared", "other"]) && evidence(r.evidence)) && obj(v.reviews) && Object.keys(documentTopics).every((k) => evidence(v.reviews[k]));
+}
+var validDate = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s) && Number.isFinite(Date.parse(s)) && new Date(s).toISOString().slice(0, 10) === s;
+function calculateDocumentCase(raw) {
+  const issues = [], gaps = [];
+  const empty = { base: null, originalIncrease: null, adopted: null, award: null, transfer: null, total: null, design: null, declared: null };
+  const groups = [], amounts = [], floors = [];
+  const out = () => ({ values: empty, groups, amounts, floors, issues, gaps, status: issues.length ? "conflict" : gaps.length ? "incomplete" : "reconciled", legallyAdoptable: false });
+  if (!isDocumentCase(raw)) {
+    issues.push("\u6587\u4EF6\u8986\u6838\u683C\u5F0F\u3001\u7248\u672C\u6216\u91CD\u8907\u8B58\u5225\u7121\u6548\uFF1B\u672A\u8A08\u7B97\u3001\u672A\u5957\u898F\u5283\u9810\u8A2D\u3002");
+    return out();
+  }
+  const m = raw;
+  const number2 = (s, label) => {
+    if (!s.trim()) {
+      gaps.push(label + "\u672A\u586B");
+      return null;
     }
+    const n = Number(s);
+    if (!Number.isFinite(n) || n < 0 || n > 1e9) {
+      issues.push(label + "\u6578\u503C\u7121\u6548");
+      return null;
+    }
+    return n;
+  };
+  const sum3 = (xs) => xs.length && xs.every((x) => x !== null) ? xs.reduce((a, b) => a + b, 0) : null;
+  const ev2 = (e, label) => {
+    if (!e.source.trim() || !e.finding.trim() || !validDate(e.date) || e.status === "unknown") gaps.push(label + "\u7F3A\u6587\u4EF6\u3001\u65E5\u671F\u6216\u5224\u65B7");
+    if (validDate(e.date) && validDate(m.assessmentDate) && e.date > m.assessmentDate) issues.push(label + "\u6587\u4EF6\u65E5\u671F\u665A\u65BC\u8A55\u4F30\u57FA\u6E96\u65E5");
+    if (e.status !== "reviewed") gaps.push(label + "\u9069\u7528\u6027\u672A\u5B8C\u6210\u8986\u6838");
+  };
+  if (!m.name.trim() || !m.edition.trim() || !m.source.trim()) gaps.push("\u6848\u4EF6\u540D\u7A31\u3001\u540C\u4E00\u6587\u4EF6\u7248\u672C\u53CA\u4F86\u6E90\u672A\u9F4A");
+  if (!validDate(m.assessmentDate)) gaps.push("\u8A55\u4F30\u57FA\u6E96\u65E5\u672A\u586B\u6216\u7121\u6548");
+  if (m.designMode === "unknown") gaps.push("\u898F\u5283\u7528\u9014\u5C1A\u672A\u78BA\u8A8D");
+  for (const [k, label] of Object.entries(documentTopics)) ev2(m.reviews[k], label);
+  if (!m.groups.length) gaps.push("\u571F\u5730\u7D44\u5225\u5C1A\u672A\u5EFA\u7ACB");
+  for (const g of m.groups) {
+    ev2(g.evidence, "\u571F\u5730\uFF0F" + g.name);
+    if (!g.name.trim()) gaps.push("\u571F\u5730\u7D44\u5225\u540D\u7A31\u672A\u586B");
+    const a = number2(g.area, "\u571F\u5730\u9762\u7A4D"), f8 = number2(g.far, "\u6CD5\u5B9A\u5BB9\u7A4D\u7387"), base = a === null || f8 === null ? null : a * f8 / 100;
+    let adopted = null;
+    if (g.originalMode === "none") {
+      adopted = base;
+      if (g.original.trim()) issues.push("\u4E0D\u63A1\u539F\u5BB9\u7A4D\u7684\u571F\u5730\u4ECD\u586B\u539F\u5BB9\u7A4D\uFF0C\u8ACB\u6838\u5C0D");
+    } else if (g.originalMode === "replace") adopted = number2(g.original, "\u539F\u5BB9\u7A4D");
+    else gaps.push("\u539F\u5BB9\u7A4D\u63A1\u7528\u65B9\u5F0F\u672A\u78BA\u8A8D");
+    groups.push({ name: g.name, base, adopted, increase: base === null || adopted === null ? null : adopted - base });
   }
-  for (const k of ["renewal", "scale", "tdr", "danger", "storePercent", "extraCars"]) if (!input[k]?.trim()) {
-    next[k] = "0";
-    notes.push(`\u660E\u793A\u5047\u8A2D\uFF1A${{ renewal: "\u90FD\u66F4\u734E\u52F5", scale: "\u898F\u6A21\u734E\u52F5", tdr: "\u5BB9\u7A4D\u79FB\u8F49", danger: "\u5371\u8001\u734E\u52F5", storePercent: "\u5E97\u8216\u914D\u7F6E", extraCars: "\u984D\u5916\u6C7D\u8ECA\u4F4D" }[k]}\u672A\u63D0\u4F9B\uFF0C\u66AB\u4E0D\u589E\u52A0\u3002`);
+  empty.base = sum3(groups.map((g) => g.base));
+  empty.adopted = sum3(groups.map((g) => g.adopted));
+  empty.originalIncrease = sum3(groups.map((g) => g.increase));
+  const amount = (mode, items, kind) => {
+    if (mode === "unknown") {
+      gaps.push(kind + "\u8655\u7406\u65B9\u5F0F\u672A\u78BA\u8A8D");
+      return null;
+    }
+    if (mode === "none") {
+      if (items.length) {
+        issues.push(kind + "\u9078\u7121\u4F46\u4ECD\u6709\u5206\u9805");
+        return null;
+      }
+      return 0;
+    }
+    if (!items.length) {
+      gaps.push(kind + "\u5206\u9805\u5C1A\u672A\u5EFA\u7ACB");
+      return null;
+    }
+    const vals = items.map((r) => {
+      ev2(r.evidence, kind + "\uFF0F" + r.name);
+      if (!r.name.trim()) gaps.push(kind + "\u540D\u7A31\u672A\u586B");
+      if (r.groupId && !m.groups.some((g) => g.id === r.groupId)) issues.push(kind + "\u6240\u5C6C\u571F\u5730\u4E0D\u5B58\u5728");
+      let quantity = null;
+      if (r.method === "area") quantity = number2(r.area, kind + "\u6587\u4EF6\u9762\u7A4D");
+      else {
+        const b = number2(r.base, kind + "\u6587\u4EF6\u6BCD\u6578"), p = number2(r.percent, kind + "\u6BD4\u4F8B");
+        quantity = b === null || p === null ? null : b * p / 100;
+      }
+      amounts.push({ kind, name: r.name, quantity });
+      return quantity;
+    });
+    return sum3(vals);
+  };
+  empty.award = amount(m.awardMode, m.awards, "\u734E\u52F5");
+  empty.transfer = amount(m.transferMode, m.transfers, "\u5BB9\u79FB");
+  empty.total = sum3([empty.adopted, empty.award, empty.transfer]);
+  if (!m.floors.length) gaps.push("\u9010\u5C64\u7528\u9014\u5C1A\u672A\u5EFA\u7ACB");
+  for (const f8 of m.floors) {
+    ev2(f8.evidence, "\u6A13\u5C64\uFF0F" + f8.building + f8.levels);
+    const a = number2(f8.area, "\u6BCF\u5C64\u8A08\u5BB9\u9762\u7A4D"), c = number2(f8.count, "\u5C64\u6578");
+    let quantity = a === null || c === null ? null : a * c;
+    if (c !== null && (!Number.isSafeInteger(c) || c < 1)) {
+      issues.push("\u5C64\u6578\u9808\u70BA\u6B63\u6574\u6578");
+      quantity = null;
+    }
+    if (!f8.building.trim() || !f8.levels.trim()) gaps.push("\u5E62\u5225\u53CA\u6A13\u5C64\u7BC4\u570D\u672A\u586B");
+    if (f8.use === "unknown") gaps.push("\u6A13\u5C64\u7528\u9014\u672A\u78BA\u8A8D");
+    if (f8.use === "shared") gaps.push("\u5171\u7528\u6216\u6DF7\u5408\u7528\u9014\u9808\u4F9D\u6587\u4EF6\u5206\u5217\uFF0C\u4E0D\u6309\u6BD4\u4F8B\u5206\u914D");
+    if (m.designMode === "residential" && ["retail", "office", "other"].includes(f8.use) || m.designMode === "nonresidential" && f8.use === "residential") issues.push("\u8A2D\u8A08\u6A21\u5F0F\u8207\u6A13\u5C64\u7528\u9014\u77DB\u76FE");
+    const residentialBase = f8.use === "residential" ? number2(f8.residentialBase, "\u4F4F\u5B85\u57FA\u6E96\u5BB9\u7A4D\u6B78\u5C6C") : null;
+    if (residentialBase !== null && quantity !== null && residentialBase > quantity + 0.01) issues.push("\u4F4F\u5B85\u57FA\u6E96\u90E8\u5206\u8D85\u904E\u8A72\u5217\u8A08\u5BB9\u91CF");
+    floors.push({ building: f8.building, levels: f8.levels, use: f8.use, quantity, residentialBase });
   }
-  if (typeof input.reserve === "string" && !input.reserve.trim()) {
-    const floors = Math.max(1, Number(next.basementFloors) || 4), site = Number(next.site) || 1e3, excavation = Number(next.excavation) || 60;
-    const namedRooms = 24 + 48 + 64 + 64, coresPerFloor = 2 * (3 * 4.5 + 2 * 3 + 2.5 * 3), sqm2 = namedRooms + coresPerFloor * floors;
-    next.reserve = String(Math.min(90, sqm2 / (site * excavation / 100 * floors) * 100));
-    notes.push(`\u660E\u793A\u5047\u8A2D\uFF1A\u7121\u5730\u754C\u6642\u66AB\u6309\u8A2D\u5099\u623F24\uFF0B48\uFF0B64\uFF0B64\u33A1\u53CA\u6BCF\u5C64\u5169\u7D44\u68AF\u9593\u3001\u6392\u7159\u5BA4\u3001\u6607\u964D\u6A5F\u5171${coresPerFloor}\u33A1\u4F30\u5217${sqm2}\u33A1\uFF0C\u63DB\u7B97\u9810\u7559\u6BD4\u4F8B${Number(next.reserve).toFixed(2)}%\uFF1B\u4E0D\u662F\u6CD5\u5B9A\u6700\u4F4E\u516C\u8A2D\u6BD4\u4F8B\uFF0C\u4E5F\u672A\u9A57\u8B49\u6392\u4F4D\u3002`);
-  }
-  return { input: next, notes };
+  if (m.designMode === "mixed" && (!m.floors.some((f8) => f8.use === "residential") || !m.floors.some((f8) => ["retail", "office"].includes(f8.use)))) gaps.push("\u4F4F\u5546\u6DF7\u5408\u9808\u540C\u6642\u5206\u5217\u4F4F\u5B85\u8207\u5546\u696D\u7528\u9014");
+  empty.design = sum3(floors.map((f8) => f8.quantity));
+  empty.declared = number2(m.declaredTotal, "\u6587\u4EF6\u7E3D\u8A08");
+  for (const [label, n] of [["\u7D44\u6210\u7E3D\u91CF", empty.total], ["\u9010\u5C64\u5408\u8A08", empty.design]]) if (n !== null && empty.declared !== null && Math.abs(n - empty.declared) > 0.011) issues.push(label + "\u8207\u6587\u4EF6\u7E3D\u8A08\u4E0D\u4E00\u81F4\uFF0C\u5DEE " + Math.abs(n - empty.declared).toFixed(2) + "\u33A1");
+  return out();
+}
+function documentCaseSummary(m) {
+  const r = calculateDocumentCase(m);
+  const inputs = [];
+  const labels = { ...documentTopics, version: "\u8CC7\u6599\u7248\u672C", name: "\u540D\u7A31", edition: "\u6587\u4EF6\u7248\u672C\uFF0F\u6587\u865F", assessmentDate: "\u8A55\u4F30\u57FA\u6E96\u65E5", designMode: "\u898F\u5283\u7528\u9014", source: "\u4F86\u6E90", groups: "\u571F\u5730\u7D44\u5225", area: "\u9762\u7A4D\u33A1", far: "\u6CD5\u5B9A\u5BB9\u7A4D\u7387%", originalMode: "\u539F\u5BB9\u7A4D\u8655\u7406", original: "\u539F\u5BB9\u7A4D\u33A1", evidence: "\u63A1\u8A08\u4F9D\u64DA", date: "\u6587\u4EF6\u65E5\u671F", status: "\u8986\u6838\u72C0\u614B", finding: "\u9069\u7528\u5224\u65B7\u8207\u689D\u4EF6", awardMode: "\u734E\u52F5\u8655\u7406", transferMode: "\u5BB9\u79FB\u8655\u7406", awards: "\u734E\u52F5\u5206\u9805", transfers: "\u5BB9\u79FB\u5206\u9805", groupId: "\u6240\u5C6C\u571F\u5730", method: "\u53D6\u503C\u65B9\u5F0F", percent: "\u6BD4\u4F8B%", base: "\u6587\u4EF6\u6BCD\u6578\u33A1", floors: "\u7528\u9014\u6A13\u5C64", building: "\u5E62\u5225", levels: "\u6A13\u5C64\u7BC4\u570D", count: "\u5C64\u6578", use: "\u7528\u9014", residentialBase: "\u4F4F\u5B85\u57FA\u6E96\u5BB9\u7A4D\u6B78\u5C6C\u33A1", declaredTotal: "\u6587\u4EF6\u7E3D\u8A08\u33A1", reviews: "\u6CD5\u898F\u689D\u4EF6" };
+  const enums2 = { unknown: "\u5C1A\u672A\u78BA\u8A8D", residential: "\u7D14\u4F4F\u5B85", mixed: "\u4F4F\u5B85\u8207\u5546\u696D\u6DF7\u5408", nonresidential: "\u7D14\u975E\u4F4F\u5B85", none: "\u672C\u9805\u4E0D\u63A1\u7528", replace: "\u4F9D\u6587\u4EF6\u539F\u5BB9\u7A4D\u66FF\u4EE3", items: "\u4F9D\u6587\u4EF6\u9010\u9805\u586B\u5BEB", area: "\u6587\u4EF6\u8A18\u8F09\u9762\u7A4D", percent: "\u6587\u4EF6\u6BCD\u6578\u4E58\u6BD4\u4F8B", retail: "\u5E97\u8216", office: "\u8FA6\u516C", shared: "\u5171\u7528\uFF0F\u6DF7\u5408\u672A\u5206\u5217", other: "\u5176\u4ED6", documented: "\u6587\u4EF6\u8A18\u8F09", reviewed: "\u5DF2\u4F9D\u539F\u4EF6\u8986\u6838\u9069\u7528" };
+  const flatten = (x, p, key = "") => {
+    if (x && typeof x === "object") Object.entries(x).forEach(([k, v]) => {
+      if (k !== "id") flatten(v, `${p}\uFF0F${/^\d+$/.test(k) ? Number(k) + 1 : labels[k] ?? k}`, k);
+    });
+    else {
+      const value2 = x === "" ? "\u672A\u586B" : String(x ?? "\u672A\u586B");
+      inputs.push([p, ["designMode", "originalMode", "awardMode", "transferMode", "method", "use", "status"].includes(key) ? enums2[value2] ?? value2 : key === "groupId" ? m.groups.find((g) => g.id === value2)?.name || "\u5168\u6848" : value2]);
+    }
+  };
+  flatten(m, "\u6587\u4EF6\u539F\u59CB\u8F38\u5165");
+  return { title: m.name || "\u4F9D\u6587\u4EF6\u8986\u6838", kind: "\u4F9D\u6587\u4EF6\u8986\u6838\uFF08\u975E\u6838\u51C6\u6B0A\u5229\uFF09", status: { conflict: "\u8CC7\u6599\u885D\u7A81", incomplete: "\u8CC7\u6599\u6216\u8986\u6838\u672A\u9F4A", reconciled: "\u6587\u4EF6\u6578\u91CF\u76F8\u7B26\uFF08\u975E\u4E3B\u7BA1\u6A5F\u95DC\u6838\u51C6\uFF09" }[r.status], createdAt: (/* @__PURE__ */ new Date()).toISOString(), ruleVersion: DOCUMENT_CASE_VERSION, reviewedAt: m.assessmentDate || "\u672A\u586B", metrics: [["\u6CD5\u5B9A\u57FA\u6E96\u5BB9\u7A4D", r.values.base, "\u33A1"], ["\u539F\u5BB9\u7A4D\u66FF\u4EE3\u5F8C", r.values.adopted, "\u33A1"], ["\u6587\u4EF6\u734E\u52F5", r.values.award, "\u33A1"], ["\u6587\u4EF6\u5BB9\u79FB", r.values.transfer, "\u33A1"], ["\u7D44\u6210\u7E3D\u91CF", r.values.total, "\u33A1"], ["\u9010\u5C64\u5408\u8A08", r.values.design, "\u33A1"]], conditions: [["\u6A21\u5F0F", "\u4F9D\u6587\u4EF6\u8986\u6838\uFF1B\u4E0D\u4F7F\u7528\u898F\u5283\u5047\u8A2D"], ["\u6587\u4EF6\u7248\u672C", m.edition], ["\u7528\u9014", enums2[m.designMode]]], charts: [], inputs, issues: [...r.issues, ...r.gaps], assumptions: ["\u8F38\u5165\u6309\u672C\u6848\u65B9\u6848\u4FDD\u5B58\uFF1B\u6539\u503C\u5F8C\u91CD\u65B0\u8A08\u7B97\u3002", "\u4F86\u6E90\u8207\u8CC7\u683C\u7531\u8986\u6838\u4EBA\u4F9D\u539F\u4EF6\u5224\u65B7\uFF1B\u6578\u91CF\u76F8\u7B26\u4E0D\u7B49\u65BC\u5EFA\u7167\u6216\u5BB9\u79FB\u6838\u51C6\u3002", "\u672A\u5F62\u6210\u53EF\u552E\uFF0F\u6210\u672C\uFF0F\u878D\u8CC7\u4F86\u6E90\uFF1B\u4E0D\u5F97\u7531\u6587\u4EF6\u8A08\u5BB9\u91CF\u63A8\u5B9A\u53EF\u552E\u9762\u7A4D\u3002"], sources: [m.source, ...Object.values(m.reviews).map((e) => e.source)].filter(Boolean) };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/spatialTypes.ts
+// ../sanze-release-app/src/lib/mixed-zone/commercialIntensity.ts
+var COMMERCIAL_VERSION = "commercial-intensity.2026-10-24.v1";
+var newCommercialIntensity = () => ({ version: COMMERCIAL_VERSION, enabled: true, designMode: "unknown", city: "unknown", mode: "unknown", commercialClass: "unknown", planSource: "", checkedAt: "", residentialUse: "unknown", useSource: "", boundarySource: "", bands: [], documentFar: "", documentCoverage: "", documentSource: "", ntpcHousing: { mode: "unknown", far: "", source: "" } });
+var newRoadBand = () => ({ id: crypto.randomUUID(), area: "", kind: "unknown", width: "", frontage: "", source: "" });
+var text2 = (v) => typeof v === "string" && v.length <= 12e3;
+var choices = (v, a) => typeof v === "string" && a.includes(v);
+function isCommercialIntensity(raw) {
+  if (!raw || typeof raw !== "object") return false;
+  const v = raw;
+  return (v.designMode === void 0 || choices(v.designMode, ["unknown", "residential", "mixed"])) && (v.ntpcHousing === void 0 || v.ntpcHousing && choices(v.ntpcHousing.mode, ["unknown", "standard", "exception"]) && text2(v.ntpcHousing.far) && text2(v.ntpcHousing.source)) && v.version === COMMERCIAL_VERSION && typeof v.enabled === "boolean" && choices(v.city, ["unknown", "\u81FA\u5317\u5E02", "\u65B0\u5317\u5E02"]) && choices(v.mode, ["unknown", "taipei25", "document"]) && choices(v.commercialClass, ["unknown", "1", "2", "3", "4"]) && choices(v.residentialUse, ["unknown", "allowed", "forbidden"]) && ["planSource", "checkedAt", "useSource", "boundarySource", "documentFar", "documentCoverage", "documentSource"].every((k) => text2(v[k])) && Array.isArray(v.bands) && v.bands.length <= 100 && new Set(v.bands.map((b) => b.id)).size === v.bands.length && v.bands.every((b) => b && ["id", "area", "width", "frontage", "source"].every((k) => text2(b[k])) && !!b.id && choices(b.kind, ["unknown", "road", "residual"]));
+}
+var number = (s, max = 1e9) => s.trim() !== "" && Number.isFinite(Number(s)) && Number(s) >= 0 && Number(s) <= max ? Number(s) : null;
+function calculateCommercialIntensity(raw, site, coverage, requireResidential = false) {
+  const errors = [], notes = [], bands = [];
+  let base = null, maximumCoverage = null;
+  const result = () => ({ errors, notes, bands, base, maximumCoverage, effectiveFar: base !== null && area2 !== null && area2 > 0 ? base / area2 * 100 : null });
+  const area2 = number(site), c = number(coverage, 100);
+  if (!isCommercialIntensity(raw)) {
+    errors.push("\u5546\u696D\u5206\u5340\u898F\u5247\u683C\u5F0F\u7121\u6548\u3002");
+    return result();
+  }
+  const x = raw;
+  if (area2 === null || area2 <= 0) errors.push("\u5546\u696D\u5206\u5340\u9808\u586B\u5BE6\u969B\u7D0D\u5165\u9762\u7A4D\u3002");
+  if (c === null) errors.push("\u8ACB\u586B\u672C\u6848\u63A1\u7528\u5EFA\u853D\u7387\u3002");
+  if (x.city === "unknown" || x.mode === "unknown") errors.push("\u5148\u78BA\u8A8D\u5546\u696D\u5340\u6240\u5728\u5730\u53CA\u9069\u7528\u5F37\u5EA6\u898F\u5247\u3002");
+  if (!x.planSource.trim()) errors.push("\u8ACB\u586B\u500B\u5225\u90FD\u5E02\u8A08\u756B\u53CA\u662F\u5426\u53E6\u6709\u898F\u5B9A\u7684\u67E5\u6838\u4F9D\u64DA\u3002");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(x.checkedAt) || !Number.isFinite(Date.parse(x.checkedAt)) || new Date(x.checkedAt).toISOString().slice(0, 10) !== x.checkedAt) errors.push("\u8ACB\u586B\u6709\u6548\u7684\u5546\u696D\u5340\u6CD5\u898F\u67E5\u6838\u65E5\u671F\u3002");
+  if (requireResidential && (!x.designMode || x.designMode === "unknown")) errors.push("\u8ACB\u5148\u78BA\u8A8D\u898F\u5283\u65B9\u7684\u9810\u5B9A\u8A2D\u8A08\u6A21\u5F0F\uFF1A\u7D14\u4F4F\u5B85\u6216\u4F4F\u5B85\u8207\u5546\u696D\u6DF7\u5408\u3002");
+  if (requireResidential && x.designMode === "mixed") errors.push("\u4F4F\u5546\u6DF7\u5408\u8A2D\u8A08\u9808\u4F7F\u7528\u6DF7\u5408\u5206\u5340\uFF0F\u500B\u5225\u571F\u7BA1\uFF0C\u5206\u5217\u7528\u9014\u3001\u4F4F\u5B85\u57FA\u6E96\u90E8\u5206\u53CA\u914D\u7F6E\uFF0C\u4E0D\u63A1\u55AE\u4E00\u4F4F\u5B85\u516C\u5F0F\u3002");
+  if (requireResidential && (x.residentialUse !== "allowed" || !x.useSource.trim())) errors.push(x.residentialUse === "forbidden" ? "\u6240\u5217\u5546\u696D\u5340\u4F9D\u64DA\u4E0D\u5141\u8A31\u96C6\u5408\u4F4F\u5B85\u7528\u9014\uFF0C\u4E0D\u80FD\u5957\u4F4F\u5B85\u898F\u5283\u3002" : "\u5546\u696D\u5340\u96C6\u5408\u4F4F\u5B85\u7528\u9014\u53CA\u9644\u5E36\u689D\u4EF6\u9808\u5148\u78BA\u8A8D\u4E26\u5217\u660E\u4F9D\u64DA\u3002");
+  if (x.mode === "taipei25") {
+    if (x.city !== "\u81FA\u5317\u5E02") errors.push("\u81FA\u5317\u5E02\u7B2C25\u689D\u4E0D\u80FD\u5957\u7528\u65B0\u5317\u5E02\u3002");
+    if (x.commercialClass === "unknown") errors.push("\u8ACB\u9078\u64C7\u5546\u4E00\u81F3\u5546\u56DB\u7684\u78BA\u5B9A\u5206\u5340\u3002");
+    else {
+      const caps = { 1: 360, 2: 630, 3: 560, 4: 800 }, coverages = { 1: 55, 2: 65, 3: 65, 4: 75 };
+      maximumCoverage = coverages[x.commercialClass];
+      if (!x.boundarySource.trim()) errors.push("\u9808\u8A18\u9304\u9053\u8DEF\u9069\u7528\u7BC4\u570D\u5716\u53CA\u5206\u6BB5\u4E0D\u91CD\u8907\u8986\u6838\uFF1B\u4E0D\u80FD\u81EA\u52D5\u628A\u5168\u57FA\u5730\u5957\u6700\u5BEC\u9053\u8DEF\u3002");
+      if (!x.bands.length) errors.push("\u5C1A\u672A\u586B\u5165\u6309\u5716\u8AAA\u5283\u5206\u7684\u9053\u8DEF\u9069\u7528\u7BC4\u570D\u3002");
+      for (const b of x.bands) {
+        const a = number(b.area), w = number(b.width, 1e3), front = number(b.frontage, 1e5);
+        if (a === null || a <= 0 || !b.source.trim() || b.kind === "unknown") {
+          errors.push("\u5404\u9053\u8DEF\u7BC4\u570D\u9808\u6709\u9762\u7A4D\u3001\u9069\u7528\u985E\u578B\u53CA\u5716\u8AAA\u4F86\u6E90\u3002");
+          continue;
+        }
+        let far = 300;
+        if (b.kind === "road") {
+          if (w === null || w <= 0 || front === null || front < 5) {
+            errors.push("\u4EE5\u9053\u8DEF\u5BEC\u5EA6\u6838\u8A08\u7684\u7BC4\u570D\u9808\u6709\u6709\u6548\u8DEF\u5BEC\uFF0C\u81E8\u63A5\u8A72\u8DEF\u9762\u5BEC\u81F3\u5C115\u516C\u5C3A\uFF1B\u4E0D\u8DB3\u90E8\u5206\u6539\u4F9D\u5716\u8AAA\u5217\u6B21\u5BEC\u8DEF\u6216\u5269\u9918\u7BC4\u570D\u3002");
+            continue;
+          }
+          if (a > (15 * front) ** 2 / (4 * Math.PI) + 0.01) {
+            errors.push("\u9053\u8DEF\u9069\u7528\u9762\u7A4D\u8D85\u904E15\u500D\u9762\u5BEC\u5468\u9577\u53EF\u570D\u9762\u7A4D\u7684\u6578\u5B78\u4E0A\u9650\uFF0C\u8ACB\u6838\u5C0D\u9762\u5BEC\u53CA\u5716\u8AAA\uFF1B\u901A\u904E\u6B64\u4E0A\u9650\u4E5F\u4E0D\u4EE3\u8868\u5E7E\u4F55\u7BC4\u570D\u5DF2\u6838\u5B9A\u3002");
+            continue;
+          }
+          far = Math.min(caps[x.commercialClass], Math.max(300, w * 50));
+        }
+        bands.push({ id: b.id, area: a, far, base: a * far / 100 });
+      }
+      if (bands.length === x.bands.length && bands.length && area2 !== null) {
+        if (Math.abs(bands.reduce((n, b) => n + b.area, 0) - area2) > 0.01) errors.push("\u9053\u8DEF\u5206\u6BB5\u9762\u7A4D\u5408\u8A08\u9808\u7B49\u65BC\u672C\u5546\u696D\u7BC4\u570D\u9762\u7A4D\uFF0C\u4E0D\u80FD\u6F0F\u5217\u6216\u91CD\u8907\u3002");
+        else base = bands.reduce((n, b) => n + b.base, 0);
+      }
+      notes.push("\u6309\u7B2C25\u689D\u8868\u5B9A\u4E0A\u9650\u3001\u8DEF\u5BEC\u53CA\u5DF2\u63D0\u4F9B\u7684\u5716\u8AAA\u5206\u6BB5\u8A08\u7B97\uFF1B5\u516C\u5C3A\u9762\u5BEC\u820715\u500D\u9762\u5BEC\u5468\u9577\u6240\u570D\u6700\u5927\u9069\u7528\u7BC4\u570D\u9808\u5148\u4F9D\u5716\u8AAA\u6838\u5B9A\uFF0C\u7CFB\u7D71\u4E0D\u63A8\u9020\u5E7E\u4F55\u9762\u7A4D\u3002", "\u8DE8\u4F4F\u4E09\u5546\u4E09\u6848\u4F8B8705\u9808\u4F75\u6838\u73FE\u884C\u898F\u5B9A\uFF1B\u53EF\u53C3\u8003\u5168\u57FA\u5730\u9053\u8DEF\uFF0C\u4E0D\u4EE3\u8868\u5168\u57FA\u5730\u5747\u53EF\u63A1\u6700\u5BEC\u8DEF\u3002\u5EFA\u853D\u653E\u5BEC\u9808\u6709\u7B26\u5408\u689D\u4EF6\u7684\u500B\u6848\u4F9D\u64DA\uFF0C\u672C\u6A21\u5F0F\u672A\u81EA\u52D5\u63A1\u653E\u5BEC\u503C\u3002");
+    }
+  } else if (x.mode === "document") {
+    const far = number(x.documentFar, 3e3);
+    maximumCoverage = number(x.documentCoverage, 100);
+    if (far === null || maximumCoverage === null || !x.documentSource.trim()) errors.push("\u500B\u5225\u8A08\u756B\uFF0F\u6838\u5B9A\u6A21\u5F0F\u9808\u586B\u660E\u78BA\u5BB9\u7A4D\u7387\u3001\u5EFA\u853D\u4E0A\u9650\u8207\u6587\u4EF6\u4F86\u6E90\u3002");
+    else if (area2 !== null) base = area2 * far / 100;
+    notes.push("\u63A1\u7528\u6240\u5217\u5730\u65B9\uFF0F\u500B\u6848\u6587\u4EF6\u7684\u5F37\u5EA6\uFF1B\u6587\u4EF6\u9069\u7528\u5730\u57DF\u3001\u6642\u9EDE\u3001\u81E8\u8DEF\u689D\u4EF6\u8207\u7528\u9014\u9808\u4E00\u4F75\u8986\u6838\u3002");
+  }
+  if (requireResidential && x.city === "\u65B0\u5317\u5E02") {
+    const h = reviewNtpcHousing(x, site);
+    errors.push(...h.errors);
+    if (h.cap !== null && base !== null) {
+      base = Math.min(base, h.cap);
+      notes.push("\u5168\u4F4F\u5B85\u65B9\u6848\u4F9D\u65B0\u5317\u5E02\u7B2C17\u689D\u4F4F\u5B85\u57FA\u6E96\u5BB9\u7A4D\u4E0A\u9650\u8A08\u7B97\uFF1B\u542B\u975E\u4F4F\u5B85\u8005\u9808\u5206\u5217\u7528\u9014\u53CA\u734E\u52F5\u4F86\u6E90\u3002");
+    }
+  }
+  if (c !== null && maximumCoverage !== null && c > maximumCoverage) errors.push("\u63A1\u7528\u5EFA\u853D\u7387\u8D85\u904E\u672C\u6B21\u898F\u5247\u4E0A\u9650\uFF0C\u4E0D\u80FD\u81EA\u52D5\u5957\u653E\u5BEC\u503C\u3002");
+  return result();
+}
+function reviewNtpcHousing(x, site) {
+  const errors = [];
+  let cap = null;
+  if (x.city !== "\u65B0\u5317\u5E02") return { errors, cap };
+  const h = x.ntpcHousing, area2 = number(site);
+  if (!h || h.mode === "unknown" || !h.source.trim()) errors.push("\u65B0\u5317\u5E02\u7B2C17\u689D\uFF1A\u8ACB\u78BA\u8A8D\u4F4F\u5B85\u57FA\u6E96\u5BB9\u7A4D\u9650\u5236\u6216\u5DF2\u6838\u51C6\u4F8B\u5916\uFF0C\u4E26\u586B\u6587\u4EF6\u53CA\u9069\u7528\u689D\u4EF6\u3002");
+  else if (h.mode === "standard") {
+    const far = number(h.far, 3e3);
+    if (far === null || far <= 0 || area2 === null) errors.push("\u65B0\u5317\u5E02\u7B2C17\u689D\uFF1A\u9808\u586B\u8A72\u90FD\u5E02\u8A08\u756B\u4F4F\u5B85\u5340\u57FA\u6E96\u5BB9\u7A4D\u7387\u53CA\u672C\u5546\u696D\u5340\u9762\u7A4D\u3002");
+    else cap = area2 * far / 100;
+  }
+  return { errors, cap };
+}
+
+// ../sanze-release-app/src/lib/mixed-zone/landBasis.ts
+var basisLabels = { site: "\u5EFA\u7BC9\u57FA\u5730\u63A1\u8A08\u9762\u7A4D", far: "\u57FA\u6E96\u5BB9\u7A4D\u8A08\u7B97\u571F\u5730\u9762\u7A4D", coverage: "\u5EFA\u853D\u7387\u8A08\u7B97\u571F\u5730\u9762\u7A4D", openCredit: "\u5BE6\u969B\u53EF\u8A8D\u5217\u6CD5\u5B9A\u7A7A\u5730\u9762\u7A4D" };
+var newLandBasis = () => ({ procedures: [], renewal: "unknown", role: "unknown", site: { status: "unknown", area: "", source: "" }, far: { status: "unknown", area: "", source: "" }, coverage: { status: "unknown", area: "", source: "" }, openCredit: { status: "unknown", area: "", source: "" }, tdr: { status: "unknown", area: "", receivingZone: "", source: "" } });
+var validDate2 = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s) && Number.isFinite(Date.parse(s)) && new Date(s).toISOString().slice(0, 10) === s;
+var text3 = (x) => typeof x === "string" && x.length <= 12e3;
+function isLandBasis(v) {
+  if (!v || typeof v !== "object") return false;
+  const x = v;
+  return (x.publicAdoption === void 0 || x.publicAdoption && ["unknown", "currentPlan", "effectiveChange"].includes(x.publicAdoption.kind) && text3(x.publicAdoption.date) && text3(x.publicAdoption.source)) && (x.procedures === void 0 || Array.isArray(x.procedures) && x.procedures.length <= 30 && new Set(x.procedures.map((p) => p.id)).size === x.procedures.length && x.procedures.every((p) => p && text3(p.id) && !!p.id && ["planChange", "alleyClosure", "alleyReroute", "acquisition", "other"].includes(p.kind) && ["unknown", "proposed", "approved", "effective", "completed"].includes(p.status) && text3(p.date) && text3(p.source) && Array.isArray(p.affects) && p.affects.every((k) => Object.prototype.hasOwnProperty.call(basisLabels, k)))) && ["unknown", "inside", "outside"].includes(x.renewal) && ["unknown", "building", "publicPedestrian", "publicRoad", "publicOther", "privateAccess", "setback", "other"].includes(x.role) && Object.keys(basisLabels).every((k) => {
+    const a = x[k];
+    return a && ["unknown", "count", "exclude"].includes(a.status) && text3(a.area) && (a.deduction === void 0 || text3(a.deduction)) && text3(a.source);
+  }) && !!x.tdr && ["unknown", "none", "proposed", "approved"].includes(x.tdr.status) && text3(x.tdr.area) && text3(x.tdr.receivingZone) && text3(x.tdr.source);
+}
+function calculateLandBasis(x, landArea, assessmentDate) {
+  const issues = [];
+  const values = { site: null, far: null, coverage: null, openCredit: null };
+  if (!x || !isLandBasis(x)) {
+    issues.push({ message: "\u8ACB\u5EFA\u7ACB\u66F4\u65B0\u7BC4\u570D\u3001\u5EFA\u7BC9\u57FA\u5730\u3001\u5BB9\u7A4D\u3001\u5EFA\u853D\u53CA\u6CD5\u5B9A\u7A7A\u5730\u7684\u5206\u9805\u4F9D\u64DA\uFF1B\u820A\u8A08\u5165\u9078\u9805\u4E0D\u81EA\u52D5\u8F49\u63DB", kind: "missing" });
+    return { values, issues };
+  }
+  if (x.renewal === "unknown") issues.push({ message: "\u662F\u5426\u4F4D\u65BC\u672C\u6B21\u66F4\u65B0\uFF0F\u8A55\u4F30\u7BC4\u570D\u5C1A\u672A\u78BA\u8A8D", kind: "missing" });
+  if (x.role === "unknown") issues.push({ message: "\u571F\u5730\u6CD5\u5B9A\u7528\u9014\u5C1A\u672A\u78BA\u8A8D\uFF1B\u4EBA\u884C\u6B65\u9053\u5206\u5340\u3001\u79C1\u8A2D\u901A\u8DEF\u53CA\u9000\u7E2E\u6B65\u9053\u4E0D\u80FD\u4E92\u4EE3", kind: "missing" });
+  for (const key of Object.keys(basisLabels)) {
+    const d = x[key], label = basisLabels[key];
+    if (d.status === "unknown") {
+      issues.push({ message: label + "\u8CC7\u683C\u5C1A\u672A\u78BA\u8A8D", kind: "missing" });
+      continue;
+    }
+    if (!d.source.trim()) {
+      issues.push({ message: label + "\u9808\u5217\u9069\u7528\u6CD5\u898F\u53CA\u500B\u6848\u5716\u8AAA\u4F9D\u64DA", kind: "missing" });
+      continue;
+    }
+    if (d.status === "exclude") {
+      if (d.area.trim() && Number(d.area) !== 0) issues.push({ message: label + "\u5DF2\u9078\u4E0D\u63A1\u8A08\uFF0C\u4E0D\u5F97\u53E6\u586B\u975E\u96F6\u9762\u7A4D", kind: "conflict" });
+      else if (d.deduction?.trim() && Number(d.deduction) !== 0) issues.push({ message: label + "\u4E0D\u63A1\u8A08\u6642\u4E0D\u5F97\u53E6\u586B\u6263\u9664\u9762\u7A4D", kind: "conflict" });
+      else values[key] = 0;
+      continue;
+    }
+    const n = d.area.trim() ? Number(d.area) : NaN;
+    if (!Number.isFinite(n) || n < 0 || n > 1e9) {
+      issues.push({ message: label + "\u6578\u503C\u5C1A\u7F3A\u6216\u7121\u6548", kind: "missing" });
+      continue;
+    }
+    if (landArea === null) {
+      issues.push({ message: label + "\u9808\u5148\u6838\u5C0D\u672C\u7BC4\u570D\u571F\u5730\u9762\u7A4D", kind: "missing" });
+      continue;
+    }
+    if (n > landArea + 0.01) {
+      issues.push({ message: label + "\u8D85\u904E\u672C\u7BC4\u570D\u571F\u5730\u9762\u7A4D", kind: "conflict" });
+      continue;
+    }
+    const deduction = d.deduction?.trim() ? Number(d.deduction) : 0;
+    if (!Number.isFinite(deduction) || deduction < 0 || deduction > n) {
+      issues.push({ message: label + "\u6263\u9664\u9762\u7A4D\u7121\u6548\u6216\u8D85\u904E\u539F\u9762\u7A4D", kind: "conflict" });
+      continue;
+    }
+    values[key] = n - deduction;
+  }
+  if (values.site !== null && values.openCredit !== null && values.openCredit > values.site + 0.01) {
+    issues.push({ message: "\u6CD5\u5B9A\u7A7A\u5730\u4E0D\u80FD\u8D85\u904E\u5176\u6240\u5C6C\u5EFA\u7BC9\u57FA\u5730\u63A1\u8A08\u9762\u7A4D", kind: "conflict" });
+    values.openCredit = null;
+  }
+  if ((x.role === "publicPedestrian" || x.role === "publicRoad" || x.role === "publicOther") && [values.site, values.far, values.coverage, values.openCredit].some((n) => n !== null && n > 0)) issues.push({ message: "\u516C\u5171\u8A2D\u65BD\u7528\u5730\u63A1\u8A08\u9808\u9010\u9805\u6838\u5C0D\u6709\u6548\u90FD\u5E02\u8A08\u756B\uFF0F\u8B8A\u66F4\u53CA\u6838\u5B9A\u5716\u8AAA\uFF1B\u4E0D\u80FD\u53EA\u4EE5\u4F4D\u65BC\u66F4\u65B0\u7BC4\u570D\u4F5C\u4F9D\u64DA", kind: "review" });
+  if (values.site === 0 && [values.far, values.coverage, values.openCredit].some((n) => n !== null && n > 0)) issues.push({ message: "\u975E\u5EFA\u7BC9\u57FA\u5730\u4E0D\u5F97\u76F4\u63A5\u7522\u751F\u672C\u57FA\u5730\u5BB9\u7A4D\u3001\u5EFA\u853D\u6216\u6CD5\u5B9A\u7A7A\u5730\uFF1B\u5BB9\u7A4D\u79FB\u8F49\u53E6\u5217\u63A5\u53D7\u57FA\u5730", kind: "conflict" });
+  for (const p of x.procedures ?? []) {
+    const ready = ["effective", "completed"].includes(p.status) && p.source.trim() && validDate2(p.date) && (!assessmentDate || p.date <= assessmentDate);
+    if (!ready) {
+      issues.push({ message: "\u5EE2\u5DF7\u3001\u6539\u9053\u3001\u8A08\u756B\u8B8A\u66F4\u6216\u53D6\u5F97\u7A0B\u5E8F\u5C1A\u672A\u5177\u5099\u751F\u6548\u4F9D\u64DA\uFF1B\u53D7\u5176\u5F71\u97FF\u7684\u63A1\u8A08\u9762\u7A4D\u4E0D\u5217\u5165\u73FE\u6CC1\u984D\u5EA6", kind: "missing" });
+      for (const key of p.affects) values[key] = null;
+    }
+  }
+  if (["publicPedestrian", "publicRoad", "publicOther"].includes(x.role)) {
+    const a = x.publicAdoption;
+    const ready = a && a.kind !== "unknown" && a.source.trim() && validDate2(a.date) && !!assessmentDate && validDate2(assessmentDate) && a.date <= assessmentDate;
+    const requested = Object.keys(basisLabels).filter((k) => x[k].status === "count");
+    if (requested.length && !ready) {
+      issues.push({ message: "\u516C\u8A2D\u7528\u5730\u539F\u5247\u4E0D\u5217\u5165\u4E00\u822C\u4F4F\u5B85\uFF0F\u5546\u696D\u5EFA\u7BC9\u57FA\u5730\u53CA\u5176\u958B\u767C\u91CF\uFF1B\u63A1\u8A08\u9808\u53E6\u9644\u73FE\u884C\u90FD\u5E02\u8A08\u756B\u5141\u8A31\u4F9D\u64DA\uFF0C\u6216\u5DF2\u767C\u5E03\u5BE6\u65BD\u7684\u8A08\u756B\u8B8A\u66F4\u3001\u65E5\u671F\u53CA\u500B\u6848\u5716\u8AAA\u3002\u5EE2\u5DF7\u6838\u51C6\u3001\u53D6\u5F97\u571F\u5730\u6216\u7D0D\u5165\u66F4\u65B0\u7BC4\u570D\u5747\u4E0D\u80FD\u4EE3\u66FF", kind: "missing" });
+      for (const k of requested) values[k] = null;
+    }
+  }
+  if (x.tdr.status === "unknown") issues.push({ message: "\u516C\u5171\u8A2D\u65BD\u5BB9\u7A4D\u79FB\u8F49\u8655\u7406\u65B9\u5F0F\u5C1A\u672A\u78BA\u8A8D\uFF1B\u4E0D\u81EA\u52D5\u4EE5\u4F4F\u5B85\u5BB9\u7A4D\u7387\u63DB\u7B97", kind: "missing" });
+  if (x.tdr.status !== "unknown" && !x.tdr.source.trim()) issues.push({ message: "\u5BB9\u7A4D\u79FB\u8F49\u8655\u7406\u9808\u6709\u6587\u4EF6\u4F9D\u64DA", kind: "missing" });
+  if (x.tdr.status === "proposed") issues.push({ message: "\u64EC\u7533\u8ACB\u7684\u516C\u5171\u8A2D\u65BD\u5BB9\u7A4D\u79FB\u8F49\u672A\u5217\u5165\u5DF2\u6838\u51C6\u958B\u767C\u91CF", kind: "review" });
+  return { values, issues };
+}
+
+// ../sanze-release-app/src/lib/mixed-zone/ntpcCross.ts
+var newNtpcCross = () => ({ nature: "unknown", partition: "unknown", entrances: "unknown", source: "", transfers: [] });
+function isNtpcCross(x) {
+  if (!x || typeof x !== "object") return false;
+  const v = x;
+  return ["unknown", "same", "different"].includes(v.nature) && ["unknown", "yes", "no"].includes(v.partition) && ["unknown", "yes", "no"].includes(v.entrances) && typeof v.source === "string" && v.source.length <= 12e3 && Array.isArray(v.transfers) && v.transfers.length <= 100 && v.transfers.every((t) => t && ["id", "from", "to", "area"].every((k) => typeof t[k] === "string")) && new Set(v.transfers.map((t) => t.id)).size === v.transfers.length;
+}
+var ntpcLetter = { date: "2019-05-16", checkedAt: "2026-10-24", url: "https://www.naa.org.tw/view_article.php?id=4117", attachment: "https://www.naa.org.tw/download.php?tb=article&&id=4203", status: "\u539F\u51FD\u53CA\u9644\u8868\u3001\u57161\u8207\u57162\u5DF2\u6838\u5C0D\uFF1B\u622A\u81F32026-10-24\u516C\u958B\u4F86\u6E90\u672A\u67E5\u5F97\u4FEE\u6B63\u6216\u505C\u6B62\u9069\u7528\u6587\u4EF6\u3002" };
+function reviewNtpcCross(x, zones, crossesBuilding) {
+  const issues = [];
+  const add2 = (message, kind = "missing") => issues.push({ message, kind });
+  if (!x || !isNtpcCross(x)) {
+    add2("\u8ACB\u586B\u65B0\u53171080894762\u8DE8\u5340\u7528\u9014\u8207\u5BB9\u7A4D\u8ABF\u914D\u6AA2\u6838");
+    return issues;
+  }
+  if (!x.source.trim()) add2("\u8ACB\u586B\u672C\u6848\u8DE8\u5340\u7528\u9014\u5224\u5B9A\u53CA\u914D\u7F6E\u5716\u8AAA\u4F9D\u64DA");
+  if (crossesBuilding) {
+    if (x.nature === "unknown") add2("\u540C\u68DF\u8DE8\u5340\u9808\u78BA\u8A8D\u5169\u5074\u5EFA\u7BC9\u7269\u4F7F\u7528\u9805\u76EE\u6027\u8CEA\u662F\u5426\u4E0D\u540C");
+    if (x.nature === "different") {
+      if (x.partition !== "yes") add2("\u4E0D\u540C\u6027\u8CEA\u7528\u9014\u9808\u7531\u5206\u5340\u754C\u7DDA\u5BE6\u9AD4\u5340\u9694", x.partition === "no" ? "conflict" : "missing");
+      if (x.entrances !== "yes") add2("\u4E0D\u540C\u6027\u8CEA\u7528\u9014\u9808\u8A2D\u5404\u5225\u7368\u7ACB\u51FA\u5165\u53E3", x.entrances === "no" ? "conflict" : "missing");
+    }
+  }
+  const incoming = /* @__PURE__ */ new Map(), outgoing = /* @__PURE__ */ new Map();
+  for (const t of x.transfers) {
+    const from = zones.find((z) => z.id === t.from), to = zones.find((z) => z.id === t.to), area2 = t.area.trim() ? Number(t.area) : NaN;
+    if (!from || !to || from.id === to.id || !Number.isFinite(area2) || area2 <= 0) {
+      add2("\u5BB9\u7A4D\u8ABF\u914D\u9808\u6709\u4E0D\u540C\u4E14\u6709\u6548\u7684\u4F86\u6E90\u3001\u76EE\u7684\u5206\u5340\u53CA\u5927\u65BC0\u9762\u7A4D", "conflict");
+      continue;
+    }
+    if (!["residential", "commercial", "industrial"].includes(from.kind ?? "") || !["residential", "commercial", "industrial"].includes(to.kind ?? "")) add2("\u672C\u51FD\u8ABF\u914D\u9650\u4F4F\u5B85\u3001\u5546\u696D\u3001\u5DE5\u696D\u985E\u578B\uFF0C\u5176\u4ED6\u5206\u5340\u9808\u53E6\u6838");
+    if (from.kind === "industrial" && to.kind !== "industrial") add2("\u672C\u51FD\u7981\u6B62\u5DE5\u696D\u5340\u5BB9\u7A4D\u8ABF\u914D\u81F3\u4F4F\u5B85\u6216\u5546\u696D\u5340", "conflict");
+    incoming.set(to.id, (incoming.get(to.id) ?? 0) + area2);
+    outgoing.set(from.id, (outgoing.get(from.id) ?? 0) + area2);
+  }
+  for (const z of zones) {
+    const plus = incoming.get(z.id) ?? 0, minus = outgoing.get(z.id) ?? 0;
+    if (z.allowed !== null) {
+      if (minus > z.allowed + 0.01) add2("\u79FB\u51FA\u5BB9\u7A4D\u4E0D\u5F97\u8D85\u904E\u4F86\u6E90\u5206\u5340\u984D\u5EA6", "conflict");
+      if (z.counted !== null && z.counted > z.allowed + plus - minus + 0.01) add2("\u914D\u7F6E\u8D85\u904E\u4F86\u6E90\u984D\u5EA6\u53CA\u5DF2\u5217\u8ABF\u914D\u6DE8\u984D\uFF0C\u8ACB\u5206\u5217\u5BB9\u7A4D\u8ABF\u914D", "conflict");
+    }
+  }
+  return issues;
+}
+
+// ../sanze-release-app/src/lib/mixed-zone/model.ts
+var MIXED_VERSION = "mixed-zone.2026-10-24.v2";
+var reviewTopics = [
+  ["boundary", "\u4E00\u5B97\u57FA\u5730\u3001\u5206\u5340\u8B49\u660E\u53CA\u754C\u7DDA", "\u5EFA\u6280\u7B2C1\u689D\u4E00\u5B97\u571F\u5730\u5B9A\u7FA9\u3001\u5730\u7C4D\u53CA\u5206\u5340\u5957\u7E6A\uFF1B\u4E0D\u80FD\u56E0\u540C\u6848\u5C31\u8996\u70BA\u540C\u4E00\u57FA\u5730\u3002"],
+  ["intensity", "\u5EFA\u853D\u3001\u5BB9\u7A4D\u8207\u81E8\u8DEF\u9650\u5236", "\u81FA\u5317\u6838\u7B2C25\u689D\u5546\u696D\u5340\u9053\u8DEF\u5BEC\u3001\u9762\u5BEC\u8207\u9069\u7528\u7BC4\u570D\uFF1B\u65B0\u5317\u6838\u500B\u5225\u8A08\u756B\u53CA\u7B2C38\u300139\u689D\u3002"],
+  ["use", "\u7528\u9014\u3001\u9644\u689D\u4EF6\u4F7F\u7528\u53CA\u8DE8\u5340\u914D\u7F6E", "\u6838\u7B2C160\u3001165\u689D\u53CA\u500B\u5225\u8A08\u756B\uFF1B\u81FA\u5317\u53E6\u6838\u9644\u689D\u4EF6\u6A19\u6E96\u7B2C4\u689D\u4F8B\u5916\uFF0C\u65B0\u5317\u6838\u8DE8\u5340\u5408\u4F75\u5EFA\u7BC9\u51FD\u793A\u9069\u7528\u7BC4\u570D\u3002"],
+  ["envelope", "\u9000\u7E2E\u3001\u5EAD\u9662\u3001\u9AD8\u5EA6\u8207\u65E5\u7167", "\u6309\u5404\u4F4D\u7F6E\u53CA\u898F\u5B9A\u6AA2\u8A0E\uFF0C\u4E0D\u5C07\u7B2C165\u689D\u89E3\u8B80\u70BA\u9AD8\u5EA6\u6216\u7528\u9014\u4E00\u8D77\u653E\u5BEC\u3002"],
+  ["below", "\u5730\u4E0B\u958B\u6316\u3001\u505C\u8ECA\u8207\u88DD\u5378", "\u958B\u6316\u9762\u7A4D\u8207\u914D\u7F6E\u5206\u958B\uFF1B\u81FA\u5317\u505C\u8ECA\u7B2C86-1\u300186-2\u689D\uFF0C\u65B0\u5317\u5148\u6838\u500B\u5225\u8A08\u756B\u53CA\u65BD\u884C\u7D30\u5247\u3002"],
+  ["award", "\u734E\u52F5\u3001\u5BB9\u79FB\u8207\u56DE\u994B", "\u9010\u9805\u78BA\u8A8D\u6BCD\u6578\u3001\u9069\u7528\u7BC4\u570D\u3001\u91CD\u8907\u9650\u5236\u3001\u7E3D\u4E0A\u9650\u53CA\u56DE\u994B\uFF1B\u540C\u6848\u4E0D\u4EE3\u8868\u5404\u5340\u734E\u52F5\u76F8\u540C\u3002"]
+];
+function reviewBasis(m) {
+  const { reviews, ...inputs } = m;
+  return JSON.stringify(inputs);
+}
+var newLayoutRules = () => ({ openSpace: "unknown", volume: "unknown", municipality: "", localPlan: "", conditions: "", evidence: blankEvidence() });
+var blankEvidence = () => ({ state: "unknown", source: "", date: "" });
+var id = () => crypto.randomUUID();
+var newZone = () => ({ id: id(), name: "", parcel: "", parcelArea: "", area: "", zoningClass: "unknown", regime: "unknown", plan: "", inclusion: "pending", evidence: blankEvidence(), coverage: "", far: "", maxHeight: "", constraints: "", bonusMode: "unknown", bonuses: [], obligation: "", obligationSource: "" });
+var newAward = () => ({ id: id(), name: "", mode: "percent", value: "", base: "base", customBase: "", evidence: blankEvidence() });
+var newAllocation = () => ({ id: id(), zoneId: "", building: "", taipeiGroup: "unknown", use: "residential", counted: "", footprint: "", height: "", parkingArea: "", units: "", permission: "unknown", evidence: blankEvidence() });
+var newBuilding = () => ({ id: id(), name: "", mode: "unknown", exemption: "unknown", publicBuilding: "unknown", reviewedCars: "", evidence: blankEvidence() });
+var obj2 = (v) => !!v && typeof v === "object" && !Array.isArray(v);
+var str = (v) => typeof v === "string" && v.length <= 12e3;
+var fields2 = (o, ks) => ks.every((k) => str(o[k]));
+var choice = (v, values) => typeof v === "string" && values.includes(v);
+var evidence2 = (v) => obj2(v) && choice(v.state, ["unknown", "documented", "scenario", "verified"]) && fields2(v, ["source", "date"]);
+var rows2 = (v, max, check) => Array.isArray(v) && v.length <= max && v.every((x) => obj2(x) && str(x.id) && !!x.id && check(x)) && new Set(v.map((x) => x.id)).size === v.length;
+function isMixedSite(v) {
+  return obj2(v) && (v.ntpcCross === void 0 || isNtpcCross(v.ntpcCross)) && (v.designMode === void 0 || choice(v.designMode, ["unknown", "residential", "mixed", "nonresidential"])) && [MIXED_VERSION, "mixed-zone.2026-10-24.v1"].includes(v.version) && typeof v.enabled === "boolean" && fields2(v, ["name", "assessmentDate", "declaredArea"]) && evidence2(v.boundary) && choice(v.joint, ["unknown", "allowed", "forbidden"]) && evidence2(v.jointEvidence) && (v.reviews === void 0 || rows2(v.reviews, 6, (r) => choice(r.id, reviewTopics.map((t) => t[0])) && choice(r.state, ["unknown", "recorded", "conflict"]) && fields2(r, ["finding"]) && typeof r.basis === "string" && r.basis.length <= 3e6 && evidence2(r.evidence))) && (v.layout === void 0 || obj2(v.layout) && choice(v.layout.openSpace, ["unknown", "article29", "separate"]) && choice(v.layout.volume, ["unknown", "article165", "separate", "project"]) && fields2(v.layout, ["municipality", "localPlan", "conditions"]) && evidence2(v.layout.evidence)) && rows2(v.zones, 100, (z) => (z.landBasis === void 0 || isLandBasis(z.landBasis)) && (z.ntpcUse === void 0 || choice(z.ntpcUse, ["unknown", "residential", "commercial", "industrial"])) && (z.commercialIntensity === void 0 || isCommercialIntensity(z.commercialIntensity)) && (z.zoningClass === void 0 || choice(z.zoningClass, ["unknown", "standard", "other", "special", "public"])) && fields2(z, ["name", "parcel", "parcelArea", "area", "plan", "coverage", "far", "maxHeight", "constraints", "obligation", "obligationSource"]) && choice(z.regime, ["unknown", "urban", "nonurban", "special"]) && choice(z.inclusion, ["pending", "included", "excluded"]) && evidence2(z.evidence) && choice(z.bonusMode, ["unknown", "none", "items"]) && rows2(z.bonuses, 30, (b) => fields2(b, ["name", "value", "customBase"]) && choice(b.mode, ["percent", "area"]) && choice(b.base, ["base", "custom"]) && evidence2(b.evidence))) && rows2(v.allocations, 300, (a) => (a.residentialBase === void 0 || str(a.residentialBase)) && (a.taipeiGroup === void 0 || choice(a.taipeiGroup, ["unknown", "2", "17", "19", "20a", "28", "29"])) && fields2(a, ["zoneId", "building", "counted", "footprint", "height", "parkingArea", "units"]) && choice(a.use, ["residential", "retail", "office", "other"]) && choice(a.permission, ["unknown", "allowed", "forbidden"]) && evidence2(a.evidence)) && rows2(v.buildings, 50, (b) => fields2(b, ["name", "reviewedCars"]) && choice(b.mode, ["unknown", "article59", "taipei861", "reviewed"]) && choice(b.exemption, ["unknown", "first", "second"]) && choice(b.publicBuilding, ["unknown", "no", "yes"]) && evidence2(b.evidence));
+}
+var mixedSources = [
+  { title: "\u65B0\u5317\u5E02\u90FD\u5E02\u66F4\u65B0\u55AE\u5143\u5283\u5B9A\u57FA\u6E96\uFF08115\u5E741\u67089\u65E5\uFF09\uFF1A\u7B2C\u516D\u9EDE\u9580\u6ABB\u50C5\u8A08\u53EF\u5EFA\u7BC9\u57FA\u5730", url: "https://web.law.ntpc.gov.tw/Scripts/FLAWDAT0202.aspx?fcode=C0150018" },
+  { title: "\u90FD\u5E02\u66F4\u65B0\u689D\u4F8B\u7B2C35\u300136\u300151\u300166\u689D\uFF1A\u8A08\u756B\u8B8A\u66F4\u3001\u516C\u8A2D\u8207\u5BB9\u7A4D\u79FB\u8F49\u5206\u5225\u8655\u7406", url: "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0070008" },
+  { title: "\u5EFA\u7BC9\u6CD5\u7B2C11\u689D\uFF1A\u5EFA\u7BC9\u57FA\u5730\u8207\u6CD5\u5B9A\u7A7A\u5730", url: "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0070109&flno=11" },
+  { title: "\u90FD\u5E02\u66F4\u65B0\u689D\u4F8B\u7B2C66\u689D\u53CA\u90FD\u5E02\u8A08\u756B\u5BB9\u7A4D\u79FB\u8F49\u5BE6\u65BD\u8FA6\u6CD5\uFF1A\u516C\u5171\u8A2D\u65BD\u79FB\u8F49\u9808\u53E6\u6838", url: "https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=D0070028" },
+  { title: "\u65B0\u53171080894762\u539F\u51FD\u3001\u9644\u8868\u53CA\u57161\u3001\u57162\uFF08\u516C\u6703\u8F49\u77E5\uFF09", url: "https://www.naa.org.tw/view_article.php?id=4117" },
+  { title: "\u81FA\u5317\u5E02\u571F\u7BA1\u81EA\u6CBB\u689D\u4F8B\uFF1A\u7B2C25\u689D\u5546\u696D\u5340\u5F37\u5EA6\u3001\u7B2C86-1\u689D\u6C7D\u6A5F\u8ECA\u7B49", url: "https://laws.gov.taipei/Law/LawSearch/LawArticleContent/FL003962" },
+  { title: "\u81FA\u5317\u5E02\u9644\u689D\u4EF6\u5141\u8A31\u4F7F\u7528\u6A19\u6E96\uFF1A\u4F4F\u5B85\u52A0\u7D1A\u5730\u5340\u8DE8\u5340\u4F8B\u5916", url: "https://laws.gov.taipei/Law/LawSearch/LawArticleContent/FL025529" },
+  { title: "\u81FA\u5317\u5E02\u5EFA\u7BA1\u6848\u4F8B8705\uFF1A\u4F4F\u4E09\u8207\u5546\u4E09\u8DE8\u5340\u81E8\u8DEF\u5224\u65B7\uFF08\u9808\u4F75\u6838\u73FE\u884C\u7B2C25\u689D\uFF09", url: "https://www.dbaweb.tcg.gov.tw/taipeilaw/law_content.aspx?ID=11708" },
+  { title: "\u5EFA\u7BC9\u6280\u8853\u898F\u5247\u7B2C160\u3001165\u689D\uFF1A\u90FD\u5E02\u8A08\u756B\u53E6\u6709\u898F\u5B9A\u53CA\u8DE8\u5206\u5340\u6A13\u5730\u677F\u914D\u7F6E", url: "https://www.nlma.gov.tw/ch/legislation/law%26regusw/6175" },
+  { title: "\u5167\u653F\u90E879\u5E747\u67086\u65E5\u51FD\uFF1A\u8DE8\u4F4F\u5546\u5206\u5340\u53EF\u5408\u4F75\u5EFA\u7BC9\uFF0C\u4F7F\u7528\u4ECD\u5206\u5340\u7BA1\u5236", url: "https://www.nlma.gov.tw/ch/titlelist/interpcomp/6495" },
+  { title: "\u65B0\u5317\u5E02\u65BD\u884C\u7D30\u5247\u7B2C40\u689D\uFF1A\u500B\u5225\u90FD\u5E02\u8A08\u756B\u571F\u5730\u4F7F\u7528\u7BA1\u5236", url: "https://web.law.ntpc.gov.tw/Scripts/FLAWDOC01.aspx?fcode=C0150108&flno=40" },
+  { title: "\u5EFA\u7BC9\u6280\u8853\u898F\u5247\u8A2D\u8A08\u65BD\u5DE5\u7DE8\u7B2C29\u689D\uFF1A\u8DE8\u5206\u5340\u7A7A\u5730\u8207\u9AD8\u5EA6", url: "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0070115&flno=29" },
+  { title: "\u5167\u653F\u90E887\u5E742\u670810\u65E5\u51FD\uFF1A\u8DE8\u5206\u5340\u5206\u5225\u6838\u7B97\u958B\u767C\u91CF", url: "https://www.nlma.gov.tw/ch/titlelist/interpcomp/12338" },
+  { title: "\u5167\u653F\u90E865\u5E7410\u67084\u65E5\u51FD\uFF1A\u5206\u5340\u7528\u9014\u5206\u5225\u7BA1\u5236", url: "https://uract.nlma.gov.tw/uploads/ruleExplain/A32-10903-1624431727.pdf" },
+  { title: "\u5EFA\u7BC9\u6280\u8853\u898F\u5247\u8A2D\u8A08\u65BD\u5DE5\u7DE8\u7B2C59\u689D\uFF1A\u6DF7\u5408\u7528\u9014\u505C\u8ECA", url: "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0070115&flno=59" },
+  { title: "\u65B0\u5317\u5E02\u65BD\u884C\u7D30\u5247\u7B2C39\u689D\uFF1A\u4F9D\u90FD\u5E02\u8A08\u756B\u66F8\u5BB9\u7A4D\u7387", url: "https://web.law.ntpc.gov.tw/Scripts/FLAWDOC01.aspx?fcode=C0150108&flno=39" }
+];
+var value = (s, max = 1e9) => s.trim() !== "" && Number.isFinite(Number(s)) && Number(s) >= 0 && Number(s) <= max ? Number(s) : null;
+var sum = (ns) => ns.length && ns.every((n) => n !== null) ? ns.reduce((a, b) => a + b, 0) : null;
+var dateValid = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s) && !isNaN(Date.parse(s)) && new Date(s).toISOString().slice(0, 10) === s;
+function calculateMixedSite(raw) {
+  const issues = [], zones = [], parking = [];
+  const totals2 = { renewal: null, farArea: null, coverageArea: null, openCredit: null, tdr: null, area: null, included: null, excluded: null, base: null, footprint: null, openSpace: null, award: null, allowed: null, obligation: null, afterObligation: null, counted: null, cars: null };
+  const out = (status) => ({ version: MIXED_VERSION, issues, zones, parking, totals: totals2, status, notes: [
+    "\u984D\u5EA6\u4F86\u6E90\u8207\u5BE6\u969B\u914D\u7F6E\u5206\u958B\uFF1A\u4F9D\u5404\u5206\u5340\u8A08\u7B97\u5BB9\u7A4D\u53CA\u61C9\u7559\u7A7A\u5730\uFF1B\u7B26\u5408\u7B2C29\u3001165\u689D\u53CA\u5730\u65B9\u571F\u7BA1\u8005\u5F97\u6574\u9AD4\u914D\u7F6E\uFF0C\u4E0D\u628A\u5206\u5340\u754C\u7DDA\u7576\u6210\u4E00\u5F8B\u4E0D\u5F97\u8DE8\u8D8A\u7684\u5EFA\u7BC9\u754C\u7DDA\u3002\u7528\u9014\u4ECD\u4F9D\u5BE6\u969B\u5EA7\u843D\u5206\u5340\u6AA2\u6838\u3002",
+    "\u734E\u52F5\u8207\u5BB9\u79FB\u63A1\u9010\u9805\u4F86\u6E90\u53CA\u6307\u5B9A\u6BCD\u6578\uFF1B\u7CFB\u7D71\u4E0D\u81EA\u52D5\u63A8\u5B9A\u53D6\u5F97\u8CC7\u683C\u3001\u4E0A\u9650\u6216\u5404\u9805\u53EF\u758A\u52A0\u3002\u91CD\u8907\u9805\u76EE\u53CA\u540C\u4E00\u56DE\u994B\u4E0D\u5F97\u91CD\u8907\u5217\u5165\u3002",
+    "\u516C\u76CA\u6350\u8D08\uFF0F\u56DE\u994B\u50C5\u5217\u5BB9\u7A4D\u9762\u7A4D\u8CA0\u64D4\uFF0C\u4E0D\u628A\u6263\u5F8C\u5BB9\u7A4D\u7576\u6210\u767B\u8A18\u6216\u53EF\u552E\u9762\u7A4D\uFF1B\u53E6\u6709\u571F\u5730\u3001\u91D1\u984D\u3001\u7BA1\u7406\u7DAD\u8B77\u7B49\u7FA9\u52D9\u4ECD\u9808\u6838\u5C0D\u3002",
+    "\u672C\u6A21\u7D44\u8A08\u7B97\u5206\u5340\u958B\u767C\u91CF\u3001\u914D\u7F6E\u7E3D\u91CF\u6838\u5C0D\u53CA\u5206\u5E62\u7528\u9014\u505C\u8ECA\u3002\u5730\u7C4D\u5E7E\u4F55\u3001\u8DE8\u5340\u914D\u7F6E\u3001\u65E5\u7167\u3001\u9000\u7E2E\u3001\u6D88\u9632\u3001\u5730\u4E0B\u958B\u6316\u3001\u514D\u8A08\u767B\u8A18\u8207\u53EF\u552E\u576A\u6548\u9808\u53E6\u4F9D\u5716\u8AAA\u5B8C\u6210\u6AA2\u8A0E\uFF1B\u4E0D\u5957\u7528\u55AE\u4E00\u5206\u5340\u6A21\u578B\u88DC\u503C\u3002",
+    "\u81FA\u5317\u5E02\u7B2C86-1\u689D\u81EA\u52D5\u8A08\u7B97\u652F\u63F4\u7B2C\u4E8C\u7D44\u4F4F\u5B85\u3001\u7B2C17\uFF0F19\uFF0F20\u7D44\u975E\u767E\u8CA8\u96F6\u552E\u3001\u7B2C28\uFF0F29\u7D44\u8FA6\u516C\u4E4B\u975E\u516C\u6709\u5EFA\u7BC9\uFF0C\u6309\u540C\u5E62\u5206\u985E\u7D2F\u52A0\u5F8C\u9032\u4F4D\uFF1B\u5176\u4ED6\u7D44\u5225\u53CA\u500B\u6848\u505C\u8ECA\u53E6\u6838\u3002",
+    "\u7B2C59\u689D\u81EA\u52D5\u8A08\u7B97\u7BC4\u570D\u9650\u5DF2\u78BA\u8A8D\u9069\u7528\u4E2D\u592E\u901A\u5247\u7684\u90FD\u5E02\u8A08\u756B\u5167\u7B2C\u4E00\u3001\u4E8C\u985E\u975E\u516C\u6709\u7528\u9014\u3002\u5730\u65B9\u7279\u5225\u898F\u5B9A\u3001\u5176\u4ED6\u7528\u9014\u6216\u516C\u6709\u5EFA\u7BC9\u6539\u63A1\u5177\u4F86\u6E90\u7684\u5C08\u6848\u8986\u6838\u6578\u91CF\u3002"
+  ] });
+  if (!isMixedSite(raw)) {
+    issues.push({ scope: "\u683C\u5F0F", message: "\u6DF7\u5408\u5206\u5340\u8CC7\u6599\u683C\u5F0F\u6216\u7248\u672C\u7121\u6548\uFF0C\u672A\u6539\u7528\u55AE\u4E00\u5206\u5340\u8A08\u7B97\u3002", kind: "conflict" });
+    return out("conflict");
+  }
+  const m = { ...raw, zones: raw.zones.map((z) => ({ ...z, inclusion: z.landBasis?.site.status === "count" ? "included" : z.landBasis?.site.status === "exclude" ? "excluded" : "pending" })) }, layout = m.layout ?? newLayoutRules(), add2 = (scope, message, kind = "missing") => issues.push({ scope, message, kind });
+  const num = (s, label, scope, max = 1e9) => {
+    const n = value(s, max);
+    if (n === null) add2(scope, `${label}\u672A\u586B\u6216\u6578\u503C\u7121\u6548`);
+    return n;
+  };
+  const ev2 = (e, scope) => {
+    if (e.state === "unknown") add2(scope, "\u9069\u7528\u4F9D\u64DA\u5C1A\u672A\u78BA\u8A8D");
+    if (!e.source.trim()) add2(scope, "\u8ACB\u586B\u6587\u4EF6\uFF0F\u689D\u6587\u53CA\u9069\u7528\u7BC4\u570D");
+    if (!dateValid(e.date) || !dateValid(m.assessmentDate) || e.date > m.assessmentDate) add2(scope, "\u4F9D\u64DA\u65E5\u671F\u9808\u6709\u6548\u4E14\u4E0D\u665A\u65BC\u8A55\u4F30\u57FA\u6E96\u65E5");
+    if (e.state === "documented" || e.state === "scenario") add2(scope, e.state === "scenario" ? "\u6B64\u7BC4\u570D\u63A1\u660E\u793A\u60C5\u5883\uFF0C\u5C1A\u5F85\u6838\u5B9A\uFF0F\u8986\u6838" : "\u6587\u4EF6\u5DF2\u8A18\u8F09\uFF0C\u500B\u6848\u9069\u7528\u6027\u5F85\u8986\u6838", "review");
+  };
+  for (const [id2, title] of reviewTopics) {
+    const record = m.reviews?.find((r) => r.id === id2);
+    if (!record || record.state === "unknown") {
+      add2("\u96D9\u5317\u6CD5\u898F\uFF0F" + title, "\u5C1A\u672A\u8A18\u9304\u500B\u6848\u9069\u7528\u6838\u5C0D");
+      continue;
+    }
+    if (record.state === "conflict") add2("\u96D9\u5317\u6CD5\u898F\uFF0F" + title, record.finding || "\u6240\u5217\u4F9D\u64DA\u8207\u672C\u6848\u689D\u4EF6\u885D\u7A81", "conflict");
+    ev2(record.evidence, "\u96D9\u5317\u6CD5\u898F\uFF0F" + title);
+    if (!record.finding.trim()) add2(title, "\u8ACB\u8A18\u9304\u9069\u7528\u5224\u65B7\u53CA\u4F9D\u64DA\uFF0C\u4E0D\u80FD\u50C5\u52FE\u9078\u5DF2\u6838\u5C0D");
+    if (record.basis !== reviewBasis(raw)) add2(title, "\u8F38\u5165\u5DF2\u8B8A\u66F4\uFF0C\u6B64\u9805\u9069\u7528\u6838\u5C0D\u9808\u91CD\u65B0\u78BA\u8A8D");
+  }
+  if (!m.designMode || m.designMode === "unknown") add2("\u898F\u5283\u9700\u6C42", "\u5C1A\u672A\u78BA\u8A8D\u898F\u5283\u65B9\u8981\u7D14\u4F4F\u5B85\u3001\u4F4F\u5546\u6DF7\u5408\u6216\u7D14\u975E\u4F4F\u5B85\uFF0C\u4E0D\u80FD\u63A8\u5B9A\u8A2D\u8A08\u6A21\u5F0F");
+  if (m.designMode === "residential" && m.allocations.some((a) => a.use !== "residential")) add2("\u898F\u5283\u9700\u6C42", "\u7D14\u4F4F\u5B85\u8A2D\u8A08\u8207\u975E\u4F4F\u5B85\u7528\u9014\u5217\u4E0D\u4E00\u81F4\uFF0C\u8ACB\u5148\u78BA\u8A8D\u898F\u5283\u9700\u6C42", "conflict");
+  if (m.designMode === "nonresidential" && m.allocations.some((a) => a.use === "residential")) add2("\u898F\u5283\u9700\u6C42", "\u7D14\u975E\u4F4F\u5B85\u8A2D\u8A08\u8207\u4F4F\u5B85\u7528\u9014\u5217\u4E0D\u4E00\u81F4", "conflict");
+  if (m.designMode === "mixed" && (!m.allocations.some((a) => a.use === "residential") || !m.allocations.some((a) => a.use === "retail" || a.use === "office"))) add2("\u898F\u5283\u9700\u6C42", "\u4F4F\u5546\u6DF7\u5408\u8A2D\u8A08\u9808\u5206\u5217\u4F4F\u5B85\u8207\u5546\u696D\u5BE6\u969B\u7528\u9014\u53CA\u9762\u7A4D\uFF0C\u4E0D\u80FD\u50C5\u586B\u5E97\u8216\u6BD4\u4F8B");
+  if (!dateValid(m.assessmentDate)) add2("\u6848\u4EF6", "\u8ACB\u586B\u6709\u6548\u8A55\u4F30\u57FA\u6E96\u65E5");
+  ev2(m.boundary, "\u7BC4\u570D\u76E4\u67E5");
+  if (m.joint === "forbidden") add2("\u5171\u540C\u958B\u767C", "\u5DF2\u78BA\u8A8D\u4E0D\u7B26\u5408\u4F75\u958B\u767C\u689D\u4EF6", "conflict");
+  else if (m.joint === "unknown") add2("\u5171\u540C\u958B\u767C", "\u540C\u4E00\u5EFA\u7BC9\u57FA\u5730\u53CA\u5171\u540C\u7533\u8ACB\u689D\u4EF6\u5F85\u78BA\u8A8D");
+  ev2(m.jointEvidence, "\u5171\u540C\u958B\u767C");
+  if (m.allocations.length) {
+    ev2(layout.evidence, "\u914D\u7F6E\u898F\u5247");
+    if (!layout.municipality.trim() || !layout.localPlan.trim()) add2("\u914D\u7F6E\u898F\u5247", "\u8ACB\u8A18\u9304\u6240\u5728\u5730\u53CA\u5DF2\u6838\u5C0D\u7684\u5730\u65B9\u571F\u7BA1\uFF0F\u90FD\u5E02\u8A08\u756B");
+    if (!layout.conditions.trim()) add2("\u914D\u7F6E\u898F\u5247", "\u8ACB\u8A18\u9304\u7528\u9014\u5340\u9694\u3001\u51FA\u5165\u53E3\u3001\u9000\u7E2E\u3001\u9AD8\u5EA6\u7B49\u9069\u7528\u689D\u4EF6\u53CA\u5716\u8AAA\u6AA2\u8A0E");
+    if (layout.openSpace === "unknown") add2("\u914D\u7F6E\u898F\u5247", "\u7A7A\u5730\u914D\u7F6E\u898F\u5247\u5F85\u78BA\u8A8D\uFF1B\u4E0D\u76F4\u63A5\u5224\u5B9A\u5404\u5340\u5EFA\u7BC9\u6295\u5F71\u8D85\u984D\u9055\u6CD5");
+    if (layout.volume === "unknown") add2("\u914D\u7F6E\u898F\u5247", "\u6A13\u5730\u677F\u8DE8\u5340\u914D\u7F6E\u898F\u5247\u5F85\u78BA\u8A8D\uFF1B\u4E0D\u76F4\u63A5\u5224\u5B9A\u8DE8\u5340\u914D\u7F6E\u9055\u6CD5");
+  }
+  if (layout.volume === "article165" && m.zones.some((z) => z.inclusion === "included" && (z.regime !== "urban" || z.zoningClass !== "standard"))) add2("\u914D\u7F6E\u898F\u5247", "\u7B2C165\u689D\u9808\u78BA\u8A8D\u9069\u7528\u5206\u5340\uFF1B\u5176\u4ED6\u4F7F\u7528\u5340\u3001\u7279\u5B9A\u5C08\u7528\u5340\u53CA\u516C\u5171\u8A2D\u65BD\u7528\u5730\u4E0D\u5F97\u9015\u5957\uFF0C\u672A\u77E5\u5206\u985E\u9808\u5148\u6838\u5C0D", "conflict");
+  if (!m.zones.length) add2("\u571F\u5730", "\u81F3\u5C11\u65B0\u589E\u4E00\u500B\u5206\u5340\u7BC4\u570D");
+  const parcelMap = /* @__PURE__ */ new Map();
+  for (const z of m.zones) {
+    const scope = z.name || "\u672A\u547D\u540D\u7BC4\u570D", a = num(z.area, "\u5206\u5340\u9762\u7A4D", scope);
+    if (a === 0) add2(scope, "\u5206\u5340\u9762\u7A4D\u9808\u5927\u65BC0", "conflict");
+    if (!z.name.trim() || !z.parcel.trim() || !z.plan.trim()) add2(scope, "\u8ACB\u586B\u7BC4\u570D\u540D\u7A31\u3001\u5730\u865F\uFF0F\u7BC4\u570D\u8B58\u5225\u53CA\u9069\u7528\u8A08\u756B");
+    if (z.parcel.trim()) {
+      const pa = num(z.parcelArea, "\u8A72\u7B46\u5730\u865F\u767B\u8A18\u9762\u7A4D", scope), key = z.parcel.trim(), existing = parcelMap.get(key);
+      if (existing) {
+        if (existing.area !== pa) add2(scope, "\u540C\u4E00\u5730\u865F\u767B\u8A18\u9762\u7A4D\u4E0D\u4E00\u81F4", "conflict");
+        existing.parts.push(a);
+      } else parcelMap.set(key, { area: pa, parts: [a] });
+    }
+    ev2(z.evidence, scope);
+    const lb = calculateLandBasis(z.landBasis, a, m.assessmentDate);
+    if (z.landBasis?.procedures?.some((p) => p.date > m.assessmentDate)) {
+      add2(scope, "\u7A0B\u5E8F\u65E5\u671F\u665A\u65BC\u8A55\u4F30\u57FA\u6E96\u65E5\uFF0C\u4E0D\u80FD\u63A1\u8A08\u5C1A\u672A\u751F\u6548\u689D\u4EF6");
+      for (const p of z.landBasis.procedures.filter((p2) => p2.date > m.assessmentDate)) for (const key of p.affects) lb.values[key] = null;
+    }
+    for (const i of lb.issues) add2(scope, i.message, i.kind);
+    if (z.inclusion === "pending") add2(scope, "\u662F\u5426\u8A08\u5165\u5EFA\u7BC9\u57FA\u5730\u5C1A\u672A\u78BA\u8A8D");
+    if (z.inclusion === "included" && z.regime !== "urban") add2(scope, "\u975E\u90FD\u5E02\u3001\u7279\u6B8A\u6216\u672A\u77E5\u7BA1\u5236\u5C1A\u672A\u652F\u63F4\u81EA\u52D5\u5224\u5B9A\uFF0C\u9808\u53E6\u8FA6\u5C08\u6848\u8A55\u4F30");
+    if (z.inclusion === "excluded") {
+      zones.push({ siteArea: lb.values.site, farArea: lb.values.far, coverageArea: lb.values.coverage, openCredit: lb.values.openCredit, id: z.id, name: scope, area: a, base: null, footprint: null, openSpace: null, award: null, allowed: null, obligation: null, afterObligation: null, counted: null, plannedFootprint: null, remaining: null });
+      continue;
+    }
+    if (layout.municipality === "\u65B0\u5317\u5E02" && z.ntpcUse === "commercial" && !z.commercialIntensity?.enabled) add2(scope, "\u5546\u696D\u5206\u5340\u9808\u958B\u555F\u5546\u696D\u5F37\u5EA6\u5C08\u9805\u6AA2\u6838\uFF0C\u4F4F\u5B85\u7528\u9014\u9808\u6AA2\u8A0E\u7B2C17\u689D");
+    const c = num(z.coverage, "\u5EFA\u853D\u7387", scope, 100), cr = z.commercialIntensity?.enabled ? calculateCommercialIntensity(z.commercialIntensity, lb.values.far === null ? "" : String(lb.values.far), z.coverage) : null, f8 = cr ? null : num(z.far, "\u57FA\u6E96\u5BB9\u7A4D\u7387", scope, 3e3);
+    if (cr) {
+      for (const error of cr.errors) add2(scope, error);
+      if (z.commercialIntensity.city !== layout.municipality.trim().replace("\u53F0\u5317", "\u81FA\u5317")) add2(scope, "\u5206\u5340\u5546\u696D\u5F37\u5EA6\u6240\u5728\u5730\u8207\u5168\u6848\u6240\u5728\u5730\u4E0D\u4E00\u81F4", "conflict");
+    }
+    const base = cr ? cr.errors.length ? null : cr.base : lb.values.far === null || f8 === null ? null : lb.values.far * f8 / 100, footprint = lb.values.coverage === null || c === null ? null : lb.values.coverage * c / 100;
+    let award = z.bonusMode === "none" ? 0 : null;
+    if (z.bonusMode === "unknown") add2(scope, "\u734E\u52F5\uFF0F\u5BB9\u79FB\u662F\u5426\u63A1\u8A08\u5C1A\u672A\u78BA\u8A8D");
+    if (z.bonusMode === "items") {
+      if (!z.bonuses.length) add2(scope, "\u5DF2\u9078\u9010\u9805\u8A08\u7B97\u4F46\u6C92\u6709\u734E\u52F5\u9805\u76EE");
+      const seen = /* @__PURE__ */ new Set();
+      const amounts = z.bonuses.map((b) => {
+        const s = scope + "\uFF0F" + (b.name || "\u672A\u547D\u540D\u734E\u52F5");
+        ev2(b.evidence, s);
+        if (!b.name.trim()) add2(s, "\u8ACB\u586B\u734E\u52F5\u540D\u7A31");
+        if (seen.has(b.name.trim())) add2(s, "\u540C\u7BC4\u570D\u6709\u540C\u540D\u734E\u52F5\uFF0C\u8ACB\u6392\u9664\u91CD\u8907\u5217\u8A08", "conflict");
+        seen.add(b.name.trim());
+        const v = num(b.value, b.mode === "percent" ? "\u734E\u52F5\u767E\u5206\u6BD4" : "\u734E\u52F5\u9762\u7A4D", s, b.mode === "percent" ? 1e3 : 1e9);
+        const denominator = b.base === "base" ? base : num(b.customBase, "\u6587\u4EF6\u53E6\u5B9A\u6BCD\u6578\u9762\u7A4D", s);
+        return v === null ? null : b.mode === "area" ? v : denominator === null ? null : denominator * v / 100;
+      });
+      award = sum(amounts);
+    }
+    const allowed = base === null || award === null ? null : base + award;
+    const obligation = num(z.obligation, "\u6350\u8D08\uFF0F\u56DE\u994B\u5BB9\u7A4D\u9762\u7A4D\uFF08\u7121\u5247\u586B0\uFF09", scope);
+    if (obligation !== null && obligation > 0 && !z.obligationSource.trim()) add2(scope, "\u8ACB\u586B\u6350\u8D08\uFF0F\u56DE\u994B\u9762\u7A4D\u4F9D\u64DA");
+    if (allowed !== null && obligation !== null && obligation > allowed) add2(scope, "\u56DE\u994B\u5BB9\u7A4D\u8D85\u904E\u8A72\u7BC4\u570D\u7E3D\u5BB9\u7A4D", "conflict");
+    if (z.commercialIntensity?.enabled && z.commercialIntensity.city === "\u65B0\u5317\u5E02" && m.allocations.some((a2) => a2.zoneId === z.id && a2.use === "residential")) {
+      const h = reviewNtpcHousing(z.commercialIntensity, lb.values.far === null ? "" : String(lb.values.far));
+      for (const error of h.errors) add2(scope, error);
+      const housing = m.allocations.filter((a2) => a2.zoneId === z.id && a2.use === "residential");
+      const bases = housing.map((a2) => num(a2.residentialBase ?? "", "\u4F4F\u5B85\u914D\u7F6E\u4E2D\u57FA\u6E96\u5BB9\u7A4D\u90E8\u5206", scope));
+      for (const a2 of housing) {
+        const b = value(a2.residentialBase ?? ""), t = value(a2.counted);
+        if (b !== null && t !== null && b > t + 0.01) add2(scope, "\u4F4F\u5B85\u57FA\u6E96\u90E8\u5206\u4E0D\u5F97\u8D85\u904E\u8A72\u5217\u4F4F\u5B85\u8A08\u5BB9\u7E3D\u9762\u7A4D", "conflict");
+      }
+      const used = sum(bases);
+      if (h.cap !== null && used !== null && used > h.cap + 0.01) add2(scope, "\u4F4F\u5B85\u914D\u7F6E\u57FA\u6E96\u5BB9\u7A4D\u8D85\u904E\u65B0\u5317\u5E02\u7B2C17\u689D\u4E0A\u9650", "conflict");
+      add2(scope, "\u4F4F\u5B85\u734E\u52F5\u8207\u8DE8\u5340\u4F86\u6E90\u6B78\u5C6C\u9808\u4F9D\u6838\u51C6\u6587\u4EF6\u6AA2\u8A0E\uFF0C\u4E0D\u4EE5\u7E3D\u5BB9\u7A4D\u5DEE\u984D\u63A8\u5B9A\u4F4F\u5B85\u734E\u52F5", "review");
+    }
+    const entries = m.allocations.filter((a2) => a2.zoneId === z.id), counted = sum(entries.map((a2) => value(a2.counted))), plannedFootprint = sum(entries.map((a2) => value(a2.footprint)));
+    if (counted !== null && allowed !== null && counted > allowed + 0.01) {
+      if (layout.volume === "separate") add2(scope, "\u672C\u6B21\u6240\u5217\u4F9D\u64DA\u8981\u6C42\u5206\u5340\u914D\u7F6E\uFF0C\u914D\u7F6E\u8A08\u5BB9\u9762\u7A4D\u8D85\u904E\u672C\u5340\u7522\u751F\u984D\u5EA6", "conflict");
+      else if (layout.volume === "unknown") add2(scope, "\u914D\u7F6E\u8A08\u5BB9\u8D85\u904E\u672C\u5340\u7522\u751F\u984D\u5EA6\uFF1B\u53EF\u80FD\u5C6C\u5408\u6CD5\u8DE8\u5340\u914D\u7F6E\uFF0C\u9808\u78BA\u8A8D\u7B2C165\u689D\u53CA\u5730\u65B9\u571F\u7BA1");
+    }
+    if (plannedFootprint !== null && footprint !== null && plannedFootprint > footprint + 0.01 && layout.openSpace === "separate") add2(scope, "\u672C\u6B21\u6240\u5217\u4F9D\u64DA\u8981\u6C42\u7A7A\u5730\u5206\u5340\u7559\u8A2D\uFF0C\u914D\u7F6E\u5EFA\u7BC9\u9762\u7A4D\u8D85\u904E\u672C\u5340\u984D\u5EA6", "conflict");
+    if (plannedFootprint !== null && a !== null && plannedFootprint > a + 0.01) add2(scope, "\u672C\u5340\u4E0D\u91CD\u8907\u5EFA\u7BC9\u6295\u5F71\u8D85\u904E\u672C\u5340\u571F\u5730\u9762\u7A4D\uFF0C\u8ACB\u6838\u5C0D\u91CD\u8907\u6216\u754C\u7DDA", "conflict");
+    zones.push({ siteArea: lb.values.site, farArea: lb.values.far, coverageArea: lb.values.coverage, openCredit: lb.values.openCredit, id: z.id, name: scope, area: a, base, footprint, openSpace: lb.values.coverage === null || footprint === null ? null : lb.values.coverage - footprint, award, allowed, obligation, afterObligation: allowed === null || obligation === null ? null : allowed - obligation, counted, plannedFootprint, remaining: allowed === null || counted === null ? null : allowed - counted });
+  }
+  totals2.tdr = m.zones.some((z) => !z.landBasis || z.landBasis.tdr.status === "unknown") ? null : 0;
+  const transferSources = /* @__PURE__ */ new Set();
+  for (const z of m.zones) {
+    const t = z.landBasis?.tdr;
+    if (t?.status !== "approved") continue;
+    const n = value(t.area), dest = zones.find((r) => r.id === t.receivingZone);
+    if (n === null || !t.source.trim() || !dest || dest.id === z.id || dest.siteArea === null || !dest.siteArea) {
+      add2(z.name, "\u5DF2\u6838\u51C6\u5BB9\u7A4D\u79FB\u8F49\u9808\u6709\u984D\u5EA6\u3001\u6838\u51C6\u4F9D\u64DA\u53CA\u6709\u6548\u63A5\u53D7\u57FA\u5730");
+      totals2.tdr = null;
+      continue;
+    }
+    if (transferSources.has(t.source.trim())) {
+      add2(z.name, "\u540C\u4E00\u5BB9\u7A4D\u79FB\u8F49\u6838\u51C6\u4F86\u6E90\u91CD\u8907\u5217\u5165\uFF0C\u8ACB\u5408\u4F75\u4E00\u7B46", "conflict");
+      totals2.tdr = null;
+      continue;
+    }
+    transferSources.add(t.source.trim());
+    if (m.zones.some((r) => r.bonuses.some((b) => b.evidence.source.trim() === t.source.trim()))) {
+      add2(z.name, "\u540C\u4E00\u5BB9\u7A4D\u79FB\u8F49\u4F86\u6E90\u5DF2\u5728\u4E00\u822C\u734E\u52F5\uFF0F\u5BB9\u79FB\u91CD\u8907\u5217\u5165", "conflict");
+      totals2.tdr = null;
+      continue;
+    }
+    if (dest.award !== null && dest.allowed !== null) {
+      dest.award += n;
+      dest.allowed += n;
+      if (dest.afterObligation !== null) dest.afterObligation += n;
+      if (dest.remaining !== null) dest.remaining += n;
+    }
+    if (totals2.tdr !== null) totals2.tdr += n;
+  }
+  for (const [p, v] of parcelMap) {
+    const parts = sum(v.parts);
+    if (parts !== null && v.area !== null && parts > v.area + 0.01) add2(p, "\u5206\u5340\u7BC4\u570D\u5408\u8A08\u8D85\u904E\u767B\u8A18\u9762\u7A4D\uFF0C\u53EF\u80FD\u91CD\u8907\u8A08\u5165", "conflict");
+  }
+  totals2.area = sum(m.zones.map((z) => value(z.area)));
+  totals2.renewal = m.zones.some((z) => !z.landBasis || z.landBasis.renewal === "unknown") ? null : sum(m.zones.filter((z) => z.landBasis?.renewal === "inside").map((z) => value(z.area)));
+  const declared = num(m.declaredArea, "\u66F4\u65B0\uFF0F\u8A55\u4F30\u7BC4\u570D\u7533\u5831\u9762\u7A4D", "\u7BC4\u570D\u76E4\u67E5");
+  if (declared !== null && totals2.renewal !== null && Math.abs(declared - totals2.renewal) > 0.01) add2("\u7BC4\u570D\u76E4\u67E5", `\u5404\u7BC4\u570D\u9762\u7A4D\u5408\u8A08 ${totals2.renewal.toLocaleString("zh-TW", { maximumFractionDigits: 2 })}\u33A1\uFF0C\u8207\u7533\u5831\u9762\u7A4D ${declared.toLocaleString("zh-TW", { maximumFractionDigits: 2 })}\u33A1 \u4E0D\u4E00\u81F4\uFF0C\u5DEE\u984D ${Math.abs(declared - totals2.renewal).toLocaleString("zh-TW", { maximumFractionDigits: 2 })}\u33A1\uFF1B\u4E0D\u5F97\u81EA\u52D5\u88DC\u5165\u4EFB\u4F55\u5206\u5340`, "conflict");
+  const included = m.zones.filter((z) => z.inclusion === "included");
+  if (m.zones.some((z) => z.inclusion === "pending")) add2("\u571F\u5730", "\u5C1A\u6709\u672A\u6C7A\u5B9A\u662F\u5426\u8A08\u5165\u57FA\u5730\u7684\u7BC4\u570D\uFF0C\u5168\u6848\u984D\u5EA6\u4E0D\u5B8C\u6574");
+  else if (included.length) {
+    totals2.included = sum(zones.map((z) => z.siteArea ?? null));
+    const excluded = m.zones.filter((z) => z.inclusion === "excluded");
+    totals2.excluded = totals2.area !== null && totals2.included !== null ? totals2.area - totals2.included : null;
+    const rs = zones.filter((z) => included.some((i) => i.id === z.id));
+    for (const k of ["base", "footprint", "openSpace", "award", "allowed", "obligation", "afterObligation"]) totals2[k] = sum(rs.map((z) => z[k]));
+  }
+  for (const a of m.allocations) {
+    const scope = "\u914D\u7F6E\uFF0F" + (m.buildings.find((b) => b.id === a.building)?.name || "\u672A\u6307\u5B9A\u5E62\u5225"), z = m.zones.find((z2) => z2.id === a.zoneId);
+    if (!z || z.inclusion !== "included") add2(scope, "\u914D\u7F6E\u9808\u6307\u5B9A\u5DF2\u7D0D\u5165\u7684\u5206\u5340\u7BC4\u570D", "conflict");
+    if (!m.buildings.some((b) => b.id === a.building)) add2(scope, "\u914D\u7F6E\u7F3A\u5C11\u6709\u6548\u5EFA\u7BC9\u5E62\u5225", "conflict");
+    for (const [k, label] of [["counted", "\u8A08\u5BB9\u9762\u7A4D"], ["footprint", "\u6B64\u7528\u9014\u4E0D\u91CD\u8907\u5EFA\u7BC9\u6295\u5F71\u9762\u7A4D"], ["height", "\u914D\u7F6E\u9AD8\u5EA6"], ["parkingArea", "\u505C\u8ECA\u6AA2\u8A0E\u6A13\u5730\u677F\u9762\u7A4D"], ["units", "\u55AE\u5143\u6578"]]) {
+      const n = num(a[k], label, scope);
+      if (k === "units" && n !== null && !Number.isSafeInteger(n)) add2(scope, "\u55AE\u5143\u6578\u9808\u70BA\u6574\u6578", "conflict");
+    }
+    if (a.permission === "forbidden") add2(scope, "\u6B64\u7528\u9014\u5728\u6240\u5C6C\u5206\u5340\u4E0D\u5141\u8A31", "conflict");
+    if (a.permission === "unknown") add2(scope, "\u7528\u9014\u5BB9\u8A31\u689D\u4EF6\u5F85\u78BA\u8A8D");
+    ev2(a.evidence, scope);
+    if (z) {
+      const limit = value(z.maxHeight), height = value(a.height);
+      if (limit === null) add2(scope, "\u6240\u5C6C\u5206\u5340\u9AD8\u5EA6\u9650\u5236\uFF0F\u4E0D\u8A2D\u56FA\u5B9A\u4E0A\u9650\u4F9D\u64DA\u5F85\u8986\u6838", "review");
+      else if (height !== null && height > limit) add2(scope, "\u914D\u7F6E\u9AD8\u5EA6\u8D85\u904E\u6240\u5C6C\u5206\u5340\u4E0A\u9650", "conflict");
+      if (!z.constraints.trim()) add2(scope, "\u9000\u7E2E\u3001\u81E8\u8DEF\u53CA\u5176\u4ED6\u500B\u6848\u9650\u5236\u5C1A\u672A\u8A18\u9304", "review");
+    }
+  }
+  if (layout.municipality === "\u65B0\u5317\u5E02" && included.length > 1) {
+    const crosses = m.buildings.some((b) => new Set(m.allocations.filter((a) => a.building === b.id).map((a) => a.zoneId)).size > 1);
+    const zs = zones.filter((z) => included.some((i) => i.id === z.id)).map((z) => ({ ...z, kind: m.zones.find((i) => i.id === z.id)?.ntpcUse }));
+    if (included.some((z) => !z.ntpcUse || z.ntpcUse === "unknown")) add2("\u65B0\u53171080894762", "\u8ACB\u78BA\u8A8D\u5404\u7BC4\u570D\u571F\u5730\u5206\u5340\u985E\u578B\uFF0C\u4E0D\u4EE5\u5206\u5340\u540D\u7A31\u63A8\u5B9A");
+    if (included.some((z) => z.ntpcUse === "industrial")) add2("\u65B0\u53171080894762", "\u5DE5\u696D\u5340\u79FB\u5165\u5BB9\u7A4D\u4E0D\u5F97\u7D0D\u5165\u5DE5\u696D\u4F7F\u7528\u7E3D\u91CF\u7BA1\u5236\u6BCD\u6578\uFF1B\u9808\u53E6\u9644\u7E3D\u91CF\u7BA1\u5236\u8A08\u7B97\u53CA\u5404\u9805\u5206\u5340\u6AA2\u8A0E", "review");
+    for (const i of reviewNtpcCross(m.ntpcCross, zs, crosses)) add2("\u65B0\u53171080894762", i.message, i.kind);
+  }
+  if (totals2.tdr === null) {
+    totals2.award = null;
+    totals2.allowed = null;
+    totals2.afterObligation = null;
+  }
+  totals2.counted = sum(m.allocations.map((a) => value(a.counted)));
+  totals2.farArea = sum(zones.map((z) => z.farArea ?? null));
+  totals2.coverageArea = sum(zones.map((z) => z.coverageArea ?? null));
+  totals2.openCredit = sum(zones.map((z) => z.openCredit ?? null));
+  if (totals2.openCredit !== null && totals2.openSpace !== null && totals2.openCredit + 0.01 < totals2.openSpace) add2("\u6CD5\u5B9A\u7A7A\u5730", "\u5BE6\u969B\u8A8D\u5217\u6CD5\u5B9A\u7A7A\u5730\u4E0D\u8DB3\uFF0C\u516C\u5171\u4EBA\u884C\u6B65\u9053\u9762\u7A4D\u4E0D\u6703\u81EA\u52D5\u62B5\u5145", "conflict");
+  const totalProjection = sum(m.allocations.map((a) => value(a.footprint)));
+  if (totals2.counted !== null && totals2.allowed !== null && totals2.counted > totals2.allowed + 0.01) add2("\u5168\u6848\u914D\u7F6E", "\u5168\u6848\u8A08\u5BB9\u914D\u7F6E\u8D85\u904E\u5404\u5206\u5340\u7522\u751F\u7684\u5BB9\u7A4D\u5408\u8A08", "conflict");
+  if (totalProjection !== null && totals2.footprint !== null && totalProjection > totals2.footprint + 0.01) add2("\u5168\u6848\u914D\u7F6E", "\u5168\u6848\u5EFA\u7BC9\u6295\u5F71\u8D85\u904E\u5408\u8A08\u5EFA\u7BC9\u9762\u7A4D\u984D\u5EA6\uFF0C\u61C9\u7559\u7A7A\u5730\u4E0D\u8DB3", "conflict");
+  if (layout.volume === "project" && m.allocations.length) add2("\u914D\u7F6E\u898F\u5247", "\u6309\u6240\u5217\u500B\u6848\u4F9D\u64DA\u6AA2\u8A0E\u8DE8\u5340\u914D\u7F6E\uFF1B\u672C\u7248\u50C5\u6838\u5C0D\u7E3D\u91CF\uFF0C\u500B\u6848\u9644\u5E36\u689D\u4EF6\u9808\u53E6\u6838", "review");
+  if (!m.allocations.length) add2("\u914D\u7F6E", "\u5C1A\u672A\u63D0\u4F9B\u5206\u5340\u7528\u9014\u914D\u7F6E\uFF0C\u4FDD\u7559\u958B\u767C\u91CF\u7D50\u679C\uFF0C\u672A\u63A8\u4F30\u6236\u6578\uFF0F\u53EF\u552E\u9762\u7A4D");
+  const buildingNames = /* @__PURE__ */ new Set();
+  for (const b of m.buildings) {
+    const scope = "\u505C\u8ECA\uFF0F" + (b.name || "\u672A\u547D\u540D\u5E62\u5225");
+    if (!b.name.trim()) add2(scope, "\u8ACB\u586B\u5E62\u5225\u540D\u7A31");
+    if (buildingNames.has(b.name.trim())) add2(scope, "\u540C\u540D\u5E62\u5225\u53EF\u80FD\u91CD\u8907\u53D6\u5F97\u514D\u8A2D\u984D\u5EA6", "conflict");
+    buildingNames.add(b.name.trim());
+    const entries = m.allocations.filter((a) => a.building === b.id), first = sum(entries.filter((a) => a.use === "retail" || a.use === "office").map((a) => value(a.parkingArea))), second = sum(entries.filter((a) => a.use === "residential").map((a) => value(a.parkingArea)));
+    const r = { id: b.id, name: b.name, cars: null, motos: null, first, second, formula: "\u5F85\u78BA\u8A8D", method: b.mode === "reviewed" ? "\u5C08\u6848\u6587\u4EF6\u8A18\u8F09\u503C" : b.mode === "taipei861" ? "\u81FA\u5317\u5E02\u7B2C86-1\u689D\u8A08\u7B97" : "\u4E2D\u592E\u7B2C59\u689D\u8A08\u7B97" };
+    parking.push(r);
+    ev2(b.evidence, scope);
+    if (b.mode === "unknown") {
+      add2(scope, "\u5C1A\u672A\u78BA\u8A8D\u90FD\u5E02\u8A08\u756B\u505C\u8ECA\u898F\u5247");
+      continue;
+    }
+    if (!entries.length) {
+      add2(scope, "\u672C\u5E62\u5C1A\u7121\u7528\u9014\u6A13\u5730\u677F\u9762\u7A4D");
+      continue;
+    }
+    if (b.mode === "reviewed") {
+      const n = num(b.reviewedCars, "\u5C08\u6848\u8986\u6838\u6CD5\u5B9A\u8ECA\u4F4D\u6578", scope);
+      if (n !== null && Number.isSafeInteger(n) && b.evidence.state === "verified" && b.evidence.source.trim()) {
+        r.cars = n;
+        r.formula = "\u4F9D\u500B\u6848\u8986\u6838\u6587\u4EF6\uFF0C\u4E0D\u5192\u7A31\u7CFB\u7D71\u81EA\u52D5\u8A08\u7B97";
+      } else add2(scope, "\u6587\u4EF6\u8ECA\u4F4D\u6578\u9808\u70BA\u975E\u8CA0\u6574\u6578\u4E14\u5177\u5DF2\u8986\u6838\u4F86\u6E90");
+      continue;
+    }
+    const city = layout.municipality.trim().replace("\u53F0\u5317", "\u81FA\u5317");
+    if (!city) {
+      add2(scope, "\u5148\u78BA\u8A8D\u6240\u5728\u5730\uFF0C\u907F\u514D\u8AA4\u7528\u4E2D\u592E\u6216\u5730\u65B9\u505C\u8ECA\u898F\u5247");
+      continue;
+    }
+    if (b.mode === "article59" && city === "\u81FA\u5317\u5E02") {
+      add2(scope, "\u81FA\u5317\u5E02\u53E6\u6709\u7B2C86-1\u689D\uFF0C\u4E0D\u80FD\u56E0\u500B\u6848\u8A08\u756B\u672A\u8A02\u5373\u5957\u4E2D\u592E\u7B2C59\u689D", "conflict");
+      continue;
+    }
+    if (b.mode === "taipei861") {
+      if (city !== "\u81FA\u5317\u5E02") {
+        add2(scope, "\u81FA\u5317\u5E02\u7B2C86-1\u689D\u4E0D\u9069\u7528\u5176\u4ED6\u7E23\u5E02", "conflict");
+        continue;
+      }
+      if (b.publicBuilding !== "no") {
+        add2(scope, "\u516C\u6709\u5EFA\u7BC9\u9808\u53E6\u6838\u884C\u653F\u6A5F\u95DC\u53CA\u57FA\u5730\u898F\u6A21\u52A0\u500D\u898F\u5B9A");
+        continue;
+      }
+      if (entries.some((a) => m.zones.find((z) => z.id === a.zoneId)?.regime !== "urban")) {
+        add2(scope, "\u672C\u5206\u5340\u4E0D\u5728\u90FD\u5E02\u8A08\u756B\u81EA\u52D5\u8A08\u7B97\u7BC4\u570D");
+        continue;
+      }
+      if (entries.some((a) => !a.taipeiGroup || a.taipeiGroup === "unknown" || value(a.parkingArea) === null)) {
+        add2(scope, "\u8ACB\u9010\u7528\u9014\u586B\u81FA\u5317\u5E02\u4F7F\u7528\u7D44\u5225\u53CA\u505C\u8ECA\u9762\u7A4D\uFF1B\u5176\u4ED6\u7D44\u5225\u53E6\u4F5C\u5C08\u6848\u8986\u6838");
+        continue;
+      }
+      if (entries.some((a) => a.taipeiGroup === "2" ? a.use !== "residential" : ["17", "19", "20a"].includes(a.taipeiGroup) ? a.use !== "retail" : a.use !== "office")) {
+        add2(scope, "\u4F7F\u7528\u7D44\u5225\u8207\u5EFA\u7BC9\u7528\u9014\u77DB\u76FE", "conflict");
+        continue;
+      }
+      const housing = entries.filter((a) => a.taipeiGroup === "2").reduce((n, a) => n + value(a.parkingArea), 0);
+      const shops = entries.filter((a) => ["17", "19", "20a"].includes(a.taipeiGroup)).reduce((n, a) => n + value(a.parkingArea), 0);
+      const offices = entries.filter((a) => ["28", "29"].includes(a.taipeiGroup)).reduce((n, a) => n + value(a.parkingArea), 0);
+      const tier = (a) => Math.min(a, 2e3) / 100 + Math.min(Math.max(a - 2e3, 0), 2e3) / 150 + Math.min(Math.max(a - 4e3, 0), 6e3) / 200 + Math.max(a - 1e4, 0) / 250;
+      r.cars = Math.ceil(housing / 120 + tier(shops) + tier(offices));
+      r.motos = Math.ceil(housing / 100 + shops / 200 + offices / 140);
+      r.formula = `\u6C7D\u8ECA ceil(\u4F4F\u5B85${housing}/120 + \u96F6\u552E${shops}\u53CA\u8FA6\u516C${offices}\u5404\u985E\u5206\u6BB5\u7D2F\u52A0)\uFF1B\u6A5F\u8ECA ceil(${housing}/100 + ${shops}/200 + ${offices}/140)\uFF1B\u540C\u5E62\u5408\u8A08\u5F8C\u9032\u4F4D\uFF0C\u7121300\uFF0F500\u33A1\u514D\u8A2D\u984D\u5EA6`;
+      add2(scope, "\u672C\u6B21\u8A08\u6C7D\u6A5F\u8ECA\uFF1B\u7B2C86-2\u689D\u88DD\u5378\u4F4D\u3001\u5176\u4ED6\u7528\u9014\u3001\u516C\u6709\u8EAB\u5206\u53CA\u500B\u6848\u7279\u6B8A\u8981\u6C42\u53E6\u6838", "review");
+      continue;
+    }
+    if (b.publicBuilding !== "no") {
+      add2(scope, "\u516C\u6709\u5EFA\u7BC9\u6216\u8EAB\u5206\u672A\u77E5\uFF0C\u9808\u53E6\u6838\u7B2C59\u689D\u52A0\u500D\u7B49\u898F\u5B9A");
+      continue;
+    }
+    if (entries.some((a) => a.use === "other" || m.zones.find((z) => z.id === a.zoneId)?.regime !== "urban")) {
+      add2(scope, "\u672C\u5E62\u7528\u9014\u6216\u7BA1\u5236\u4E0D\u5728\u90FD\u5E02\u7B2C\u4E00\u3001\u4E8C\u985E\u81EA\u52D5\u8A08\u7B97\u7BC4\u570D");
+      continue;
+    }
+    if (entries.some((a) => value(a.parkingArea) === null)) {
+      add2(scope, "\u505C\u8ECA\u6AA2\u8A0E\u9762\u7A4D\u4E0D\u5B8C\u6574");
+      continue;
+    }
+    const f8 = first ?? 0, s = second ?? 0;
+    let free2;
+    if (f8 > 0 && s > 0) {
+      if (f8 <= 300 || s <= 500) {
+        free2 = 300;
+        r.formula = `ceil(max(0, (${f8} + ${s}) \u2212 300) \xF7 150)`;
+      } else {
+        if (b.exemption === "unknown") {
+          add2(scope, "\u540C\u5E62\u6DF7\u5408\u7528\u9014\u9808\u64C7\u4E00\u514D\u8A2D\u984D\u5EA6");
+          continue;
+        }
+        free2 = b.exemption === "first" ? 300 : 500;
+        r.formula = `ceil(max(0, (${f8} + ${s}) \u2212 ${free2}) \xF7 150)`;
+      }
+    } else {
+      free2 = f8 > 0 ? 300 : 500;
+      r.formula = `ceil(max(0, ${f8 + s} \u2212 ${free2}) \xF7 150)`;
+    }
+    r.cars = Math.ceil(Math.max(0, f8 + s - free2) / 150);
+  }
+  totals2.cars = sum(parking.map((p) => p.cars));
+  if (!m.buildings.length) add2("\u505C\u8ECA", "\u5C1A\u672A\u5EFA\u7ACB\u5EFA\u7BC9\u5E62\u5225\uFF0C\u672A\u8A08\u7B97\u6CD5\u5B9A\u505C\u8ECA");
+  return out(issues.some((i) => i.kind === "conflict") ? "conflict" : issues.some((i) => i.kind === "missing") ? "incomplete" : issues.length ? "conditional" : "checked");
+}
+
+// ../sanze-release-app/src/lib/planning/planningAssumptions.ts
+function discloseMissingPlanningInputs(input) {
+  return { input: { ...input }, notes: [] };
+}
+
+// ../sanze-release-app/src/lib/planning/spatialTypes.ts
 var SPATIAL_VERSION = "spatial-planning.2026-10-19.v1";
 function isSpatialInput(v) {
   if (!v || typeof v !== "object") return false;
@@ -4027,7 +4755,7 @@ function isSpatialInput(v) {
   return s.version === SPATIAL_VERSION && ["survey", "assumed"].includes(s.mode) && shape(s.boundary) && Array.isArray(s.parcels) && s.parcels.every((p) => typeof p.id === "string" && shape(p.geometry) && Number.isFinite(p.registeredArea)) && Array.isArray(s.edges) && s.edges.every((e) => e.a?.length === 2 && e.b?.length === 2 && [...e.a, ...e.b, e.aboveSetback, e.belowSetback].every(Number.isFinite) && e.aboveSetback >= 0 && e.belowSetback >= 0) && s.origin?.length === 2 && s.origin.every(Number.isFinite) && Number.isFinite(s.angle) && s.edges.length <= 2e3 && s.parcels.length <= 200 && s.assumptions && (s.assumptions.heightLimit === null || Number.isFinite(s.assumptions.heightLimit) && s.assumptions.heightLimit > 0) && s.assumptions.columnGrid >= 3 && s.assumptions.columnGrid <= 20 && s.assumptions.columnSize <= 2 && s.assumptions.excavationLimit <= 100 && s.assumptions.unitPing >= 10 && s.assumptions.unitPing <= 100 && s.assumptions.basementHeight >= 2 && s.assumptions.basementHeight <= 5 && ["floorHeight", "groundHeight", "basementHeight", "excavationLimit", "columnGrid", "columnSize", "unitPing"].every((k) => Number.isFinite(s.assumptions[k]) && s.assumptions[k] > 0);
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/spatialGeometry.ts
+// ../sanze-release-app/src/lib/planning/spatialGeometry.ts
 var import_polygon_clipping = __toESM(require_polygon_clipping_umd(), 1);
 var polygon = (ring) => ring.length >= 3 ? [[ring]] : [];
 var rectangle = (x, y, w, h) => w > 0 && h > 0 ? polygon([[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]]) : [];
@@ -4071,7 +4799,7 @@ function takeArea(s, target) {
   return intersect(s, rectangle(b.minX - 1, b.minY - 1, lo - b.minX + 1, b.maxY - b.minY + 2));
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/commonAllocationRules.ts
+// ../sanze-release-app/src/lib/planning/commonAllocationRules.ts
 var COMMON_ALLOCATION_VERSION = "common-allocation.2026-10-18.v1";
 var defaultCommonPolicy = () => ({ version: COMMON_ALLOCATION_VERSION, mode: "planning", motorcycle: "housing", bicycle: "housing", community: "housing", ramp: "proportional", source: "" });
 function isCommonPolicy(x) {
@@ -4099,12 +4827,12 @@ function resolveCommonPolicy(p, pools) {
   return { allocation: { motorcycleSqm, bicycleSqm, communitySqm, sharedRampSqm, source: p.source || "App\u901A\u5247\u898F\u5283\u5047\u8A2D\uFF0C\u975E\u6838\u5B9A\u5206\u914D" }, rampRatio, notes, status: p.mode === "planning" ? "planning" : pending || needsDocuments ? "needs_documents" : "document_input" };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/article162.ts
+// ../sanze-release-app/src/lib/planning/article162.ts
 var AREA_REVIEW_VERSION = "article162.2026-10-18.v1";
 function isAreaReview(x) {
   if (!x || typeof x !== "object") return false;
   const v = x;
-  return v.version === AREA_REVIEW_VERSION && (v.commonPolicy === void 0 || isCommonPolicy(v.commonPolicy)) && (v.source === void 0 || typeof v.source === "string") && (v.floors === void 0 || Array.isArray(v.floors) && v.floors.length > 0 && v.floors.length <= 200 && v.floors.every((f7) => typeof f7.label === "string" && f7.label.trim() && ["floorArea", "equipment", "lobby", "balcony"].every((k) => Number.isFinite(f7[k]) && f7[k] >= 0) && (f7.equipmentEligible === void 0 || Number.isFinite(f7.equipmentEligible) && f7.equipmentEligible >= 0 && f7.equipmentEligible <= f7.equipment) && typeof f7.lobbyQualified === "boolean" && typeof f7.balconyQualified === "boolean")) && (v.registration === void 0 || ["equipmentPercent", "lobbyPercent", "roofPercent"].every((k) => {
+  return v.version === AREA_REVIEW_VERSION && (v.commonPolicy === void 0 || isCommonPolicy(v.commonPolicy)) && (v.source === void 0 || typeof v.source === "string") && (v.floors === void 0 || Array.isArray(v.floors) && v.floors.length > 0 && v.floors.length <= 200 && v.floors.every((f8) => typeof f8.label === "string" && f8.label.trim() && ["floorArea", "equipment", "lobby", "balcony"].every((k) => Number.isFinite(f8[k]) && f8[k] >= 0) && (f8.equipmentEligible === void 0 || Number.isFinite(f8.equipmentEligible) && f8.equipmentEligible >= 0 && f8.equipmentEligible <= f8.equipment) && typeof f8.lobbyQualified === "boolean" && typeof f8.balconyQualified === "boolean")) && (v.registration === void 0 || ["equipmentPercent", "lobbyPercent", "roofPercent"].every((k) => {
     const n = v.registration[k];
     return Number.isFinite(n) && n >= 0 && n <= 100;
   }) && typeof v.registration.source === "string" && (v.registration.parkingAllocation === void 0 || ["motorcycleSqm", "bicycleSqm", "communitySqm", "sharedRampSqm"].every((k) => {
@@ -4112,12 +4840,12 @@ function isAreaReview(x) {
     return Number.isFinite(n) && n >= 0;
   }) && typeof v.registration.parkingAllocation.source === "string"));
 }
-function reviewFloor(f7, equipmentExempt) {
-  const lobbyCap = f7.lobbyQualified ? f7.floorArea * 0.1 : 0, balconyCap = f7.balconyQualified ? f7.floorArea * 0.1 : 0, combinedCap = f7.floorArea * 0.15;
-  const l = Math.min(f7.lobby, lobbyCap), b = Math.min(f7.balcony, balconyCap), factor = l + b > 0 ? Math.min(1, combinedCap / (l + b)) : 0;
+function reviewFloor(f8, equipmentExempt) {
+  const lobbyCap = f8.lobbyQualified ? f8.floorArea * 0.1 : 0, balconyCap = f8.balconyQualified ? f8.floorArea * 0.1 : 0, combinedCap = f8.floorArea * 0.15;
+  const l = Math.min(f8.lobby, lobbyCap), b = Math.min(f8.balcony, balconyCap), factor = l + b > 0 ? Math.min(1, combinedCap / (l + b)) : 0;
   const lobbyExempt = l * factor, balconyExempt = b * factor;
-  const counted = f7.floorArea + f7.balcony - equipmentExempt - lobbyExempt - balconyExempt;
-  return { ...f7, lobbyCap, balconyCap, combinedCap, lobbyExempt, balconyExempt, equipmentExempt, counted, countedExtras: f7.equipment - equipmentExempt + f7.lobby - lobbyExempt + f7.balcony - balconyExempt };
+  const counted = f8.floorArea + f8.balcony - equipmentExempt - lobbyExempt - balconyExempt;
+  return { ...f8, lobbyCap, balconyCap, combinedCap, lobbyExempt, balconyExempt, equipmentExempt, counted, countedExtras: f8.equipment - equipmentExempt + f8.lobby - lobbyExempt + f8.balcony - balconyExempt };
 }
 function reviewAboveGround(c) {
   const errors = [];
@@ -4134,46 +4862,46 @@ function reviewAboveGround(c) {
       return { label: `${j + 1}F`, floorArea: area2, equipment: c.equipment * area2 / total, lobby: area2 * l, balcony: area2 * b, lobbyQualified: c.lobbyQualified, balconyQualified: true };
     });
   }
-  const equipment = inputs.reduce((t, f7) => t + f7.equipment, 0), eligible = inputs.reduce((t, f7) => t + (f7.equipmentEligible ?? f7.equipment), 0), factor = eligible > 0 ? Math.min(1, c.equipmentCap / eligible) : 0;
-  const floors = inputs.map((f7) => reviewFloor(f7, (f7.equipmentEligible ?? f7.equipment) * factor));
-  for (const f7 of floors) {
-    if (f7.floorArea <= 0 || f7.equipment + f7.lobby > f7.floorArea + 1e-6) errors.push(`${f7.label}\u6A5F\u96FB\u8207\u68AF\u5EF3\u4E0D\u5F97\u5927\u65BC\u8A72\u5C64\u6A13\u5730\u677F`);
-    if (f7.floorArea > c.footprint + 0.01) errors.push(`${f7.label}\u6A13\u677F\u8D85\u51FA\u898F\u5283\u5EFA\u7BC9\u9762\u7A4D\uFF0C\u9808\u8ABF\u6574\u914D\u7F6E`);
-    if (f7.counted < -1e-6) errors.push(`${f7.label}\u514D\u8A08\u9762\u7A4D\u8D85\u51FA\u5BE6\u969B\u9762\u7A4D`);
+  const equipment = inputs.reduce((t, f8) => t + f8.equipment, 0), eligible = inputs.reduce((t, f8) => t + (f8.equipmentEligible ?? f8.equipment), 0), factor = eligible > 0 ? Math.min(1, c.equipmentCap / eligible) : 0;
+  const floors = inputs.map((f8) => reviewFloor(f8, (f8.equipmentEligible ?? f8.equipment) * factor));
+  for (const f8 of floors) {
+    if (f8.floorArea <= 0 || f8.equipment + f8.lobby > f8.floorArea + 1e-6) errors.push(`${f8.label}\u6A5F\u96FB\u8207\u68AF\u5EF3\u4E0D\u5F97\u5927\u65BC\u8A72\u5C64\u6A13\u5730\u677F`);
+    if (f8.floorArea > c.footprint + 0.01) errors.push(`${f8.label}\u6A13\u677F\u8D85\u51FA\u898F\u5283\u5EFA\u7BC9\u9762\u7A4D\uFF0C\u9808\u8ABF\u6574\u914D\u7F6E`);
+    if (f8.counted < -1e-6) errors.push(`${f8.label}\u514D\u8A08\u9762\u7A4D\u8D85\u51FA\u5BE6\u969B\u9762\u7A4D`);
   }
-  const sum2 = (k) => floors.reduce((t, f7) => t + f7[k], 0);
-  const counted = sum2("counted");
+  const sum3 = (k) => floors.reduce((t, f8) => t + f8[k], 0);
+  const counted = sum3("counted");
   if (counted > c.used + 0.02) errors.push("\u9010\u5C64\u8A08\u5BB9\u9762\u7A4D\u8D85\u51FA\u898F\u5283\u4F7F\u7528\u5BB9\u7A4D");
-  return { errors, floors, floorArea: sum2("floorArea"), equipment, lobby: sum2("lobby"), balcony: sum2("balcony"), equipmentExempt: sum2("equipmentExempt"), lobbyExempt: sum2("lobbyExempt"), balconyExempt: sum2("balconyExempt"), counted, countedExtras: sum2("countedExtras"), ordinary: sum2("floorArea") - equipment - sum2("lobby") };
+  return { errors, floors, floorArea: sum3("floorArea"), equipment, lobby: sum3("lobby"), balcony: sum3("balcony"), equipmentExempt: sum3("equipmentExempt"), lobbyExempt: sum3("lobbyExempt"), balconyExempt: sum3("balconyExempt"), counted, countedExtras: sum3("countedExtras"), ordinary: sum3("floorArea") - equipment - sum3("lobby") };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/spatialPlanning.ts
-var sum = (a, key) => a.reduce((t, s) => t + s[key], 0);
-var group = (f7, use) => f7.flatMap((f8) => f8.spaces).filter((s) => use.includes(s.use));
-var sqm = (s) => sum(s, "area");
+// ../sanze-release-app/src/lib/planning/spatialPlanning.ts
+var sum2 = (a, key) => a.reduce((t, s) => t + s[key], 0);
+var group = (f8, use) => f8.flatMap((f9) => f9.spaces).filter((s) => use.includes(s.use));
+var sqm = (s) => sum2(s, "area");
 var isCar = (s) => ["car", "accessible_car"].includes(s.use);
 var equipmentUses = ["stair", "lift", "equipment", "roof_equipment"];
 var EPS = 0.015;
 function envelope(s, below, height = 0) {
   return difference(s.boundary, ...s.edges.map((e) => edgeBand(e.a, e.b, below ? e.belowSetback : Math.max(e.aboveSetback, e.roadWidth === null ? 0 : height / 3.6 - e.roadWidth / 2))));
 }
-function floor(id, plate, elevation, height) {
-  return { id, plate, elevation, height, spaces: [], shelter: [], counted: 0, exempt: 0, houseRegistered: 0, parkingRegistered: 0, notes: [] };
+function floor(id2, plate, elevation, height) {
+  return { id: id2, plate, elevation, height, spaces: [], shelter: [], counted: 0, exempt: 0, houseRegistered: 0, parkingRegistered: 0, notes: [] };
 }
-function add(f7, label, use, shape, service = "housing", assumption = "\u5C3A\u5BF8\u8207\u7528\u9014\u70BA\u521D\u6B65\u914D\u7F6E\u5047\u8A2D\uFF1B\u4F9D\u6B63\u5F0F\u5716\u8AAA\u8986\u6838") {
-  const geometry = difference(intersect(shape, f7.plate), ...f7.spaces.map((s) => s.geometry));
+function add(f8, label, use, shape, service = "housing", assumption = "\u5C3A\u5BF8\u8207\u7528\u9014\u70BA\u521D\u6B65\u914D\u7F6E\u5047\u8A2D\uFF1B\u4F9D\u6B63\u5F0F\u5716\u8AAA\u8986\u6838") {
+  const geometry = difference(intersect(shape, f8.plate), ...f8.spaces.map((s) => s.geometry));
   const a = area(geometry);
   if (a < 1e-3) return;
-  f7.spaces.push({ id: f7.id + "-" + f7.spaces.length, label, use, geometry, area: a, service, exempt: 0, counted: a, houseRegistered: service === "housing" ? a : 0, parkingRegistered: service === "parking" ? a : 0, legalBasis: "\u5C1A\u672A\u6AA2\u8A0E", assumption });
+  f8.spaces.push({ id: f8.id + "-" + f8.spaces.length, label, use, geometry, area: a, service, exempt: 0, counted: a, houseRegistered: service === "housing" ? a : 0, parkingRegistered: service === "parking" ? a : 0, legalBasis: "\u5C1A\u672A\u6AA2\u8A0E", assumption });
 }
-function totals(f7) {
-  f7.counted = sum(f7.spaces, "counted");
-  f7.exempt = sum(f7.spaces, "exempt");
-  f7.houseRegistered = sum(f7.spaces, "houseRegistered");
-  f7.parkingRegistered = sum(f7.spaces, "parkingRegistered");
+function totals(f8) {
+  f8.counted = sum2(f8.spaces, "counted");
+  f8.exempt = sum2(f8.spaces, "exempt");
+  f8.houseRegistered = sum2(f8.spaces, "houseRegistered");
+  f8.parkingRegistered = sum2(f8.spaces, "parkingRegistered");
 }
-function free(f7) {
-  return difference(f7.plate, ...f7.spaces.map((s) => s.geometry));
+function free(f8) {
+  return difference(f8.plate, ...f8.spaces.map((s) => s.geometry));
 }
 function halfTurn(x, y, r, width, right) {
   const start = right ? -Math.PI / 2 : Math.PI / 2, sign = 1;
@@ -4282,18 +5010,18 @@ function buildSpatialPlanning(i) {
         aboveStopped = true;
         break;
       }
-      const f7 = floor(`${j + 1}F`, p, elevation, height);
-      for (const c of cores) add(f7, c.label, c.use, c.shape);
-      for (const cx of coreX) add(f7, "\u5171\u540C\u68AF\u5EF3\uFF08\u6DE8\u6DF12m\uFF09", "lobby", rectangle(cx, cy - 1, 7.5, 2));
-      add(f7, "\u4F4F\u5B85\u516C\u5171\u8D70\u5ECA\uFF082m\uFF09", "corridor", rectangle(ab.minX, cy - 1, ab.maxX - ab.minX, 2));
+      const f8 = floor(`${j + 1}F`, p, elevation, height);
+      for (const c of cores) add(f8, c.label, c.use, c.shape);
+      for (const cx of coreX) add(f8, "\u5171\u540C\u68AF\u5EF3\uFF08\u6DE8\u6DF12m\uFF09", "lobby", rectangle(cx, cy - 1, 7.5, 2));
+      add(f8, "\u4F4F\u5B85\u516C\u5171\u8D70\u5ECA\uFF082m\uFF09", "corridor", rectangle(ab.minX, cy - 1, ab.maxX - ab.minX, 2));
       if (j === 0) {
-        add(f7, "\u9580\u5EF3\u53CA\u7BA1\u7406\u5BA4", "lobby", rectangle(ab.minX, cy - 5, 7, 4));
-        add(f7, "\u7E3D\u914D\u96FB\uFF0F\u96FB\u4FE1", "equipment", rectangle(ab.maxX - 6, cy - 5, 6, 4));
+        add(f8, "\u9580\u5EF3\u53CA\u7BA1\u7406\u5BA4", "lobby", rectangle(ab.minX, cy - 5, 7, 4));
+        add(f8, "\u7E3D\u914D\u96FB\uFF0F\u96FB\u4FE1", "equipment", rectangle(ab.maxX - 6, cy - 5, 6, 4));
       }
       const wall = difference(p, insetFast(p, 0.2));
-      add(f7, "\u5916\u7246\u53CA\u67F1\u7DB2", "structure", wall);
-      for (let xx = ab.minX + 4; xx < ab.maxX; xx += s.assumptions.columnGrid) for (const yy of [ab.minY + 1, ab.maxY - 1]) add(f7, "\u67F1\u7DB2\u9810\u7559", "structure", rectangle(xx, yy, s.assumptions.columnSize, s.assumptions.columnSize));
-      const privateShape = free(f7), pb = bounds(privateShape), desired = s.assumptions.unitPing / 0.3025;
+      add(f8, "\u5916\u7246\u53CA\u67F1\u7DB2", "structure", wall);
+      for (let xx = ab.minX + 4; xx < ab.maxX; xx += s.assumptions.columnGrid) for (const yy of [ab.minY + 1, ab.maxY - 1]) add(f8, "\u67F1\u7DB2\u9810\u7559", "structure", rectangle(xx, yy, s.assumptions.columnSize, s.assumptions.columnSize));
+      const privateShape = free(f8), pb = bounds(privateShape), desired = s.assumptions.unitPing / 0.3025;
       let unit = 0;
       for (const side of [rectangle(pb.minX - 1, pb.minY - 1, pb.maxX - pb.minX + 2, cy - pb.minY), rectangle(pb.minX - 1, cy + 1, pb.maxX - pb.minX + 2, pb.maxY - cy + 1)]) {
         const sideShape = intersect(privateShape, side);
@@ -4305,14 +5033,14 @@ function buildSpatialPlanning(i) {
             for (const connected of unitShape) {
               const geometry = [connected];
               if (area(geometry) < 28) continue;
-              add(f7, `\u4F4F\u5B85${++unit}`, "dwelling", geometry);
+              add(f8, `\u4F4F\u5B85${++unit}`, "dwelling", geometry);
             }
             remain = difference(remain, unitShape);
           }
         }
       }
-      add(f7, "\u8D70\u5ECA\u7AEF\u90E8\uFF0F\u7246\u9AD4\u929C\u63A5", "corridor", free(f7));
-      for (const q of f7.spaces.filter((s2) => s2.use === "dwelling")) {
+      add(f8, "\u8D70\u5ECA\u7AEF\u90E8\uFF0F\u7246\u9AD4\u929C\u63A5", "corridor", free(f8));
+      for (const q of f8.spaces.filter((s2) => s2.use === "dwelling")) {
         const qb = bounds(q.geometry), strip = rectangle(qb.minX, qb.minY < cy ? qb.minY : qb.maxY - 1, qb.maxX - qb.minX, 1);
         const bal = intersect(q.geometry, strip);
         const after = difference(q.geometry, bal);
@@ -4321,9 +5049,9 @@ function buildSpatialPlanning(i) {
         q.area = area(q.geometry);
         q.houseRegistered = q.area;
         q.counted = q.area;
-        add(f7, "\u5167\u51F9\u967D\u53F0\uFF08\u6DF11m\uFF09", "balcony", bal);
+        add(f8, "\u5167\u51F9\u967D\u53F0\uFF08\u6DF11m\uFF09", "balcony", bal);
       }
-      generated.push(f7);
+      generated.push(f8);
     }
     return generated.slice(0, count2);
   };
@@ -4331,7 +5059,7 @@ function buildSpatialPlanning(i) {
   for (; count <= 60; count++) {
     const trial = makeAbove(count);
     if (trial.length < count) break;
-    const fr = reviewAboveGround({ used: target, equipment: 0, equipmentCap, footprint: area(footprint), lobbyRate: 0, balconyRate: 0, lobbyQualified: i.lobbyDepth !== "failed", review: { version: AREA_REVIEW_VERSION, floors: trial.map((f7) => ({ label: f7.id, floorArea: area(f7.plate) - sqm(group([f7], ["balcony"])), equipment: sqm(group([f7], equipmentUses)), lobby: sqm(group([f7], ["lobby"])), balcony: sqm(group([f7], ["balcony"])), lobbyQualified: i.lobbyDepth !== "failed", balconyQualified: true })) } });
+    const fr = reviewAboveGround({ used: target, equipment: 0, equipmentCap, footprint: area(footprint), lobbyRate: 0, balconyRate: 0, lobbyQualified: i.lobbyDepth !== "failed", review: { version: AREA_REVIEW_VERSION, floors: trial.map((f8) => ({ label: f8.id, floorArea: area(f8.plate) - sqm(group([f8], ["balcony"])), equipment: sqm(group([f8], equipmentUses)), lobby: sqm(group([f8], ["lobby"])), balcony: sqm(group([f8], ["balcony"])), lobbyQualified: i.lobbyDepth !== "failed", balconyQualified: true })) } });
     if (fr.counted > target + 0.01) break;
     best = trial;
   }
@@ -4339,49 +5067,49 @@ function buildSpatialPlanning(i) {
     let remainingCars = legal2, remainingMotos = units2, remainingBikes = Math.ceil(units2 * 0.25), remainingCommunity = Math.ceil(legal2 * 0.02);
     const underground2 = [];
     for (let j = 1; j <= 4; j++) {
-      const f7 = floor("B" + j, plate, -j * s.assumptions.basementHeight, s.assumptions.basementHeight);
+      const f8 = floor("B" + j, plate, -j * s.assumptions.basementHeight, s.assumptions.basementHeight);
       const accessibleCount = legal2 === 0 ? 0 : legal2 <= 50 ? 1 : Math.ceil((legal2 - 50) / 100) + 1;
       const accessibleSlots = [];
-      add(f7, "\u5171\u7528\u5761\u9053 1:10", "ramp", ramp, "shared");
-      add(f7, "\u96D9\u5411\u8ECA\u9053\u53CAR5.5\u8FF4\u8F49", "driveway", drive, "shared");
-      for (const c of cores) add(f7, c.label, c.use, c.shape, "housing");
+      add(f8, "\u5171\u7528\u5761\u9053 1:10", "ramp", ramp, "shared");
+      add(f8, "\u96D9\u5411\u8ECA\u9053\u53CAR5.5\u8FF4\u8F49", "driveway", drive, "shared");
+      for (const c of cores) add(f8, c.label, c.use, c.shape, "housing");
       const room = j === 1 ? { label: "\u901A\u98A8\u53CA\u9632\u707D\u63A7\u5236\u5BA46\xD74m", w: 6, h: 4 } : j === 2 ? { label: "\u53D7\u96FB\u53CA\u767C\u96FB\u6A5F\u623F8\xD76m", w: 8, h: 6 } : j === 3 ? { label: "\u6C11\u751F\u6C34\u6C60\u53CA\u6CF5\u623F12.8\xD75m", w: 12.8, h: 5 } : { label: "\u6D88\u9632\u6C34\u6C60\u53CA\u6CF5\u623F12.8\xD75m", w: 12.8, h: 5 };
       let placed = false;
       for (const yy of [j === 2 ? y - 0.2 : y + 0.3, y + 11.8]) {
         for (let xx = x + length - room.w - 0.3; xx >= x + 0.3; xx -= 0.5) {
           const r = rectangle(xx, yy, room.w, room.h), bump = rectangle(xx - 0.3, yy - 0.3, room.w + 0.6, room.h + 0.6);
-          if (contained(bump, belowEnvelope) && area(intersect(r, union(...f7.spaces.map((q) => q.geometry)))) < 1e-3) {
-            f7.plate = union(f7.plate, bump);
-            add(f7, room.label, "equipment", r, "housing", "\u5177\u540D\u8A2D\u5099\u623F\u6295\u5F71\u5C3A\u5BF8\u70BA\u9700\u6C42\u5047\u8A2D\uFF0C\u975E\u6838\u5B9A\u6DE8\u7A7A\u9762\u7A4D\uFF1B\u8A2D\u5099\u5BB9\u91CF\u53CA\u623F\u5167\u7D50\u69CB\u53E6\u6838\uFF0C\u975E\u6CD5\u5B9A\u6700\u4F4E\u6BD4\u4F8B");
+          if (contained(bump, belowEnvelope) && area(intersect(r, union(...f8.spaces.map((q) => q.geometry)))) < 1e-3) {
+            f8.plate = union(f8.plate, bump);
+            add(f8, room.label, "equipment", r, "housing", "\u5177\u540D\u8A2D\u5099\u623F\u6295\u5F71\u5C3A\u5BF8\u70BA\u9700\u6C42\u5047\u8A2D\uFF0C\u975E\u6838\u5B9A\u6DE8\u7A7A\u9762\u7A4D\uFF1B\u8A2D\u5099\u5BB9\u91CF\u53CA\u623F\u5167\u7D50\u69CB\u53E6\u6838\uFF0C\u975E\u6CD5\u5B9A\u6700\u4F4E\u6BD4\u4F8B");
             placed = true;
             break;
           }
         }
         if (placed) break;
       }
-      if (!placed) f7.notes.push("\u8A2D\u5099\u623F\u672A\u6392\u5165\uFF1A" + room.label);
+      if (!placed) f8.notes.push("\u8A2D\u5099\u623F\u672A\u6392\u5165\uFF1A" + room.label);
       if (j === 2) {
         const columns = [];
         for (let xx = x + 0.3 + 7.5; xx < x + length; xx += s.assumptions.columnGrid) columns.push(rectangle(xx, y + 0.5, s.assumptions.columnSize, s.assumptions.columnSize));
         for (let xx = x + 0.3; xx + 3.5 < x + length - 0.3 && accessibleSlots.length < accessibleCount; xx += 0.1) {
           const r = rectangle(xx, y - 0.2, 3.5, 6), bump = rectangle(xx - 0.3, y - 0.5, 4.1, 6.6);
-          if (contained(bump, belowEnvelope) && area(intersect(r, union(...f7.spaces.map((q) => q.geometry), ...columns, ...accessibleSlots))) < 1e-3) {
+          if (contained(bump, belowEnvelope) && area(intersect(r, union(...f8.spaces.map((q) => q.geometry), ...columns, ...accessibleSlots))) < 1e-3) {
             accessibleSlots.push(r);
-            f7.plate = union(f7.plate, bump);
+            f8.plate = union(f8.plate, bump);
             xx += 3.4;
           }
         }
       }
-      add(f7, "\u5730\u4E0B\u5916\u7246", "structure", difference(f7.plate, insetFast(f7.plate, 0.3)), "shared");
-      for (let xx = x + 0.3 + 7.5; xx < x + length; xx += s.assumptions.columnGrid) for (const yy of [y + 0.5, y + 17.1 - s.assumptions.columnSize]) add(f7, "\u7D50\u69CB\u67F1", "structure", rectangle(xx, yy, s.assumptions.columnSize, s.assumptions.columnSize), "shared");
-      const stalls = (use, w, h, rows, wanted, done) => {
-        for (const yy of rows) for (let slot = 0; slot < 1e3; slot++) {
+      add(f8, "\u5730\u4E0B\u5916\u7246", "structure", difference(f8.plate, insetFast(f8.plate, 0.3)), "shared");
+      for (let xx = x + 0.3 + 7.5; xx < x + length; xx += s.assumptions.columnGrid) for (const yy of [y + 0.5, y + 17.1 - s.assumptions.columnSize]) add(f8, "\u7D50\u69CB\u67F1", "structure", rectangle(xx, yy, s.assumptions.columnSize, s.assumptions.columnSize), "shared");
+      const stalls = (use, w, h, rows5, wanted, done) => {
+        for (const yy of rows5) for (let slot = 0; slot < 1e3; slot++) {
           const xx = x + 0.3 + (use === "car" || use === "community" ? Math.floor(slot / 3) * s.assumptions.columnGrid + slot % 3 * w : slot * w);
           if (xx + w > x + length - 0.3) break;
           if (!wanted()) return;
           const r = rectangle(xx, yy, w, h);
-          if (contained(r, free(f7)) && (use === "accessible_motorcycle" || touches(r, union(...f7.spaces.filter((q) => ["corridor", "driveway", "ramp"].includes(q.use)).map((q) => q.geometry))))) {
-            add(f7, `${use === "community" ? "\u793E\u5340\u88DD\u5378" : use.includes("motorcycle") ? "\u6A5F\u8ECA" : use === "bicycle" ? "\u81EA\u884C\u8ECA" : use === "accessible_car" ? "\u7121\u969C\u7919\u6C7D\u8ECA" : "\u6C7D\u8ECA"} ${f7.spaces.filter((s2) => s2.use === use).length + 1}`, use, r, use === "community" || use === "motorcycle" || use === "accessible_motorcycle" || use === "bicycle" ? "housing" : "parking");
+          if (contained(r, free(f8)) && (use === "accessible_motorcycle" || touches(r, union(...f8.spaces.filter((q) => ["corridor", "driveway", "ramp"].includes(q.use)).map((q) => q.geometry))))) {
+            add(f8, `${use === "community" ? "\u793E\u5340\u88DD\u5378" : use.includes("motorcycle") ? "\u6A5F\u8ECA" : use === "bicycle" ? "\u81EA\u884C\u8ECA" : use === "accessible_car" ? "\u7121\u969C\u7919\u6C7D\u8ECA" : "\u6C7D\u8ECA"} ${f8.spaces.filter((s2) => s2.use === use).length + 1}`, use, r, use === "community" || use === "motorcycle" || use === "accessible_motorcycle" || use === "bicycle" ? "housing" : "parking");
             done();
           }
         }
@@ -4393,36 +5121,36 @@ function buildSpatialPlanning(i) {
           ac--;
           remainingMotos--;
         });
-        for (const a2 of f7.spaces.filter((q) => q.use === "accessible_motorcycle")) {
+        for (const a2 of f8.spaces.filter((q) => q.use === "accessible_motorcycle")) {
           const b = bounds(a2.geometry);
-          add(f7, "\u7121\u969C\u7919\u6A5F\u8ECA\u901A\u9054\u8DEF\u7DDA", "corridor", rectangle(b.minX, b.maxY, b.maxX - b.minX, aisleY - 3 - b.maxY), "housing");
+          add(f8, "\u7121\u969C\u7919\u6A5F\u8ECA\u901A\u9054\u8DEF\u7DDA", "corridor", rectangle(b.minX, b.maxY, b.maxX - b.minX, aisleY - 3 - b.maxY), "housing");
         }
         stalls("community", 2.5, 5.5, [y + 0.3, y + 11.8], () => remainingCommunity > 0, () => remainingCommunity--);
-        for (const yy of [y + 2.3, y + 13.8]) add(f7, "\u6A5F\u8ECA\u81EA\u884C\u8ECA\u901A\u90531.5m", "corridor", rectangle(x + 0.3, yy, length - 0.6, 1.5), "housing");
-        connectMotoRoutes(f7, aisleY);
+        for (const yy of [y + 2.3, y + 13.8]) add(f8, "\u6A5F\u8ECA\u81EA\u884C\u8ECA\u901A\u90531.5m", "corridor", rectangle(x + 0.3, yy, length - 0.6, 1.5), "housing");
+        connectMotoRoutes(f8, aisleY);
         stalls("motorcycle", 1, 2, [y + 0.3, y + 3.8, y + 11.8, y + 15.3], () => remainingMotos > 0, () => remainingMotos--);
         stalls("bicycle", 1, 2, [y + 0.3, y + 3.8, y + 11.8, y + 15.3], () => remainingBikes > 0, () => remainingBikes--);
       } else {
         if (j === 2) for (let k = 0; k < accessibleSlots.length && remainingCars > 0; k++) {
           const r = accessibleSlots[k];
-          if (contained(r, free(f7))) {
-            add(f7, "\u7121\u969C\u7919\u6C7D\u8ECA " + (k + 1), "accessible_car", r, "parking");
+          if (contained(r, free(f8))) {
+            add(f8, "\u7121\u969C\u7919\u6C7D\u8ECA " + (k + 1), "accessible_car", r, "parking");
             remainingCars--;
           }
         }
         stalls("car", 2.5, 5.5, [y + 0.3, y + 11.8], () => remainingCars > 0, () => remainingCars--);
       }
-      const occupied = union(...f7.spaces.filter((s2) => s2.use !== "structure").map((s2) => s2.geometry));
-      const remaining = free(f7);
+      const occupied = union(...f8.spaces.filter((s2) => s2.use !== "structure").map((s2) => s2.geometry));
+      const remaining = free(f8);
       const necessary = intersect(remaining, union(...occupied.flatMap((p) => p.flatMap((r) => r.slice(0, -1).map((a, k) => edgeBand(a, r[k + 1], 0.3))))));
-      add(f7, "\u5FC5\u8981\u7246\u67F1\u53CA\u7A7A\u9593\u929C\u63A5", "structure", necessary, "shared");
-      f7.plate = union(...f7.spaces.map((s2) => s2.geometry));
+      add(f8, "\u5FC5\u8981\u7246\u67F1\u53CA\u7A7A\u9593\u929C\u63A5", "structure", necessary, "shared");
+      f8.plate = union(...f8.spaces.map((s2) => s2.geometry));
       if (j === 1 && s.assumptions.shelterApplicable) {
-        const qualified = union(...f7.spaces.filter((s2) => !["bicycle", "ramp"].includes(s2.use)).map((s2) => s2.geometry));
-        f7.shelter = takeArea(qualified, area(footprint));
-        f7.notes.push("B1\u9632\u7A7A\u907F\u96E3\u517C\u505C\u8ECA\u4EE5\u5E73\u5766\u7A7A\u9593\u521D\u914D\uFF0C\u5761\u9053\u66AB\u4E0D\u5217\u907F\u96E3\u6709\u6548\u9762\u7A4D\uFF1B\u4E0D\u589E\u5EFA\u9762\u7A4D\uFF1B\u51FA\u5165\u53E3\u3001\u69CB\u9020\u53CA\u9632\u8B77\u8A2D\u5099\u8CC7\u683C\u70BA\u660E\u793A\u5047\u8A2D\u3002");
+        const qualified = union(...f8.spaces.filter((s2) => !["bicycle", "ramp"].includes(s2.use)).map((s2) => s2.geometry));
+        f8.shelter = takeArea(qualified, area(footprint));
+        f8.notes.push("B1\u9632\u7A7A\u907F\u96E3\u517C\u505C\u8ECA\u4EE5\u5E73\u5766\u7A7A\u9593\u521D\u914D\uFF0C\u5761\u9053\u66AB\u4E0D\u5217\u907F\u96E3\u6709\u6548\u9762\u7A4D\uFF1B\u4E0D\u589E\u5EFA\u9762\u7A4D\uFF1B\u51FA\u5165\u53E3\u3001\u69CB\u9020\u53CA\u9632\u8B77\u8A2D\u5099\u8CC7\u683C\u70BA\u660E\u793A\u5047\u8A2D\u3002");
       }
-      underground2.push(f7);
+      underground2.push(f8);
     }
     return { underground: underground2, remainingCars, remainingMotos, remainingBikes, remainingCommunity };
   };
@@ -4436,42 +5164,42 @@ function buildSpatialPlanning(i) {
     legal = pd.mode === "case" && pd.confirmed && pd.rule === "perUnit" ? Math.ceil(units * Number(pd.unitRate)) : pd.mode === "case" && pd.confirmed && pd.rule === "perArea" ? Math.ceil(Math.max(0, basis - Number(pd.freeArea)) / Number(pd.areaPerCar)) : Math.ceil(Math.max(0, basis - 500) / 150);
     const z = makeBelow(units, legal);
     const ac = legal === 0 ? 0 : legal <= 50 ? 1 : Math.ceil((legal - 50) / 100) + 1;
-    if (z.underground.some((f7) => f7.notes.some((n) => n.startsWith("\u8A2D\u5099\u623F\u672A\u6392\u5165"))) || z.remainingCars || z.remainingMotos || z.remainingBikes || z.remainingCommunity || group(z.underground, ["accessible_car"]).length < ac || !z.underground.every((f7) => cores.every((c) => Math.abs(sqm(f7.spaces.filter((q) => q.label === c.label)) - area(c.shape)) < 0.02))) continue;
+    if (z.underground.some((f8) => f8.notes.some((n) => n.startsWith("\u8A2D\u5099\u623F\u672A\u6392\u5165"))) || z.remainingCars || z.remainingMotos || z.remainingBikes || z.remainingCommunity || group(z.underground, ["accessible_car"]).length < ac || !z.underground.every((f8) => cores.every((c) => Math.abs(sqm(f8.spaces.filter((q) => q.label === c.label)) - area(c.shape)) < 0.02))) continue;
     best = trial;
     underground = z.underground;
     converged = true;
     break;
   }
   if (!converged) return { spatial: fail("B4\u56FA\u5B9A\u4E0B\uFF0C\u6CD5\u5B9A\u6C7D\u8ECA\u3001\u6A5F\u8ECA\u3001\u81EA\u884C\u8ECA\u6216\u793E\u5340\u8ECA\u4F4D\u4E0D\u8DB3\uFF1B\u8ACB\u8ABF\u6574\u4F4F\u5B85\u55AE\u5143\u53CA\u52D5\u7DDA\u3002"), bonus, allowed, base, equipmentCap, floorReview: null };
-  let floorReview = reviewAboveGround({ used: target, equipment: 0, equipmentCap, footprint: area(footprint), lobbyRate: 0, balconyRate: 0, lobbyQualified: i.lobbyDepth !== "failed", review: { version: AREA_REVIEW_VERSION, floors: best.map((f7) => ({ label: f7.id, floorArea: area(f7.plate) - sqm(group([f7], ["balcony"])), equipment: sqm(group([f7], equipmentUses)), lobby: sqm(group([f7], ["lobby"])), balcony: sqm(group([f7], ["balcony"])), lobbyQualified: i.lobbyDepth !== "failed", balconyQualified: true })) } });
+  let floorReview = reviewAboveGround({ used: target, equipment: 0, equipmentCap, footprint: area(footprint), lobbyRate: 0, balconyRate: 0, lobbyQualified: i.lobbyDepth !== "failed", review: { version: AREA_REVIEW_VERSION, floors: best.map((f8) => ({ label: f8.id, floorArea: area(f8.plate) - sqm(group([f8], ["balcony"])), equipment: sqm(group([f8], equipmentUses)), lobby: sqm(group([f8], ["lobby"])), balcony: sqm(group([f8], ["balcony"])), lobbyQualified: i.lobbyDepth !== "failed", balconyQualified: true })) } });
   let eqLeft = equipmentCap - floorReview.equipmentExempt;
-  for (const [j, f7] of best.entries()) {
+  for (const [j, f8] of best.entries()) {
     const r = floorReview.floors[j];
-    for (const q of f7.spaces) {
+    for (const q of f8.spaces) {
       q.exempt = equipmentUses.includes(q.use) ? q.area * (r.equipment ? r.equipmentExempt / r.equipment : 0) : q.use === "lobby" ? q.area * (r.lobby ? r.lobbyExempt / r.lobby : 0) : q.use === "balcony" ? q.area * (r.balcony ? r.balconyExempt / r.balcony : 0) : 0;
       q.counted = q.area - q.exempt;
       q.legalBasis = equipmentUses.includes(q.use) ? "\u7B2C162\u689D\u7B2C1\u9805\u7B2C2\u6B3E\uFF0C\u5408\u683C\u8A2D\u5099\u8207\u5B89\u5168\u68AF\u5047\u8A2D" : q.use === "lobby" || q.use === "balcony" ? "\u7B2C162\u689D\u7B2C1\u9805\u7B2C1\u6B3E\uFF0C\u9010\u5C6410%\uFF0F10%\u5408\u8A0815%" : "\u666E\u901A\u6A13\u677F\u8A08\u5BB9";
     }
-    totals(f7);
+    totals(f8);
   }
-  const allBelow = underground.flatMap((f7) => f7.spaces), carArea = sqm(allBelow.filter(isCar)), motoArea = sqm(allBelow.filter((s2) => ["motorcycle", "accessible_motorcycle"].includes(s2.use))), bikeArea = sqm(allBelow.filter((s2) => s2.use === "bicycle")), communityArea = sqm(allBelow.filter((s2) => s2.use === "community"));
+  const allBelow = underground.flatMap((f8) => f8.spaces), carArea = sqm(allBelow.filter(isCar)), motoArea = sqm(allBelow.filter((s2) => ["motorcycle", "accessible_motorcycle"].includes(s2.use))), bikeArea = sqm(allBelow.filter((s2) => s2.use === "bicycle")), communityArea = sqm(allBelow.filter((s2) => s2.use === "community"));
   const housingService = motoArea + bikeArea + communityArea, parkingService = carArea, share = housingService / (housingService + parkingService || 1);
-  const allocations = underground.flatMap((f7) => {
+  const allocations = underground.flatMap((f8) => {
     let fixed = 0;
-    return f7.spaces.map((q) => {
-      const inShelter = area(intersect(q.geometry, f7.shelter)), eq = equipmentUses.includes(q.use);
+    return f8.spaces.map((q) => {
+      const inShelter = area(intersect(q.geometry, f8.shelter)), eq = equipmentUses.includes(q.use);
       let shelterPart = inShelter;
       if (eq && q.use !== "stair") {
-        shelterPart = Math.min(inShelter, Math.max(0, area(f7.shelter) / 4 - fixed));
+        shelterPart = Math.min(inShelter, Math.max(0, area(f8.shelter) / 4 - fixed));
         fixed += shelterPart;
       }
       const remain = q.area - shelterPart;
-      const housingFraction = q.service === "housing" ? 1 : q.service === "parking" ? 0 : q.use === "structure" ? sqm(f7.spaces.filter((x2) => x2.service === "housing")) / (sqm(f7.spaces.filter((x2) => x2.service === "housing" || x2.service === "parking")) || 1) : f7.id === "B1" ? share : 0;
-      const bikeFraction = f7.id === "B1" && housingService > 0 ? bikeArea / housingService : 0;
+      const housingFraction = q.service === "housing" ? 1 : q.service === "parking" ? 0 : q.use === "structure" ? sqm(f8.spaces.filter((x2) => x2.service === "housing")) / (sqm(f8.spaces.filter((x2) => x2.service === "housing" || x2.service === "parking")) || 1) : f8.id === "B1" ? share : 0;
+      const bikeFraction = f8.id === "B1" && housingService > 0 ? bikeArea / housingService : 0;
       const carSubject = !eq ? isCar(q) || q.service === "parking" ? remain : q.service === "shared" ? remain * (1 - housingFraction) : 0 : 0;
       const housingParkingSubject = !eq && !["bicycle"].includes(q.use) ? remain - carSubject : 0;
       const housingParkingExempt = housingParkingSubject * (q.use === "corridor" || q.service === "shared" ? 1 - bikeFraction : 1);
-      return { f: f7, q, eq, shelterPart, remain, carSubject, housingParkingExempt, housingFraction };
+      return { f: f8, q, eq, shelterPart, remain, carSubject, housingParkingExempt, housingFraction };
     });
   });
   const carSubjectTotal = allocations.reduce((t, a) => t + a.carSubject, 0), carFactor = carSubjectTotal > 0 ? Math.min(1, legal * 40 / carSubjectTotal) : 0;
@@ -4487,38 +5215,38 @@ function buildSpatialPlanning(i) {
     q.parkingRegistered = q.area - q.houseRegistered;
     q.assumption += "\uFF1BB1\u5171\u7528\u52D5\u7DDA\u6309\u6C7D\u6A5F\u8ECA\u8207\u81EA\u884C\u8ECA\u670D\u52D9\u9762\u7A4D\u4F30\u5206\uFF0CB2\u4EE5\u4E0B\u8ECA\u9053\u670D\u52D9\u6C7D\u8ECA\uFF1B\u7246\u67F1\u6309\u8A72\u5C64\u670D\u52D9\u7528\u9014\u4F30\u5206\uFF0C\u975E\u6CD5\u5B9A\u56FA\u5B9A\u6BD4\u4F8B\uFF0C\u5F85\u5206\u914D\u8868\u8986\u6838\u3002";
   }
-  for (const f7 of underground) totals(f7);
+  for (const f8 of underground) totals(f8);
   const roofs = [];
   const top = best[best.length - 1], topHeight = top.elevation + top.height;
   for (let j = 0; j < Math.min(3, Number(i.roofFloors)); j++) {
     const p = union(...cores.map((c) => c.shape));
-    const f7 = floor("R" + (j + 1), p, topHeight + j * Number(i.roofHeight), Number(i.roofHeight));
-    for (const c of cores) add(f7, c.label + "\u5C4B\u7A81", j ? "roof_equipment" : c.use, c.shape);
-    for (const q of f7.spaces) {
+    const f8 = floor("R" + (j + 1), p, topHeight + j * Number(i.roofHeight), Number(i.roofHeight));
+    for (const c of cores) add(f8, c.label + "\u5C4B\u7A81", j ? "roof_equipment" : c.use, c.shape);
+    for (const q of f8.spaces) {
       q.exempt = q.area;
       q.counted = 0;
       q.legalBasis = "\u7B2C1\u689D\u7B2C9\u6B3E\u53CA\u7B2C162\u689D\u7B2C1\u9805\u7B2C2\u6B3E\uFF1B\u5C4B\u7A81\u6295\u5F71\u8207\u9AD8\u5EA6\u5047\u8A2D\u7B26\u5408";
     }
-    totals(f7);
-    roofs.push(f7);
+    totals(f8);
+    roofs.push(f8);
   }
   const floors = [...best, ...roofs, ...underground];
-  const used = floors.reduce((t, f7) => t + f7.counted, 0);
+  const used = floors.reduce((t, f8) => t + f8.counted, 0);
   check.push({ label: "\u57FA\u5730\u9762\u7A4D", status: s.mode === "survey" ? "pass" : "assumed", detail: `\u767B\u8A18${i.site}\u33A1\uFF1B\u5716\u9762${area(s.boundary).toFixed(2)}\u33A1\uFF0C\u4E0D\u7E2E\u653E\u5716\u5F62\u3002` }, { label: "\u5730\u4E0A\u5730\u4E0B\u53EF\u914D\u7F6E\u7BC4\u570D", status: "assumed", detail: "\u4F9D\u9010\u5074\u9000\u7E2E\u3001\u5730\u4E0B\u65BD\u5DE5\u9810\u7559\u5206\u5225\u751F\u6210\uFF1B\u5716\u8CC7\u5730\u754C\u975E\u9451\u754C\u3002" + s.assumptions.conditionsSource }, { label: "B1\u81F3B4\u8207\u5761\u9053", status: "pass", detail: `\u5730\u4E0B4\u5C64\uFF1B\u5761\u9053\u5BEC${layout.width}m\u30011:10\u3001\u6C34\u5E73\u9577${(rampEnd - rampStart).toFixed(2)}m\uFF1B\u8FF4\u8F49\u5167\u5074${(layout.radius - layout.width / 2).toFixed(2)}m\uFF1B\u4E0A\u4E0B\u5C64\u5C0D\u4F4D\u3002\u5730\u9762\u5761\u9053\u82076m\u5E73\u5730\u7DE9\u885D\u672A\u4FB5\u5165\u66AB\u63A1\u5730\u4E0A\u9000\u7E2E\u3002` }, { label: "\u6CD5\u5B9A\u505C\u8ECA\u512A\u5148", status: "assumed", detail: `\u4F4F\u5B85${units}\u6236\uFF1B\u4F9D\u7528\u9014\u901A\u5247\u521D\u4F30\u6C7D\u8ECA${legal}\u4F4D\u3001\u6A5F\u8ECA${units}\u4F4D\u3001\u81EA\u884C\u8ECA${Math.ceil(units * 0.25)}\u4F4D\uFF0C\u6309\u5BE6\u969B\u8ECA\u683C\u914D\u7F6E\uFF1B\u6B63\u5F0F\u500B\u6848\u898F\u5B9A\u4ECD\u9808\u8986\u6838\u3002` });
-  for (const f7 of underground) {
-    const paths = union(...f7.spaces.filter((q) => ["corridor", "driveway", "ramp"].includes(q.use)).map((q) => q.geometry));
+  for (const f8 of underground) {
+    const paths = union(...f8.spaces.filter((q) => ["corridor", "driveway", "ramp"].includes(q.use)).map((q) => q.geometry));
     const main = paths.filter((p) => area(intersect([p], ramp)) > 0.1);
-    const stranded = f7.spaces.filter((q) => ["car", "accessible_car", "motorcycle", "accessible_motorcycle", "bicycle", "community"].includes(q.use) && !touches(q.geometry, main));
-    check.push({ label: f7.id + "\u505C\u8ECA\u8207\u5165\u53E3\u9023\u901A", status: stranded.length ? "conflict" : "pass", detail: stranded.length ? stranded.map((q) => q.label).join("\u3001") + "\u672A\u63A5\u53EF\u9054\u901A\u9053" : "\u6BCF\u683C\u9130\u63A5\u8207\u5761\u9053\u9023\u901A\u7684\u8ECA\u9053\uFF0F\u901A\u9053\uFF1B\u8ECA\u8F1B\u6383\u63A0\u53CA\u9580\u6247\u914D\u7F6E\u4ECD\u9808\u5716\u8AAA\u8986\u6838\u3002" });
+    const stranded = f8.spaces.filter((q) => ["car", "accessible_car", "motorcycle", "accessible_motorcycle", "bicycle", "community"].includes(q.use) && !touches(q.geometry, main));
+    check.push({ label: f8.id + "\u505C\u8ECA\u8207\u5165\u53E3\u9023\u901A", status: stranded.length ? "conflict" : "pass", detail: stranded.length ? stranded.map((q) => q.label).join("\u3001") + "\u672A\u63A5\u53EF\u9054\u901A\u9053" : "\u6BCF\u683C\u9130\u63A5\u8207\u5761\u9053\u9023\u901A\u7684\u8ECA\u9053\uFF0F\u901A\u9053\uFF1B\u8ECA\u8F1B\u6383\u63A0\u53CA\u9580\u6247\u914D\u7F6E\u4ECD\u9808\u5716\u8AAA\u8986\u6838\u3002" });
   }
-  for (const f7 of floors) {
-    const overlap = sum(f7.spaces, "area") - area(union(...f7.spaces.map((s2) => s2.geometry))), balance = Math.abs(sum(f7.spaces, "area") - area(f7.plate));
-    check.push({ label: f7.id + "\u9762\u7A4D\u5B88\u6046\u8207\u91CD\u758A", status: overlap > 0.02 || balance > 0.02 ? "conflict" : "pass", detail: `\u6A13\u677F${area(f7.plate).toFixed(2)}\u33A1\uFF1B\u5340\u584A${sum(f7.spaces, "area").toFixed(2)}\u33A1\uFF1B\u91CD\u758A${overlap.toFixed(4)}\u33A1\uFF1B\u514D\u8A08\uFF0B\u8A08\u5BB9${(f7.exempt + f7.counted).toFixed(2)}\u33A1\u3002` });
-    if (!contained(f7.plate, f7.id.startsWith("B") ? belowEnvelope : s.boundary)) check.push({ label: f7.id + "\u8D8A\u754C", status: "conflict", detail: "\u5B58\u5728\u914D\u7F6E\u8D85\u51FA\u53EF\u914D\u7F6E\u5730\u754C\u3002" });
+  for (const f8 of floors) {
+    const overlap = sum2(f8.spaces, "area") - area(union(...f8.spaces.map((s2) => s2.geometry))), balance = Math.abs(sum2(f8.spaces, "area") - area(f8.plate));
+    check.push({ label: f8.id + "\u9762\u7A4D\u5B88\u6046\u8207\u91CD\u758A", status: overlap > 0.02 || balance > 0.02 ? "conflict" : "pass", detail: `\u6A13\u677F${area(f8.plate).toFixed(2)}\u33A1\uFF1B\u5340\u584A${sum2(f8.spaces, "area").toFixed(2)}\u33A1\uFF1B\u91CD\u758A${overlap.toFixed(4)}\u33A1\uFF1B\u514D\u8A08\uFF0B\u8A08\u5BB9${(f8.exempt + f8.counted).toFixed(2)}\u33A1\u3002` });
+    if (!contained(f8.plate, f8.id.startsWith("B") ? belowEnvelope : s.boundary)) check.push({ label: f8.id + "\u8D8A\u754C", status: "conflict", detail: "\u5B58\u5728\u914D\u7F6E\u8D85\u51FA\u53EF\u914D\u7F6E\u5730\u754C\u3002" });
   }
   check.push({ label: "\u5730\u9762\u5165\u53E3\u8207\u4EA4\u901A\u929C\u63A5", status: "assumed", detail: `121\u5DF7\u512A\u5148\uFF1B\u5761\u9053\u8D77\u9EDE(${rampStart.toFixed(1)},${rampY.toFixed(1)})\u9810\u75596m\u5E73\u5730\u7DE9\u885D\u3002\u9053\u8DEF\u5EFA\u7BC9\u7DDA\u3001\u884C\u7A7F\u7DDA\u3001\u51FA\u5165\u53E3\u6DE8\u8DDD\u8207\u8ECA\u8F1B\u6383\u63A0\u9808\u8986\u6838\uFF0C\u4E0D\u5217\u5E7E\u4F55\u5DF2\u901A\u904E\u3002` }, { label: "\u9053\u8DEF\u659C\u7DDA", status: "assumed", detail: "\u4F9D\u7B2C164\u689D\u63A1\u6BCF\u5074\u9AD8\u5EA6/3.6\u2212\u9053\u8DEF\u5BEC/2\u7684\u5747\u52FB\u9670\u5F71\u9810\u7B97\u4FDD\u5B88\u9000\u7E2E\uFF1B\u9053\u8DEF\u6CD5\u5B9A\u5BEC\u5EA6\u53CA\u9053\u8DEF\u5C0D\u5074\u6C38\u4E45\u7A7A\u5730\u672A\u78BA\u8A8D\uFF0C\u4E0D\u63A1\u52A0\u500D\u3002" }, { label: "\u65E5\u7167\u8207\u9AD8\u9435\u9650\u5EFA", status: "assumed", detail: "\u7B2C39-1\u689D\u51AC\u81F3\u9130\u5730\u6709\u6548\u65E5\u7167\u53CA\u9AD8\u9435\u69CB\u9020\uFF0F\u6DF1\u5EA6\u9650\u5236\u672A\u6709\u5B8C\u6574\u9130\u623F\u8207\u96A7\u9053\u8CC7\u6599\uFF1B\u521D\u4F30\u7E7C\u7E8C\uFF0C\u672A\u5BA3\u544A\u5408\u898F\u3002" }, { label: "\u5BB9\u7A4D\u7E3D\u91CF", status: used > target + 0.02 ? "conflict" : "pass", detail: `\u5730\u4E0A\u53CA\u5730\u4E0B\u5408\u8A08${used.toFixed(2)}\u33A1\uFF0F\u76EE\u6A19\u4E0A\u9650${target.toFixed(2)}\u33A1\u3002` });
   warnings.push("\u9632\u7A7A\u907F\u96E3\u517C\u505C\u8ECA\u66AB\u53EA\u53D6\u5E73\u5766\u5019\u9078\u7A7A\u9593\uFF0C\u5761\u9053\u4E0D\u5217\u907F\u96E3\u6709\u6548\u9762\u7A4D\uFF1B\u9032\u51FA\u53E3\u53CA\u9632\u8B77\u69CB\u9020\u4ECD\u9808\u4F9D\u6B63\u5F0F\u5716\u8AAA\u6838\u5C0D\u3002", "\u672C\u6B21\u63A16m\u6C7D\u6A5F\u8ECA\u5171\u7528\u5761\u9053\uFF0C\u6A5F\u8ECA\u521D\u4F30\u914D\u7F6E\u9650200\u4F4D\u5167\uFF1B\u66F4\u9AD8\u9700\u6C42\u9808\u53E6\u914D\u52A0\u5BEC\u6216\u5C08\u7528\u9053\uFF0C\u9019\u4E0D\u662F\u6CD5\u5B9A\u6236\u6578\u4E0A\u9650\u3002", ...s.edges.filter((e) => e.status === "assumed").map((e) => e.label + "\uFF1A" + e.source), s.assumptions.roomProgramSource, "\u5730\u4E0B\u6A5F\u96FB\u514D\u8A08\u5148\u63A1\u5408\u683C\u6A5F\u96FB\u7E3D\u91CF\u5269\u9918\u984D\u5EA6\uFF0CB1\u9632\u7A7A\u907F\u96E3\u4F9D\u5BE6\u969B\u5957\u758A\uFF1B\u5C1A\u672A\u4EE5\u672A\u7D93\u78BA\u8A8D\u7684\u505C\u8ECA\u6C60\u51FD\u91CB\u589E\u52A0\u8A2D\u5099\u514D\u8A08\u3002", "\u8A2D\u5099\u3001\u67F1\u7DB2\u3001\u4F4F\u5B85\u55AE\u5143\u8207\u670D\u52D9\u5206\u6524\u70BA\u521D\u4F30\uFF1B\u5EFA\u7BC9\u7DDA\u3001\u5730\u8CEA\u64CB\u571F\u3001\u9AD8\u9435\u3001\u6D88\u9632\u3001\u51AC\u81F3\u9130\u5730\u65E5\u7167\u53CA\u51FA\u5165\u53E3\u9808\u6B63\u5F0F\u8986\u6838\u3002");
-  return { spatial: { version: SPATIAL_VERSION, survey: s, aboveEnvelope, belowEnvelope, groundAccess: layout.entrance, auditHistory: i.regulatoryReview?.auditHistory ?? [], allowedVolume: allowed, floors, checks: check, units, legalCars: legal, cars: allBelow.filter(isCar).length, motos: allBelow.filter((q) => ["motorcycle", "accessible_motorcycle"].includes(q.use)).length, bikes: allBelow.filter((q) => q.use === "bicycle").length, community: allBelow.filter((q) => q.use === "community").length, unusedVolume: Math.max(0, target - used), unbuiltBasement: limit * 4 - underground.reduce((t, f7) => t + area(f7.plate), 0), warnings: [...new Set(warnings)], converged }, bonus, allowed, base, equipmentCap, floorReview };
+  return { spatial: { version: SPATIAL_VERSION, survey: s, aboveEnvelope, belowEnvelope, groundAccess: layout.entrance, auditHistory: i.regulatoryReview?.auditHistory ?? [], allowedVolume: allowed, floors, checks: check, units, legalCars: legal, cars: allBelow.filter(isCar).length, motos: allBelow.filter((q) => ["motorcycle", "accessible_motorcycle"].includes(q.use)).length, bikes: allBelow.filter((q) => q.use === "bicycle").length, community: allBelow.filter((q) => q.use === "community").length, unusedVolume: Math.max(0, target - used), unbuiltBasement: limit * 4 - underground.reduce((t, f8) => t + area(f8.plate), 0), warnings: [...new Set(warnings)], converged }, bonus, allowed, base, equipmentCap, floorReview };
 }
 function insetFast(shape, d) {
   return difference(shape, ...shape.flatMap((p) => p.flatMap((r) => r.slice(0, -1).map((a, j) => edgeBand(a, r[j + 1], d)))));
@@ -4527,45 +5255,45 @@ function touches(shape, route) {
   const band = union(...shape.flatMap((p) => p.flatMap((r) => r.slice(0, -1).map((a, k) => edgeBand(a, r[k + 1], 0.03)))));
   return area(intersect(band, route)) > 0.015;
 }
-function connectMotoRoutes(f7, aisleY) {
-  const road = union(...f7.spaces.filter((q) => q.use === "ramp" || q.use === "driveway").map((q) => q.geometry));
+function connectMotoRoutes(f8, aisleY) {
+  const road = union(...f8.spaces.filter((q) => q.use === "ramp" || q.use === "driveway").map((q) => q.geometry));
   for (let pass = 0; pass < 2; pass++) {
-    const paths = union(road, ...f7.spaces.filter((q) => q.use === "corridor").map((q) => q.geometry));
+    const paths = union(road, ...f8.spaces.filter((q) => q.use === "corridor").map((q) => q.geometry));
     for (const p of paths) {
       if (area(intersect([p], road)) > 0.01) continue;
       const b = bounds([p]);
       for (let x = Math.ceil(b.minX * 2) / 2; x + 1.8 <= b.maxX; x += 0.5) {
         const r = rectangle(x, Math.min(b.minY, aisleY), 1.8, Math.abs(aisleY - b.minY) + 1.8);
-        const blocks = union(...f7.spaces.filter((q) => !["corridor", "ramp", "driveway"].includes(q.use)).map((q) => q.geometry));
-        if (contained(r, f7.plate) && area(intersect(r, blocks)) < 5e-3) {
-          add(f7, "\u6A5F\u8ECA\u81EA\u884C\u8ECA\u6A6B\u5411\u901A\u90541.8m", "corridor", r, "housing");
+        const blocks = union(...f8.spaces.filter((q) => !["corridor", "ramp", "driveway"].includes(q.use)).map((q) => q.geometry));
+        if (contained(r, f8.plate) && area(intersect(r, blocks)) < 5e-3) {
+          add(f8, "\u6A5F\u8ECA\u81EA\u884C\u8ECA\u6A6B\u5411\u901A\u90541.8m", "corridor", r, "housing");
           break;
         }
       }
     }
   }
-  const all = union(road, ...f7.spaces.filter((q) => q.use === "corridor").map((q) => q.geometry)), main = all.filter((p) => area(intersect([p], road)) > 0.01);
-  for (const q of f7.spaces.filter((q2) => q2.use === "corridor")) {
+  const all = union(road, ...f8.spaces.filter((q) => q.use === "corridor").map((q) => q.geometry)), main = all.filter((p) => area(intersect([p], road)) > 0.01);
+  for (const q of f8.spaces.filter((q2) => q2.use === "corridor")) {
     q.geometry = intersect(q.geometry, main);
     q.area = area(q.geometry);
     q.houseRegistered = q.area;
     q.counted = q.area;
   }
-  f7.spaces = f7.spaces.filter((q) => q.area > 1e-3);
+  f8.spaces = f8.spaces.filter((q) => q.area > 1e-3);
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/spatialResult.ts
+// ../sanze-release-app/src/lib/planning/spatialResult.ts
 function computeSpatialResult(i, aggregate) {
   const template = aggregate({ ...i, spatial: void 0, areaReview: void 0, reserve: "0", equipment: "0", lobby: "0", balcony: "0", extraCars: "0" });
   const detail = buildSpatialPlanning(i), s = detail.spatial;
   if (!template.values || !detail.floorReview) return { ...template, spatial: s, values: null, errors: s.checks.filter((c) => c.status === "conflict").map((c) => c.detail), notes: [...s.warnings] };
-  const floors = s.floors, above = floors.filter((f7) => f7.id.endsWith("F")), below = floors.filter((f7) => f7.id.startsWith("B")), roofs = floors.filter((f7) => f7.id.startsWith("R")), spaces = floors.flatMap((f7) => f7.spaces), sum2 = (a, key) => a.reduce((t, x) => t + x[key], 0), of = (uses, a = spaces) => a.filter((x) => uses.includes(x.use));
-  const ap = above.flatMap((f7) => f7.spaces), bp = below.flatMap((f7) => f7.spaces), rp = roofs.flatMap((f7) => f7.spaces), fr = detail.floorReview;
-  const eq = of(["stair", "lift", "equipment"]), basement = below.reduce((t, f7) => t + area(f7.plate), 0), roof = roofs.reduce((t, f7) => t + area(f7.plate), 0), aboveArea = sum2(ap, "area") + roof, balcony = sum2(of(["balcony"], ap), "area"), sale = sum2(spaces, "houseRegistered"), common = sale - sum2(of(["dwelling", "balcony"], ap), "houseRegistered"), used = floors.reduce((t, f7) => t + f7.counted, 0), bcount = below.reduce((t, f7) => t + f7.counted, 0), parkingSalesArea = sum2(bp, "parkingRegistered"), bhouse = sum2(bp, "houseRegistered"), beq = of(["stair", "lift", "equipment"], bp), beqHouse = sum2(beq, "houseRegistered");
+  const floors = s.floors, above = floors.filter((f8) => f8.id.endsWith("F")), below = floors.filter((f8) => f8.id.startsWith("B")), roofs = floors.filter((f8) => f8.id.startsWith("R")), spaces = floors.flatMap((f8) => f8.spaces), sum3 = (a, key) => a.reduce((t, x) => t + x[key], 0), of = (uses2, a = spaces) => a.filter((x) => uses2.includes(x.use));
+  const ap = above.flatMap((f8) => f8.spaces), bp = below.flatMap((f8) => f8.spaces), rp = roofs.flatMap((f8) => f8.spaces), fr = detail.floorReview;
+  const eq = of(["stair", "lift", "equipment"]), basement = below.reduce((t, f8) => t + area(f8.plate), 0), roof = roofs.reduce((t, f8) => t + area(f8.plate), 0), aboveArea = sum3(ap, "area") + roof, balcony = sum3(of(["balcony"], ap), "area"), sale = sum3(spaces, "houseRegistered"), common = sale - sum3(of(["dwelling", "balcony"], ap), "houseRegistered"), used = floors.reduce((t, f8) => t + f8.counted, 0), bcount = below.reduce((t, f8) => t + f8.counted, 0), parkingSalesArea = sum3(bp, "parkingRegistered"), bhouse = sum3(bp, "houseRegistered"), beq = of(["stair", "lift", "equipment"], bp), beqHouse = sum3(beq, "houseRegistered");
   const mergedEquipment = beq.reduce((t, q) => t + (q.exemptionParts?.shelter ?? 0), 0), globalEquipment = beq.reduce((t, q) => t + (q.exemptionParts?.equipment ?? 0), 0);
-  const values = { ...template.values, base: detail.base, bonus: detail.allowed - detail.base, allowed: detail.allowed, renewalApplied: detail.bonus.renewal, tdrApplied: detail.bonus.tdr, scaleApplied: detail.bonus.scale, dangerApplied: detail.bonus.danger, used, aboveCounted: above.reduce((t, f7) => t + f7.counted, 0), basementCounted: bcount, basementExempt: basement - bcount, parkingCap: s.cars * 40, parkingCounted: sum2(of(["car", "accessible_car", "ramp", "driveway"], bp), "counted"), basementEquipmentMerged: mergedEquipment, basementEquipmentGlobalExempt: globalEquipment, basementEquipmentCounted: sum2(beq, "counted"), bicycleCounted: sum2(of(["bicycle"], bp), "counted"), motorcycleCounted: sum2(of(["motorcycle", "accessible_motorcycle"], bp), "counted"), communityCounted: sum2(of(["community"], bp), "counted"), spareCounted: 0, ordinaryCommon: sum2(of(["corridor", "structure"], ap), "houseRegistered"), sale, salePing: sale * 0.3025, common, commonRatio: sale ? common / sale * 100 : 0, basementCommon: bhouse, basementUnassigned: 0, basementSale: bhouse, basementEquipmentSale: beqHouse, shelterCommon: 0, parkingHousingCommon: bhouse - beqHouse, parkingSalesArea, aboveSale: sum2(ap, "houseRegistered") + sum2(rp, "houseRegistered"), registeredEquipment: sum2(of(["stair", "lift", "equipment"], ap), "houseRegistered"), registeredLobby: sum2(of(["lobby"], ap), "houseRegistered"), registeredRoof: sum2(rp, "houseRegistered"), carArea: sum2(of(["car", "accessible_car", "ramp", "driveway"], bp), "area"), motoArea: sum2(of(["motorcycle", "accessible_motorcycle"], bp), "area"), totalSelected: aboveArea + basement - (i.totalBasis === "floor" ? balcony : 0), countedExtras: fr.countedExtras + bcount, ordinary: sum2(of(["dwelling", "corridor", "structure"], ap), "area"), equipment: sum2(of(["stair", "lift", "equipment"], ap), "area"), equipmentCap: detail.equipmentCap, equipmentExempt: fr.equipmentExempt, lobby: fr.lobby, balcony, lobbyExempt: fr.lobbyExempt, balconyExempt: fr.balconyExempt, footprint: area(above[0]?.plate ?? []), roof, above: aboveArea, aboveWithoutBalcony: aboveArea - balcony, units: s.units, cars: s.cars, motos: s.motos, parkingArea: parkingSalesArea, parkingBasis: sum2(of(["dwelling", "lobby", "corridor", "structure"], ap), "area"), basementPlate: Math.max(...below.map((f7) => area(f7.plate))), neededFloors: 4, floors: 4, basement, capacity: s.cars, total: aboveArea + basement, totalWithoutBalcony: aboveArea + basement - balcony, equivalentFloors: above.length, unused: Math.max(0, detail.allowed - used), salesCoefficient: sale / detail.allowed };
-  const pv = template.parking?.values, parking = pv && template.parking ? { ...template.parking, legal: s.legalCars, errors: [], notes: s.warnings, values: { ...pv, legal: s.legalCars, marketDemand: 0, requestedExtra: 0, requested: s.legalCars, adoptedExtra: 0, cars: s.cars, availableExtra: 0, remainingExtra: 0, capacity: s.cars, neededFloors: 4, floors: 4, basement, motos: s.motos, bikes: s.bikes, community: s.community, carArea: values.carArea, motoArea: values.motoArea, bikeArea: sum2(of(["bicycle"], bp), "area"), communityArea: sum2(of(["community"], bp), "area"), equipmentArea: sum2(beq, "area"), equipmentPerFloor: sum2(beq, "area") / 4, rampTotal: sum2(of(["ramp"], bp), "area"), lossArea: sum2(of(["structure"], bp), "area"), spareArea: 0, parkingArea: parkingSalesArea, basementCommon: bhouse, legalFormula: `\u9010\u5C64\u7528\u9014\u901A\u5247\u521D\u4F30\uFF1B${s.units}\u6236\uFF0C\u6C7D\u8ECA\u9700\u6C42${s.legalCars}\u4F4D\uFF1B\u4F9D\u5716\u9762\u5BE6\u6392` } } : template.parking;
-  const regulatory = "regulatory" in template && template.regulatory ? { ...template.regulatory, bonus: detail.bonus, volume: { ...template.regulatory.volume, shelterArea: area(below[0]?.shelter ?? []), shelterEquipment: mergedEquipment, pools: { basement, cars: s.cars, carArea: values.carArea, motoArea: values.motoArea, bikeArea: sum2(of(["bicycle"], bp), "area"), communityArea: sum2(of(["community"], bp), "area"), rampTotal: sum2(of(["ramp"], bp), "area"), lossArea: sum2(of(["structure"], bp), "area"), equipmentArea: sum2(beq, "area"), spareArea: 0 }, parkingCap: s.cars * 40, carPool: bp.reduce((t, q) => t + (q.exemptionParts?.carSubject ?? 0), 0), carExempt: bp.reduce((t, q) => t + (q.exemptionParts?.car ?? 0), 0), mergedEquipment, globalEquipmentExempt: globalEquipment, equipmentCounted: values.basementEquipmentCounted, parkingCounted: values.parkingCounted, bicycleCounted: values.bicycleCounted, motorcycleCounted: values.motorcycleCounted, communityCounted: values.communityCounted, spareCounted: 0, counted: bcount, exempt: basement - bcount, notes: s.warnings, balanced: Math.abs(basement - bcount - below.reduce((t, f7) => t + f7.exempt, 0)) < 0.02 } } : void 0;
+  const values = { ...template.values, base: detail.base, bonus: detail.allowed - detail.base, allowed: detail.allowed, renewalApplied: detail.bonus.renewal, tdrApplied: detail.bonus.tdr, scaleApplied: detail.bonus.scale, dangerApplied: detail.bonus.danger, used, aboveCounted: above.reduce((t, f8) => t + f8.counted, 0), basementCounted: bcount, basementExempt: basement - bcount, parkingCap: s.cars * 40, parkingCounted: sum3(of(["car", "accessible_car", "ramp", "driveway"], bp), "counted"), basementEquipmentMerged: mergedEquipment, basementEquipmentGlobalExempt: globalEquipment, basementEquipmentCounted: sum3(beq, "counted"), bicycleCounted: sum3(of(["bicycle"], bp), "counted"), motorcycleCounted: sum3(of(["motorcycle", "accessible_motorcycle"], bp), "counted"), communityCounted: sum3(of(["community"], bp), "counted"), spareCounted: 0, ordinaryCommon: sum3(of(["corridor", "structure"], ap), "houseRegistered"), sale, salePing: sale * 0.3025, common, commonRatio: sale ? common / sale * 100 : 0, basementCommon: bhouse, basementUnassigned: 0, basementSale: bhouse, basementEquipmentSale: beqHouse, shelterCommon: 0, parkingHousingCommon: bhouse - beqHouse, parkingSalesArea, aboveSale: sum3(ap, "houseRegistered") + sum3(rp, "houseRegistered"), registeredEquipment: sum3(of(["stair", "lift", "equipment"], ap), "houseRegistered"), registeredLobby: sum3(of(["lobby"], ap), "houseRegistered"), registeredRoof: sum3(rp, "houseRegistered"), carArea: sum3(of(["car", "accessible_car", "ramp", "driveway"], bp), "area"), motoArea: sum3(of(["motorcycle", "accessible_motorcycle"], bp), "area"), totalSelected: aboveArea + basement - (i.totalBasis === "floor" ? balcony : 0), countedExtras: fr.countedExtras + bcount, ordinary: sum3(of(["dwelling", "corridor", "structure"], ap), "area"), equipment: sum3(of(["stair", "lift", "equipment"], ap), "area"), equipmentCap: detail.equipmentCap, equipmentExempt: fr.equipmentExempt, lobby: fr.lobby, balcony, lobbyExempt: fr.lobbyExempt, balconyExempt: fr.balconyExempt, footprint: area(above[0]?.plate ?? []), roof, above: aboveArea, aboveWithoutBalcony: aboveArea - balcony, units: s.units, cars: s.cars, motos: s.motos, parkingArea: parkingSalesArea, parkingBasis: sum3(of(["dwelling", "lobby", "corridor", "structure"], ap), "area"), basementPlate: Math.max(...below.map((f8) => area(f8.plate))), neededFloors: 4, floors: 4, basement, capacity: s.cars, total: aboveArea + basement, totalWithoutBalcony: aboveArea + basement - balcony, equivalentFloors: above.length, unused: Math.max(0, detail.allowed - used), salesCoefficient: sale / detail.allowed };
+  const pv = template.parking?.values, parking = pv && template.parking ? { ...template.parking, legal: s.legalCars, errors: [], notes: s.warnings, values: { ...pv, legal: s.legalCars, marketDemand: 0, requestedExtra: 0, requested: s.legalCars, adoptedExtra: 0, cars: s.cars, availableExtra: 0, remainingExtra: 0, capacity: s.cars, neededFloors: 4, floors: 4, basement, motos: s.motos, bikes: s.bikes, community: s.community, carArea: values.carArea, motoArea: values.motoArea, bikeArea: sum3(of(["bicycle"], bp), "area"), communityArea: sum3(of(["community"], bp), "area"), equipmentArea: sum3(beq, "area"), equipmentPerFloor: sum3(beq, "area") / 4, rampTotal: sum3(of(["ramp"], bp), "area"), lossArea: sum3(of(["structure"], bp), "area"), spareArea: 0, parkingArea: parkingSalesArea, basementCommon: bhouse, legalFormula: `\u9010\u5C64\u7528\u9014\u901A\u5247\u521D\u4F30\uFF1B${s.units}\u6236\uFF0C\u6C7D\u8ECA\u9700\u6C42${s.legalCars}\u4F4D\uFF1B\u4F9D\u5716\u9762\u5BE6\u6392` } } : template.parking;
+  const regulatory = "regulatory" in template && template.regulatory ? { ...template.regulatory, bonus: detail.bonus, volume: { ...template.regulatory.volume, shelterArea: area(below[0]?.shelter ?? []), shelterEquipment: mergedEquipment, pools: { basement, cars: s.cars, carArea: values.carArea, motoArea: values.motoArea, bikeArea: sum3(of(["bicycle"], bp), "area"), communityArea: sum3(of(["community"], bp), "area"), rampTotal: sum3(of(["ramp"], bp), "area"), lossArea: sum3(of(["structure"], bp), "area"), equipmentArea: sum3(beq, "area"), spareArea: 0 }, parkingCap: s.cars * 40, carPool: bp.reduce((t, q) => t + (q.exemptionParts?.carSubject ?? 0), 0), carExempt: bp.reduce((t, q) => t + (q.exemptionParts?.car ?? 0), 0), mergedEquipment, globalEquipmentExempt: globalEquipment, equipmentCounted: values.basementEquipmentCounted, parkingCounted: values.parkingCounted, bicycleCounted: values.bicycleCounted, motorcycleCounted: values.motorcycleCounted, communityCounted: values.communityCounted, spareCounted: 0, counted: bcount, exempt: basement - bcount, notes: s.warnings, balanced: Math.abs(basement - bcount - below.reduce((t, f8) => t + f8.exempt, 0)) < 0.02 } } : void 0;
   return { ...template, regulatory, values, legal: s.legalCars, parking, floorReview: fr, spatial: s, errors: [...detail.bonus.errors, ...s.checks.filter((c) => c.status === "conflict").map((c) => c.detail)], notes: [...detail.bonus.notes, ...s.warnings, ...s.checks.filter((c) => c.status === "assumed").map((c) => c.label + "\uFF1A" + c.detail), `App\u4F9D\u9010\u5C64\u5E7E\u4F55\u91CD\u7B97\uFF0C\u5730\u4E0B\u56FA\u5B9A4\u5C64\uFF0C\u672A\u8208\u5EFA\u7684\u5730\u4E0B\u7BC4\u570D${s.unbuiltBasement.toFixed(2)}\u33A1\u4E0D\u5217\u6A13\u677F\u3001\u8A08\u5BB9\u6216\u767B\u8A18\u3002`, `\u92B7\u552E\u4FC2\u6578\uFF1D\u623F\u5C4B\u53EF\u767B\u8A18\u9762\u7A4D${sale.toFixed(2)}\xF7\u5141\u5EFA\u5BB9\u7A4D${detail.allowed.toFixed(2)}\uFF1B\u4E0D\u4EE5\u6B77\u53F2\u4FC2\u6578\u4F5C\u914D\u7F6E\u76EE\u6A19\u3002`] };
 }
 var spatialCache = /* @__PURE__ */ new Map();
@@ -4579,7 +5307,7 @@ function calculateSpatialResult(i, aggregate) {
   return result;
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/legalParking.ts
+// ../sanze-release-app/src/lib/planning/legalParking.ts
 var PARKING_RULE_VERSION = "ntpc-parking.2026-10-17.v2";
 var isTaipeiParking = (district) => /臺北|台北/.test(district);
 var parkingSources = [
@@ -4624,9 +5352,9 @@ function calculateLegalParking(p, c) {
     notes.push("\u90FD\u5BE9\u9069\u7528\u6027\u672A\u9F4A\uFF0C\u5148\u6309\u9069\u7528\u65B0\u5317\u90FD\u5BE9\u9810\u7559\u9700\u6C42\uFF0C\u5C6C\u660E\u793A\u5047\u8A2D\u3002");
   }
   if (c.storePercent > 0 && !(taipei && general)) errors.push("\u4F4F\u5546\u6DF7\u7528\u9808\u5206\u5217\u5404\u7528\u9014\u6CD5\u5B9A\u505C\u8ECA\u6AA2\u8A0E\uFF1B\u672C\u7248\u7D14\u4F4F\u5B85\u6D41\u7A0B\u4E0D\u4EE3\u586B\u6CD5\u5B9A\u6578");
-  const get = (value, label, min = 0, max = 1e8) => {
-    const n = Number(value);
-    if (!value.trim() || !Number.isFinite(n) || n < min || n > max) {
+  const get = (value2, label, min = 0, max = 1e8) => {
+    const n = Number(value2);
+    if (!value2.trim() || !Number.isFinite(n) || n < min || n > max) {
       errors.push(label + "\u7121\u6548");
       return 0;
     }
@@ -4750,14 +5478,14 @@ function calculateLegalParking(p, c) {
       const shelterOnly = j === 0 ? Math.max(0, (c.minB1Area ?? 0) + rampArea + bikeArea + communityArea + bicycleLiftArea - necessary) : 0;
       return { label: `B${j + 1}`, cars: count, equipment: eq + (j === 0 ? bicycleLiftArea : 0), ramp: rampArea, fixed: fixed - (j === 0 ? bicycleLiftArea : 0), loss: turn, slab: necessary + shelterOnly, shelterOnly };
     });
-    if (left > 0 || quantityFloors.some((f7) => f7.slab > c.plate + 1e-3)) {
+    if (left > 0 || quantityFloors.some((f8) => f8.slab > c.plate + 1e-3)) {
       errors.push("\u56FA\u5B9A\u5730\u4E0B\u5C64\u6578\u7684\u5FC5\u8981\u7A7A\u9593\u9810\u7559\u8D85\u51FA\u53EF\u7528\u9762\u7A4D\uFF1B\u9808\u8ABF\u6574\u91CF\u9AD4\u6216\u505C\u8ECA\u9700\u6C42");
       return empty(legal);
     }
-    basement = quantityFloors.reduce((a, f7) => a + f7.slab, 0);
-    equipmentArea = quantityFloors.reduce((a, f7) => a + f7.equipment, 0);
-    lossArea = quantityFloors.reduce((a, f7) => a + f7.loss, 0);
-    spareArea = quantityFloors.reduce((a, f7) => a + f7.shelterOnly, 0);
+    basement = quantityFloors.reduce((a, f8) => a + f8.slab, 0);
+    equipmentArea = quantityFloors.reduce((a, f8) => a + f8.equipment, 0);
+    lossArea = quantityFloors.reduce((a, f8) => a + f8.loss, 0);
+    spareArea = quantityFloors.reduce((a, f8) => a + f8.shelterOnly, 0);
     notes.push("\u5730\u4E0B\u6A13\u677F\u4F9D\u6BCF\u5C64\u5FC5\u8981\u7528\u9014\u52A0\u7E3D\u9810\u7559\uFF0C\u672A\u7528\u958B\u6316\u4E0A\u9650\u4E58\u56DB\u5C64\u7576\u5BE6\u969B\u6A13\u677F\uFF1B\u672A\u8208\u5EFA\u7A7A\u9593\u4E0D\u8A08\u5BB9\u3001\u4E0D\u767B\u8A18\u3001\u4E0D\u5217\u6210\u672C\u9762\u7A4D\u3002B1\u53E6\u5728\u5761\u9053\u3001\u81EA\u884C\u8ECA\u53CA\u793E\u5340\u88DD\u5378\u7B49\u66AB\u4E0D\u5217\u907F\u96E3\u9762\u7A4D\u4E4B\u5916\uFF0C\u7559\u8DB3\u9644\u5EFA\u9632\u7A7A\u907F\u96E3\u517C\u505C\u8ECA\u9762\u7A4D\uFF0C\u8A72\u7528\u9014\u8207\u505C\u8ECA\u5957\u758A\u4E0D\u91CD\u8907\u52A0\u7E3D\u3002\u9019\u662F\u9762\u7A4D\u9810\u7B97\uFF0C\u5C1A\u7121\u9010\u683C\u6392\u4F4D\u8B49\u660E\u3002");
   }
   const parkingArea = carArea + motoArea + bikeArea + communityArea + rampTotal + lossArea;
@@ -4771,7 +5499,7 @@ function calculateLegalParking(p, c) {
   return { version: PARKING_RULE_VERSION, roughEstimate: general, errors, notes, legal, capacityFailure: false, values: { smallSite: void 0, flatCars: cars, mechanicalCars: 0, mechanicalArea: 0, undergroundFlatCars: cars, groundCars: 0, quantityFloors, legal, marketDemand, requestedExtra: c.extra, requested, adoptedExtra, cars, availableExtra, remainingExtra, capacity, neededFloors, floors, basement, motos, bikes, community, accessible, accessibleMotos, motoAccessibleExtra, motoAccessibleWidth, motoAccessibleLength, motoAccessibleAisle, carWidth, carLength, aisle, carModule, motoWidth, motoLength, motoAisle, motoModule, bicycleAccess, bicycleLiftArea, rampDenominator, rampWidth, rampRun, rampArea, rampTotal, equipmentPerFloor, equipmentArea, lossPerFloor, lossArea, netPerFloor, motoArea, bikeArea, communityArea, carArea, parkingArea, basementCommon, spareArea, b1Capacity, otherCapacity, entranceBuffer: cars + community <= 50 ? 4 : 6, legalFormula } };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/autonomousPlanning.ts
+// ../sanze-release-app/src/lib/planning/autonomousPlanning.ts
 var planningFields = [
   ["site", "\u57FA\u5730\u9762\u7A4D", "\u33A1", "base"],
   ["coverage", "\u6CD5\u5B9A\u5EFA\u853D\u7387", "%", "base"],
@@ -4903,7 +5631,7 @@ function calculatePlanningPass(i, aboveBudget) {
     }
     if (parkingHousingCommon > 0 && !allocation.source.trim()) notes.push("\u505C\u8ECA\u76F8\u95DC\u623F\u5C4B\u6301\u5206\u4F9D\u64DA\u672A\u9F4A\uFF0C\u66AB\u63A1\u5DF2\u8F38\u5165\u9762\u7A4D\u70BA\u660E\u793A\u5206\u914D\u5047\u8A2D\uFF0C\u975E\u6838\u5B9A\u767B\u8A18\u3002");
   }
-  const shelterCommon = i.quantityReserve ? pv?.quantityFloors?.reduce((a, f7) => a + f7.shelterOnly, 0) ?? 0 : 0;
+  const shelterCommon = i.quantityReserve ? pv?.quantityFloors?.reduce((a, f8) => a + f8.shelterOnly, 0) ?? 0 : 0;
   const basementUnassigned = Math.max(0, basementResidual - basementEquipmentPool - shelterCommon), basementEquipmentSale = basementEquipmentPool * n.basementSalePercent / 100;
   const basementCommon = basementEquipmentPool + shelterCommon + parkingHousingCommon, basementSale = basementEquipmentSale + shelterCommon + parkingHousingCommon, parkingSalesArea = parkingArea - parkingHousingCommon;
   const reg = i.areaReview?.registration, registeredEquipment = equipment * (reg?.equipmentPercent ?? 100) / 100, registeredLobby = lobby * (reg?.lobbyPercent ?? 100) / 100, registeredRoof = roof * (reg?.roofPercent ?? 100) / 100;
@@ -4918,11 +5646,33 @@ function calculatePlanningPass(i, aboveBudget) {
   return { errors, notes, legal, parking, aboveGround, floorReview, values: Object.fromEntries(Object.entries(values).map(([k, v]) => [k, round(v)])) };
 }
 function normalizePlanningInput(input, district, parcel) {
-  const disclosed = discloseMissingPlanningInputs(input);
+  if (input.assessmentMode === "document" || input.mixedSite?.enabled) return input;
+  const disclosed = input.commercialIntensity?.enabled ? { input, notes: [] } : discloseMissingPlanningInputs(input);
   input = { ...disclosed.input, ...disclosed.notes.length ? { assumptionNotes: [.../* @__PURE__ */ new Set([...input.assumptionNotes ?? [], ...disclosed.notes])] } : {} };
   return { ...input, areaReview: input.areaReview ?? { version: AREA_REVIEW_VERSION, commonPolicy: defaultCommonPolicy() }, regulatoryReview: input.regulatoryReview ? { ...input.regulatoryReview, version: defaultRegulatoryReview().version } : defaultRegulatoryReview(), parkingDesign: input.parkingDesign ?? newParkingDesign(district?.trim() || "\u65B0\u5317\u5E02", parcel ?? input.parkingReference) };
 }
 function calculatePlanning(input) {
+  if (input.assessmentMode !== void 0 && !["planning", "document"].includes(input.assessmentMode)) return { values: null, notes: [], errors: ["\u8A55\u4F30\u6A21\u5F0F\u7121\u6548"] };
+  if (input.assessmentMode === "document") {
+    const documentReview = calculateDocumentCase(input.documentCase);
+    return { values: null, documentReview, notes: [], errors: ["\u4F9D\u6587\u4EF6\u8986\u6838\u7D50\u679C\u53E6\u5217\uFF1B\u4E0D\u80FD\u81EA\u52D5\u7576\u4F5C\u53EF\u552E\u6216\u8CA1\u52D9\u63A1\u7528\u4F86\u6E90\u3002", ...documentReview.issues, ...documentReview.gaps] };
+  }
+  if (input.mixedSite !== void 0 && !isMixedSite(input.mixedSite)) return { values: null, notes: [], errors: ["\u6DF7\u5408\u5206\u5340\u683C\u5F0F\u7121\u6548\uFF0C\u672A\u5957\u7528\u4F4F\u5B85\u9810\u8A2D\u503C\u3002"] };
+  if (input.mixedSite?.enabled) return { values: null, notes: [], errors: ["\u6DF7\u5408\u5206\u5340\u63A1\u7368\u7ACB\u8A55\u4F30\uFF0C\u4E0D\u5957\u7528\u55AE\u4E00\u4F4F\u5B85\u516C\u5F0F\u6216\u9001\u5165\u65E2\u6709\u8CA1\u52D9\u6A21\u578B\u3002"] };
+  if (input.commercialIntensity !== void 0 && !isCommercialIntensity(input.commercialIntensity)) return { values: null, notes: [], errors: ["\u5546\u696D\u5206\u5340\u683C\u5F0F\u7121\u6548\uFF0C\u672A\u5957\u7528\u4F4F\u5B85\u9810\u8A2D\u503C\u3002"] };
+  if (input.commercialIntensity?.enabled) {
+    const review = calculateCommercialIntensity(input.commercialIntensity, input.site, input.coverage, true);
+    if (input.commercialIntensity.designMode === "residential" && (input.storePercent.trim() === "" || Number(input.storePercent) !== 0)) review.errors.push("\u7D14\u4F4F\u5B85\u8A2D\u8A08\u9808\u78BA\u8A8D\u975E\u4F4F\u5B85\u6BD4\u4F8B\u70BA0\uFF1B\u5982\u898F\u5283\u5E97\u8216\u6216\u8FA6\u516C\uFF0C\u8ACB\u6539\u9078\u4F4F\u5546\u6DF7\u5408\u4E26\u5206\u5217\u7528\u9014\u3002");
+    const district = input.parkingDesign?.district?.replace("\u53F0\u5317", "\u81FA\u5317");
+    if (!district || !district.includes(input.commercialIntensity.city)) review.errors.push("\u5546\u696D\u5340\u6240\u5728\u5730\u8207\u505C\u8ECA\u898F\u5247\u6240\u5728\u5730\u9808\u4E00\u81F4\uFF0C\u8ACB\u6838\u5C0D\u5169\u8655\u8A2D\u5B9A\u3002");
+    if (review.errors.length || review.effectiveFar === null) return { values: null, notes: review.notes, errors: review.errors, commercialReview: review };
+    const result = calculatePlanning({ ...input, commercialIntensity: { ...input.commercialIntensity, enabled: false }, far: String(review.effectiveFar) });
+    return { ...result, commercialReview: review, notes: [`\u5546\u696D\u5206\u5340\u57FA\u6E96\u5BB9\u7A4D\u7531\u9069\u7528\u7BC4\u570D\u8A08\u7B97\u70BA${review.base}\u33A1\uFF0C\u672A\u63A1\u539F\u5BB9\u7A4D\u7387\u6B04\u4F4D\u3002`, ...review.notes, ...result.notes] };
+  }
+  const required = planningFields.filter(([k]) => !["equipment", "lobby", "roofRate", "excavationCap", "carPerUnit", "carPing", "motoSqm", "localParkingUnit"].includes(k) && !(k === "basementFloors" && input.basementMode === "auto") && !(input.basementDemand?.enabled && ["excavation", "basementFloors"].includes(k)));
+  const missing = required.filter(([k]) => !input[k]?.trim()).map(([, label]) => label + "\u672A\u586B\uFF1B\u4E0D\u5957\u9810\u8A2D\u503C");
+  if (input.quantityReserve?.reservationMode === "legal_envelope" && input.quantityReserve.basementEquipmentMode !== "named" && !Number.isFinite(input.quantityReserve.basementReservePercent)) missing.push("\u5730\u4E0B\u9810\u7559\u6BD4\u4F8B\u672A\u586B\uFF1B\u4E0D\u595725%");
+  if (missing.length) return { values: null, notes: [], errors: missing };
   const disclosed = discloseMissingPlanningInputs(input), i = normalizePlanningInput(disclosed.input);
   if (i.basementDemand?.enabled) {
     if (!isBasementDemand(i.basementDemand)) return { ...calculateAggregatePlanning({ ...i, basementDemand: void 0 }), values: null, errors: ["\u5730\u4E0B\u9700\u6C42\u6AA2\u8A0E\u8CC7\u6599\u7121\u6548"] };
@@ -4940,10 +5690,10 @@ function calculateAggregatePlanning(input) {
   const first = calculatePlanningPass(applied), allowance = first.values?.allowed ?? first.aboveGround?.allowed ?? 0, target = allowance * Number(i.volumeUse) / 100;
   const evaluate = (budget) => {
     const result = calculatePlanningPass(applied, budget), v2 = result.values, pv = result.parking?.values;
-    const volume2 = v2 && pv ? reviewBasementVolume(p, { ...pv }, v2.equipmentExempt, v2.equipmentCap, { footprint: v2.footprint, equipmentPerFloor: pv.equipmentPerFloor, plate: v2.basementPlate, shelterOnly: pv.quantityFloors?.reduce((a, f7) => a + f7.shelterOnly, 0) }) : null;
+    const volume2 = v2 && pv ? reviewBasementVolume(p, { ...pv }, v2.equipmentExempt, v2.equipmentCap, { footprint: v2.footprint, equipmentPerFloor: pv.equipmentPerFloor, plate: v2.basementPlate, shelterOnly: pv.quantityFloors?.reduce((a, f8) => a + f8.shelterOnly, 0) }) : null;
     return { result, volume: volume2, total: (v2?.used ?? Infinity) + (volume2?.counted ?? 0) };
   };
-  if (!first.values && (!first.parking || !first.aboveGround) || bonus.errors.length) return { ...first, errors: [...first.errors, ...bonus.errors], notes: [...first.notes, ...bonus.notes] };
+  if (!first.values && (!first.parking || !first.aboveGround) || bonus.errors.length) return { ...first, values: null, errors: [...first.errors, ...bonus.errors], notes: [...first.notes, ...bonus.notes] };
   if (!first.values && !(i.parkingDesign?.fullVolumeSearch && first.parking?.capacityFailure)) return { ...first, errors: [.../* @__PURE__ */ new Set([...first.errors, ...bonus.errors])], notes: [...first.notes, ...bonus.notes] };
   let chosen = evaluate(target);
   if (!i.areaReview?.floors && (!chosen.result.values || chosen.total > target + 1e-4 || chosen.result.errors.length)) {
@@ -4989,7 +5739,7 @@ function calculateAggregatePlanning(input) {
   return { ...z, errors: [...new Set(errors)], notes: [...new Set(notes)], values, regulatory: { version: p.version, bonus, volume, status: "planning" } };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/components/efficiency/LegalParkingPanel.tsx
+// ../sanze-release-app/src/components/efficiency/LegalParkingPanel.tsx
 import { Fragment as Fragment4, jsx as jsx4, jsxs as jsxs4 } from "react/jsx-runtime";
 var f2 = (n) => n.toLocaleString("zh-TW", {
   maximumFractionDigits: 2
@@ -5080,13 +5830,13 @@ function LegalParkingPanel({
       confirmed: Object.keys(x).every((k) => ["floorHeight", "loss", "rowMode"].includes(k)) ? p.confirmed : false
     }
   });
-  const text = (label, key) => /* @__PURE__ */ jsxs4("label", { children: [
+  const text4 = (label, key) => /* @__PURE__ */ jsxs4("label", { children: [
     /* @__PURE__ */ jsx4(FieldLabel4, { children: label }),
     /* @__PURE__ */ jsx4("input", { value: p[key], onChange: (e) => patch({
       [key]: e.target.value
     }) })
   ] });
-  const number = (label, key, unit) => /* @__PURE__ */ jsxs4("label", { children: [
+  const number2 = (label, key, unit) => /* @__PURE__ */ jsxs4("label", { children: [
     /* @__PURE__ */ jsx4(FieldLabel4, { children: label }),
     /* @__PURE__ */ jsxs4("span", { className: "planning-number-unit", children: [
       /* @__PURE__ */ jsx4("input", { type: "number", min: "0", step: "any", value: p[key], onChange: (e) => patch({
@@ -5127,11 +5877,11 @@ function LegalParkingPanel({
       general ? /* @__PURE__ */ jsx4("p", { className: "planning-mode-result", children: taipei ? "\u4F9D\u81FA\u5317\u5E02\u571F\u7BA186-1\u689D\u521D\u4F30\u4F4F\u5B85\u8207\u7B2C\u4E09\u985E\u96F6\u552E\u5E97\u8216\uFF1B\u5BE6\u969B\u7528\u9014\u53CA\u500B\u6848\u90FD\u5E02\u8A08\u756B\u4ECD\u9808\u8986\u6838\u3002" : "\u76EE\u524D\u63A1\u4F4F\u5B85\u505C\u8ECA\u901A\u5247\u53CA\u65B0\u5317\u5E02\u8ECA\u683C\u3001\u8D70\u9053\u6A19\u6E96\u521D\u4F30\uFF1B\u500B\u6848\u5206\u5340\u8CC7\u6599\u53EF\u65BC\u5F8C\u7E8C\u88DC\u5165\u8986\u6838\u3002" }) : /* @__PURE__ */ jsxs4(Fragment4, { children: [
         /* @__PURE__ */ jsx4("h3", { children: "\u500B\u6848\u505C\u8ECA\u4F9D\u64DA" }),
         /* @__PURE__ */ jsxs4("div", { className: "burden-fields", children: [
-          text("\u884C\u653F\u5340", "district"),
-          text("\u57FA\u5730\u5730\u6BB5\u5730\u865F\u6216\u5730\u5740", "parcel"),
-          text("\u9069\u7528\u90FD\u5E02\u8A08\u756B", "plan"),
-          text("\u571F\u5730\u4F7F\u7528\u5206\u5340", "zone"),
-          text("\u505C\u8ECA\u689D\u6587\u3001\u9801\u78BC\u53CA\u8CC7\u6599\u4F86\u6E90", "reference"),
+          text4("\u884C\u653F\u5340", "district"),
+          text4("\u57FA\u5730\u5730\u6BB5\u5730\u865F\u6216\u5730\u5740", "parcel"),
+          text4("\u9069\u7528\u90FD\u5E02\u8A08\u756B", "plan"),
+          text4("\u571F\u5730\u4F7F\u7528\u5206\u5340", "zone"),
+          text4("\u505C\u8ECA\u689D\u6587\u3001\u9801\u78BC\u53CA\u8CC7\u6599\u4F86\u6E90", "reference"),
           /* @__PURE__ */ jsxs4("label", { children: [
             /* @__PURE__ */ jsx4(FieldLabel4, { children: "\u9069\u7528\u8A08\u7B97\u898F\u5247" }),
             /* @__PURE__ */ jsxs4(PublicSelect4, { value: p.rule, onChange: (e) => patch({
@@ -5143,10 +5893,10 @@ function LegalParkingPanel({
               /* @__PURE__ */ jsx4("option", { value: "perArea", children: "\u90FD\u5E02\u8A08\u756B\uFF1A\u4F9D\u6A13\u677F\u9762\u7A4D" })
             ] })
           ] }),
-          p.rule === "perUnit" && number("\u689D\u6587\u898F\u5B9A\u6BCF\u6236\u6C7D\u8ECA\u4F4D", "unitRate", "\u4F4D\uFF0F\u6236"),
+          p.rule === "perUnit" && number2("\u689D\u6587\u898F\u5B9A\u6BCF\u6236\u6C7D\u8ECA\u4F4D", "unitRate", "\u4F4D\uFF0F\u6236"),
           p.rule === "perArea" && /* @__PURE__ */ jsxs4(Fragment4, { children: [
-            number("\u689D\u6587\u6BCF\u8ECA\u4F4D\u6A13\u677F\u9762\u7A4D", "areaPerCar", "\u33A1\uFF0F\u4F4D"),
-            number("\u689D\u6587\u514D\u8A2D\u9762\u7A4D", "freeArea", "\u33A1")
+            number2("\u689D\u6587\u6BCF\u8ECA\u4F4D\u6A13\u677F\u9762\u7A4D", "areaPerCar", "\u33A1\uFF0F\u4F4D"),
+            number2("\u689D\u6587\u514D\u8A2D\u9762\u7A4D", "freeArea", "\u33A1")
           ] }),
           /* @__PURE__ */ jsxs4("label", { children: [
             /* @__PURE__ */ jsx4(FieldLabel4, { children: "\u65B0\u5317\u5E02\u90FD\u5BE9\u539F\u5247" }),
@@ -5415,8 +6165,8 @@ function LegalParkingPanel({
     section === "basement" && /* @__PURE__ */ jsxs4(Fragment4, { children: [
       /* @__PURE__ */ jsx4("h3", { children: "\u8ECA\u683C\u3001\u8ECA\u9053\u8207\u9810\u7559\u7A7A\u9593" }),
       /* @__PURE__ */ jsxs4("div", { className: "burden-fields", children: [
-        number(input.basementDemand?.enabled ? "\u4E00\u822C\u65B9\u6848\u5730\u4E0B\u5C64\u9AD8\uFF08\u8A2D\u5099\u53E6\u6AA2\u67E5\uFF09" : "\u5730\u4E0B\u5BA4\u6BCF\u5C64\u9AD8\u5EA6", "floorHeight", "m"),
-        number("\u67F1\u7DB2\u53CA\u8F49\u5F4E\u984D\u5916\u9810\u7559", "loss", "%"),
+        number2(input.basementDemand?.enabled ? "\u4E00\u822C\u65B9\u6848\u5730\u4E0B\u5C64\u9AD8\uFF08\u8A2D\u5099\u53E6\u6AA2\u67E5\uFF09" : "\u5730\u4E0B\u5BA4\u6BCF\u5C64\u9AD8\u5EA6", "floorHeight", "m"),
+        number2("\u67F1\u7DB2\u53CA\u8F49\u5F4E\u984D\u5916\u9810\u7559", "loss", "%"),
         /* @__PURE__ */ jsxs4("label", { children: [
           /* @__PURE__ */ jsx4(FieldLabel4, { children: "90\u5EA6\u5E73\u9762\u505C\u8ECA\u6392\u5217" }),
           /* @__PURE__ */ jsxs4(PublicSelect4, { value: p.rowMode, onChange: (e) => patch({
@@ -5534,10 +6284,10 @@ function LegalParkingPanel({
           /* @__PURE__ */ jsx4("th", { children: "\u5730\u4E0B\u7A7A\u9593\u5206\u914D" }),
           /* @__PURE__ */ jsx4("th", { children: "\u9762\u7A4D" })
         ] }) }),
-        /* @__PURE__ */ jsx4("tbody", { children: [["\u5730\u4E0B\u7E3D\u9762\u7A4D", v.basement], ["\u8A2D\u5099\u53CA\u68AF\u9593\u9810\u7559", v.equipmentArea], [v.smallSite?.access === "lift" ? "\u5347\u964D\u6A5F\u9053\u3001\u642D\u4E58\u53CA\u5169\u8F2A\u9023\u901A\uFF08\u5404\u5C64\u5408\u8A08\uFF09" : "\u5761\u9053\uFF08\u6BCF\u5C64\u53E6\u6263\uFF09", v.rampTotal], ["\u67F1\u7DB2\u53CA\u8F49\u5F4E\u984D\u5916\u9810\u7559", v.lossArea], ["\u6A5F\u8ECA\u53CA\u901A\u9053", v.motoArea], ["\u81EA\u884C\u8ECA\u53CA\u901A\u9053", v.bikeArea], ["\u793E\u5340\u8ECA\u4F4D\u53CA\u8D70\u9053\uFF08\u4E0D\u53EF\u552E\uFF09", v.communityArea], ["\u898F\u5283\u6C7D\u8ECA\u4F4D\u53CA\u8D70\u9053\uFF08\u542B\u7121\u969C\u7919\uFF09", v.carArea], [input.quantityReserve ? "B1\u907F\u96E3\u88DC\u8DB3\u9762\u7A4D\uFF08\u5047\u8A2D\uFF09" : "\u914D\u7F6E\u5F8C\u5269\u9918\u7A7A\u9593", v.spareArea]].map(([label, value]) => /* @__PURE__ */ jsxs4("tr", { children: [
+        /* @__PURE__ */ jsx4("tbody", { children: [["\u5730\u4E0B\u7E3D\u9762\u7A4D", v.basement], ["\u8A2D\u5099\u53CA\u68AF\u9593\u9810\u7559", v.equipmentArea], [v.smallSite?.access === "lift" ? "\u5347\u964D\u6A5F\u9053\u3001\u642D\u4E58\u53CA\u5169\u8F2A\u9023\u901A\uFF08\u5404\u5C64\u5408\u8A08\uFF09" : "\u5761\u9053\uFF08\u6BCF\u5C64\u53E6\u6263\uFF09", v.rampTotal], ["\u67F1\u7DB2\u53CA\u8F49\u5F4E\u984D\u5916\u9810\u7559", v.lossArea], ["\u6A5F\u8ECA\u53CA\u901A\u9053", v.motoArea], ["\u81EA\u884C\u8ECA\u53CA\u901A\u9053", v.bikeArea], ["\u793E\u5340\u8ECA\u4F4D\u53CA\u8D70\u9053\uFF08\u4E0D\u53EF\u552E\uFF09", v.communityArea], ["\u898F\u5283\u6C7D\u8ECA\u4F4D\u53CA\u8D70\u9053\uFF08\u542B\u7121\u969C\u7919\uFF09", v.carArea], [input.quantityReserve ? "B1\u907F\u96E3\u88DC\u8DB3\u9762\u7A4D\uFF08\u5047\u8A2D\uFF09" : "\u914D\u7F6E\u5F8C\u5269\u9918\u7A7A\u9593", v.spareArea]].map(([label, value2]) => /* @__PURE__ */ jsxs4("tr", { children: [
           /* @__PURE__ */ jsx4("th", { children: label }),
           /* @__PURE__ */ jsxs4("td", { children: [
-            f2(Number(value)),
+            f2(Number(value2)),
             "\u33A1"
           ] })
         ] }, label)) })
@@ -5603,10 +6353,10 @@ function LegalParkingPanel({
   ] });
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/components/efficiency/AreaReviewPanel.tsx
+// ../sanze-release-app/src/components/efficiency/AreaReviewPanel.tsx
 import { FieldLabel as FieldLabel6, PublicNumber as PublicNumber6 } from "/src/land-evaluation/PublicFields.jsx";
 
-// ../../../../../../src/sanze-cases-desktop/src/components/efficiency/CommonAllocationPolicyPanel.tsx
+// ../sanze-release-app/src/components/efficiency/CommonAllocationPolicyPanel.tsx
 import { FieldLabel as FieldLabel5 } from "/src/land-evaluation/PublicFields.jsx";
 import { PublicSelect as PublicSelect5 } from "/src/land-evaluation/PublicSelect.jsx";
 import { Fragment as Fragment5, jsx as jsx5, jsxs as jsxs5 } from "react/jsx-runtime";
@@ -5716,7 +6466,7 @@ function CommonAllocationPolicyPanel({
   ] });
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/components/efficiency/AreaReviewPanel.tsx
+// ../sanze-release-app/src/components/efficiency/AreaReviewPanel.tsx
 import { Fragment as Fragment6, jsx as jsx6, jsxs as jsxs6 } from "react/jsx-runtime";
 var f4 = (x) => x.toLocaleString("zh-TW", {
   maximumFractionDigits: 2
@@ -5976,11 +6726,11 @@ function AreaReviewPanel({
   ] });
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/components/efficiency/RegulatoryReviewPanel.tsx
+// ../sanze-release-app/src/components/efficiency/RegulatoryReviewPanel.tsx
 import { FieldLabel as FieldLabel7, PublicNumber as PublicNumber7 } from "/src/land-evaluation/PublicFields.jsx";
 import { PublicSelect as PublicSelect6 } from "/src/land-evaluation/PublicSelect.jsx";
 
-// ../../../../../../src/sanze-cases-desktop/src/components/efficiency/BasementAudit.tsx
+// ../sanze-release-app/src/components/efficiency/BasementAudit.tsx
 import { jsx as jsx7, jsxs as jsxs7 } from "react/jsx-runtime";
 var f5 = (n) => n.toLocaleString("zh-TW", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 var law = "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0070115&flno=";
@@ -5989,7 +6739,7 @@ function BasementAudit({ input, result, edit }) {
   if (!v || !r) return null;
   const taipei = /臺北|台北/.test(input.parkingDesign?.district ?? "");
   const q = r.pools, share = (n) => r.served ? r.shared * n / r.served : 0;
-  const rows = [
+  const rows5 = [
     { name: "\u6C7D\u8ECA\u8207\u5206\u914D\u901A\u9053", area: r.carPool + (p.spareUse === "parking" ? q.spareArea : 0), count: r.parkingCounted, formula: `\u6C7D\u8ECA\u683C\u542B\u8D70\u9053${f5(q.carArea)}\uFF0B\u5206\u914D\u5761\u9053\uFF0F\u8F49\u5F4E${f5(share(q.carArea))}${p.spareUse === "parking" ? `\uFF0B\u8F49\u5217\u9918\u88D5${f5(q.spareArea)}` : ""}\uFF1B\u5730\u4E0B\u975E\u6A5F\u68B0${q.undergroundFlatCars ?? q.cars}\u4F4D\xD740\uFF1D${f5(r.parkingCap)}\u4E0A\u9650${q.mechanicalArea ? `\uFF1B\u6A5F\u68B0\u505C\u8ECA\u53CA\u5206\u914D\u901A\u9053${f5(q.mechanicalArea + share(q.mechanicalArea))}\u33A1\u53E6\u6309\u5BE6\u969B\u7528\u9014\u6AA2\u8A0E\uFF0C\u4E0D\u589E\u52A040\u33A1\u6C60` : ""}`, basis: "\u7B2C60\u689D\u7B2C1\u9805\u7B2C7\u6B3E\u3001\u7B2C162\u689D\u7B2C1\u9805\u7B2C3\u6B3E\uFF1B\u670D\u52D9\u901A\u9053\u5206\u914D\u6BD4\u4F8B\u70BA\u521D\u4F30\u5047\u8A2D", url: law + "60" },
     { name: "\u6A5F\u8ECA\u8207\u5206\u914D\u901A\u9053", area: r.motoPool, count: r.motorcycleCounted, formula: `\u6A5F\u8ECA\u683C\u53CA\u8D70\u9053${f5(q.motoArea)}\uFF0B\u5206\u914D${f5(share(q.motoArea))}`, basis: "\u7B2C162\u689D\u7B2C1\u9805\u7B2C3\u6B3E\uFF1B\u66AB\u6309\u4F9D\u6CD5\u8A2D\u7F6E\u505C\u8ECA\u7A7A\u9593\u3002\u6C92\u6709\u4F7F\u7528\u6A5F\u8ECA\u6578\xD740\u33A1", url: law + "162" },
     { name: "\u81EA\u884C\u8ECA\u8207\u5206\u914D\u901A\u9053", area: r.bikePool, count: r.bicycleCounted, formula: `\u81EA\u884C\u8ECA\u683C\u53CA\u8D70\u9053${f5(q.bikeArea)}\uFF0B\u5206\u914D${f5(share(q.bikeArea))}`, basis: (taipei ? "\u7B2C162\u689D\uFF1B\u81FA\u5317\u500B\u6848\u9069\u7528\u8CC7\u683C\u53E6\u6838\uFF1B" : "\u65B0\u5317\u90FD\u5BE9\u56DB(\u4E09)\uFF1B") + "\u79C1\u4EBA\u4F4F\u5B85\u672A\u53D6\u5F97\u514D\u8A08\u9069\u7528\u8CC7\u683C\u6642\u4FDD\u5B88\u8A08\u5BB9\u3002\u5206\u914D\u670D\u52D9\u901A\u9053\u70BA\u5047\u8A2D\uFF0C\u4E26\u975E\u5DF2\u78BA\u8A8D\u6CD5\u5B9A\u8A08\u5BB9\u9762\u7A4D", url: "https://web.law.ntpc.gov.tw/Scripts/FLAWDAT0202.aspx?fcode=C0150004" },
@@ -6078,7 +6828,7 @@ function BasementAudit({ input, result, edit }) {
         /* @__PURE__ */ jsx7("th", { children: "\u6CD5\u6E90\u3001\u8CC7\u683C\u8207\u5047\u8A2D" })
       ] }) }),
       /* @__PURE__ */ jsxs7("tbody", { children: [
-        rows.map((x) => /* @__PURE__ */ jsxs7("tr", { children: [
+        rows5.map((x) => /* @__PURE__ */ jsxs7("tr", { children: [
           /* @__PURE__ */ jsx7("th", { children: x.name }),
           /* @__PURE__ */ jsx7("td", { children: f5(x.area) }),
           /* @__PURE__ */ jsx7("td", { children: f5(x.area - x.count) }),
@@ -6168,7 +6918,7 @@ function BasementAudit({ input, result, edit }) {
   ] });
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/components/efficiency/RegulatoryReviewPanel.tsx
+// ../sanze-release-app/src/components/efficiency/RegulatoryReviewPanel.tsx
 import { jsx as jsx8, jsxs as jsxs8 } from "react/jsx-runtime";
 var f6 = (n) => n.toLocaleString("zh-TW", {
   maximumFractionDigits: 2
@@ -6185,7 +6935,7 @@ function RegulatoryReviewPanel({
       ...x
     }
   });
-  const number = (key, label) => /* @__PURE__ */ jsxs8("label", { children: [
+  const number2 = (key, label) => /* @__PURE__ */ jsxs8("label", { children: [
     /* @__PURE__ */ jsx8(FieldLabel7, { children: label }),
     /* @__PURE__ */ jsx8(PublicNumber7, { type: "number", min: "0", step: "any", value: p[key], onChange: (e) => change({
       [key]: e.target.value
@@ -6216,13 +6966,13 @@ function RegulatoryReviewPanel({
       /* @__PURE__ */ jsx8("summary", { children: "\u734E\u52F5\u3001\u5BB9\u79FB\u4E0A\u9650\u8207\u8A55\u9EDE\u5047\u8A2D" }),
       /* @__PURE__ */ jsx8("p", { children: "\u4E00\u822C\u90FD\u66F4\u734E\u52F5\u5148\u630950%\u4E0A\u9650\uFF1B\u7279\u5225\u8DEF\u5F91\u9808\u53E6\u586B\u4F9D\u64DA\u3002\u5BB9\u79FB\u5148\u6309\u4E00\u822C30%\u4E0A\u9650\uFF0C\u8A55\u9EDE\u672A\u586B\u6642\u63A1\u76EE\u6A19\u8207\u4E0A\u9650\u8F03\u4F4E\u8005\uFF0C\u8CC7\u683C\u4ECD\u5F85\u8986\u6838\u3002\u500B\u6848\u5408\u8A08\u4E0A\u9650\u6709\u9069\u7528\u4F9D\u64DA\u624D\u586B\uFF0C\u4E0D\u5C07\u7279\u6B8A\u5408\u8A0850%\u9650\u5236\u5957\u7528\u6240\u6709\u90FD\u66F4\u6848\u3002" }),
       /* @__PURE__ */ jsxs8("div", { className: "planning-field-grid", children: [
-        number("renewalLimitPercent", "\u672C\u6B21\u90FD\u66F4\u8DEF\u5F91\u734E\u52F5\u4E0A\u9650%"),
-        number("tdrLimitPercent", "\u672C\u6B21\u5BB9\u79FB\u4E0A\u9650%"),
-        number("totalBonusLimitPercent", "\u500B\u6848\u734E\u52F5\u53CA\u5BB9\u79FB\u5408\u8A08\u4E0A\u9650%\uFF08\u7121\u8CC7\u6599\u7559\u767D\uFF09"),
-        number("tdrBasePoints", "\u5BB9\u79FB\u57FA\u6E96\u91CF\u8A55\u9EDE%\uFF08\u672A\u6838\u5C0D\u53EF\u7559\u767D\uFF09"),
-        number("tdrInternalPoints", "\u57FA\u5730\u5167\u90E8\u689D\u4EF6\u8A55\u9EDE%"),
-        number("tdrExternalPoints", "\u5916\u90E8\u6539\u5584\u8A55\u9EDE%"),
-        number("cashTdrPercent", "\u6298\u7E73\u4EE3\u91D1\u5360\u53EF\u79FB\u5165\u7E3D\u91CF\u6BD4\u4F8B%")
+        number2("renewalLimitPercent", "\u672C\u6B21\u90FD\u66F4\u8DEF\u5F91\u734E\u52F5\u4E0A\u9650%"),
+        number2("tdrLimitPercent", "\u672C\u6B21\u5BB9\u79FB\u4E0A\u9650%"),
+        number2("totalBonusLimitPercent", "\u500B\u6848\u734E\u52F5\u53CA\u5BB9\u79FB\u5408\u8A08\u4E0A\u9650%\uFF08\u7121\u8CC7\u6599\u7559\u767D\uFF09"),
+        number2("tdrBasePoints", "\u5BB9\u79FB\u57FA\u6E96\u91CF\u8A55\u9EDE%\uFF08\u672A\u6838\u5C0D\u53EF\u7559\u767D\uFF09"),
+        number2("tdrInternalPoints", "\u57FA\u5730\u5167\u90E8\u689D\u4EF6\u8A55\u9EDE%"),
+        number2("tdrExternalPoints", "\u5916\u90E8\u6539\u5584\u8A55\u9EDE%"),
+        number2("cashTdrPercent", "\u6298\u7E73\u4EE3\u91D1\u5360\u53EF\u79FB\u5165\u7E3D\u91CF\u6BD4\u4F8B%")
       ] }),
       /* @__PURE__ */ jsxs8("label", { children: [
         /* @__PURE__ */ jsx8("input", { type: "checkbox", checked: p.renewalArea, onChange: (e) => change({
@@ -6317,7 +7067,7 @@ function RegulatoryReviewPanel({
     /* @__PURE__ */ jsxs8("details", { children: [
       /* @__PURE__ */ jsx8("summary", { children: "\u666E\u901A\u8A08\u5BB9\u6A13\u677F\u5167\u7684\u516C\u8A2D\u5206\u985E\u5047\u8A2D" }),
       /* @__PURE__ */ jsx8("p", { children: "\u9580\u5EF3\u3001\u8D70\u5ECA\u3001\u4EA4\u8ABC\u7B49\u5982\u5DF2\u5305\u542B\u666E\u901A\u6A13\u677F\uFF0C\u53EA\u91CD\u65B0\u5206\u985E\uFF0C\u4E0D\u518D\u589E\u52A0\u53EF\u552E\u9762\u7A4D\u3002\u8ACB\u586B\u5165\u9580\u5EF3\u3001\u8D70\u5ECA\u53CA\u4EA4\u8ABC\u7B49\u7A7A\u9593\u7684\u898F\u5283\u6BD4\u4F8B\uFF1B\u9810\u8A2D0%\u70BA\u5C1A\u672A\u62C6\u5206\u3002" }),
-      number("ordinaryCommonPercent", "\u666E\u901A\u6A13\u677F\u5167\u8A08\u5BB9\u516C\u8A2D\u6BD4\u4F8B%"),
+      number2("ordinaryCommonPercent", "\u666E\u901A\u6A13\u677F\u5167\u8A08\u5BB9\u516C\u8A2D\u6BD4\u4F8B%"),
       /* @__PURE__ */ jsxs8("label", { children: [
         /* @__PURE__ */ jsx8(FieldLabel7, { children: "\u8A08\u5BB9\u516C\u8A2D\u914D\u7F6E\u6216\u898F\u5283\u5047\u8A2D" }),
         /* @__PURE__ */ jsx8("textarea", { value: p.ordinaryCommonSource, onChange: (e) => change({
@@ -6333,16 +7083,16 @@ function RegulatoryReviewPanel({
   ] });
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/components/efficiency/SiteRoadConditionsPanel.tsx
+// ../sanze-release-app/src/components/efficiency/SiteRoadConditionsPanel.tsx
 import { FieldLabel as FieldLabel8, PublicNumber as PublicNumber8 } from "/src/land-evaluation/PublicFields.jsx";
 import { PublicSelect as PublicSelect7 } from "/src/land-evaluation/PublicSelect.jsx";
 import { jsx as jsx9, jsxs as jsxs9 } from "react/jsx-runtime";
 function SiteRoadConditionsPanel({
-  value,
+  value: value2,
   onChange,
   readOnly = false
 }) {
-  const r = value ?? newSiteRoadConditions(), check = reviewSiteRoad(value), edit = (p) => onChange?.({
+  const r = value2 ?? newSiteRoadConditions(), check = reviewSiteRoad(value2), edit = (p) => onChange?.({
     ...r,
     ...p,
     status: p.status ?? (r.status === "confirmed" ? "assumed" : r.status)
@@ -6407,10 +7157,1849 @@ function SiteRoadConditionsPanel({
     check.notes.map((x) => /* @__PURE__ */ jsx9("p", { children: x }, x))
   ] });
 }
+
+// ../sanze-release-app/src/components/mixed-zone/DocumentCasePanel.tsx
+import { useState as useState2 } from "react";
+import { Fragment as Fragment7, jsx as jsx10, jsxs as jsxs10 } from "react/jsx-runtime";
+var useLabels = { unknown: "\u5C1A\u672A\u78BA\u8A8D", residential: "\u4F4F\u5B85", retail: "\u5E97\u8216", office: "\u8FA6\u516C", shared: "\u5171\u7528\uFF0F\u6DF7\u5408\u672A\u5206\u5217", other: "\u5176\u4ED6" };
+function AssessmentMode({ value: value2, onChange }) {
+  return /* @__PURE__ */ jsxs10("nav", { className: "mz-mode-switch", "aria-label": "\u8A55\u4F30\u6A21\u5F0F", children: [
+    /* @__PURE__ */ jsx10("button", { type: "button", "aria-pressed": value2 !== "document", onClick: () => onChange("planning"), children: "\u898F\u5283\u8A66\u7B97" }),
+    /* @__PURE__ */ jsx10("button", { type: "button", "aria-pressed": value2 === "document", onClick: () => onChange("document"), children: "\u4F9D\u6587\u4EF6\u8986\u6838" }),
+    /* @__PURE__ */ jsxs10("p", { children: [
+      value2 === "document" ? "\u53EA\u63A1\u6587\u4EF6\u539F\u503C\u8207\u660E\u5217\u7684\u8A08\u7B97\u4F9D\u64DA\uFF1B\u7F3A\u8CC7\u6599\u4FDD\u7559\u672A\u77E5\uFF0C\u4E0D\u5E36\u5165\u898F\u5283\u6BD4\u4F8B\u3002" : "\u898F\u5283\u5047\u8A2D\u7531\u4F7F\u7528\u8005\u660E\u78BA\u586B\u5BEB\uFF1B\u7A7A\u767D\u4E0D\u88DC\u503C\u3002\u7D50\u679C\u662F\u8A66\u7B97\uFF0C\u4E0D\u662F\u6587\u4EF6\u8986\u6838\u6216\u6838\u51C6\u984D\u5EA6\u3002",
+      "\u5207\u63DB\u4FDD\u7559\u5404\u6A21\u5F0F\u8F38\u5165\uFF0C\u7D50\u679C\u9808\u91CD\u7B97\u3002"
+    ] })
+  ] });
+}
+function DocumentCasePanel({ value: m, onChange, onReport }) {
+  const [snapshot, setSnapshot] = useState2(null), signature = JSON.stringify(m), r = snapshot?.signature === signature ? snapshot.result : null;
+  const field = (label, v, change, type = "text") => /* @__PURE__ */ jsxs10("label", { className: "mz-field", children: [
+    /* @__PURE__ */ jsx10("span", { children: label }),
+    /* @__PURE__ */ jsx10("input", { "aria-label": label, type, value: v, onChange: (e) => change(e.target.value) })
+  ] });
+  const ev2 = (v, change) => /* @__PURE__ */ jsxs10("div", { className: "mz-fields", children: [
+    field("\u6587\u4EF6\u53CA\u9801\u6B21", v.source, (s) => change({ ...v, source: s })),
+    field("\u6587\u4EF6\u65E5\u671F", v.date, (s) => change({ ...v, date: s }), "date"),
+    field("\u9069\u7528\u5224\u65B7\u8207\u689D\u4EF6", v.finding, (s) => change({ ...v, finding: s })),
+    /* @__PURE__ */ jsxs10("label", { children: [
+      "\u8986\u6838\u72C0\u614B",
+      /* @__PURE__ */ jsxs10("select", { value: v.status, onChange: (e) => change({ ...v, status: e.target.value }), children: [
+        /* @__PURE__ */ jsx10("option", { value: "unknown", children: "\u5C1A\u672A\u78BA\u8A8D" }),
+        /* @__PURE__ */ jsx10("option", { value: "documented", children: "\u6587\u4EF6\u8A18\u8F09" }),
+        /* @__PURE__ */ jsx10("option", { value: "reviewed", children: "\u5DF2\u4F9D\u539F\u4EF6\u8986\u6838\u9069\u7528" })
+      ] })
+    ] })
+  ] });
+  const fmt = (v) => v === null ? "\u8CC7\u6599\u672A\u9F4A" : v.toLocaleString("zh-TW", { maximumFractionDigits: 2 });
+  return /* @__PURE__ */ jsxs10("section", { className: "mixed-zone program-review", "aria-label": "\u6848\u4EF6\u6587\u4EF6\u8986\u6838", children: [
+    /* @__PURE__ */ jsx10("h2", { children: "\u539F\u5BB9\u7A4D\u3001\u734E\u52F5\u3001\u5BB9\u79FB\u8207\u7528\u9014\u914D\u7F6E" }),
+    /* @__PURE__ */ jsx10("p", { children: "\u6B64\u8CC7\u6599\u96A8\u76EE\u524D\u6848\u4EF6\uFF0F\u65B9\u6848\u4FDD\u5B58\u3002\u6578\u91CF\u76F8\u7B26\u8207\u6CD5\u898F\u8CC7\u683C\u5206\u958B\u5224\u65B7\uFF1B\u4E0D\u81EA\u52D5\u7522\u751F\u53EF\u552E\u9762\u7A4D\u6216\u8CA1\u52D9\u63A1\u7528\u503C\u3002" }),
+    /* @__PURE__ */ jsxs10("div", { className: "mz-fields", children: [
+      field("\u8986\u6838\u6848\u4EF6\u540D\u7A31", m.name, (v) => onChange({ ...m, name: v })),
+      field("\u6587\u4EF6\u7248\u672C\uFF0F\u6587\u865F", m.edition, (v) => onChange({ ...m, edition: v })),
+      field("\u6574\u4EFD\u6587\u4EF6\u4F86\u6E90", m.source, (v) => onChange({ ...m, source: v })),
+      field("\u8A55\u4F30\u57FA\u6E96\u65E5", m.assessmentDate, (v) => onChange({ ...m, assessmentDate: v }), "date"),
+      /* @__PURE__ */ jsxs10("label", { children: [
+        "\u898F\u5283\u65B9\u78BA\u8A8D\u7528\u9014",
+        /* @__PURE__ */ jsxs10("select", { "aria-label": "\u6587\u4EF6\u898F\u5283\u7528\u9014", value: m.designMode, onChange: (e) => onChange({ ...m, designMode: e.target.value }), children: [
+          /* @__PURE__ */ jsx10("option", { value: "unknown", children: "\u5C1A\u672A\u78BA\u8A8D" }),
+          /* @__PURE__ */ jsx10("option", { value: "residential", children: "\u7D14\u4F4F\u5B85" }),
+          /* @__PURE__ */ jsx10("option", { value: "mixed", children: "\u4F4F\u5B85\u8207\u5546\u696D\u6DF7\u5408" }),
+          /* @__PURE__ */ jsx10("option", { value: "nonresidential", children: "\u7D14\u975E\u4F4F\u5B85" })
+        ] })
+      ] }),
+      field("\u6587\u4EF6\u7E3D\u8A08\u33A1", m.declaredTotal, (v) => onChange({ ...m, declaredTotal: v }), "number")
+    ] }),
+    /* @__PURE__ */ jsxs10("details", { open: true, children: [
+      /* @__PURE__ */ jsx10("summary", { children: "\u571F\u5730\u5206\u7D44\u8207\u539F\u5BB9\u7A4D" }),
+      /* @__PURE__ */ jsx10("p", { children: "\u571F\u5730\u9762\u7A4D\u586B\u5DF2\u4F9D\u672C\u6848\u6587\u4EF6\u78BA\u8A8D\u53EF\u63A1\u8A08\u7684\u7BC4\u570D\uFF1B\u516C\u8A2D\u53CA\u6263\u9664\u4F9D\u64DA\u53E6\u5217\u5728\u4E0B\u65B9\u6CD5\u898F\u689D\u4EF6\u3002\u539F\u5BB9\u7A4D\u53EA\u66FF\u4EE3\u6240\u5C6C\u571F\u5730\uFF0C\u4E0D\u8207\u540C\u7B46\u57FA\u6E96\u5BB9\u7A4D\u91CD\u8907\u76F8\u52A0\u3002" }),
+      m.groups.map((g, i) => {
+        const edit = (p) => onChange({ ...m, groups: m.groups.map((x, j) => i === j ? { ...x, ...p } : x) });
+        return /* @__PURE__ */ jsxs10("fieldset", { children: [
+          /* @__PURE__ */ jsxs10("legend", { children: [
+            "\u571F\u5730\u7D44\u5225 ",
+            i + 1
+          ] }),
+          /* @__PURE__ */ jsxs10("div", { className: "mz-fields", children: [
+            field("\u571F\u5730\u540D\u7A31\uFF0F\u5730\u865F", g.name, (v) => edit({ name: v })),
+            field("\u63A1\u8A08\u571F\u5730\u33A1", g.area, (v) => edit({ area: v }), "number"),
+            field("\u6CD5\u5B9A\u5BB9\u7A4D\u7387%", g.far, (v) => edit({ far: v }), "number"),
+            /* @__PURE__ */ jsxs10("label", { children: [
+              "\u539F\u5BB9\u7A4D\u8655\u7406",
+              /* @__PURE__ */ jsxs10("select", { value: g.originalMode, onChange: (e) => edit({ originalMode: e.target.value }), children: [
+                /* @__PURE__ */ jsx10("option", { value: "unknown", children: "\u5C1A\u672A\u78BA\u8A8D" }),
+                /* @__PURE__ */ jsx10("option", { value: "none", children: "\u672C\u7D44\u4E0D\u63A1\u539F\u5BB9\u7A4D" }),
+                /* @__PURE__ */ jsx10("option", { value: "replace", children: "\u4F9D\u6587\u4EF6\u539F\u5BB9\u7A4D\u66FF\u4EE3" })
+              ] })
+            ] }),
+            field("\u6587\u4EF6\u539F\u5BB9\u7A4D\u33A1", g.original, (v) => edit({ original: v }), "number")
+          ] }),
+          ev2(g.evidence, (evidence3) => edit({ evidence: evidence3 })),
+          /* @__PURE__ */ jsx10("button", { onClick: () => onChange({ ...m, groups: m.groups.filter((x) => x.id !== g.id) }), children: "\u79FB\u9664\u571F\u5730\u7D44\u5225" })
+        ] }, g.id);
+      }),
+      /* @__PURE__ */ jsx10("button", { onClick: () => onChange({ ...m, groups: [...m.groups, newDocumentGroup()] }), children: "\u65B0\u589E\u571F\u5730\u7D44\u5225" })
+    ] }),
+    ["awards", "transfers"].map((key) => {
+      const mode = key === "awards" ? "awardMode" : "transferMode", label = key === "awards" ? "\u734E\u52F5" : "\u5BB9\u79FB";
+      return /* @__PURE__ */ jsxs10("details", { open: true, children: [
+        /* @__PURE__ */ jsxs10("summary", { children: [
+          label,
+          "\u5206\u9805\u8207\u4F9D\u64DA"
+        ] }),
+        /* @__PURE__ */ jsxs10("label", { children: [
+          label,
+          "\u8655\u7406",
+          /* @__PURE__ */ jsxs10("select", { "aria-label": label + "\u8655\u7406", value: m[mode], onChange: (e) => onChange({ ...m, [mode]: e.target.value }), children: [
+            /* @__PURE__ */ jsx10("option", { value: "unknown", children: "\u5C1A\u672A\u78BA\u8A8D" }),
+            /* @__PURE__ */ jsx10("option", { value: "none", children: "\u6587\u4EF6\u78BA\u8A8D\u672C\u6848\u7121\u6B64\u9805" }),
+            /* @__PURE__ */ jsx10("option", { value: "items", children: "\u4F9D\u6587\u4EF6\u9010\u9805\u586B\u5BEB" })
+          ] })
+        ] }),
+        m[key].map((a, i) => {
+          const edit = (p) => onChange({ ...m, [key]: m[key].map((x, j) => i === j ? { ...x, ...p } : x) });
+          return /* @__PURE__ */ jsxs10("fieldset", { children: [
+            /* @__PURE__ */ jsxs10("legend", { children: [
+              label,
+              " ",
+              i + 1
+            ] }),
+            /* @__PURE__ */ jsxs10("div", { className: "mz-fields", children: [
+              field(label + "\u540D\u7A31\uFF0F\u8A31\u53EF\u6587\u865F", a.name, (v) => edit({ name: v })),
+              /* @__PURE__ */ jsxs10("label", { children: [
+                "\u6240\u5C6C\u571F\u5730",
+                /* @__PURE__ */ jsxs10("select", { value: a.groupId, onChange: (e) => edit({ groupId: e.target.value }), children: [
+                  /* @__PURE__ */ jsx10("option", { value: "", children: "\u5168\u6848\uFF08\u9808\u65BC\u4F9D\u64DA\u8AAA\u660E\u7BC4\u570D\uFF09" }),
+                  m.groups.map((g) => /* @__PURE__ */ jsx10("option", { value: g.id, children: g.name || "\u672A\u547D\u540D\u571F\u5730" }, g.id))
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs10("label", { children: [
+                "\u6587\u4EF6\u53D6\u503C\u65B9\u5F0F",
+                /* @__PURE__ */ jsxs10("select", { value: a.method, onChange: (e) => edit({ method: e.target.value }), children: [
+                  /* @__PURE__ */ jsx10("option", { value: "area", children: "\u6587\u4EF6\u8A18\u8F09\u9762\u7A4D" }),
+                  /* @__PURE__ */ jsx10("option", { value: "percent", children: "\u6587\u4EF6\u6BCD\u6578\u4E58\u6BD4\u4F8B" })
+                ] })
+              ] }),
+              a.method === "area" ? field(label + "\u9762\u7A4D\u33A1", a.area, (v) => edit({ area: v }), "number") : /* @__PURE__ */ jsxs10(Fragment7, { children: [
+                field(label + "\u6587\u4EF6\u6BCD\u6578\u33A1", a.base, (v) => edit({ base: v }), "number"),
+                field(label + "\u6BD4\u4F8B%", a.percent, (v) => edit({ percent: v }), "number")
+              ] })
+            ] }),
+            ev2(a.evidence, (evidence3) => edit({ evidence: evidence3 })),
+            /* @__PURE__ */ jsxs10("button", { onClick: () => onChange({ ...m, [key]: m[key].filter((x) => x.id !== a.id) }), children: [
+              "\u79FB\u9664",
+              label,
+              "\u5206\u9805"
+            ] })
+          ] }, a.id);
+        }),
+        /* @__PURE__ */ jsxs10("button", { onClick: () => onChange({ ...m, [mode]: "items", [key]: [...m[key], newDocumentAmount()] }), children: [
+          "\u65B0\u589E",
+          label,
+          "\u5206\u9805"
+        ] })
+      ] }, key);
+    }),
+    /* @__PURE__ */ jsxs10("details", { open: true, children: [
+      /* @__PURE__ */ jsx10("summary", { children: "\u9010\u68DF\u9010\u5C64\u7528\u9014\u914D\u7F6E" }),
+      m.floors.map((f8, i) => {
+        const edit = (p) => onChange({ ...m, floors: m.floors.map((x, j) => i === j ? { ...x, ...p } : x) });
+        return /* @__PURE__ */ jsxs10("fieldset", { children: [
+          /* @__PURE__ */ jsxs10("legend", { children: [
+            "\u6A13\u5C64\u8CC7\u6599 ",
+            i + 1
+          ] }),
+          /* @__PURE__ */ jsxs10("div", { className: "mz-fields", children: [
+            field("\u5E62\u5225", f8.building, (v) => edit({ building: v })),
+            field("\u6A13\u5C64\u7BC4\u570D", f8.levels, (v) => edit({ levels: v })),
+            field("\u5C64\u6578", f8.count, (v) => edit({ count: v }), "number"),
+            field("\u6BCF\u5C64\u8A08\u5BB9\u33A1", f8.area, (v) => edit({ area: v }), "number"),
+            /* @__PURE__ */ jsxs10("label", { children: [
+              "\u7528\u9014",
+              /* @__PURE__ */ jsx10("select", { value: f8.use, onChange: (e) => edit({ use: e.target.value }), children: Object.entries(useLabels).map(([v, t]) => /* @__PURE__ */ jsx10("option", { value: v, children: t }, v)) })
+            ] }),
+            f8.use === "residential" && field("\u4F4F\u5B85\u57FA\u6E96\u5BB9\u7A4D\u6B78\u5C6C\u33A1", f8.residentialBase, (v) => edit({ residentialBase: v }), "number")
+          ] }),
+          ev2(f8.evidence, (evidence3) => edit({ evidence: evidence3 })),
+          /* @__PURE__ */ jsx10("button", { onClick: () => onChange({ ...m, floors: m.floors.filter((x) => x.id !== f8.id) }), children: "\u79FB\u9664\u6A13\u5C64\u8CC7\u6599" })
+        ] }, f8.id);
+      }),
+      /* @__PURE__ */ jsx10("button", { onClick: () => onChange({ ...m, floors: [...m.floors, newDocumentFloor()] }), children: "\u65B0\u589E\u6A13\u5C64\u8CC7\u6599" })
+    ] }),
+    /* @__PURE__ */ jsxs10("details", { children: [
+      /* @__PURE__ */ jsx10("summary", { children: "\u6CD5\u898F\u689D\u4EF6\u8207\u63A1\u8A08\u4F9D\u64DA" }),
+      Object.entries(documentTopics).map(([k, label]) => /* @__PURE__ */ jsxs10("fieldset", { children: [
+        /* @__PURE__ */ jsx10("legend", { children: label }),
+        ev2(m.reviews[k], (v) => onChange({ ...m, reviews: { ...m.reviews, [k]: v } }))
+      ] }, k))
+    ] }),
+    /* @__PURE__ */ jsxs10("div", { className: "mz-actions", children: [
+      /* @__PURE__ */ jsx10("button", { className: "mz-primary", onClick: () => setSnapshot({ signature, result: calculateDocumentCase(m) }), children: "\u8A08\u7B97\u6587\u4EF6\u8986\u6838\u7D50\u679C" }),
+      snapshot && !r && /* @__PURE__ */ jsx10("span", { role: "status", children: "\u8CC7\u6599\u5DF2\u8B8A\u66F4\uFF0C\u820A\u7D50\u679C\u5931\u6548\uFF0C\u8ACB\u91CD\u65B0\u8A08\u7B97\u3002" })
+    ] }),
+    r && /* @__PURE__ */ jsxs10("section", { className: "mz-results", "aria-label": "\u6587\u4EF6\u8986\u6838\u7D50\u679C", children: [
+      /* @__PURE__ */ jsx10("h3", { children: documentCaseSummary(m).status }),
+      /* @__PURE__ */ jsx10("dl", { className: "mz-totals", children: documentCaseSummary(m).metrics.map(([k, v, u]) => /* @__PURE__ */ jsxs10("div", { children: [
+        /* @__PURE__ */ jsx10("dt", { children: k }),
+        /* @__PURE__ */ jsxs10("dd", { children: [
+          fmt(v),
+          v === null ? "" : u
+        ] })
+      ] }, String(k))) }),
+      /* @__PURE__ */ jsx10("h4", { children: "\u539F\u5BB9\u7A4D\u66FF\u4EE3\u8207\u589E\u52A0\u91CF" }),
+      r.groups.map((g, i) => /* @__PURE__ */ jsxs10("p", { children: [
+        g.name,
+        "\uFF1A\u6CD5\u5B9A\u57FA\u6E96 ",
+        fmt(g.base),
+        "\u33A1 \u2192 \u66FF\u4EE3\u5F8C ",
+        fmt(g.adopted),
+        "\u33A1\uFF1B\u589E\u52A0\u91CF ",
+        fmt(g.increase),
+        "\u33A1"
+      ] }, i)),
+      /* @__PURE__ */ jsx10("h4", { children: "\u734E\u52F5\u8207\u5BB9\u79FB\u9010\u9805\u8A08\u7B97" }),
+      r.amounts.map((a, i) => /* @__PURE__ */ jsxs10("p", { children: [
+        a.kind,
+        "\uFF5C",
+        a.name,
+        "\uFF1A",
+        fmt(a.quantity),
+        "\u33A1"
+      ] }, i)),
+      /* @__PURE__ */ jsx10("h4", { children: "\u7528\u9014\u914D\u7F6E\u660E\u7D30" }),
+      r.floors.map((f8, i) => /* @__PURE__ */ jsxs10("p", { children: [
+        f8.building,
+        " ",
+        f8.levels,
+        "\uFF5C",
+        useLabels[f8.use],
+        "\uFF1A",
+        fmt(f8.quantity),
+        "\u33A1",
+        f8.use === "residential" ? `\uFF1B\u4F4F\u5B85\u57FA\u6E96\u90E8\u5206 ${fmt(f8.residentialBase)}\u33A1` : ""
+      ] }, i)),
+      /* @__PURE__ */ jsx10("ul", { children: [...r.issues, ...r.gaps].map((x, i) => /* @__PURE__ */ jsx10("li", { children: x }, i)) }),
+      /* @__PURE__ */ jsx10("p", { children: "\u9019\u662F\u6587\u4EF6\u6578\u91CF\u8207\u4EBA\u5DE5\u8986\u6838\u7D00\u9304\uFF0C\u4E26\u975E\u4E3B\u7BA1\u6A5F\u95DC\u6838\u51C6\uFF1B\u672A\u81EA\u52D5\u8F49\u5165\u6210\u672C\u6216\u53EF\u552E\u8A08\u7B97\u3002" }),
+      onReport && /* @__PURE__ */ jsx10("button", { onClick: () => onReport(m), children: "\u7522\u751F\u672C\u6B21\u6587\u4EF6\u8986\u6838\u5831\u544A" })
+    ] })
+  ] });
+}
+
+// ../sanze-release-app/src/components/mixed-zone/ProgramReviewPanel.tsx
+import { useState as useState3 } from "react";
+
+// ../sanze-release-app/src/lib/mixed-zone/programReview.ts
+function calculateProgramReview(m) {
+  const issues = [];
+  const read = (v, label) => {
+    const n = v.trim() ? Number(v) : NaN;
+    if (!Number.isFinite(n) || n < 0 || n > 1e9) {
+      issues.push(label + "\u672A\u586B\u6216\u6578\u503C\u7121\u6548");
+      return null;
+    }
+    return n;
+  };
+  const sum3 = (v) => v.length && v.every((x) => x !== null) ? v.reduce((a, b) => a + b, 0) : null;
+  const pct = (a, b) => a === null || b === null ? null : a * b / 100;
+  if (!m.source.trim()) issues.push("\u7F3A\u5C11\u6587\u4EF6\u7248\u672C\u8207\u4F86\u6E90");
+  if (!m.groups.length || new Set(m.groups.map((g) => g.id)).size !== m.groups.length) issues.push("\u571F\u5730\u7D44\u5225\u7F3A\u5C11\u6216\u8B58\u5225\u91CD\u8907");
+  const groups = m.groups.map((g) => {
+    if (!g.source.trim()) issues.push(g.name + "\u7F3A\u5C11\u4F86\u6E90");
+    const area2 = read(g.area, g.name + "\u571F\u5730\u9762\u7A4D"), rate2 = read(g.far, g.name + "\u6CD5\u5B9A\u5BB9\u7A4D\u7387"), base2 = pct(area2, rate2), original = g.original.trim() ? read(g.original, g.name + "\u539F\u5BB9\u7A4D") : null, adopted2 = g.original.trim() ? original : base2;
+    return { ...g, base: base2, adopted: adopted2, increment: base2 === null || adopted2 === null ? null : adopted2 - base2, cap: pct(base2, read(g.capPercent, g.name + "\u734E\u52F5\u4E0A\u9650")) };
+  });
+  const base = sum3(groups.map((g) => g.base)), adopted = sum3(groups.map((g) => g.adopted)), cap = sum3(groups.map((g) => g.cap)), award = read(m.award, "\u6587\u4EF6\u734E\u52F5\u9762\u7A4D"), rate = read(m.awardPercent, "\u6587\u4EF6\u734E\u52F5\u767E\u5206\u6BD4"), tdr2 = pct(base, read(m.tdrPercent, "\u5BB9\u79FB\u767E\u5206\u6BD4")), total = sum3([adopted, award, tdr2]);
+  const allRateAward = pct(base, rate), otherBase = sum3(groups.filter((g) => !g.original.trim()).map((g) => g.base)), originalCaps = sum3(groups.filter((g) => g.original.trim()).map((g) => g.cap));
+  const formulaWithoutOriginalCap = sum3([adopted, pct(otherBase, rate), tdr2]);
+  const formulaWithOriginalCap = sum3([adopted, pct(otherBase, rate), originalCaps, tdr2]);
+  const declared = read(m.documentTotal, "\u6587\u4EF6\u7E3D\u8A08"), declaredTdr = read(m.documentTdr, "\u6587\u4EF6\u5BB9\u79FB\u9762\u7A4D"), declaredCapRate = read(m.documentCapPercent, "\u6587\u4EF6\u4E0A\u9650\u767E\u5206\u6BD4");
+  const compare = (name, a, b, tolerance = 0.011) => {
+    if (a !== null && b !== null && Math.abs(a - b) > tolerance) issues.push(`${name}\u4E0D\u4E00\u81F4\uFF1A\u5FA9\u7B97 ${a.toFixed(2)}\uFF0C\u6587\u4EF6 ${b.toFixed(2)}\uFF0C\u5DEE ${Math.abs(a - b).toFixed(2)}`);
+  };
+  compare("\u8868\u5217\u7D44\u6210\u7E3D\u91CF", total, declared);
+  compare("\u767E\u5206\u6BD4\u63DB\u7B97\u734E\u52F5", allRateAward, award);
+  compare("\u5BB9\u79FB", tdr2, declaredTdr);
+  compare("\u5167\u6587\u542B\u539F\u5BB9\u7A4D\u7D44\u4E0A\u9650\u7684\u516C\u5F0F", formulaWithOriginalCap, declared);
+  compare("\u5167\u6587\u672A\u52A0\u539F\u5BB9\u7A4D\u7D44\u4E0A\u9650\u7684\u516C\u5F0F", formulaWithoutOriginalCap, declared);
+  compare("\u734E\u52F5\u4E0A\u9650\u767E\u5206\u6BD4", base && cap !== null ? cap / base * 100 : null, declaredCapRate);
+  if (award !== null && cap !== null && award > cap + 0.01) issues.push("\u6587\u4EF6\u734E\u52F5\u8D85\u904E\u5206\u7D44\u4E0A\u9650");
+  if (!m.floors.length || new Set(m.floors.map((f8) => f8.id)).size !== m.floors.length) issues.push("\u9010\u5C64\u8CC7\u6599\u7F3A\u5C11\u6216\u8B58\u5225\u91CD\u8907");
+  const floors = m.floors.map((f8) => {
+    if (!f8.source.trim()) issues.push(f8.block + f8.levels + "\u7F3A\u5C11\u4F86\u6E90");
+    let count = read(f8.count, "\u5C64\u6578");
+    if (count !== null && (!Number.isSafeInteger(count) || count < 1)) {
+      issues.push("\u5C64\u6578\u9808\u70BA\u6B63\u6574\u6578");
+      count = null;
+    }
+    const area2 = read(f8.unitArea, "\u6BCF\u5C64\u8A08\u5BB9\u9762\u7A4D");
+    return { ...f8, total: count === null || area2 === null ? null : count * area2 };
+  });
+  const design = sum3(floors.map((f8) => f8.total));
+  compare("\u9010\u5C64\u8A08\u5BB9\u5408\u8A08", design, declared);
+  const uses2 = Object.fromEntries(["residential", "retail", "office", "shared"].map((u) => [u, sum3(floors.filter((f8) => f8.use === u).map((f8) => f8.total))]));
+  if (floors.some((f8) => f8.use === "shared")) issues.push("\u516C\u5171\u9580\u5EF3\u3001\u7BA1\u59D4\u6703\u7A7A\u9593\u6216\u672A\u5206\u5217\u7528\u9014\u9762\u7A4D\u53E6\u5217\uFF1B\u4E0D\u80FD\u6309\u5E97\u8216\u6BD4\u4F8B\u6216\u5DEE\u984D\u81EA\u52D5\u5206\u914D\u4F4F\u5B85\u3001\u5546\u696D\u57FA\u6E96\u5BB9\u7A4D");
+  const units = Object.fromEntries(Object.entries(m.units).map(([k, v]) => {
+    let n = read(v, k + "\u6236\u6578");
+    if (n !== null && !Number.isSafeInteger(n)) {
+      issues.push("\u6236\u6578\u9808\u70BA\u6574\u6578");
+      n = null;
+    }
+    return [k, n];
+  }));
+  return { groups, base, adopted, cap, award, allRateAward, tdr: tdr2, total, declared, formulaWithoutOriginalCap, formulaWithOriginalCap, design, floors, uses: uses2, units, unitTotal: sum3(Object.values(units)), issues, legallyAdoptable: false };
+}
+
+// ../sanze-release-app/src/components/mixed-zone/ProgramReviewPanel.tsx
+import { jsx as jsx11, jsxs as jsxs11 } from "react/jsx-runtime";
+var format = (n) => n === null ? "\u8CC7\u6599\u672A\u9F4A" : n.toLocaleString("zh-TW", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+var uses = { residential: "\u4F4F\u5B85\u6A13\u5C64", retail: "\u5E97\u8216\u6A13\u5C64", office: "\u8FA6\u516C\u6A13\u5C64\uFF08\u542B\u6240\u5C6C\u516C\u5171\u7A7A\u9593\uFF09", shared: "\u6DF7\u5408\u7528\u9014\uFF0F\u516C\u5171\u7A7A\u9593\u672A\u5206\u5217" };
+function ProgramReviewPanel({ value: m, onChange }) {
+  const [snapshot, setSnapshot] = useState3(null);
+  const signature = JSON.stringify(m), r = snapshot?.signature === signature ? snapshot.result : null;
+  const field = (label, value2, set) => /* @__PURE__ */ jsxs11("label", { className: "mz-field", children: [
+    /* @__PURE__ */ jsx11("span", { children: label }),
+    /* @__PURE__ */ jsx11("input", { "aria-label": label, type: "number", min: "0", step: "any", value: value2, onChange: (e) => set(e.target.value) })
+  ] });
+  return /* @__PURE__ */ jsxs11("section", { className: "mixed-zone program-review", "aria-label": "\u539F\u5BB9\u7A4D\u734E\u52F5\u5BB9\u79FB\u8207\u7528\u9014\u6838\u7B97", children: [
+    /* @__PURE__ */ jsx11("h2", { children: "\u539F\u5BB9\u7A4D\u3001\u734E\u52F5\u3001\u5BB9\u79FB\u8207\u7528\u9014\u914D\u7F6E" }),
+    /* @__PURE__ */ jsx11("p", { children: m.source }),
+    /* @__PURE__ */ jsx11("p", { children: "\u4F9D\u6587\u4EF6\u5217\u503C\u5FA9\u7B97\u898F\u5283\u7E3D\u91CF\uFF1B\u8868\u5217\u9762\u7A4D\u8207\u5167\u6587\u516C\u5F0F\u5747\u4FDD\u7559\u3002\u9019\u662F\u6587\u4EF6\u6578\u91CF\u6838\u7B97\uFF0C\u5C1A\u975E\u5DF2\u6838\u51C6\u53EF\u63A1\u7528\u984D\u5EA6\u3002" }),
+    /* @__PURE__ */ jsxs11("details", { children: [
+      /* @__PURE__ */ jsx11("summary", { children: "\u67E5\u770B\u53CA\u4FEE\u6539\u539F\u59CB\u8F38\u5165" }),
+      /* @__PURE__ */ jsx11("h3", { children: "\u571F\u5730\u5206\u7D44\u8207\u539F\u5BB9\u7A4D" }),
+      m.groups.map((g, i) => /* @__PURE__ */ jsxs11("fieldset", { children: [
+        /* @__PURE__ */ jsx11("legend", { children: g.name }),
+        /* @__PURE__ */ jsx11("p", { children: g.source }),
+        /* @__PURE__ */ jsx11("div", { className: "mz-fields", children: [["area", "\u571F\u5730\u9762\u7A4D\u33A1"], ["far", "\u6CD5\u5B9A\u5BB9\u7A4D\u7387%"], ["original", "\u6587\u4EF6\u539F\u5BB9\u7A4D\u33A1\uFF08\u7121\u66FF\u4EE3\u6642\u7559\u767D\uFF09"], ["capPercent", "\u734E\u52F5\u4E0A\u9650%"]].map(([key, label]) => field(g.name + " " + label, g[key], (v) => onChange({ ...m, groups: m.groups.map((x, j) => j === i ? { ...x, [key]: v } : x) }))) })
+      ] }, g.id)),
+      /* @__PURE__ */ jsx11("h3", { children: "\u734E\u52F5\u8207\u5BB9\u7A4D\u79FB\u8F49\uFF0811-13\u886811-1\uFF09" }),
+      /* @__PURE__ */ jsx11("div", { className: "mz-fields", children: [["award", "\u6587\u4EF6\u7533\u8ACB\u734E\u52F5\u9762\u7A4D\u33A1"], ["awardPercent", "\u6587\u4EF6\u734E\u52F5\u6BD4\u4F8B%"], ["tdrPercent", "\u5BB9\u79FB\u6BD4\u4F8B%"], ["documentTdr", "\u6587\u4EF6\u5BB9\u79FB\u9762\u7A4D\u33A1"], ["documentTotal", "\u6587\u4EF6\u8A2D\u8A08\u7E3D\u8A08\u33A1"], ["documentCapPercent", "\u6587\u4EF6\u5408\u8A08\u4E0A\u9650%"]].map(([key, label]) => field(label, m[key], (v) => onChange({ ...m, [key]: v }))) }),
+      /* @__PURE__ */ jsx11("h3", { children: "\u9010\u5C64\u8A08\u5BB9\u9762\u7A4D\uFF0811-16\uFF09\uFF1B\u7528\u9014\u4F9D11-14" }),
+      /* @__PURE__ */ jsx11("p", { children: "\u5C64\u6578\u7531\u6587\u4EF6\u5217\u51FA\u7684\u6A13\u5C64\u7BC4\u570D\u8A08\u6578\uFF1B\u4E00\u6A13\u542B\u5E97\u8216\u3001\u9580\u5EF3\u7B49\uFF0CA\u2013D\u56DB\u3001\u4E94\u6A13\u4EA6\u542B\u4F4F\u5B85\u53CA\u516C\u5171\u8A2D\u65BD\uFF0C\u4FDD\u7559\u672A\u5206\u5217\uFF0C\u4E0D\u63A8\u5B9A\u7528\u9014\u6BD4\u4F8B\u3002" }),
+      m.floors.map((f8, i) => /* @__PURE__ */ jsxs11("fieldset", { children: [
+        /* @__PURE__ */ jsxs11("legend", { children: [
+          f8.block,
+          "\u68DF ",
+          f8.levels,
+          "\u6A13\uFF5C",
+          uses[f8.use]
+        ] }),
+        /* @__PURE__ */ jsxs11("div", { className: "mz-fields", children: [
+          field(f8.id + " \u6BCF\u5C64\u8A08\u5BB9\u33A1", f8.unitArea, (v) => onChange({ ...m, floors: m.floors.map((x, j) => j === i ? { ...x, unitArea: v } : x) })),
+          field(f8.id + " \u5C64\u6578", f8.count, (v) => onChange({ ...m, floors: m.floors.map((x, j) => j === i ? { ...x, count: v } : x) }))
+        ] })
+      ] }, f8.id)),
+      /* @__PURE__ */ jsx11("h3", { children: "\u6587\u4EF6\u6236\u6578\uFF0811-13\uFF09" }),
+      /* @__PURE__ */ jsx11("div", { className: "mz-fields", children: ["residential", "retail", "office"].map((k) => field(uses[k] + " \u6236\u6578", m.units[k], (v) => onChange({ ...m, units: { ...m.units, [k]: v } }))) })
+    ] }),
+    /* @__PURE__ */ jsxs11("div", { className: "mz-actions", children: [
+      /* @__PURE__ */ jsx11("button", { className: "mz-primary", onClick: () => setSnapshot({ signature, result: calculateProgramReview(m) }), children: "\u8A08\u7B97\u539F\u5BB9\u7A4D\u3001\u734E\u52F5\u3001\u5BB9\u79FB\u8207\u7528\u9014" }),
+      snapshot && !r && /* @__PURE__ */ jsx11("span", { children: "\u8F38\u5165\u5DF2\u8B8A\u66F4\uFF0C\u8ACB\u91CD\u65B0\u8A08\u7B97\u3002" })
+    ] }),
+    r && /* @__PURE__ */ jsxs11("section", { className: "mz-results", "aria-label": "\u539F\u5BB9\u7A4D\u8207\u7528\u9014\u5FA9\u7B97\u7D50\u679C", children: [
+      /* @__PURE__ */ jsx11("h3", { children: "\u539F\u5BB9\u7A4D\u8207\u7528\u9014\u5FA9\u7B97\u7D50\u679C" }),
+      /* @__PURE__ */ jsx11("p", { children: /* @__PURE__ */ jsx11("strong", { children: "\u6587\u4EF6\u6578\u91CF\u5FA9\u7B97\uFF1B\u5DEE\u7570\u8207\u9650\u5236\u5217\u65BC\u4E0B\u65B9" }) }),
+      /* @__PURE__ */ jsx11("dl", { className: "mz-totals", children: [["\u6CD5\u5B9A\u57FA\u6E96\u5BB9\u7A4D", r.base], ["\u4F9D\u6587\u4EF6\u539F\u5BB9\u7A4D\u66FF\u4EE3\u5F8C", r.adopted], ["\u6587\u4EF6\u7533\u8ACB\u734E\u52F5", r.award], ["\u5206\u7D44\u734E\u52F5\u4E0A\u9650", r.cap], ["\u4F9D\u8F38\u5165\u6BD4\u4F8B\u5FA9\u7B97\u5BB9\u79FB", r.tdr], ["\u4F9D\u8868\u5217\u7D44\u6210\u5FA9\u7B97\u7E3D\u91CF", r.total], ["\u9010\u5C64\u8A08\u5BB9\u5FA9\u7B97\u5408\u8A08", r.design], ["\u6587\u4EF6\u8A2D\u8A08\u7E3D\u8A08", r.declared]].map(([label, n]) => /* @__PURE__ */ jsxs11("div", { children: [
+        /* @__PURE__ */ jsx11("dt", { children: label }),
+        /* @__PURE__ */ jsxs11("dd", { children: [
+          format(n),
+          "\u33A1"
+        ] })
+      ] }, String(label))) }),
+      /* @__PURE__ */ jsx11("h4", { children: "\u539F\u5BB9\u7A4D\u53EA\u66FF\u4EE3\u6240\u5C6C\u571F\u5730\uFF0C\u4E0D\u91CD\u8907\u76F8\u52A0" }),
+      /* @__PURE__ */ jsx11("div", { style: { overflowX: "auto" }, children: /* @__PURE__ */ jsxs11("table", { children: [
+        /* @__PURE__ */ jsx11("thead", { children: /* @__PURE__ */ jsx11("tr", { children: ["\u571F\u5730\u7D44\u5225", "\u6CD5\u5B9A\u57FA\u6E96\u33A1", "\u6587\u4EF6\u66FF\u4EE3\u5F8C\u33A1", "\u539F\u5BB9\u7A4D\u589E\u52A0\u91CF\u33A1", "\u734E\u52F5\u4E0A\u9650\u33A1"].map((x) => /* @__PURE__ */ jsx11("th", { children: x }, x)) }) }),
+        /* @__PURE__ */ jsx11("tbody", { children: r.groups.map((g) => /* @__PURE__ */ jsxs11("tr", { children: [
+          /* @__PURE__ */ jsx11("th", { children: g.name }),
+          /* @__PURE__ */ jsx11("td", { children: format(g.base) }),
+          /* @__PURE__ */ jsx11("td", { children: format(g.adopted) }),
+          /* @__PURE__ */ jsx11("td", { children: format(g.increment) }),
+          /* @__PURE__ */ jsx11("td", { children: format(g.cap) })
+        ] }, g.id)) })
+      ] }) }),
+      /* @__PURE__ */ jsx11("h4", { children: "\u7528\u9014\u914D\u7F6E\u5206\u9805" }),
+      /* @__PURE__ */ jsx11("p", { children: "\u4EE5\u4E0B\u662F\u6587\u4EF6\u5DF2\u80FD\u8FA8\u8B58\u7684\u8A08\u5BB9\u6A13\u5C64\u5408\u8A08\uFF0C\u4E0D\u4EE3\u8868\u5C08\u6709\u9762\u7A4D\u3002\u672A\u5206\u5217\u90E8\u5206\u4E0D\u5F37\u5236\u5206\u6524\uFF1B\u4E0D\u80FD\u64DA\u6B64\u5BA3\u7A31\u65B0\u5317\u4F4F\u5B85\u4F7F\u7528\u5BB9\u7A4D\u9650\u5236\u5DF2\u901A\u904E\u3002" }),
+      /* @__PURE__ */ jsx11("dl", { className: "mz-totals", children: Object.entries(r.uses).map(([key, n]) => /* @__PURE__ */ jsxs11("div", { children: [
+        /* @__PURE__ */ jsx11("dt", { children: uses[key] }),
+        /* @__PURE__ */ jsxs11("dd", { children: [
+          format(n),
+          "\u33A1"
+        ] })
+      ] }, key)) }),
+      /* @__PURE__ */ jsxs11("p", { children: [
+        "\u6587\u4EF6\u6236\u6578\uFF1A\u4F4F\u5B85 ",
+        r.units.residential ?? "\u672A\u586B",
+        "\u3001\u5E97\u8216 ",
+        r.units.retail ?? "\u672A\u586B",
+        "\u3001\u8FA6\u516C\u5BA4 ",
+        r.units.office ?? "\u672A\u586B",
+        "\uFF1B\u7CFB\u7D71\u5408\u8A08 ",
+        r.unitTotal ?? "\u8CC7\u6599\u672A\u9F4A",
+        " \u6236\u3002"
+      ] }),
+      /* @__PURE__ */ jsxs11("details", { children: [
+        /* @__PURE__ */ jsx11("summary", { children: "\u9010\u5C64\u8A08\u7B97\u660E\u7D30" }),
+        /* @__PURE__ */ jsx11("div", { style: { overflowX: "auto" }, children: /* @__PURE__ */ jsxs11("table", { children: [
+          /* @__PURE__ */ jsx11("thead", { children: /* @__PURE__ */ jsxs11("tr", { children: [
+            /* @__PURE__ */ jsx11("th", { children: "\u68DF\u5225\uFF0F\u6A13\u5C64" }),
+            /* @__PURE__ */ jsx11("th", { children: "\u7528\u9014\u5206\u985E" }),
+            /* @__PURE__ */ jsx11("th", { children: "\u6BCF\u5C64\u33A1" }),
+            /* @__PURE__ */ jsx11("th", { children: "\u5C64\u6578" }),
+            /* @__PURE__ */ jsx11("th", { children: "\u8A08\u5BB9\u5408\u8A08\u33A1" })
+          ] }) }),
+          /* @__PURE__ */ jsx11("tbody", { children: r.floors.map((f8) => /* @__PURE__ */ jsxs11("tr", { children: [
+            /* @__PURE__ */ jsxs11("td", { children: [
+              f8.block,
+              " ",
+              f8.levels
+            ] }),
+            /* @__PURE__ */ jsx11("td", { children: uses[f8.use] }),
+            /* @__PURE__ */ jsx11("td", { children: f8.unitArea }),
+            /* @__PURE__ */ jsx11("td", { children: f8.count }),
+            /* @__PURE__ */ jsx11("td", { children: format(f8.total) })
+          ] }, f8.id)) })
+        ] }) })
+      ] }),
+      /* @__PURE__ */ jsx11("h4", { children: "\u540C\u4E00\u4EFD\u6587\u4EF6\u7684\u516C\u5F0F\u5DEE\u7570" }),
+      /* @__PURE__ */ jsx11("p", { children: "\u8868\u5217\u734E\u52F5\u63A1\u6587\u4EF6\u9762\u7A4D\uFF1B\u53E6\u4EE5\u6587\u4EF6\u767E\u5206\u6BD4\u53CA\u5167\u6587\u516C\u5F0F\u5FA9\u7B97\uFF0C\u4E0D\u5C07\u5176\u4E2D\u4E00\u5F0F\u6084\u6084\u53D6\u4EE3\u53E6\u4E00\u5F0F\u3002" }),
+      /* @__PURE__ */ jsx11("ul", { children: r.issues.map((v, i) => /* @__PURE__ */ jsx11("li", { children: v }, i)) }),
+      /* @__PURE__ */ jsxs11("p", { children: [
+        "11-13\u5167\u6587\u516C\u5F0F\uFF08\u542B304\u5730\u865F30%\u4E0A\u9650\uFF09\u5FA9\u7B97\uFF1A",
+        format(r.formulaWithOriginalCap),
+        "\u33A1\uFF1B11-16\u5167\u6587\u516C\u5F0F\uFF08\u672A\u53E6\u52A0\u8A72\u4E0A\u9650\uFF09\u5FA9\u7B97\uFF1A",
+        format(r.formulaWithoutOriginalCap),
+        "\u33A1\u3002"
+      ] }),
+      /* @__PURE__ */ jsx11("h4", { children: "\u5DF2\u5B8C\u6210\u8207\u5C1A\u4E0D\u80FD\u6210\u7ACB\u7684\u7D50\u8AD6" }),
+      /* @__PURE__ */ jsx11("p", { children: "\u5DF2\u5FA9\u7B97\u539F\u5BB9\u7A4D\u66FF\u4EE3\u3001\u8868\u5217\u734E\u52F5\u3001\u5BB9\u79FB\u3001\u5206\u7D44\u4E0A\u9650\u3001\u9010\u5C64\u8A08\u5BB9\u53CA\u7528\u9014\u5206\u7D44\u3002\u7B2C11\u7AE0\u53EA\u6709\u734E\u52F5\u5408\u8A08\uFF0C\u6C92\u6709\u5404\u734E\u52F5\u9805\u76EE\u5B8C\u6574\u8CC7\u683C\u3001\u539F\u5BB9\u7A4D\u7C3D\u8B49\u9644\u4EF6\u53CA\u5BB9\u79FB\u8A31\u53EF\uFF1B\u4EA6\u672A\u5206\u5217\u4F4F\u5B85\u57FA\u6E96\u5BB9\u7A4D\u6B78\u5C6C\u3002\u56E0\u6B64\u672C\u7D50\u679C\u4E0D\u958B\u653E\u8F49\u70BA\u5DF2\u6838\u51C6\u984D\u5EA6\uFF0C\u4E0D\u63A8\u4F30\u53EF\u552E\u91CF\u3002" }),
+      /* @__PURE__ */ jsxs11("details", { children: [
+        /* @__PURE__ */ jsx11("summary", { children: "\u5176\u4ED6\u516C\u958B\u6587\u4EF6\u7684\u7248\u672C\u6AA2\u67E5" }),
+        /* @__PURE__ */ jsx11("p", { children: "\u53E6\u627E\u5230\u7B2C10\u7AE0\u7247\u6BB5\uFF0810-4\u81F310-36\uFF09\uFF0C\u5176\u4E2D\u57FA\u57309,060\u33A1\u3001\u73FE\u6709\u5DF7\u905323.34\u33A1\u8207\u672C\u6B21\u8CC7\u6599\u76F8\u7B26\uFF0C\u4F46\u7F3A10-1\u81F310-3\u7E3D\u8868\uFF0C\u7121\u6CD5\u8B49\u660E\u734E\u52F5\u5408\u8A08\u8207\u672C\u6B21\u7B2C11\u7AE0\u5C6C\u540C\u4E00\u7248\u672C\uFF1B\u517610-4\u53C8\u540C\u521753.75%\u820752.50%\u5169\u7A2E\u8A2D\u8A08\u5EFA\u853D\u7387\u3002\u6545\u4E0D\u5C07\u5176\u4E2D\u734E\u52F5\u9805\u76EE\u88DC\u5165\u672C\u6B21\u8A08\u7B97\u3002" }),
+        /* @__PURE__ */ jsx11("a", { href: "https://resource.iyp.tw/static.iyp.tw/37315/files/35ae406d-b954-4118-98c7-cd44ef0596fd.pdf", target: "_blank", rel: "noreferrer", children: "\u7B2C10\u7AE0\u7247\u6BB5\uFF08\u50C5\u4F9B\u7248\u672C\u67E5\u6838\uFF09" }),
+        /* @__PURE__ */ jsx11("p", { children: "\u53E6\u4E00\u4EFD\u7B2C11\u7AE0\u8A18\u8F09\u734E\u52F519,159.32\u33A1\u3001\u7E3D\u91CF80,422.78\u33A1\uFF0C\u8207\u672C\u6B2119,044.64\u33A1\u300180,308.10\u33A1\u4E0D\u540C\u3002\u5169\u7248\u672C\u5206\u958B\u4FDD\u5B58\u5224\u65B7\uFF0C\u4E0D\u6DF7\u7528\u6578\u5B57\u3002" }),
+        /* @__PURE__ */ jsx11("a", { href: "https://resource.iyp.tw/static.iyp.tw/37315/files/73994665-d73b-4a62-85ae-9111cdea30eb.pdf", target: "_blank", rel: "noreferrer", children: "\u53E6\u4E00\u7248\u672C\u7B2C11\u7AE0\uFF08\u672A\u63A1\u5165\u8A08\u7B97\uFF09" })
+      ] })
+    ] })
+  ] });
+}
+
+// ../sanze-release-app/src/components/mixed-zone/LandBasisPanel.tsx
+import { jsx as jsx12, jsxs as jsxs12 } from "react/jsx-runtime";
+function LandBasisPanel({ value: value2, onChange, zones }) {
+  const v = value2 ?? newLandBasis();
+  return /* @__PURE__ */ jsxs12("fieldset", { className: "mz-zone", children: [
+    /* @__PURE__ */ jsx12("legend", { children: "\u91CD\u5EFA\u7BC4\u570D\u3001\u516C\u8A2D\u7528\u5730\u8207\u63A1\u8A08\u4F9D\u64DA" }),
+    /* @__PURE__ */ jsx12("p", { children: "\u66F4\u65B0\uFF0F\u91CD\u5EFA\u7BC4\u570D\u4E0D\u7B49\u65BC\u5EFA\u7BC9\u57FA\u5730\u3002\u90FD\u5E02\u8A08\u756B\u4EBA\u884C\u6B65\u9053\u3001\u9053\u8DEF\u7528\u5730\u3001\u79C1\u8A2D\u901A\u8DEF\u53CA\u57FA\u5730\u9000\u7E2E\u6B65\u9053\u5206\u5225\u6AA2\u8A0E\u3002\u5EE2\u5DF7\u3001\u6539\u9053\u6216\u8A08\u756B\u8B8A\u66F4\u4E0D\u6703\u81EA\u52D5\u65B0\u589E\u5BB9\u7A4D\uFF1B\u6CD5\u5B9A\u7A7A\u5730\u4E5F\u4E0D\u5F9E\u672A\u5EFA\u7BC9\u7684\u9918\u5730\u63A8\u5B9A\u3002" }),
+    /* @__PURE__ */ jsxs12("div", { className: "mz-fields", children: [
+      /* @__PURE__ */ jsxs12("label", { className: "mz-field", children: [
+        "\u672C\u6B21\u66F4\u65B0\uFF0F\u91CD\u5EFA\u7BC4\u570D",
+        /* @__PURE__ */ jsxs12("select", { "aria-label": "\u672C\u6B21\u66F4\u65B0\uFF0F\u91CD\u5EFA\u7BC4\u570D", value: v.renewal, onChange: (e) => onChange({ ...v, renewal: e.target.value }), children: [
+          /* @__PURE__ */ jsx12("option", { value: "unknown", children: "\u5C1A\u672A\u78BA\u8A8D" }),
+          /* @__PURE__ */ jsx12("option", { value: "inside", children: "\u7BC4\u570D\u5167" }),
+          /* @__PURE__ */ jsx12("option", { value: "outside", children: "\u7BC4\u570D\u5916\uFF08\u95DC\u806F\u571F\u5730\uFF09" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs12("label", { className: "mz-field", children: [
+        "\u571F\u5730\u6CD5\u5B9A\u8EAB\u5206",
+        /* @__PURE__ */ jsx12("select", { "aria-label": "\u571F\u5730\u6CD5\u5B9A\u8EAB\u5206", value: v.role, onChange: (e) => onChange({ ...v, role: e.target.value }), children: Object.entries({ unknown: "\u5C1A\u672A\u78BA\u8A8D", building: "\u4E00\u822C\u5EFA\u7BC9\u7528\u5730", publicPedestrian: "\u90FD\u5E02\u8A08\u756B\u4EBA\u884C\u6B65\u9053\u7528\u5730", publicRoad: "\u90FD\u5E02\u8A08\u756B\u9053\u8DEF\u7528\u5730", publicOther: "\u5176\u4ED6\u516C\u5171\u8A2D\u65BD\u7528\u5730", privateAccess: "\u73FE\u6709\u5DF7\u9053\uFF0F\u79C1\u8A2D\u901A\u8DEF\uFF08\u53E6\u6838\u5206\u5340\uFF09", setback: "\u57FA\u5730\u5167\u9000\u7E2E\u6B65\u9053\uFF08\u975E\u7368\u7ACB\u516C\u8A2D\u5206\u5340\uFF09", other: "\u5176\u4ED6" }).map(([k, t]) => /* @__PURE__ */ jsx12("option", { value: k, children: t }, k)) })
+      ] })
+    ] }),
+    ["publicPedestrian", "publicRoad", "publicOther"].includes(v.role) && /* @__PURE__ */ jsxs12("fieldset", { children: [
+      /* @__PURE__ */ jsx12("legend", { children: "\u516C\u8A2D\u571F\u5730\u4F8B\u5916\u63A1\u8A08\u7684\u90FD\u5E02\u8A08\u756B\u4F9D\u64DA" }),
+      /* @__PURE__ */ jsx12("p", { children: "\u516C\u8A2D\u571F\u5730\u539F\u5247\u4E0D\u5217\u4E00\u822C\u4F4F\u5B85\uFF0F\u5546\u696D\u5EFA\u7BC9\u57FA\u5730\uFF1B\u4ECD\u53EF\u80FD\u4F4D\u65BC\u90FD\u5E02\u66F4\u65B0\u4E8B\u696D\u7BC4\u570D\u3002\u65B0\u5317\u5E02115\u5E741\u67089\u65E5\u5283\u5B9A\u57FA\u6E96\u7B2C\u516D\u9EDE\u7684\u9762\u7A4D\u9580\u6ABB\u50C5\u8A08\u53EF\u5EFA\u7BC9\u57FA\u5730\uFF0C\u4E0D\u80FD\u4F7F\u7528\u7BC4\u570D\u7E3D\u9762\u7A4D\u4EE3\u66FF\u3002\u5EE2\u5DF7\u3001\u6539\u9053\u6838\u51C6\u4E0D\u7B49\u65BC\u90FD\u5E02\u8A08\u756B\u7528\u5730\u5DF2\u8B8A\u66F4\u3002" }),
+      /* @__PURE__ */ jsxs12("div", { className: "mz-fields", children: [
+        /* @__PURE__ */ jsxs12("label", { className: "mz-field", children: [
+          "\u516C\u8A2D\u63A1\u8A08\u90FD\u5E02\u8A08\u756B\u4F9D\u64DA\u985E\u578B",
+          /* @__PURE__ */ jsxs12("select", { "aria-label": "\u516C\u8A2D\u63A1\u8A08\u90FD\u5E02\u8A08\u756B\u4F9D\u64DA\u985E\u578B", value: v.publicAdoption?.kind ?? "unknown", onChange: (e) => onChange({ ...v, publicAdoption: { date: "", source: "", ...v.publicAdoption, kind: e.target.value } }), children: [
+            /* @__PURE__ */ jsx12("option", { value: "unknown", children: "\u672A\u5177\u5099\u63A1\u8A08\u4F9D\u64DA\uFF08\u4E0D\u7522\u751F\u958B\u767C\u91CF\uFF09" }),
+            /* @__PURE__ */ jsx12("option", { value: "currentPlan", children: "\u73FE\u884C\u8A08\u756B\u5DF2\u6709\u660E\u6587\u5141\u8A31\uFF08\u9010\u9805\u6838\u5C0D\uFF09" }),
+            /* @__PURE__ */ jsx12("option", { value: "effectiveChange", children: "\u8A08\u756B\u8B8A\u66F4\u5DF2\u767C\u5E03\u5BE6\u65BD\uFF08\u9010\u9805\u6838\u5C0D\uFF09" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs12("label", { className: "mz-field", children: [
+          "\u516C\u8A2D\u63A1\u8A08\u8A08\u756B\u751F\u6548\u65E5\u671F",
+          /* @__PURE__ */ jsx12("input", { type: "date", "aria-label": "\u516C\u8A2D\u63A1\u8A08\u8A08\u756B\u751F\u6548\u65E5\u671F", value: v.publicAdoption?.date ?? "", onChange: (e) => onChange({ ...v, publicAdoption: { kind: "unknown", source: "", ...v.publicAdoption, date: e.target.value } }) })
+        ] }),
+        /* @__PURE__ */ jsxs12("label", { className: "mz-field", children: [
+          "\u516C\u8A2D\u63A1\u8A08\u8A08\u756B\u689D\u6587\u53CA\u6838\u5B9A\u5716\u8AAA",
+          /* @__PURE__ */ jsx12("input", { "aria-label": "\u516C\u8A2D\u63A1\u8A08\u8A08\u756B\u689D\u6587\u53CA\u6838\u5B9A\u5716\u8AAA", value: v.publicAdoption?.source ?? "", onChange: (e) => onChange({ ...v, publicAdoption: { kind: "unknown", date: "", ...v.publicAdoption, source: e.target.value } }) })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx12("p", { children: "\u9053\u8DEF\u73FE\u6CC1\u3001\u5EE2\u5DF7\u53CA\u6539\u9053\u9032\u5EA6\u8A18\u65BC\u4E0B\u65B9\u300C\u7A0B\u5E8F\u53CA\u9069\u7528\u9650\u5236\u300D\u3002\u5373\u4F7F\u7A0B\u5E8F\u5DF2\u6838\u51C6\uFF0C\u5404\u9805\u9762\u7A4D\u4ECD\u9808\u4F9D\u6838\u5B9A\u5716\u8AAA\u5206\u5225\u586B\u5BEB\u3002" }),
+    Object.entries(basisLabels).map(([k, label]) => /* @__PURE__ */ jsxs12("div", { className: "mz-fields", children: [
+      /* @__PURE__ */ jsxs12("label", { className: "mz-field", children: [
+        label,
+        "\u8CC7\u683C",
+        /* @__PURE__ */ jsxs12("select", { "aria-label": label + "\u8CC7\u683C", value: v[k].status, onChange: (e) => onChange({ ...v, [k]: { ...v[k], status: e.target.value } }), children: [
+          /* @__PURE__ */ jsx12("option", { value: "unknown", children: "\u5C1A\u672A\u78BA\u8A8D" }),
+          /* @__PURE__ */ jsx12("option", { value: "count", children: "\u4F9D\u64DA\u5141\u8A31\u63A1\u8A08\uFF08\u586B\u660E\u9762\u7A4D\uFF09" }),
+          /* @__PURE__ */ jsx12("option", { value: "exclude", children: "\u4F9D\u64DA\u78BA\u8A8D\u4E0D\u63A1\u8A08" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs12("label", { className: "mz-field", children: [
+        label,
+        "\uFF08\u33A1\uFF09",
+        /* @__PURE__ */ jsx12("input", { "aria-label": label + "\uFF08\u33A1\uFF09", type: "number", min: "0", step: "any", value: v[k].area, onChange: (e) => onChange({ ...v, [k]: { ...v[k], area: e.target.value } }) })
+      ] }),
+      /* @__PURE__ */ jsxs12("label", { className: "mz-field", children: [
+        label,
+        "\u4F9D\u6587\u4EF6\u53E6\u6263\u9762\u7A4D\uFF08\u33A1\uFF09",
+        /* @__PURE__ */ jsx12("input", { "aria-label": label + "\u4F9D\u6587\u4EF6\u53E6\u6263\u9762\u7A4D\uFF08\u33A1\uFF09", type: "number", min: "0", step: "any", value: v[k].deduction ?? "", onChange: (e) => onChange({ ...v, [k]: { ...v[k], deduction: e.target.value } }) })
+      ] }),
+      /* @__PURE__ */ jsxs12("label", { className: "mz-field", children: [
+        label,
+        "\u4F9D\u64DA",
+        /* @__PURE__ */ jsx12("input", { "aria-label": label + "\u4F9D\u64DA", value: v[k].source, onChange: (e) => onChange({ ...v, [k]: { ...v[k], source: e.target.value } }) })
+      ] })
+    ] }, k)),
+    /* @__PURE__ */ jsxs12("div", { className: "mz-fields", children: [
+      /* @__PURE__ */ jsxs12("label", { className: "mz-field", children: [
+        "\u516C\u5171\u8A2D\u65BD\u5BB9\u7A4D\u79FB\u8F49\u8655\u7406",
+        /* @__PURE__ */ jsxs12("select", { "aria-label": "\u516C\u5171\u8A2D\u65BD\u5BB9\u7A4D\u79FB\u8F49\u8655\u7406", value: v.tdr.status, onChange: (e) => onChange({ ...v, tdr: { ...v.tdr, status: e.target.value } }), children: [
+          /* @__PURE__ */ jsx12("option", { value: "unknown", children: "\u5C1A\u672A\u78BA\u8A8D" }),
+          /* @__PURE__ */ jsx12("option", { value: "none", children: "\u6587\u4EF6\u78BA\u8A8D\u4E0D\u63A1\u5BB9\u7A4D\u79FB\u8F49" }),
+          /* @__PURE__ */ jsx12("option", { value: "proposed", children: "\u64EC\u7533\u8ACB\uFF08\u4E0D\u5217\u5DF2\u6838\u51C6\u984D\u5EA6\uFF09" }),
+          /* @__PURE__ */ jsx12("option", { value: "approved", children: "\u5DF2\u6838\u51C6\uFF08\u4F9D\u6838\u5B9A\u984D\u5EA6\uFF09" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs12("label", { className: "mz-field", children: [
+        "\u516C\u5171\u8A2D\u65BD\u79FB\u8F49\u5BB9\u7A4D\uFF08\u33A1\uFF09",
+        /* @__PURE__ */ jsx12("input", { "aria-label": "\u516C\u5171\u8A2D\u65BD\u79FB\u8F49\u5BB9\u7A4D\uFF08\u33A1\uFF09", type: "number", min: "0", step: "any", value: v.tdr.area, onChange: (e) => onChange({ ...v, tdr: { ...v.tdr, area: e.target.value } }) })
+      ] }),
+      /* @__PURE__ */ jsxs12("label", { className: "mz-field", children: [
+        "\u516C\u5171\u8A2D\u65BD\u5BB9\u7A4D\u63A5\u53D7\u7BC4\u570D",
+        /* @__PURE__ */ jsxs12("select", { "aria-label": "\u516C\u5171\u8A2D\u65BD\u5BB9\u7A4D\u63A5\u53D7\u7BC4\u570D", value: v.tdr.receivingZone, onChange: (e) => onChange({ ...v, tdr: { ...v.tdr, receivingZone: e.target.value } }), children: [
+          /* @__PURE__ */ jsx12("option", { value: "", children: "\u8ACB\u9078\u64C7" }),
+          zones.map((z) => /* @__PURE__ */ jsx12("option", { value: z.id, children: z.name || "\u672A\u547D\u540D\u7BC4\u570D" }, z.id))
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs12("label", { className: "mz-field", children: [
+        "\u5BB9\u7A4D\u79FB\u8F49\u6587\u4EF6\u53CA\u552F\u4E00\u6838\u51C6\u9805\u6B21",
+        /* @__PURE__ */ jsx12("input", { "aria-label": "\u5BB9\u7A4D\u79FB\u8F49\u6587\u4EF6\u53CA\u552F\u4E00\u6838\u51C6\u9805\u6B21", value: v.tdr.source, onChange: (e) => onChange({ ...v, tdr: { ...v.tdr, source: e.target.value } }) })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx12("h4", { children: "\u5EE2\u5DF7\u3001\u6539\u9053\u8207\u5176\u4ED6\u6CD5\u5B9A\u7A0B\u5E8F" }),
+    /* @__PURE__ */ jsx12("p", { children: "\u53EA\u52FE\u9078\u300C\u8A72\u63A1\u8A08\u5FC5\u9808\u7B49\u6B64\u7A0B\u5E8F\u751F\u6548\u300D\u7684\u9805\u76EE\u3002\u6838\u51C6\u4F46\u672A\u751F\u6548\uFF0C\u4E0D\u80FD\u76F4\u63A5\u7576\u4F5C\u5B8C\u6210\uFF1B\u7A0B\u5E8F\u751F\u6548\u4E5F\u4E0D\u66FF\u4EE3\u4E0A\u65B9\u5404\u9805\u6CD5\u898F\u4F9D\u64DA\u3002" }),
+    (v.procedures ?? []).map((p) => /* @__PURE__ */ jsxs12("fieldset", { children: [
+      /* @__PURE__ */ jsxs12("div", { className: "mz-fields", children: [
+        /* @__PURE__ */ jsxs12("label", { className: "mz-field", children: [
+          "\u7A0B\u5E8F\u985E\u578B",
+          /* @__PURE__ */ jsx12("select", { "aria-label": "\u7A0B\u5E8F\u985E\u578B", value: p.kind, onChange: (e) => onChange({ ...v, procedures: v.procedures.map((q) => q.id === p.id ? { ...q, kind: e.target.value } : q) }), children: Object.entries({ planChange: "\u90FD\u5E02\u8A08\u756B\u8B8A\u66F4", alleyClosure: "\u73FE\u6709\u5DF7\u9053\u5EE2\u6B62", alleyReroute: "\u73FE\u6709\u5DF7\u9053\u6539\u9053", acquisition: "\u516C\u8A2D\u571F\u5730\u53D6\u5F97\uFF0F\u79FB\u4EA4", other: "\u5176\u4ED6\u6CD5\u5B9A\u7A0B\u5E8F" }).map(([k, t]) => /* @__PURE__ */ jsx12("option", { value: k, children: t }, k)) })
+        ] }),
+        /* @__PURE__ */ jsxs12("label", { className: "mz-field", children: [
+          "\u7A0B\u5E8F\u9032\u5EA6",
+          /* @__PURE__ */ jsx12("select", { "aria-label": "\u7A0B\u5E8F\u9032\u5EA6", value: p.status, onChange: (e) => onChange({ ...v, procedures: v.procedures.map((q) => q.id === p.id ? { ...q, status: e.target.value } : q) }), children: Object.entries({ unknown: "\u5C1A\u672A\u78BA\u8A8D", proposed: "\u64EC\u8FA6\uFF0F\u7533\u8ACB\u4E2D", approved: "\u5DF2\u6838\u51C6\u3001\u672A\u78BA\u8A8D\u751F\u6548", effective: "\u5DF2\u751F\u6548\uFF08\u9644\u65E5\u671F\u53CA\u6587\u4EF6\uFF09", completed: "\u5DF2\u5B8C\u6210\uFF08\u9644\u6587\u4EF6\uFF09" }).map(([k, t]) => /* @__PURE__ */ jsx12("option", { value: k, children: t }, k)) })
+        ] }),
+        /* @__PURE__ */ jsxs12("label", { className: "mz-field", children: [
+          "\u7A0B\u5E8F\u751F\u6548\uFF0F\u5B8C\u6210\u65E5\u671F",
+          /* @__PURE__ */ jsx12("input", { type: "date", "aria-label": "\u7A0B\u5E8F\u751F\u6548\uFF0F\u5B8C\u6210\u65E5\u671F", value: p.date, onChange: (e) => onChange({ ...v, procedures: v.procedures.map((q) => q.id === p.id ? { ...q, date: e.target.value } : q) }) })
+        ] }),
+        /* @__PURE__ */ jsxs12("label", { className: "mz-field", children: [
+          "\u7A0B\u5E8F\u6587\u4EF6\u4F9D\u64DA",
+          /* @__PURE__ */ jsx12("input", { "aria-label": "\u7A0B\u5E8F\u6587\u4EF6\u4F9D\u64DA", value: p.source, onChange: (e) => onChange({ ...v, procedures: v.procedures.map((q) => q.id === p.id ? { ...q, source: e.target.value } : q) }) })
+        ] })
+      ] }),
+      Object.entries(basisLabels).map(([k, label]) => /* @__PURE__ */ jsxs12("label", { children: [
+        /* @__PURE__ */ jsx12("input", { type: "checkbox", checked: p.affects.includes(k), onChange: (e) => onChange({ ...v, procedures: v.procedures.map((q) => q.id === p.id ? { ...q, affects: e.target.checked ? [...q.affects, k] : q.affects.filter((a) => a !== k) } : q) }) }),
+        label,
+        "\u9808\u7B49\u6B64\u7A0B\u5E8F\u751F\u6548 "
+      ] }, k)),
+      /* @__PURE__ */ jsx12("button", { type: "button", onClick: () => onChange({ ...v, procedures: v.procedures.filter((q) => q.id !== p.id) }), children: "\u79FB\u9664\u6B64\u7A0B\u5E8F" })
+    ] }, p.id)),
+    /* @__PURE__ */ jsx12("button", { type: "button", disabled: (v.procedures?.length ?? 0) >= 30, onClick: () => onChange({ ...v, procedures: [...v.procedures ?? [], { id: crypto.randomUUID(), kind: "alleyClosure", status: "unknown", date: "", source: "", affects: [] }] }), children: "\u65B0\u589E\u6CD5\u5B9A\u7A0B\u5E8F" }),
+    /* @__PURE__ */ jsx12("p", { children: "\u6838\u51C6\u79FB\u8F49\u53EA\u52A0\u5230\u6307\u5B9A\u63A5\u53D7\u7BC4\u570D\u4E00\u6B21\u3002\u4E0D\u5F97\u518D\u65BC\u4E00\u822C\u734E\u52F5\uFF0F\u5BB9\u79FB\u6B04\u91CD\u8907\u586B\u5165\u540C\u4E00\u6838\u51C6\u9805\u6B21\uFF1B\u6D89\u53CA\u9001\u51FA\u8CC7\u683C\u3001\u53D6\u5F97\u53CA\u79FB\u8F49\u4E0A\u9650\u9808\u6838\u5C0D\u539F\u6838\u5B9A\u6587\u4EF6\u3002" })
+  ] });
+}
+
+// ../sanze-release-app/src/components/mixed-zone/CommercialIntensityPanel.tsx
+import { Fragment as Fragment8, jsx as jsx13, jsxs as jsxs13 } from "react/jsx-runtime";
+function CommercialIntensityPanel({ value: value2, onChange, site, coverage, requireResidential = true }) {
+  const x = value2, edit = (p) => onChange({ ...x, ...p }), r = calculateCommercialIntensity(x, site, coverage, requireResidential);
+  const field = (label, key, type = "text") => /* @__PURE__ */ jsxs13("label", { className: "mz-field", children: [
+    /* @__PURE__ */ jsx13("span", { children: label }),
+    /* @__PURE__ */ jsx13("input", { type, "aria-label": label, value: x[key], onChange: (e) => edit({ [key]: e.target.value }) })
+  ] });
+  return /* @__PURE__ */ jsxs13("section", { className: "mixed-zone", "aria-label": "\u5546\u696D\u5206\u5340\u6CD5\u898F\u6AA2\u6838", children: [
+    /* @__PURE__ */ jsx13("h3", { children: "\u5546\u696D\u5206\u5340\u5F37\u5EA6\u8207\u4F4F\u5B85\u7528\u9014\u6AA2\u6838" }),
+    /* @__PURE__ */ jsx13("p", { children: "\u5148\u6309\u9069\u7528\u6CD5\u898F\u6C7A\u5B9A\u5BB9\u7A4D\uFF0C\u518D\u929C\u63A5\u96C6\u5408\u4F4F\u5B85\u898F\u5283\u3002\u4E0B\u65B9\u539F\u6709\u5BB9\u7A4D\u7387\u6B04\u4F4D\u4E0D\u4F5C\u672C\u6A21\u5F0F\u7684\u6838\u7B97\u4F86\u6E90\uFF1B\u4E0D\u56E0\u9078\u64C7\u5546\u696D\u5340\u5C31\u63A8\u5B9A\u53EF\u4F9B\u4F4F\u5B85\u4F7F\u7528\u3002" }),
+    requireResidential && /* @__PURE__ */ jsxs13("label", { className: "mz-field", children: [
+      /* @__PURE__ */ jsx13("span", { children: "\u898F\u5283\u65B9\u9810\u5B9A\u8A2D\u8A08\u6A21\u5F0F" }),
+      /* @__PURE__ */ jsxs13("select", { "aria-label": "\u898F\u5283\u65B9\u9810\u5B9A\u8A2D\u8A08\u6A21\u5F0F", value: x.designMode ?? "unknown", onChange: (e) => edit({ designMode: e.target.value }), children: [
+        /* @__PURE__ */ jsx13("option", { value: "unknown", children: "\u5C1A\u672A\u78BA\u8A8D\u898F\u5283\u9700\u6C42" }),
+        /* @__PURE__ */ jsx13("option", { value: "residential", children: "\u7D14\u4F4F\u5B85" }),
+        /* @__PURE__ */ jsx13("option", { value: "mixed", children: "\u4F4F\u5B85\u8207\u5546\u696D\u6DF7\u5408" })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs13("div", { className: "mz-fields", children: [
+      /* @__PURE__ */ jsxs13("label", { className: "mz-field", children: [
+        /* @__PURE__ */ jsx13("span", { children: "\u5546\u696D\u5340\u6240\u5728\u5730" }),
+        /* @__PURE__ */ jsxs13("select", { "aria-label": "\u5546\u696D\u5340\u6240\u5728\u5730", value: x.city, onChange: (e) => edit({ city: e.target.value, mode: "unknown" }), children: [
+          /* @__PURE__ */ jsx13("option", { value: "unknown", children: "\u5F85\u78BA\u8A8D" }),
+          /* @__PURE__ */ jsx13("option", { children: "\u81FA\u5317\u5E02" }),
+          /* @__PURE__ */ jsx13("option", { children: "\u65B0\u5317\u5E02" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs13("label", { className: "mz-field", children: [
+        /* @__PURE__ */ jsx13("span", { children: "\u5546\u696D\u5340\u5F37\u5EA6\u4F9D\u64DA" }),
+        /* @__PURE__ */ jsxs13("select", { "aria-label": "\u5546\u696D\u5340\u5F37\u5EA6\u4F9D\u64DA", value: x.mode, onChange: (e) => edit({ mode: e.target.value }), children: [
+          /* @__PURE__ */ jsx13("option", { value: "unknown", children: "\u5F85\u78BA\u8A8D" }),
+          /* @__PURE__ */ jsx13("option", { value: "taipei25", children: "\u81FA\u5317\u5E02\u7B2C25\u689D\uFF08\u8A08\u756B\u672A\u53E6\u8A02\uFF09" }),
+          /* @__PURE__ */ jsx13("option", { value: "document", children: "\u5730\u65B9\uFF0F\u500B\u5225\u8A08\u756B\u6587\u4EF6\u660E\u5B9A" })
+        ] })
+      ] }),
+      field("\u500B\u5225\u90FD\u5E02\u8A08\u756B\u53CA\u53E6\u8A02\u898F\u5B9A\u67E5\u6838", "planSource"),
+      field("\u5546\u696D\u5340\u6CD5\u898F\u67E5\u6838\u65E5\u671F", "checkedAt", "date"),
+      /* @__PURE__ */ jsxs13("label", { className: "mz-field", children: [
+        /* @__PURE__ */ jsx13("span", { children: "\u96C6\u5408\u4F4F\u5B85\u7528\u9014\u662F\u5426\u5141\u8A31" }),
+        /* @__PURE__ */ jsxs13("select", { "aria-label": "\u96C6\u5408\u4F4F\u5B85\u7528\u9014\u662F\u5426\u5141\u8A31", value: x.residentialUse, onChange: (e) => edit({ residentialUse: e.target.value }), children: [
+          /* @__PURE__ */ jsx13("option", { value: "unknown", children: "\u5F85\u78BA\u8A8D" }),
+          /* @__PURE__ */ jsx13("option", { value: "allowed", children: "\u4F9D\u6240\u5217\u689D\u4EF6\u5141\u8A31" }),
+          /* @__PURE__ */ jsx13("option", { value: "forbidden", children: "\u4E0D\u5141\u8A31" })
+        ] })
+      ] }),
+      field("\u4F4F\u5B85\u7528\u9014\u53CA\u9644\u5E36\u689D\u4EF6\u4F9D\u64DA", "useSource")
+    ] }),
+    x.mode === "taipei25" && /* @__PURE__ */ jsxs13(Fragment8, { children: [
+      /* @__PURE__ */ jsxs13("label", { className: "mz-field", children: [
+        /* @__PURE__ */ jsx13("span", { children: "\u5546\u696D\u5206\u5340\u7A2E\u985E" }),
+        /* @__PURE__ */ jsxs13("select", { "aria-label": "\u5546\u696D\u5206\u5340\u7A2E\u985E", value: x.commercialClass, onChange: (e) => edit({ commercialClass: e.target.value }), children: [
+          /* @__PURE__ */ jsx13("option", { value: "unknown", children: "\u5F85\u78BA\u8A8D" }),
+          ["1", "2", "3", "4"].map((n) => /* @__PURE__ */ jsxs13("option", { value: n, children: [
+            "\u7B2C",
+            n,
+            "\u7A2E\u5546\u696D\u5340"
+          ] }, n))
+        ] })
+      ] }),
+      field("\u9053\u8DEF\u9069\u7528\u7BC4\u570D\u5716\u53CA\u4E0D\u91CD\u8907\u76E4\u67E5\u4F9D\u64DA", "boundarySource"),
+      /* @__PURE__ */ jsx13("p", { children: "\u4EE5\u6700\u5BEC\u9053\u8DEF\u3001\u6B21\u5BEC\u9053\u8DEF\u53CA\u5269\u9918\u7BC4\u570D\u6309\u5716\u8AAA\u62C6\u5217\uFF0C\u9762\u7A4D\u7531\u539F\u59CB\u8CC7\u6599\u586B\u5165\uFF1B\u4E0D\u80FD\u7531\u9762\u5BEC\u81EA\u884C\u5047\u5B9A\u77E9\u5F62\u57FA\u5730\u3002" }),
+      x.bands.map((b, j) => /* @__PURE__ */ jsxs13("fieldset", { className: "mz-zone", children: [
+        /* @__PURE__ */ jsxs13("legend", { children: [
+          "\u9053\u8DEF\u9069\u7528\u7BC4\u570D ",
+          j + 1
+        ] }),
+        /* @__PURE__ */ jsxs13("div", { className: "mz-fields", children: [
+          /* @__PURE__ */ jsxs13("label", { className: "mz-field", children: [
+            /* @__PURE__ */ jsx13("span", { children: "\u7BC4\u570D\u9069\u7528\u65B9\u5F0F" }),
+            /* @__PURE__ */ jsxs13("select", { "aria-label": "\u7BC4\u570D\u9069\u7528\u65B9\u5F0F", value: b.kind, onChange: (e) => edit({ bands: x.bands.map((v) => v.id === b.id ? { ...v, kind: e.target.value } : v) }), children: [
+              /* @__PURE__ */ jsx13("option", { value: "unknown", children: "\u5F85\u78BA\u8A8D" }),
+              /* @__PURE__ */ jsx13("option", { value: "road", children: "\u5DF2\u4F9D\u5716\u8AAA\u5283\u5B9A\u9053\u8DEF\u9069\u7528\u7BC4\u570D" }),
+              /* @__PURE__ */ jsx13("option", { value: "residual", children: "\u5269\u9918\uFF0F\u672A\u7B26\u5408\u7BC4\u570D\uFF08300%\uFF09" })
+            ] })
+          ] }),
+          [["area", "\u9069\u7528\u7BC4\u570D\u9762\u7A4D\uFF08\u33A1\uFF09"], ["width", "\u9069\u7528\u8A08\u756B\u9053\u8DEF\u5BEC\u5EA6\uFF08m\uFF09"], ["frontage", "\u81E8\u63A5\u8A72\u8DEF\u9762\u5BEC\uFF08m\uFF09"], ["source", "\u7BC4\u570D\u5716\u8AAA\uFF0F\u9801\u6B21"]].map(([key, label]) => /* @__PURE__ */ jsxs13("label", { className: "mz-field", children: [
+            /* @__PURE__ */ jsx13("span", { children: label }),
+            /* @__PURE__ */ jsx13("input", { "aria-label": label, value: b[key], type: key === "source" ? "text" : "number", onChange: (e) => edit({ bands: x.bands.map((v) => v.id === b.id ? { ...v, [key]: e.target.value } : v) }) })
+          ] }, key))
+        ] }),
+        /* @__PURE__ */ jsx13("button", { onClick: () => edit({ bands: x.bands.filter((v) => v.id !== b.id) }), children: "\u79FB\u9664\u6B64\u9053\u8DEF\u7BC4\u570D" })
+      ] }, b.id)),
+      /* @__PURE__ */ jsx13("button", { disabled: x.bands.length >= 100, onClick: () => edit({ bands: [...x.bands, newRoadBand()] }), children: "\u65B0\u589E\u9053\u8DEF\u9069\u7528\u7BC4\u570D" })
+    ] }),
+    x.mode === "document" && /* @__PURE__ */ jsxs13("div", { className: "mz-fields", children: [
+      field("\u6587\u4EF6\u9069\u7528\u5BB9\u7A4D\u7387\uFF08%\uFF09", "documentFar", "number"),
+      field("\u6587\u4EF6\u5EFA\u853D\u7387\u4E0A\u9650\uFF08%\uFF09", "documentCoverage", "number"),
+      field("\u5F37\u5EA6\u8207\u81E8\u8DEF\u9650\u5236\u6587\u4EF6\u4F86\u6E90", "documentSource")
+    ] }),
+    x.city === "\u65B0\u5317\u5E02" && /* @__PURE__ */ jsxs13("fieldset", { className: "mz-zone", children: [
+      /* @__PURE__ */ jsx13("legend", { children: "\u65B0\u5317\u5E02\u7B2C17\u689D\uFF1A\u5546\u696D\u5340\u4F4F\u5B85\u57FA\u6E96\u5BB9\u7A4D" }),
+      /* @__PURE__ */ jsx13("p", { children: "\u4E00\u822C\u60C5\u5F62\u53D7\u8A72\u90FD\u5E02\u8A08\u756B\u4F4F\u5B85\u5340\u57FA\u6E96\u5BB9\u7A4D\u9650\u5236\u3002\u4F8B\u5916\u9808\u6709\u6838\u51C6\uFF0F\u5BE9\u8B70\u53CA\u539F\u6709\u5408\u6CD5\u4F7F\u7528\u4F9D\u64DA\uFF0C\u4E0D\u80FD\u53EA\u52FE\u9078\u90FD\u66F4\u6216\u5371\u8001\u3002" }),
+      /* @__PURE__ */ jsxs13("label", { className: "mz-field", children: [
+        /* @__PURE__ */ jsx13("span", { children: "\u4F4F\u5B85\u57FA\u6E96\u5BB9\u7A4D\u9069\u7528\u65B9\u5F0F" }),
+        /* @__PURE__ */ jsxs13("select", { "aria-label": "\u4F4F\u5B85\u57FA\u6E96\u5BB9\u7A4D\u9069\u7528\u65B9\u5F0F", value: x.ntpcHousing?.mode ?? "unknown", onChange: (e) => edit({ ntpcHousing: { far: "", source: "", ...x.ntpcHousing, mode: e.target.value } }), children: [
+          /* @__PURE__ */ jsx13("option", { value: "unknown", children: "\u5F85\u78BA\u8A8D" }),
+          /* @__PURE__ */ jsx13("option", { value: "standard", children: "\u4F9D\u540C\u90FD\u5E02\u8A08\u756B\u4F4F\u5B85\u5340\u4E0A\u9650" }),
+          /* @__PURE__ */ jsx13("option", { value: "exception", children: "\u5DF2\u6838\u51C6\u7B2C17\u689D\u4F8B\u5916\uFF08\u9644\u6587\u4EF6\uFF09" })
+        ] })
+      ] }),
+      ["far", "source"].map((k) => /* @__PURE__ */ jsxs13("label", { className: "mz-field", children: [
+        /* @__PURE__ */ jsx13("span", { children: k === "far" ? "\u540C\u90FD\u5E02\u8A08\u756B\u4F4F\u5B85\u5340\u57FA\u6E96\u5BB9\u7A4D\u7387\uFF08%\uFF09" : "\u7B2C17\u689D\u9069\u7528\u689D\u4EF6\u8207\u6838\u51C6\u6587\u4EF6" }),
+        /* @__PURE__ */ jsx13("input", { "aria-label": k === "far" ? "\u540C\u90FD\u5E02\u8A08\u756B\u4F4F\u5B85\u5340\u57FA\u6E96\u5BB9\u7A4D\u7387\uFF08%\uFF09" : "\u7B2C17\u689D\u9069\u7528\u689D\u4EF6\u8207\u6838\u51C6\u6587\u4EF6", type: k === "far" ? "number" : "text", value: x.ntpcHousing?.[k] ?? "", onChange: (e) => edit({ ntpcHousing: { mode: "unknown", far: "", source: "", ...x.ntpcHousing, [k]: e.target.value } }) })
+      ] }, k)),
+      /* @__PURE__ */ jsx13("a", { href: "https://web.law.ntpc.gov.tw/Scripts/FLAWDOC01.aspx?fcode=C0150108&flno=17", target: "_blank", rel: "noreferrer", children: "\u65B0\u5317\u5E02\u65BD\u884C\u7D30\u5247\u7B2C17\u689D" })
+    ] }),
+    /* @__PURE__ */ jsx13("div", { className: "mz-issues", children: r.errors.length ? /* @__PURE__ */ jsx13("ul", { children: r.errors.map((t) => /* @__PURE__ */ jsx13("li", { children: t }, t)) }) : /* @__PURE__ */ jsxs13("p", { children: [
+      "\u4F9D\u672C\u6B21\u5206\u6BB5\u689D\u4EF6\uFF1A\u57FA\u6E96\u5BB9\u7A4D ",
+      r.base?.toLocaleString("zh-TW"),
+      "\u33A1\u3002\u9019\u662F\u6578\u91CF\u6AA2\u6838\uFF0C\u500B\u6848\u6CD5\u898F\u53CA\u5716\u8AAA\u53E6\u6838\u3002"
+    ] }) }),
+    /* @__PURE__ */ jsxs13("details", { children: [
+      /* @__PURE__ */ jsx13("summary", { children: "\u8A08\u7B97\u4F9D\u64DA" }),
+      r.notes.map((n) => /* @__PURE__ */ jsx13("p", { children: n }, n)),
+      /* @__PURE__ */ jsx13("a", { href: "https://laws.gov.taipei/Law/LawSearch/LawArticleContent/FL003962", target: "_blank", rel: "noreferrer", children: "\u81FA\u5317\u5E02\u571F\u5730\u4F7F\u7528\u5206\u5340\u7BA1\u5236\u81EA\u6CBB\u689D\u4F8B\u7B2C25\u689D" })
+    ] })
+  ] });
+}
+
+// ../sanze-release-app/src/components/mixed-zone/MixedZonePanel.tsx
+import { useState as useState4 } from "react";
+import { Fragment as Fragment9, jsx as jsx14, jsxs as jsxs14 } from "react/jsx-runtime";
+var f7 = (n) => n === null ? "\u5F85\u88DC\u8CC7\u6599" : n.toLocaleString("zh-TW", { maximumFractionDigits: 2 });
+var states = { unknown: "\u5F85\u67E5\u8B49", documented: "\u6587\u4EF6\u8A18\u8F09", scenario: "\u898F\u5283\u60C5\u5883", verified: "\u5DF2\u8986\u6838\u9069\u7528" };
+function Text({ label, value: value2, onChange, numeric: numeric2 = false }) {
+  return /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+    /* @__PURE__ */ jsx14("span", { children: label }),
+    /* @__PURE__ */ jsx14("input", { "aria-label": label, type: numeric2 ? "number" : "text", min: numeric2 ? "0" : void 0, step: numeric2 ? "any" : void 0, value: value2, onChange: (e) => onChange(e.target.value) })
+  ] });
+}
+function EvidenceFields({ value: e, onChange, label }) {
+  return /* @__PURE__ */ jsxs14("div", { className: "mz-evidence", children: [
+    /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+      /* @__PURE__ */ jsxs14("span", { children: [
+        label,
+        "\u72C0\u614B"
+      ] }),
+      /* @__PURE__ */ jsx14("select", { "aria-label": label + "\u72C0\u614B", value: e.state, onChange: (x) => onChange({ ...e, state: x.target.value }), children: Object.entries(states).map(([k, v]) => /* @__PURE__ */ jsx14("option", { value: k, children: v }, k)) })
+    ] }),
+    /* @__PURE__ */ jsx14(Text, { label: label + "\u4F86\u6E90\uFF0F\u689D\u6587\uFF0F\u9801\u6B21", value: e.source, onChange: (source) => onChange({ ...e, source }) }),
+    /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+      /* @__PURE__ */ jsxs14("span", { children: [
+        label,
+        "\u65E5\u671F"
+      ] }),
+      /* @__PURE__ */ jsx14("input", { "aria-label": label + "\u65E5\u671F", type: "date", value: e.date, onChange: (x) => onChange({ ...e, date: x.target.value }) })
+    ] })
+  ] });
+}
+function MixedZoneResult({ result: r }) {
+  return /* @__PURE__ */ jsxs14("section", { className: "mz-results", "aria-label": "\u5206\u5340\u8A55\u4F30\u7D50\u679C", children: [
+    /* @__PURE__ */ jsxs14("header", { children: [
+      /* @__PURE__ */ jsx14("h3", { children: "\u5206\u5340\u8A55\u4F30\u7D50\u679C" }),
+      /* @__PURE__ */ jsx14("strong", { className: "mz-state mz-" + r.status, children: { incomplete: "\u8CC7\u6599\u5C1A\u7F3A", conflict: "\u689D\u4EF6\u885D\u7A81", conditional: "\u9644\u689D\u4EF6\u8A55\u4F30", checked: "\u8F38\u5165\u76E4\u67E5\u5B8C\u6210\uFF08\u975E\u5EFA\u7167\u5BE9\u67E5\uFF09" }[r.status] })
+    ] }),
+    /* @__PURE__ */ jsx14("p", { children: "\u53EF\u8A08\u7B97\u7684\u5206\u9805\u5148\u5217\u51FA\uFF1B\u5408\u8A08\u4E0D\u5B8C\u6574\u6642\u986F\u793A\u5F85\u88DC\u8CC7\u6599\u3002\u6578\u5B57\u4E0D\u662F\u6838\u51C6\u6216\u53EF\u552E\u9762\u7A4D\u3002" }),
+    /* @__PURE__ */ jsx14("dl", { className: "mz-totals", children: [["\u5DF2\u5206\u5217\u571F\u5730\u7E3D\u9762\u7A4D", "area"], ["\u7BC4\u570D\u5167\u571F\u5730\u9762\u7A4D", "renewal"], ["\u5BB9\u7A4D\u8A08\u7B97\u571F\u5730\u9762\u7A4D", "farArea"], ["\u5EFA\u853D\u8A08\u7B97\u571F\u5730\u9762\u7A4D", "coverageArea"], ["\u5BE6\u969B\u8A8D\u5217\u6CD5\u5B9A\u7A7A\u5730", "openCredit"], ["\u5DF2\u6838\u51C6\u516C\u8A2D\u5BB9\u7A4D\u79FB\u8F49", "tdr"], ["\u7D0D\u5165\u5EFA\u7BC9\u57FA\u5730", "included"], ["\u57FA\u6E96\u5BB9\u7A4D\u5408\u8A08", "base"], ["\u734E\u52F5\u53CA\u5BB9\u79FB\u5408\u8A08", "award"], ["\u5BB9\u7A4D\u984D\u5EA6\u5408\u8A08", "allowed"], ["\u56DE\u994B\u5BB9\u7A4D", "obligation"], ["\u6263\u56DE\u994B\u5F8C\u5BB9\u7A4D", "afterObligation"], ["\u5206\u5340\u5EFA\u7BC9\u9762\u7A4D\u984D\u5EA6\u5408\u8A08", "footprint"]].map(([label, k]) => /* @__PURE__ */ jsxs14("div", { children: [
+      /* @__PURE__ */ jsx14("dt", { children: label }),
+      /* @__PURE__ */ jsxs14("dd", { children: [
+        f7(r.totals[k]),
+        /* @__PURE__ */ jsx14("small", { children: "\u33A1" })
+      ] })
+    ] }, k)) }),
+    /* @__PURE__ */ jsx14("div", { className: "mz-table", children: /* @__PURE__ */ jsxs14("table", { children: [
+      /* @__PURE__ */ jsx14("caption", { children: "\u984D\u5EA6\u6309\u5206\u5340\u7522\u751F\uFF1B\u5BE6\u969B\u914D\u7F6E\u4F9D\u9069\u7528\u898F\u5247\u53E6\u6838" }),
+      /* @__PURE__ */ jsx14("thead", { children: /* @__PURE__ */ jsxs14("tr", { children: [
+        /* @__PURE__ */ jsx14("th", { children: "\u7BC4\u570D" }),
+        /* @__PURE__ */ jsx14("th", { children: "\u571F\u5730\u33A1" }),
+        /* @__PURE__ */ jsx14("th", { children: "\u57FA\u5730\u63A1\u8A08\u33A1" }),
+        /* @__PURE__ */ jsx14("th", { children: "\u5BB9\u7A4D\u6BCD\u6578\u571F\u5730\u33A1" }),
+        /* @__PURE__ */ jsx14("th", { children: "\u5EFA\u853D\u6BCD\u6578\u571F\u5730\u33A1" }),
+        /* @__PURE__ */ jsx14("th", { children: "\u8A8D\u5217\u7A7A\u5730\u33A1" }),
+        /* @__PURE__ */ jsx14("th", { children: "\u57FA\u6E96\u5BB9\u7A4D\u33A1" }),
+        /* @__PURE__ */ jsx14("th", { children: "\u734E\u52F5\u33A1" }),
+        /* @__PURE__ */ jsx14("th", { children: "\u5BB9\u7A4D\u5408\u8A08\u33A1" }),
+        /* @__PURE__ */ jsx14("th", { children: "\u5EFA\u7BC9\u9762\u7A4D\u33A1" }),
+        /* @__PURE__ */ jsx14("th", { children: "\u61C9\u7559\u7A7A\u5730\u33A1" }),
+        /* @__PURE__ */ jsx14("th", { children: "\u914D\u7F6E\u8A08\u5BB9\u33A1" }),
+        /* @__PURE__ */ jsx14("th", { children: "\u4F86\u6E90\u984D\u5EA6\u6E1B\u914D\u7F6E\u33A1" })
+      ] }) }),
+      /* @__PURE__ */ jsx14("tbody", { children: r.zones.map((z) => /* @__PURE__ */ jsxs14("tr", { children: [
+        /* @__PURE__ */ jsx14("th", { children: z.name }),
+        ["area", "siteArea", "farArea", "coverageArea", "openCredit", "base", "award", "allowed", "footprint", "openSpace", "counted", "remaining"].map((k) => /* @__PURE__ */ jsx14("td", { children: f7(z[k] ?? null) }, k))
+      ] }, z.id)) })
+    ] }) }),
+    /* @__PURE__ */ jsx14("h4", { children: "\u5404\u5E62\u6DF7\u5408\u7528\u9014\u505C\u8ECA" }),
+    r.parking.length ? /* @__PURE__ */ jsx14("div", { className: "mz-table", children: /* @__PURE__ */ jsxs14("table", { children: [
+      /* @__PURE__ */ jsx14("thead", { children: /* @__PURE__ */ jsxs14("tr", { children: [
+        /* @__PURE__ */ jsx14("th", { children: "\u5EFA\u7BC9\u5E62\u5225" }),
+        /* @__PURE__ */ jsx14("th", { children: "\u7B2C\u4E00\u985E\u9762\u7A4D\u33A1" }),
+        /* @__PURE__ */ jsx14("th", { children: "\u7B2C\u4E8C\u985E\u9762\u7A4D\u33A1" }),
+        /* @__PURE__ */ jsx14("th", { children: "\u6CD5\u5B9A\u6C7D\u8ECA\u4F4D" }),
+        /* @__PURE__ */ jsx14("th", { children: "\u6A5F\u8ECA\u4F4D" }),
+        /* @__PURE__ */ jsx14("th", { children: "\u8A08\u7B97\u65B9\u5F0F" })
+      ] }) }),
+      /* @__PURE__ */ jsx14("tbody", { children: r.parking.map((p) => /* @__PURE__ */ jsxs14("tr", { children: [
+        /* @__PURE__ */ jsx14("th", { children: p.name }),
+        /* @__PURE__ */ jsx14("td", { children: f7(p.first) }),
+        /* @__PURE__ */ jsx14("td", { children: f7(p.second) }),
+        /* @__PURE__ */ jsx14("td", { children: f7(p.cars) }),
+        /* @__PURE__ */ jsx14("td", { children: f7(p.motos) }),
+        /* @__PURE__ */ jsxs14("td", { children: [
+          p.method,
+          /* @__PURE__ */ jsx14("br", {}),
+          p.formula
+        ] })
+      ] }, p.id)) })
+    ] }) }) : /* @__PURE__ */ jsx14("p", { children: "\u5C1A\u7121\u5EFA\u7BC9\u7528\u9014\u9762\u7A4D\uFF0C\u672A\u63A8\u4F30\u8ECA\u4F4D\u3002" }),
+    /* @__PURE__ */ jsxs14("p", { children: [
+      "\u5168\u6848\u6CD5\u5B9A\u6C7D\u8ECA\u4F4D\uFF1A",
+      f7(r.totals.cars),
+      "\uFF1B\u50C5\u70BA\u9700\u6C42\u91CF\uFF0C\u5730\u4E0B\u5BA4\u5BB9\u91CF\u53CA\u5BE6\u969B\u6392\u4F4D\u53E6\u6838\u3002"
+    ] }),
+    r.issues.length > 0 && /* @__PURE__ */ jsxs14("div", { className: "mz-issues", role: "status", children: [
+      /* @__PURE__ */ jsx14("h4", { children: "\u5F85\u88DC\u8CC7\u6599\u8207\u6AA2\u6838\u4E8B\u9805" }),
+      /* @__PURE__ */ jsx14("ul", { children: r.issues.map((x, j) => /* @__PURE__ */ jsxs14("li", { children: [
+        /* @__PURE__ */ jsx14("strong", { children: x.scope }),
+        "\uFF1A",
+        x.message
+      ] }, j)) })
+    ] }),
+    /* @__PURE__ */ jsxs14("details", { children: [
+      /* @__PURE__ */ jsx14("summary", { children: "\u8A08\u7B97\u7BC4\u570D\u8207\u63A1\u7528\u9650\u5236" }),
+      r.notes.map((n) => /* @__PURE__ */ jsx14("p", { children: n }, n))
+    ] })
+  ] });
+}
+function MixedZonePanel({ value: m, onChange, onReport }) {
+  const [snapshot, setSnapshot] = useState4(null);
+  if (!isMixedSite(m)) return /* @__PURE__ */ jsx14("p", { role: "alert", children: "\u6DF7\u5408\u5206\u5340\u8CC7\u6599\u683C\u5F0F\u4E0D\u76F8\u5BB9\uFF0C\u539F\u8CC7\u6599\u4FDD\u7559\uFF0C\u8ACB\u6AA2\u67E5\u6848\u4EF6\u6A94\u3002" });
+  const layout = m.layout ?? newLayoutRules();
+  const nc = m.ntpcCross ?? newNtpcCross();
+  const editNc = (p) => onChange({ ...m, ntpcCross: { ...nc, ...p } });
+  const signature = JSON.stringify(m), stale = !!snapshot && snapshot.signature !== signature;
+  const edit = (p) => onChange({ ...m, ...p });
+  const zone = (id2, p) => edit({ zones: m.zones.map((z) => z.id === id2 ? { ...z, ...p } : z) });
+  const result = snapshot && !stale ? snapshot.result : null;
+  function calculate() {
+    setSnapshot({ signature, result: calculateMixedSite(m) });
+  }
+  return /* @__PURE__ */ jsxs14("section", { className: "mixed-zone", "aria-label": "\u6DF7\u5408\u5206\u5340\u7368\u7ACB\u8A55\u4F30", children: [
+    /* @__PURE__ */ jsxs14("header", { className: "mz-heading", children: [
+      /* @__PURE__ */ jsx14("h2", { children: "\u91CD\u5EFA\u7BC4\u570D\u3001\u516C\u8A2D\u7528\u5730\u8207\u5206\u5340\u8A55\u4F30" }),
+      /* @__PURE__ */ jsx14("p", { children: "\u4E00\u6848\u4FDD\u7559\u5404\u5206\u5340\u8207\u516C\u8A2D\u7528\u5730\u539F\u59CB\u689D\u4EF6\u3002\u5148\u7B97\u571F\u5730\u958B\u767C\u91CF\uFF0C\u518D\u4F9D\u5BE6\u969B\u7528\u9014\u3001\u5E62\u5225\u6AA2\u8A0E\u914D\u7F6E\u8207\u505C\u8ECA\uFF1B\u55AE\u4E00\u5546\u696D\u5206\u5340\u4E5F\u53EF\u5728\u6B64\u7368\u7ACB\u8A55\u4F30\u3002" })
+    ] }),
+    /* @__PURE__ */ jsxs14("div", { className: "mz-fields", children: [
+      /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+        /* @__PURE__ */ jsx14("span", { children: "\u898F\u5283\u65B9\u9810\u5B9A\u8A2D\u8A08\u6A21\u5F0F" }),
+        /* @__PURE__ */ jsxs14("select", { "aria-label": "\u898F\u5283\u65B9\u9810\u5B9A\u8A2D\u8A08\u6A21\u5F0F", value: m.designMode ?? "unknown", onChange: (e) => edit({ designMode: e.target.value }), children: [
+          /* @__PURE__ */ jsx14("option", { value: "unknown", children: "\u5C1A\u672A\u78BA\u8A8D\u898F\u5283\u9700\u6C42" }),
+          /* @__PURE__ */ jsx14("option", { value: "residential", children: "\u7D14\u4F4F\u5B85" }),
+          /* @__PURE__ */ jsx14("option", { value: "mixed", children: "\u4F4F\u5B85\u8207\u5546\u696D\u6DF7\u5408" }),
+          /* @__PURE__ */ jsx14("option", { value: "nonresidential", children: "\u7D14\u975E\u4F4F\u5B85\uFF08\u9010\u9805\u7528\u9014\u6AA2\u6838\uFF09" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx14(Text, { label: "\u5206\u5340\u8A55\u4F30\u540D\u7A31", value: m.name, onChange: (name) => edit({ name }) }),
+      /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+        /* @__PURE__ */ jsx14("span", { children: "\u8A55\u4F30\u57FA\u6E96\u65E5" }),
+        /* @__PURE__ */ jsx14("input", { "aria-label": "\u8A55\u4F30\u57FA\u6E96\u65E5", type: "date", value: m.assessmentDate, onChange: (e) => edit({ assessmentDate: e.target.value }) })
+      ] }),
+      /* @__PURE__ */ jsx14(Text, { label: "\u66F4\u65B0\uFF0F\u91CD\u5EFA\u7BC4\u570D\u7533\u5831\u9762\u7A4D\uFF08\u33A1\uFF09", numeric: true, value: m.declaredArea, onChange: (declaredArea) => edit({ declaredArea }) })
+    ] }),
+    /* @__PURE__ */ jsx14(EvidenceFields, { label: "\u7BC4\u570D\u76E4\u67E5", value: m.boundary, onChange: (boundary) => edit({ boundary }) }),
+    /* @__PURE__ */ jsxs14("div", { className: "mz-joint", children: [
+      /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+        /* @__PURE__ */ jsx14("span", { children: "\u540C\u4E00\u5EFA\u7BC9\u57FA\u5730\u5171\u540C\u958B\u767C" }),
+        /* @__PURE__ */ jsxs14("select", { "aria-label": "\u540C\u4E00\u5EFA\u7BC9\u57FA\u5730\u5171\u540C\u958B\u767C", value: m.joint, onChange: (e) => edit({ joint: e.target.value }), children: [
+          /* @__PURE__ */ jsx14("option", { value: "unknown", children: "\u5F85\u78BA\u8A8D" }),
+          /* @__PURE__ */ jsx14("option", { value: "allowed", children: "\u689D\u4EF6\u5141\u8A31\uFF0C\u5217\u660E\u4F9D\u64DA" }),
+          /* @__PURE__ */ jsx14("option", { value: "forbidden", children: "\u5DF2\u78BA\u8A8D\u4E0D\u7B26" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx14(EvidenceFields, { label: "\u5171\u540C\u958B\u767C", value: m.jointEvidence, onChange: (jointEvidence) => edit({ jointEvidence }) })
+    ] }),
+    /* @__PURE__ */ jsxs14("div", { className: "mz-section-title", children: [
+      /* @__PURE__ */ jsxs14("div", { children: [
+        /* @__PURE__ */ jsx14("h3", { children: "\u571F\u5730\u5206\u5340\u7BC4\u570D" }),
+        /* @__PURE__ */ jsx14("p", { children: "\u540C\u4E00\u5730\u865F\u8DE8\u5206\u5340\u9808\u62C6\u5217\u9762\u7A4D\uFF1B\u672A\u7D0D\u5165\u90E8\u5206\u53E6\u5217\u6392\u9664\u7BC4\u570D\u3002\u5DF2\u77E5\u6C92\u6709\u734E\u52F5\u6216\u56DE\u994B\u624D\u9078\u7121\uFF0F\u586B0\u3002" })
+      ] }),
+      /* @__PURE__ */ jsx14("button", { type: "button", disabled: m.zones.length >= 100, onClick: () => edit({ zones: [...m.zones, newZone()] }), children: "\u65B0\u589E\u5206\u5340\u7BC4\u570D" })
+    ] }),
+    m.zones.map((z, index) => /* @__PURE__ */ jsxs14("fieldset", { className: "mz-zone", children: [
+      /* @__PURE__ */ jsx14("legend", { children: z.name || `\u5206\u5340\u7BC4\u570D ${index + 1}` }),
+      /* @__PURE__ */ jsxs14("div", { className: "mz-fields", children: [
+        /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+          /* @__PURE__ */ jsx14("span", { children: "\u65B0\u5317\u51FD\u793A\u571F\u5730\u5206\u5340\u985E\u578B" }),
+          /* @__PURE__ */ jsxs14("select", { "aria-label": "\u65B0\u5317\u51FD\u793A\u571F\u5730\u5206\u5340\u985E\u578B", value: z.ntpcUse ?? "unknown", onChange: (e) => zone(z.id, { ntpcUse: e.target.value }), children: [
+            /* @__PURE__ */ jsx14("option", { value: "unknown", children: "\u672A\u78BA\u8A8D\uFF0F\u5176\u4ED6" }),
+            /* @__PURE__ */ jsx14("option", { value: "residential", children: "\u4F4F\u5B85\u5340" }),
+            /* @__PURE__ */ jsx14("option", { value: "commercial", children: "\u5546\u696D\u5340" }),
+            /* @__PURE__ */ jsx14("option", { value: "industrial", children: "\u5DE5\u696D\u5340" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx14(Text, { label: "\u7BC4\u570D\u540D\u7A31\uFF0F\u5206\u5340", value: z.name, onChange: (name) => zone(z.id, { name }) }),
+        /* @__PURE__ */ jsx14(Text, { label: "\u5730\u865F\uFF0F\u7BC4\u570D\u8B58\u5225", value: z.parcel, onChange: (parcel) => zone(z.id, { parcel }) }),
+        /* @__PURE__ */ jsx14(Text, { label: "\u8A72\u7B46\u5730\u865F\u767B\u8A18\u9762\u7A4D\uFF08\u33A1\uFF09", numeric: true, value: z.parcelArea, onChange: (parcelArea) => zone(z.id, { parcelArea }) }),
+        /* @__PURE__ */ jsx14(Text, { label: "\u5206\u5340\u7BC4\u570D\u9762\u7A4D\uFF08\u33A1\uFF09", numeric: true, value: z.area, onChange: (area2) => zone(z.id, { area: area2 }) }),
+        /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+          /* @__PURE__ */ jsx14("span", { children: "\u571F\u5730\u7BA1\u5236\u9AD4\u7CFB" }),
+          /* @__PURE__ */ jsxs14("select", { "aria-label": "\u571F\u5730\u7BA1\u5236\u9AD4\u7CFB", value: z.regime, onChange: (e) => zone(z.id, { regime: e.target.value }), children: [
+            /* @__PURE__ */ jsx14("option", { value: "unknown", children: "\u5F85\u78BA\u8A8D" }),
+            /* @__PURE__ */ jsx14("option", { value: "urban", children: "\u90FD\u5E02\u8A08\u756B" }),
+            /* @__PURE__ */ jsx14("option", { value: "nonurban", children: "\u975E\u90FD\u5E02\u571F\u5730\uFF08\u5C08\u6848\u8A55\u4F30\uFF09" }),
+            /* @__PURE__ */ jsx14("option", { value: "special", children: "\u7279\u6B8A\u7BA1\u5236\uFF08\u5C08\u6848\u8A55\u4F30\uFF09" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+          /* @__PURE__ */ jsx14("span", { children: "\u7B2C165\u689D\u5206\u5340\u985E\u578B" }),
+          /* @__PURE__ */ jsxs14("select", { "aria-label": "\u7B2C165\u689D\u5206\u5340\u985E\u578B", value: z.zoningClass ?? "unknown", onChange: (e) => zone(z.id, { zoningClass: e.target.value }), children: [
+            /* @__PURE__ */ jsx14("option", { value: "unknown", children: "\u5F85\u78BA\u8A8D" }),
+            /* @__PURE__ */ jsx14("option", { value: "standard", children: "\u7B2C32\u689D\u4F4F\u5B85\uFF0F\u5546\u696D\uFF0F\u5DE5\u696D\u7B49\u9069\u7528\u5206\u5340" }),
+            /* @__PURE__ */ jsx14("option", { value: "other", children: "\u5176\u4ED6\u4F7F\u7528\u5340" }),
+            /* @__PURE__ */ jsx14("option", { value: "special", children: "\u7279\u5B9A\u5C08\u7528\u5340" }),
+            /* @__PURE__ */ jsx14("option", { value: "public", children: "\u516C\u5171\u8A2D\u65BD\u7528\u5730" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx14(Text, { label: "\u90FD\u5E02\u8A08\u756B\uFF0F\u500B\u6848\u571F\u7BA1\u540D\u7A31", value: z.plan, onChange: (plan) => zone(z.id, { plan }) })
+      ] }),
+      /* @__PURE__ */ jsx14(LandBasisPanel, { value: z.landBasis, zones: m.zones.filter((x) => x.id !== z.id), onChange: (landBasis) => zone(z.id, { landBasis, inclusion: landBasis.site.status === "count" ? "included" : landBasis.site.status === "exclude" ? "excluded" : "pending" }) }),
+      /* @__PURE__ */ jsx14(EvidenceFields, { label: "\u5206\u5340\u689D\u4EF6", value: z.evidence, onChange: (evidence3) => zone(z.id, { evidence: evidence3 }) }),
+      z.inclusion !== "excluded" && /* @__PURE__ */ jsxs14(Fragment9, { children: [
+        /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+          /* @__PURE__ */ jsx14("span", { children: "\u672C\u7BC4\u570D\u5546\u696D\u5F37\u5EA6\u5C08\u9805\u6AA2\u6838" }),
+          /* @__PURE__ */ jsxs14("select", { "aria-label": "\u672C\u7BC4\u570D\u5546\u696D\u5F37\u5EA6\u5C08\u9805\u6AA2\u6838", value: z.commercialIntensity?.enabled ? "commercial" : "direct", onChange: (e) => zone(z.id, { commercialIntensity: e.target.value === "commercial" ? z.commercialIntensity ? { ...z.commercialIntensity, enabled: true } : newCommercialIntensity() : z.commercialIntensity ? { ...z.commercialIntensity, enabled: false } : void 0 }), children: [
+            /* @__PURE__ */ jsx14("option", { value: "direct", children: "\u5176\u4ED6\u5206\u5340\uFF0F\u4F9D\u5DF2\u6838\u6587\u4EF6\u586B\u5165" }),
+            /* @__PURE__ */ jsx14("option", { value: "commercial", children: "\u5546\u696D\u5206\u5340\uFF08\u5171\u7528\u55AE\u4E00\u5206\u5340\u6AA2\u6838\uFF09" })
+          ] })
+        ] }),
+        z.commercialIntensity?.enabled && /* @__PURE__ */ jsx14(CommercialIntensityPanel, { requireResidential: false, value: z.commercialIntensity, site: z.area, coverage: z.coverage, onChange: (commercialIntensity) => zone(z.id, { commercialIntensity }) }),
+        /* @__PURE__ */ jsxs14("div", { className: "mz-fields", children: [
+          /* @__PURE__ */ jsx14(Text, { label: "\u672C\u7BC4\u570D\u5EFA\u853D\u7387\uFF08%\uFF09", numeric: true, value: z.coverage, onChange: (coverage) => zone(z.id, { coverage }) }),
+          /* @__PURE__ */ jsx14(Text, { label: "\u672C\u7BC4\u570D\u57FA\u6E96\u5BB9\u7A4D\u7387\uFF08%\uFF09", numeric: true, value: z.far, onChange: (far) => zone(z.id, { far }) }),
+          /* @__PURE__ */ jsx14(Text, { label: "\u672C\u7BC4\u570D\u9AD8\u5EA6\u4E0A\u9650\uFF08m\uFF09", numeric: true, value: z.maxHeight, onChange: (maxHeight) => zone(z.id, { maxHeight }) }),
+          /* @__PURE__ */ jsx14(Text, { label: "\u7A0B\u5E8F\u53CA\u9069\u7528\u9650\u5236\uFF08\u5EE2\u5DF7\uFF0F\u6539\u9053\uFF0F\u8A08\u756B\u8B8A\u66F4\uFF0F\u9000\u7E2E\uFF09", value: z.constraints, onChange: (constraints) => zone(z.id, { constraints }) })
+        ] }),
+        /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+          /* @__PURE__ */ jsx14("span", { children: "\u734E\u52F5\u8207\u5BB9\u79FB\u63A1\u8A08" }),
+          /* @__PURE__ */ jsxs14("select", { "aria-label": "\u734E\u52F5\u8207\u5BB9\u79FB\u63A1\u8A08", value: z.bonusMode, onChange: (e) => zone(z.id, { bonusMode: e.target.value }), children: [
+            /* @__PURE__ */ jsx14("option", { value: "unknown", children: "\u5F85\u78BA\u8A8D" }),
+            /* @__PURE__ */ jsx14("option", { value: "none", children: "\u672C\u60C5\u5883\u4E0D\u63A1\u734E\u52F5\u53CA\u5BB9\u79FB" }),
+            /* @__PURE__ */ jsx14("option", { value: "items", children: "\u4F9D\u5404\u9805\u4F86\u6E90\u5206\u5217" })
+          ] })
+        ] }),
+        z.bonusMode === "items" && /* @__PURE__ */ jsxs14("div", { className: "mz-awards", children: [
+          z.bonuses.map((b) => /* @__PURE__ */ jsxs14("fieldset", { children: [
+            /* @__PURE__ */ jsx14("legend", { children: b.name || "\u734E\u52F5\uFF0F\u5BB9\u79FB\u9805\u76EE" }),
+            /* @__PURE__ */ jsxs14("div", { className: "mz-fields", children: [
+              /* @__PURE__ */ jsx14(Text, { label: "\u734E\u52F5\uFF0F\u5BB9\u79FB\u540D\u7A31", value: b.name, onChange: (name) => zone(z.id, { bonuses: z.bonuses.map((x) => x.id === b.id ? { ...x, name } : x) }) }),
+              /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+                /* @__PURE__ */ jsx14("span", { children: "\u6578\u91CF\u4F86\u6E90" }),
+                /* @__PURE__ */ jsxs14("select", { "aria-label": "\u6578\u91CF\u4F86\u6E90", value: b.mode, onChange: (e) => zone(z.id, { bonuses: z.bonuses.map((x) => x.id === b.id ? { ...x, mode: e.target.value } : x) }), children: [
+                  /* @__PURE__ */ jsx14("option", { value: "percent", children: "\u4F9D\u767E\u5206\u6BD4\u7531\u7CFB\u7D71\u8A08\u7B97" }),
+                  /* @__PURE__ */ jsx14("option", { value: "area", children: "\u6587\u4EF6\u8A18\u8F09\u9762\u7A4D\uFF08\u33A1\uFF09" })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsx14(Text, { label: b.mode === "percent" ? "\u734E\u52F5\u6BD4\u4F8B\uFF08%\uFF09" : "\u6587\u4EF6\u734E\u52F5\u9762\u7A4D\uFF08\u33A1\uFF09", numeric: true, value: b.value, onChange: (value2) => zone(z.id, { bonuses: z.bonuses.map((x) => x.id === b.id ? { ...x, value: value2 } : x) }) }),
+              b.mode === "percent" && /* @__PURE__ */ jsxs14(Fragment9, { children: [
+                /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+                  /* @__PURE__ */ jsx14("span", { children: "\u767E\u5206\u6BD4\u6BCD\u6578" }),
+                  /* @__PURE__ */ jsxs14("select", { "aria-label": "\u767E\u5206\u6BD4\u6BCD\u6578", value: b.base, onChange: (e) => zone(z.id, { bonuses: z.bonuses.map((x) => x.id === b.id ? { ...x, base: e.target.value } : x) }), children: [
+                    /* @__PURE__ */ jsx14("option", { value: "base", children: "\u672C\u7BC4\u570D\u57FA\u6E96\u5BB9\u7A4D" }),
+                    /* @__PURE__ */ jsx14("option", { value: "custom", children: "\u6587\u4EF6\u53E6\u5B9A\u6BCD\u6578" })
+                  ] })
+                ] }),
+                b.base === "custom" && /* @__PURE__ */ jsx14(Text, { label: "\u6587\u4EF6\u6BCD\u6578\u9762\u7A4D\uFF08\u33A1\uFF09", numeric: true, value: b.customBase, onChange: (customBase) => zone(z.id, { bonuses: z.bonuses.map((x) => x.id === b.id ? { ...x, customBase } : x) }) })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsx14(EvidenceFields, { label: "\u734E\u52F5\u9069\u7528", value: b.evidence, onChange: (evidence3) => zone(z.id, { bonuses: z.bonuses.map((x) => x.id === b.id ? { ...x, evidence: evidence3 } : x) }) }),
+            /* @__PURE__ */ jsx14("button", { type: "button", onClick: () => zone(z.id, { bonuses: z.bonuses.filter((x) => x.id !== b.id) }), children: "\u79FB\u9664\u6B64\u734E\u52F5\u9805\u76EE" })
+          ] }, b.id)),
+          /* @__PURE__ */ jsx14("button", { type: "button", disabled: z.bonuses.length >= 30, onClick: () => zone(z.id, { bonuses: [...z.bonuses, newAward()] }), children: "\u65B0\u589E\u734E\u52F5\uFF0F\u5BB9\u79FB\u9805\u76EE" })
+        ] }),
+        /* @__PURE__ */ jsxs14("div", { className: "mz-fields", children: [
+          /* @__PURE__ */ jsx14(Text, { label: "\u6350\u8D08\uFF0F\u56DE\u994B\u5BB9\u7A4D\u9762\u7A4D\uFF08\u33A1\uFF09", numeric: true, value: z.obligation, onChange: (obligation) => zone(z.id, { obligation }) }),
+          /* @__PURE__ */ jsx14(Text, { label: "\u6350\u8D08\uFF0F\u56DE\u994B\u4F9D\u64DA", value: z.obligationSource, onChange: (obligationSource) => zone(z.id, { obligationSource }) })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs14("button", { type: "button", className: "mz-remove", disabled: m.allocations.some((a) => a.zoneId === z.id), onClick: () => edit({ zones: m.zones.filter((x) => x.id !== z.id) }), children: [
+        "\u79FB\u9664\u6B64\u7BC4\u570D",
+        m.allocations.some((a) => a.zoneId === z.id) ? "\uFF08\u5148\u79FB\u9664\u5F15\u7528\u914D\u7F6E\uFF09" : ""
+      ] })
+    ] }, z.id)),
+    /* @__PURE__ */ jsxs14("fieldset", { className: "mz-zone", children: [
+      /* @__PURE__ */ jsx14("legend", { children: "\u8DE8\u5206\u5340\u914D\u7F6E\u9069\u7528\u898F\u5247" }),
+      /* @__PURE__ */ jsx14("p", { children: "\u7B2C29\u689D\u5141\u8A31\u7A7A\u5730\u6574\u9AD4\u914D\u7F6E\uFF1B\u7B2C165\u689D\u5728\u9069\u7528\u7BC4\u570D\u5167\u4E5F\u5141\u8A31\u6A13\u5730\u677F\u6574\u9AD4\u914D\u7F6E\u3002\u984D\u5EA6\u4ECD\u4F9D\u4F86\u6E90\u5206\u5340\u8A08\u7B97\uFF1B\u7528\u9014\u53CA\u5730\u65B9\u571F\u7BA1\u4E0D\u56E0\u6B64\u653E\u5BEC\u3002\u8CA0\u7684\u5206\u5340\u5DEE\u984D\u4E0D\u7B49\u65BC\u9055\u6CD5\uFF0C\u61C9\u770B\u914D\u7F6E\u898F\u5247\u8207\u5168\u6848\u7E3D\u91CF\u3002" }),
+      /* @__PURE__ */ jsxs14("div", { className: "mz-fields", children: [
+        /* @__PURE__ */ jsx14(Text, { label: "\u6240\u5728\u5730\u7E23\u5E02", value: layout.municipality, onChange: (municipality) => edit({ layout: { ...layout, municipality } }) }),
+        /* @__PURE__ */ jsx14(Text, { label: "\u5DF2\u6838\u5C0D\u5730\u65B9\u571F\u7BA1\uFF0F\u90FD\u5E02\u8A08\u756B\u7248\u672C", value: layout.localPlan, onChange: (localPlan) => edit({ layout: { ...layout, localPlan } }) }),
+        /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+          /* @__PURE__ */ jsx14("span", { children: "\u7A7A\u5730\u914D\u7F6E\u6AA2\u8A0E\u65B9\u5F0F" }),
+          /* @__PURE__ */ jsxs14("select", { "aria-label": "\u7A7A\u5730\u914D\u7F6E\u6AA2\u8A0E\u65B9\u5F0F", value: layout.openSpace, onChange: (e) => edit({ layout: { ...layout, openSpace: e.target.value } }), children: [
+            /* @__PURE__ */ jsx14("option", { value: "unknown", children: "\u9069\u7528\u898F\u5B9A\u5F85\u78BA\u8A8D" }),
+            /* @__PURE__ */ jsx14("option", { value: "article29", children: "\u4F9D\u7B2C29\u689D\u7B49\u898F\u5B9A\u6574\u9AD4\u914D\u7F6E" }),
+            /* @__PURE__ */ jsx14("option", { value: "separate", children: "\u53E6\u6709\u4F9D\u64DA\u8981\u6C42\u5206\u5340\u7559\u8A2D" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+          /* @__PURE__ */ jsx14("span", { children: "\u6A13\u5730\u677F\u914D\u7F6E\u6AA2\u8A0E\u65B9\u5F0F" }),
+          /* @__PURE__ */ jsxs14("select", { "aria-label": "\u6A13\u5730\u677F\u914D\u7F6E\u6AA2\u8A0E\u65B9\u5F0F", value: layout.volume, onChange: (e) => edit({ layout: { ...layout, volume: e.target.value } }), children: [
+            /* @__PURE__ */ jsx14("option", { value: "unknown", children: "\u9069\u7528\u898F\u5B9A\u5F85\u78BA\u8A8D" }),
+            /* @__PURE__ */ jsx14("option", { value: "article165", children: "\u7B2C165\u689D\u9069\u7528\u7BC4\u570D\u5167\u6574\u9AD4\u914D\u7F6E" }),
+            /* @__PURE__ */ jsx14("option", { value: "separate", children: "\u53E6\u6709\u4F9D\u64DA\u8981\u6C42\u5206\u5340\u914D\u7F6E" }),
+            /* @__PURE__ */ jsx14("option", { value: "project", children: "\u4F9D\u500B\u6848\u6838\u5B9A\uFF0F\u5C08\u6848\u4F9D\u64DA\u914D\u7F6E" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx14(Text, { label: "\u7528\u9014\u5340\u9694\uFF0F\u51FA\u5165\u53E3\uFF0F\u9000\u7E2E\u7B49\u689D\u4EF6\u53CA\u6AA2\u8A0E", value: layout.conditions, onChange: (conditions) => edit({ layout: { ...layout, conditions } }) })
+      ] }),
+      /* @__PURE__ */ jsx14(EvidenceFields, { label: "\u8DE8\u5340\u914D\u7F6E", value: layout.evidence, onChange: (evidence3) => edit({ layout: { ...layout, evidence: evidence3 } }) })
+    ] }),
+    /* @__PURE__ */ jsxs14("details", { className: "mz-design", children: [
+      /* @__PURE__ */ jsx14("summary", { children: "\u5EFA\u7BC9\u5E62\u5225\u3001\u7528\u9014\u914D\u7F6E\u8207\u505C\u8ECA\u6AA2\u8A0E" }),
+      /* @__PURE__ */ jsx14("p", { children: "\u5E62\u5225\u4F9D\u5716\u8AAA\u8B58\u5225\uFF0C\u4E0D\u80FD\u4EE5\u5206\u5340\u6216\u68DF\u5225\u4EFB\u610F\u62C6\u5206\u514D\u8A2D\u984D\u5EA6\u3002\u505C\u8ECA\u6AA2\u8A0E\u9762\u7A4D\u9808\u4F9D\u7B2C59\u689D\u6392\u9664\u9805\u76EE\u6838\u5C0D\uFF0C\u4E0D\u4EE5\u8A08\u5BB9\u9762\u7A4D\u4EE3\u586B\u3002" }),
+      m.buildings.map((b) => /* @__PURE__ */ jsxs14("fieldset", { className: "mz-zone", children: [
+        /* @__PURE__ */ jsx14("legend", { children: b.name || "\u5EFA\u7BC9\u5E62\u5225" }),
+        /* @__PURE__ */ jsxs14("div", { className: "mz-fields", children: [
+          /* @__PURE__ */ jsx14(Text, { label: "\u5E62\u5225\u540D\u7A31", value: b.name, onChange: (name) => edit({ buildings: m.buildings.map((x) => x.id === b.id ? { ...x, name } : x) }) }),
+          /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+            /* @__PURE__ */ jsx14("span", { children: "\u6CD5\u5B9A\u505C\u8ECA\u9069\u7528\u65B9\u5F0F" }),
+            /* @__PURE__ */ jsxs14("select", { "aria-label": "\u6CD5\u5B9A\u505C\u8ECA\u9069\u7528\u65B9\u5F0F", value: b.mode, onChange: (e) => edit({ buildings: m.buildings.map((x) => x.id === b.id ? { ...x, mode: e.target.value } : x) }), children: [
+              /* @__PURE__ */ jsx14("option", { value: "unknown", children: "\u5730\u65B9\u53CA\u500B\u6848\u898F\u5247\u5F85\u78BA\u8A8D" }),
+              /* @__PURE__ */ jsx14("option", { value: "article59", children: "\u5730\u65B9\u53CA\u90FD\u8A08\u5747\u672A\u53E6\u8A02\uFF0C\u63A1\u7B2C59\u689D" }),
+              /* @__PURE__ */ jsx14("option", { value: "taipei861", children: "\u81FA\u5317\u5E02\u571F\u7BA1\u7B2C86-1\u689D\uFF08\u652F\u63F4\u7D44\u5225\uFF09" }),
+              /* @__PURE__ */ jsx14("option", { value: "reviewed", children: "\u4F9D\u5C08\u6848\u8986\u6838\u6587\u4EF6\u6578\u91CF" })
+            ] })
+          ] }),
+          (b.mode === "article59" || b.mode === "taipei861") && /* @__PURE__ */ jsxs14(Fragment9, { children: [
+            /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+              /* @__PURE__ */ jsx14("span", { children: "\u516C\u6709\u5EFA\u7BC9\u8EAB\u5206" }),
+              /* @__PURE__ */ jsxs14("select", { "aria-label": "\u516C\u6709\u5EFA\u7BC9\u8EAB\u5206", value: b.publicBuilding, onChange: (e) => edit({ buildings: m.buildings.map((x) => x.id === b.id ? { ...x, publicBuilding: e.target.value } : x) }), children: [
+                /* @__PURE__ */ jsx14("option", { value: "unknown", children: "\u5F85\u78BA\u8A8D" }),
+                /* @__PURE__ */ jsx14("option", { value: "no", children: "\u975E\u516C\u6709\u5EFA\u7BC9" }),
+                /* @__PURE__ */ jsx14("option", { value: "yes", children: "\u516C\u6709\u5EFA\u7BC9\uFF08\u53E6\u6838\u52A0\u500D\u898F\u5B9A\uFF09" })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+              /* @__PURE__ */ jsx14("span", { children: "\u4E2D\u592E\u7B2C59\u689D\u514D\u8A2D\u984D\u5EA6\uFF08\u81FA\u5317\u4E0D\u9069\u7528\uFF09" }),
+              /* @__PURE__ */ jsxs14("select", { "aria-label": "\u540C\u5E62\u6DF7\u5408\u7528\u9014\u514D\u8A2D\u984D\u5EA6", value: b.exemption, onChange: (e) => edit({ buildings: m.buildings.map((x) => x.id === b.id ? { ...x, exemption: e.target.value } : x) }), children: [
+                /* @__PURE__ */ jsx14("option", { value: "unknown", children: "\u5F85\u64C7\u4E00\uFF1B\u672A\u9054\u6A19\u6E96\u6642\u4F9D\u8F03\u9AD8\u6A19\u6E96" }),
+                /* @__PURE__ */ jsx14("option", { value: "first", children: "\u7B2C\u4E00\u985E300\u33A1" }),
+                /* @__PURE__ */ jsx14("option", { value: "second", children: "\u7B2C\u4E8C\u985E500\u33A1" })
+              ] })
+            ] })
+          ] }),
+          b.mode === "reviewed" && /* @__PURE__ */ jsx14(Text, { label: "\u5C08\u6848\u6587\u4EF6\u6CD5\u5B9A\u6C7D\u8ECA\u4F4D", numeric: true, value: b.reviewedCars, onChange: (reviewedCars) => edit({ buildings: m.buildings.map((x) => x.id === b.id ? { ...x, reviewedCars } : x) }) })
+        ] }),
+        /* @__PURE__ */ jsx14(EvidenceFields, { label: "\u505C\u8ECA\u898F\u5247", value: b.evidence, onChange: (evidence3) => edit({ buildings: m.buildings.map((x) => x.id === b.id ? { ...x, evidence: evidence3 } : x) }) }),
+        /* @__PURE__ */ jsx14("button", { type: "button", disabled: m.allocations.some((a) => a.building === b.id), onClick: () => edit({ buildings: m.buildings.filter((x) => x.id !== b.id) }), children: "\u79FB\u9664\u6B64\u5E62\u5225" })
+      ] }, b.id)),
+      /* @__PURE__ */ jsx14("button", { type: "button", disabled: m.buildings.length >= 50, onClick: () => edit({ buildings: [...m.buildings, newBuilding()] }), children: "\u65B0\u589E\u5EFA\u7BC9\u5E62\u5225" }),
+      layout.municipality.includes("\u65B0\u5317") && /* @__PURE__ */ jsxs14("fieldset", { className: "mz-zone", children: [
+        /* @__PURE__ */ jsx14("legend", { children: "\u65B0\u53171080894762\u8DE8\u5206\u5340\u6AA2\u6838" }),
+        /* @__PURE__ */ jsxs14("p", { children: [
+          ntpcLetter.status,
+          " ",
+          /* @__PURE__ */ jsx14("a", { href: ntpcLetter.url, target: "_blank", rel: "noreferrer", children: "\u539F\u51FD\u8207\u5B8C\u6574\u9644\u4EF6" })
+        ] }),
+        /* @__PURE__ */ jsx14("p", { children: "\u4F4F\u3001\u5546\u5BB9\u7A4D\u53EF\u4F9D\u898F\u5B9A\u8ABF\u914D\u3002\u5DE5\u696D\u5340\u4E0D\u5F97\u79FB\u51FA\u81F3\u4F4F\u3001\u5546\uFF1B\u79FB\u5165\u5DE5\u696D\u5340\u7684\u5BB9\u7A4D\u4E0D\u5F97\u4F5C\u70BA\u5DE5\u696D\u4F7F\u7528\u7E3D\u91CF\u7BA1\u5236\u6BCD\u6578\u3002\u7528\u9014\u4ECD\u4F9D\u5BE6\u969B\u5EA7\u843D\u5206\u5340\u6AA2\u8A0E\u3002" }),
+        /* @__PURE__ */ jsx14("p", { children: "\u540C\u68DF\u8DE8\u5340\u4E14\u7528\u9014\u6027\u8CEA\u4E0D\u540C\uFF0C\u624D\u9808\u5728\u5206\u5340\u754C\u7DDA\u5BE6\u9AD4\u5340\u9694\u4E26\u8A2D\u5404\u5225\u7368\u7ACB\u51FA\u5165\u53E3\u3002\u5730\u4E0B\u5BA4\u4F5C\u505C\u8ECA\u4F7F\u7528\u6642\uFF0C\u505C\u8ECA\u7A7A\u9593\u8207\u958B\u6316\u7387\u5206\u5225\u8A08\u7B97\u3001\u5408\u4F75\u6AA2\u8A0E\uFF1B\u5176\u4ED6\u7BA1\u5236\u4E0D\u56E0\u5BB9\u7A4D\u8ABF\u914D\u800C\u514D\u9664\u3002" }),
+        /* @__PURE__ */ jsxs14("div", { className: "mz-fields", children: [
+          [["nature", "\u540C\u68DF\u8DE8\u5340\u7528\u9014\u6027\u8CEA", [["unknown", "\u5C1A\u672A\u5224\u5B9A"], ["same", "\u5404\u68DF\u8DE8\u5340\u7528\u9014\u6027\u8CEA\u5747\u76F8\u540C"], ["different", "\u6709\u4E0D\u540C\u6027\u8CEA\u7528\u9014"]]], ["partition", "\u5206\u5340\u754C\u7DDA\u5BE6\u9AD4\u5340\u9694", [["unknown", "\u5C1A\u672A\u78BA\u8A8D"], ["yes", "\u5716\u8AAA\u5DF2\u78BA\u8A8D\u7B26\u5408"], ["no", "\u672A\u7B26\u5408"]]], ["entrances", "\u5404\u5225\u7368\u7ACB\u51FA\u5165\u53E3", [["unknown", "\u5C1A\u672A\u78BA\u8A8D"], ["yes", "\u5716\u8AAA\u5DF2\u78BA\u8A8D\u7B26\u5408"], ["no", "\u672A\u7B26\u5408"]]]].map(([key, label, options]) => /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+            /* @__PURE__ */ jsx14("span", { children: label }),
+            /* @__PURE__ */ jsx14("select", { "aria-label": label, value: nc[key], onChange: (e) => editNc({ [key]: e.target.value }), children: options.map(([v, t]) => /* @__PURE__ */ jsx14("option", { value: v, children: t }, v)) })
+          ] }, key)),
+          /* @__PURE__ */ jsx14(Text, { label: "\u8DE8\u5340\u7528\u9014\u5224\u5B9A\u53CA\u914D\u7F6E\u5716\u8AAA\u4F9D\u64DA", value: nc.source, onChange: (source) => editNc({ source }) })
+        ] }),
+        /* @__PURE__ */ jsx14("h4", { children: "\u5BB9\u7A4D\u8ABF\u914D\u660E\u7D30" }),
+        /* @__PURE__ */ jsx14("p", { children: "\u586B\u5165\u898F\u5283\u5716\u8AAA\u7684\u8ABF\u914D\u9762\u7A4D\uFF1B\u4E0D\u4F9D\u5E97\u8216\u6BD4\u4F8B\u5206\u914D\uFF0C\u4E5F\u4E0D\u81EA\u52D5\u88DC\u8DB3\u5206\u5340\u5DEE\u984D\u3002" }),
+        nc.transfers.map((t) => /* @__PURE__ */ jsxs14("div", { className: "mz-fields", children: [
+          ["from", "to"].map((k) => /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+            /* @__PURE__ */ jsx14("span", { children: k === "from" ? "\u79FB\u51FA\u5206\u5340" : "\u79FB\u5165\u5206\u5340" }),
+            /* @__PURE__ */ jsxs14("select", { "aria-label": k === "from" ? "\u79FB\u51FA\u5206\u5340" : "\u79FB\u5165\u5206\u5340", value: t[k], onChange: (e) => editNc({ transfers: nc.transfers.map((v) => v.id === t.id ? { ...v, [k]: e.target.value } : v) }), children: [
+              /* @__PURE__ */ jsx14("option", { value: "", children: "\u8ACB\u9078\u64C7" }),
+              m.zones.filter((z) => z.inclusion === "included").map((z) => /* @__PURE__ */ jsx14("option", { value: z.id, children: z.name || "\u672A\u547D\u540D\u7BC4\u570D" }, z.id))
+            ] })
+          ] }, k)),
+          /* @__PURE__ */ jsx14(Text, { label: "\u8ABF\u914D\u5BB9\u7A4D\u9762\u7A4D\uFF08\u33A1\uFF09", numeric: true, value: t.area, onChange: (area2) => editNc({ transfers: nc.transfers.map((v) => v.id === t.id ? { ...v, area: area2 } : v) }) }),
+          /* @__PURE__ */ jsx14("button", { type: "button", onClick: () => editNc({ transfers: nc.transfers.filter((v) => v.id !== t.id) }), children: "\u79FB\u9664\u8ABF\u914D" })
+        ] }, t.id)),
+        /* @__PURE__ */ jsx14("button", { type: "button", disabled: nc.transfers.length >= 100, onClick: () => editNc({ transfers: [...nc.transfers, { id: crypto.randomUUID(), from: "", to: "", area: "" }] }), children: "\u65B0\u589E\u5BB9\u7A4D\u8ABF\u914D" })
+      ] }),
+      /* @__PURE__ */ jsx14("h4", { children: "\u5206\u5340\u5167\u7528\u9014\u914D\u7F6E" }),
+      /* @__PURE__ */ jsx14("p", { children: "\u81FA\u5317\u5E02\u9808\u4F9D\u571F\u7BA1\u4F7F\u7528\u7D44\u5225\u5224\u8B80\uFF0C\u4E0D\u80FD\u628A\u4E2D\u592E\u505C\u8ECA\u7B2C\u4E00\u3001\u4E8C\u985E\u76F4\u63A5\u7576\u6210\u81FA\u5317\u5206\u985E\u3002\u4E0B\u5217\u7D44\u5225\u53EA\u4F9B\u505C\u8ECA\u7B97\u6CD5\u8FA8\u8B58\uFF0C\u4E26\u4E0D\u81EA\u52D5\u6838\u51C6\u7528\u9014\u3002" }),
+      /* @__PURE__ */ jsx14("p", { children: "\u4E00\u5217\u5C0D\u61C9\u4E00\u5E62\u3001\u4E00\u5206\u5340\u3001\u4E00\u7528\u9014\u7684\u5408\u8A08\u3002\u6295\u5F71\u9762\u7A4D\u4E0D\u5F97\u6309\u6A13\u5C64\u91CD\u8907\u5217\u8A08\uFF1B\u4E0A\u4E0B\u5C64\u91CD\u758A\u6295\u5F71\u50C5\u6B78\u5165\u5176\u4E2D\u4E00\u5217\u3002" }),
+      m.allocations.map((a) => /* @__PURE__ */ jsxs14("fieldset", { className: "mz-zone", children: [
+        /* @__PURE__ */ jsx14("legend", { children: "\u7528\u9014\u914D\u7F6E" }),
+        /* @__PURE__ */ jsxs14("div", { className: "mz-fields", children: [
+          /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+            /* @__PURE__ */ jsx14("span", { children: "\u6240\u5C6C\u5206\u5340\u7BC4\u570D" }),
+            /* @__PURE__ */ jsxs14("select", { "aria-label": "\u6240\u5C6C\u5206\u5340\u7BC4\u570D", value: a.zoneId, onChange: (e) => edit({ allocations: m.allocations.map((x) => x.id === a.id ? { ...x, zoneId: e.target.value } : x) }), children: [
+              /* @__PURE__ */ jsx14("option", { value: "", children: "\u8ACB\u9078\u64C7" }),
+              m.zones.filter((z) => z.inclusion === "included").map((z) => /* @__PURE__ */ jsx14("option", { value: z.id, children: z.name || "\u672A\u547D\u540D\u7BC4\u570D" }, z.id))
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+            /* @__PURE__ */ jsx14("span", { children: "\u6240\u5C6C\u5EFA\u7BC9\u5E62\u5225" }),
+            /* @__PURE__ */ jsxs14("select", { "aria-label": "\u6240\u5C6C\u5EFA\u7BC9\u5E62\u5225", value: a.building, onChange: (e) => edit({ allocations: m.allocations.map((x) => x.id === a.id ? { ...x, building: e.target.value } : x) }), children: [
+              /* @__PURE__ */ jsx14("option", { value: "", children: "\u8ACB\u9078\u64C7" }),
+              m.buildings.map((b) => /* @__PURE__ */ jsx14("option", { value: b.id, children: b.name || "\u672A\u547D\u540D\u5E62\u5225" }, b.id))
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+            /* @__PURE__ */ jsx14("span", { children: "\u5EFA\u7BC9\u7528\u9014" }),
+            /* @__PURE__ */ jsxs14("select", { "aria-label": "\u5EFA\u7BC9\u7528\u9014", value: a.use, onChange: (e) => edit({ allocations: m.allocations.map((x) => x.id === a.id ? { ...x, use: e.target.value } : x) }), children: [
+              /* @__PURE__ */ jsx14("option", { value: "residential", children: "\u4F4F\u5B85\uFF08\u7B2C\u4E8C\u985E\uFF09" }),
+              /* @__PURE__ */ jsx14("option", { value: "retail", children: "\u5E97\u8216\uFF08\u7B2C\u4E00\u985E\uFF09" }),
+              /* @__PURE__ */ jsx14("option", { value: "office", children: "\u8FA6\u516C\uFF08\u7B2C\u4E00\u985E\uFF09" }),
+              /* @__PURE__ */ jsx14("option", { value: "other", children: "\u5176\u4ED6\u7528\u9014\uFF08\u5C08\u6848\u8986\u6838\uFF09" })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+            /* @__PURE__ */ jsx14("span", { children: "\u81FA\u5317\u5E02\u571F\u7BA1\u4F7F\u7528\u7D44\u5225" }),
+            /* @__PURE__ */ jsxs14("select", { "aria-label": "\u81FA\u5317\u5E02\u571F\u7BA1\u4F7F\u7528\u7D44\u5225", value: a.taipeiGroup ?? "unknown", onChange: (e) => edit({ allocations: m.allocations.map((x) => x.id === a.id ? { ...x, taipeiGroup: e.target.value } : x) }), children: [
+              /* @__PURE__ */ jsx14("option", { value: "unknown", children: "\u5F85\u78BA\u8A8D\uFF0F\u5176\u4ED6\u7D44\u5225\u53E6\u6838" }),
+              /* @__PURE__ */ jsx14("option", { value: "2", children: "\u7B2C\u4E8C\u7D44\uFF1A\u591A\u6236\u4F4F\u5B85" }),
+              /* @__PURE__ */ jsx14("option", { value: "17", children: "\u7B2C\u5341\u4E03\u7D44\uFF1A\u65E5\u5E38\u7528\u54C1\u96F6\u552E\u696D" }),
+              /* @__PURE__ */ jsx14("option", { value: "19", children: "\u7B2C\u5341\u4E5D\u7D44\uFF1A\u4E00\u822C\u96F6\u552E\u696D\u7532\u7D44" }),
+              /* @__PURE__ */ jsx14("option", { value: "20a", children: "\u7B2C\u4E8C\u5341\u7D44\uFF1A\u4E00\u822C\u96F6\u552E\u696D\u4E59\u7D44\uFF08\u975E\u65E5\u7528\u767E\u8CA8\uFF09" }),
+              /* @__PURE__ */ jsx14("option", { value: "28", children: "\u7B2C\u4E8C\u5341\u516B\u7D44\uFF1A\u4E00\u822C\u4E8B\u52D9\u6240" }),
+              /* @__PURE__ */ jsx14("option", { value: "29", children: "\u7B2C\u4E8C\u5341\u4E5D\u7D44\uFF1A\u81EA\u7531\u8077\u696D\u4E8B\u52D9\u6240" })
+            ] })
+          ] }),
+          [["counted", "\u914D\u7F6E\u8A08\u5BB9\u9762\u7A4D\uFF08\u33A1\uFF09"], ["residentialBase", "\u4F4F\u5B85\u8A08\u5BB9\u4E2D\u57FA\u6E96\u5BB9\u7A4D\u90E8\u5206\uFF08\u65B0\u5317\u5546\u696D\u5340\u5FC5\u586B\u33A1\uFF09"], ["footprint", "\u4E0D\u91CD\u8907\u6295\u5F71\u9762\u7A4D\uFF08\u33A1\uFF09"], ["height", "\u914D\u7F6E\u6700\u9AD8\u9AD8\u5EA6\uFF08m\uFF09"], ["parkingArea", "\u505C\u8ECA\u6AA2\u8A0E\u6A13\u5730\u677F\u9762\u7A4D\uFF08\u33A1\uFF09"], ["units", "\u55AE\u5143\u6578\uFF08\u6236\uFF0F\u9593\uFF09"]].map(([k, label]) => /* @__PURE__ */ jsx14(Text, { label, numeric: true, value: a[k] ?? "", onChange: (v) => edit({ allocations: m.allocations.map((x) => x.id === a.id ? { ...x, [k]: v } : x) }) }, k)),
+          /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+            /* @__PURE__ */ jsx14("span", { children: "\u5206\u5340\u5BB9\u8A31\u6B64\u7528\u9014" }),
+            /* @__PURE__ */ jsxs14("select", { "aria-label": "\u5206\u5340\u5BB9\u8A31\u6B64\u7528\u9014", value: a.permission, onChange: (e) => edit({ allocations: m.allocations.map((x) => x.id === a.id ? { ...x, permission: e.target.value } : x) }), children: [
+              /* @__PURE__ */ jsx14("option", { value: "unknown", children: "\u5F85\u78BA\u8A8D" }),
+              /* @__PURE__ */ jsx14("option", { value: "allowed", children: "\u7B26\u5408\u6240\u5217\u689D\u4EF6" }),
+              /* @__PURE__ */ jsx14("option", { value: "forbidden", children: "\u4E0D\u5141\u8A31" })
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx14(EvidenceFields, { label: "\u914D\u7F6E\u53CA\u7528\u9014", value: a.evidence, onChange: (evidence3) => edit({ allocations: m.allocations.map((x) => x.id === a.id ? { ...x, evidence: evidence3 } : x) }) }),
+        /* @__PURE__ */ jsx14("button", { type: "button", onClick: () => edit({ allocations: m.allocations.filter((x) => x.id !== a.id) }), children: "\u79FB\u9664\u6B64\u7528\u9014\u914D\u7F6E" })
+      ] }, a.id)),
+      /* @__PURE__ */ jsx14("button", { type: "button", disabled: m.allocations.length >= 300, onClick: () => edit({ allocations: [...m.allocations, newAllocation()] }), children: "\u65B0\u589E\u7528\u9014\u914D\u7F6E" })
+    ] }),
+    /* @__PURE__ */ jsxs14("details", { className: "mz-design", children: [
+      /* @__PURE__ */ jsx14("summary", { children: "\u96D9\u5317\u6CD5\u898F\u9069\u7528\u6838\u5C0D\u7D00\u9304" }),
+      /* @__PURE__ */ jsx14("p", { children: "\u6B64\u8655\u4FDD\u7559\u6587\u4EF6\u8207\u500B\u6848\u5224\u65B7\uFF0C\u4E0D\u4EE5\u52FE\u9078\u53D6\u4EE3\u5BE9\u67E5\u3002\u689D\u4EF6\u8B8A\u66F4\u5F8C\uFF0C\u539F\u6838\u5C0D\u7D00\u9304\u6703\u6A19\u793A\u5F85\u91CD\u65B0\u78BA\u8A8D\uFF1B\u672A\u5B8C\u6210\u4ECD\u53EF\u770B\u5206\u9805\u8A08\u7B97\uFF0C\u4E0D\u8868\u793A\u53EF\u4EE5\u7533\u8ACB\u5EFA\u7167\u3002" }),
+      reviewTopics.map(([id2, title, hint]) => {
+        const r = m.reviews?.find((r2) => r2.id === id2) ?? { id: id2, state: "unknown", finding: "", evidence: blankEvidence(), basis: "" };
+        const update = (patch) => edit({ reviews: [...(m.reviews ?? []).filter((x) => x.id !== id2), { ...r, ...patch }] });
+        return /* @__PURE__ */ jsxs14("fieldset", { className: "mz-zone", children: [
+          /* @__PURE__ */ jsx14("legend", { children: title }),
+          /* @__PURE__ */ jsx14("p", { children: hint }),
+          /* @__PURE__ */ jsx14(Text, { label: title + "\u9069\u7528\u5224\u65B7", value: r.finding, onChange: (finding) => update({ finding, state: "unknown", basis: "" }) }),
+          /* @__PURE__ */ jsx14(EvidenceFields, { label: title, value: r.evidence, onChange: (evidence3) => update({ evidence: evidence3, state: "unknown", basis: "" }) }),
+          /* @__PURE__ */ jsx14("p", { children: r.state === "unknown" ? "\u5F85\u6838\u5C0D" : r.basis !== reviewBasis(m) ? "\u8F38\u5165\u5DF2\u8B8A\u66F4\uFF0C\u9808\u91CD\u65B0\u6838\u5C0D" : r.state === "conflict" ? "\u8A18\u9304\u689D\u4EF6\u885D\u7A81" : "\u5DF2\u8A18\u9304\u672C\u6B21\u689D\u4EF6\u6838\u5C0D\uFF0C\u975E\u6838\u51C6" }),
+          /* @__PURE__ */ jsx14("button", { type: "button", onClick: () => update({ state: "recorded", basis: reviewBasis(m) }), children: "\u8A18\u9304\u672C\u6B21\u6838\u5C0D" }),
+          " ",
+          /* @__PURE__ */ jsx14("button", { type: "button", onClick: () => update({ state: "conflict", basis: reviewBasis(m) }), children: "\u8A18\u9304\u689D\u4EF6\u885D\u7A81" })
+        ] }, id2);
+      })
+    ] }),
+    /* @__PURE__ */ jsxs14("div", { className: "mz-actions", children: [
+      /* @__PURE__ */ jsx14("span", { children: stale ? "\u689D\u4EF6\u5DF2\u8B8A\u66F4\uFF0C\u820A\u7D50\u679C\u5DF2\u6536\u8D77\u3002" : "\u672A\u586B\u8CC7\u6599\u4FDD\u7559\u672A\u77E5\uFF0C\u4E0D\u63A1\u5E73\u5747\u5BB9\u7A4D\u7387\u6216\u4F4F\u5B85\u9810\u8A2D\u503C\u3002" }),
+      /* @__PURE__ */ jsx14("button", { type: "button", className: "mz-primary", onClick: calculate, children: stale ? "\u91CD\u65B0\u8A08\u7B97\u5206\u5340\u8A55\u4F30" : "\u8A08\u7B97\u5206\u5340\u8A55\u4F30" }),
+      result && onReport && /* @__PURE__ */ jsx14("button", { type: "button", onClick: () => onReport(m, result), children: "\u6AA2\u8996\u5206\u5340\u8A55\u4F30\u6458\u8981" })
+    ] }),
+    result && /* @__PURE__ */ jsx14(MixedZoneResult, { result }),
+    /* @__PURE__ */ jsxs14("details", { className: "mz-sources", children: [
+      /* @__PURE__ */ jsx14("summary", { children: "\u6CD5\u898F\u4F86\u6E90\u8207\u652F\u63F4\u7BC4\u570D" }),
+      /* @__PURE__ */ jsx14("p", { children: "\u6CD5\u898F\u67E5\u6838\uFF1A2026-10-24\u3002\u5730\u65B9\u571F\u7BA1\u3001\u500B\u6848\u6838\u5B9A\u53CA\u904E\u6E21\u898F\u5B9A\u6309\u5404\u7BC4\u570D\u586B\u5BEB\uFF1B\u4EE5\u4E0B\u4F86\u6E90\u4E0D\u4EE3\u66FF\u500B\u6848\u9069\u7528\u8986\u6838\u3002\u65B0\u53171080894762\u539F\u51FD\u3001\u9644\u8868\u53CA\u5169\u5F35\u9644\u5716\u5DF2\u6838\u5C0D\uFF1B\u622A\u81F32026-10-24\u516C\u958B\u4F86\u6E90\u672A\u67E5\u5F97\u5F8C\u7E8C\u4FEE\u6B63\u6216\u505C\u6B62\u9069\u7528\u6587\u4EF6\u3002\u500B\u6848\u4ECD\u9808\u4F9D\u7528\u9014\u8207\u5716\u8AAA\u6AA2\u6838\u3002" }),
+      /* @__PURE__ */ jsx14("ul", { children: mixedSources.map((s) => /* @__PURE__ */ jsx14("li", { children: /* @__PURE__ */ jsx14("a", { href: s.url, target: "_blank", rel: "noreferrer", children: s.title }) }, s.url)) }),
+      /* @__PURE__ */ jsx14("p", { children: "\u6B64\u5B50\u6A21\u7D44\u8207\u4F4F\u5B85\u901A\u5247\u8A66\u7B97\u7368\u7ACB\u3002\u5206\u5340\u958B\u767C\u91CF\u53CA\u505C\u8ECA\u9700\u6C42\u53EF\u5148\u8A08\u7B97\uFF1B\u4E0D\u5F97\u628A\u7E3D\u5BB9\u7A4D\u76F4\u63A5\u7576\u53EF\u552E\u576A\u6578\u9001\u5165\u6210\u672C\u3001\u552E\u50F9\u6216\u878D\u8CC7\u3002" })
+    ] })
+  ] });
+}
+
+// ../sanze-release-app/src/lib/industrial/planGuidance.ts
+var industrialPlanGuidance = [
+  { name: "\u81FA\u5317\u5167\u6E56\u79D1\u6280\u5712\u5340\uFF1A111.9.22\u516C\u544A\u571F\u5730\u4F7F\u7528\u898F\u5B9A", url: "https://doed.gov.taipei/News.aspx?n=279244FF387F4F7E&sms=993B92A906D84475", detail: "\u5B98\u65B9\u73FE\u884C\u5C08\u5340\u63D0\u4F9B11130721321\u865F\u516C\u544A\u7248\u3002\u9644\u8868\u4EE5\u5141\u8A31\u3001\u9644\u689D\u4EF6\u3001\u6B21\u6838\u5FC3\u56DE\u994B\u53CA\u7981\u6B62\u5206\u5217\uFF0C\u4E0D\u80FD\u628A\u4E00\u822C\u8FA6\u516C\u4E00\u5F8B\u7576\u5DE5\u5EE0\u9644\u5C6C\u8FA6\u516C\uFF1B\u98F2\u98DF\u53CA\u9910\u98F2\u9644\u689D\u4EF6\u9650\u7B2C\u4E00\u3001\u4E8C\u5C64\u3002\u9808\u6838\u5C0D\u79D1\u6280\u5DE5\u696D\u5340A\uFF0FB\u53CA\u5BE6\u969B\u71DF\u696D\u9805\u76EE\u3002110\u5E74\u5408\u4F75\u516C\u958B\u5C55\u89BD\u7A3F\u4E0D\u662F\u63A1\u7528\u7248\u672C\u3002" },
+  { name: "\u81FA\u5317\u5927\u5167\u6E56\u6B21\u6838\u5FC3\u7522\u696D\uFF1A111\u5E74\u5148\u884C\u516C\u544A\u56DE\u994B\u898F\u5B9A", url: "https://doed.gov.taipei/News.aspx?n=279244FF387F4F7E&sms=993B92A906D84475", detail: "\u8207\u5167\u79D1\u571F\u5730\u4F7F\u7528\u898F\u5B9A\u5206\u958B\u767C\u5E03\u3002\u56DE\u994B\u4E00\u6B21\u7E73\u7D0D\uFF1B\u63A1\u7528\u5BE6\u969B\u6B21\u6838\u5FC3\u8A08\u5BB9\u9762\u7A4D\uFF0C\u6216\u4E0D\u542B\u967D\u53F0\u53CA\u96E8\u906E\u7684\u767B\u8A18\u9762\u7A4D\u64C7\u4E00\uFF1B\u7E3D\u8A08\u5BB9\u5206\u6BCD\u4ECD\u4F9D\u4F7F\u7528\u57F7\u7167\u3002\u7121\u5EFA\u7269\u5EA7\u843D\u514D\u6B64\u56DE\u994B\uFF0C\u4E0D\u4EE3\u8868\u514D\u7528\u9014\u8A31\u53EF\u3002\u4E0D\u540C\u5206\u5340\u53C3\u7167\u4F4D\u7F6E\u53CA\u7576\u5E74\u5EA6\u5730\u50F9\u9808\u9010\u6848\u53D6\u5F97\uFF0C\u4E0D\u81EA\u52D5\u7B97\u6210\u56FA\u5B9A\u6BD4\u4F8B\u3002" },
+  { name: "\u65B0\u5317\u4E94\u80A1\uFF1A109.12.9\u571F\u7BA1\u7B2C\u4E8C\u6B21\u901A\u76E4\u6AA2\u8A0E", url: "https://urban.planning.ntpc.gov.tw/urdview/QueryUplan.aspx?uckid=817&vm=1", detail: "\u8A08\u756B\u7B2C2\u9EDE\u6392\u9664\u6574\u9AD4\u958B\u767C\u53CA\u914D\u5408\u6377\u904B\u8B8A\u66F4\u7BC4\u570D\uFF0C\u9808\u6539\u6838\u8A72\u7D30\u90E8\u8A08\u756B\u3002\u7B2C3\u9EDE\u5DE5\u696D\u5BB9\u7A4D\u8868\u5217210%\uFF0C\u4E0D\u662F\u5168\u65B0\u5317\u4E00\u5F8B210%\uFF1B\u5EFA\u853D\u4F9D\u65BD\u884C\u7D30\u5247\u3002\u7532\u7A2E\uFF0F\u7279\u7A2E\u9000\u7E2E\u3001\u505C\u8ECA\u3001\u958B\u653E\u7A7A\u9593\u734E\u52F5\u53CA\u6CB3\u5DDD\u6307\u5B9A\u9000\u7E2E\u53E6\u6709\u898F\u5B9A\u3002\u7B2C10\u9EDE\u53EF\u9069\u7528\u7ACB\u9AD4\u5316\uFF0C\u4ECD\u9808\u6838\u5C0D115\u5E74\u516C\u544A\u7BC4\u570D\u53CA\u7533\u8ACB\u689D\u4EF6\u3002" },
+  { name: "\u65B0\u5317\u7ACB\u9AD4\u5316\uFF1A\u81EA\u7528\u3001\u975E\u81EA\u7528\u8207\u7279\u6B8A\u4F8B\u5916", url: "https://www.economic.ntpc.gov.tw/Custom/\u65B0\u5317\u5E02\u5DE5\u696D\u5340\u7ACB\u9AD4\u5316\u65B9\u6848", detail: "115\u5E744\u6708\u65B9\u6848\u7B2C7\u300111\u81F314\u9801\uFF1A\u81EA\u7528\u4EE3\u91D1\u3001\u975E\u81EA\u7528\u6350\u8D08\uFF0F\u4EE3\u91D1\u3001\u4FDD\u8B49\u91D1\u5206\u958B\uFF1B\u6350\u8D08\u514D\u8A08\u5BB9\u9808\u4E3B\u7BA1\u6A5F\u95DC\u6838\u51C6\u53CA\u63A5\u7BA1\u540C\u610F\u3002\u516C\u6709\u5730\u56DE\u994B\u63A1\u4E00\u6B21\u7E73\u7D0D\u3002\u5B8C\u6210\u4F7F\u7528\u524D\u6B0A\u5229\u7FA9\u52D9\u3001\u5B8C\u6210\u5F8C\u4E94\u5E74\u5167\u6216\u56DE\u994B\u672A\u7E73\u5B8C\u7684\u589E\u91CF\u7522\u6B0A\u5747\u6709\u9650\u5236\uFF0C\u7279\u51C6\u8F49\u8B93\u9700\u540C\u610F\u53CA\u7E7C\u53D7\u3002\u7279\u6B8A\u8B8A\u66F4\u734E\u52F5\u6539\u7E73\u56DE\u994B\u9808\u4E3B\u7BA1\u6A5F\u95DC\u540C\u610F\uFF0C\u4E0D\u81EA\u52D5\u8996\u70BA\u984D\u5916\u734E\u52F5\u3002" }
+];
+
+// ../sanze-release-app/src/lib/industrial/development.ts
+var allocationFields = { exempt: "\u514D\u8A08\u5BB9\u5BE6\u9AD4\u6A13\u5730\u677F\u33A1", rent: "\u51FA\u79DF\u5C08\u7528\u5BE6\u9AD4\u9762\u7A4D\u33A1", self: "\u81EA\u7528\u5C08\u7528\u5BE6\u9AD4\u9762\u7A4D\u33A1", donated: "\u6350\u8D08\u5BE6\u9AD4\u9762\u7A4D\u33A1", common: "\u5171\u7528\u5BE6\u9AD4\u9762\u7A4D\u33A1", vacant: "\u672A\u914D\u7F6E\u5BE6\u9AD4\u9762\u7A4D\u33A1", registered: "\u6587\u4EF6\u767B\u8A18\u9762\u7A4D\u33A1" };
+var constraintKinds = { coverage: "\u5EFA\u853D\uFF0F\u5EFA\u7BC9\u9762\u7A4D", excavation: "\u958B\u6316", height: "\u9AD8\u5EA6", yard: "\u9000\u7E2E\u8207\u9662\u843D", parking: "\u6C7D\u6A5F\u8ECA\u53CA\u81EA\u884C\u8ECA\u505C\u8ECA", loading: "\u88DD\u5378\u4F4D\u8207\u8ECA\u9053", fire: "\u6D88\u9632\u8207\u670D\u52D9\u6838\u5FC3", quota: "\u5DE5\u696D\u4F7F\u7528\u7E3D\u91CF", permission: "\u7528\u9014\u8207\u884C\u696D\u8A31\u53EF" };
+var proof = () => ({ source: "", date: "", finding: "", state: "unknown" });
+var newDevelopment = () => ({ version: "industrial.layout.v1", operation: "unknown", applicantUse: "unknown", planName: "", planScope: "", planEvidence: proof(), allocations: [], constraints: [] });
+var newAllocation2 = (floorId = "") => ({ id: crypto.randomUUID(), floorId, exempt: "", rent: "", self: "", donated: "", common: "", vacant: "", registered: "", evidence: proof() });
+var newConstraint = () => ({ id: crypto.randomUUID(), kind: "coverage", name: "", scope: "", unit: "", actual: "", limit: "", operator: "max", basis: "general", effective: "", expires: "", evidence: proof() });
+var object = (v) => v && typeof v === "object" && !Array.isArray(v);
+var strings = (v, keys) => object(v) && keys.every((k) => typeof v[k] === "string" && v[k].length <= 12e3);
+var validDate3 = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s) && Number.isFinite(Date.parse(s)) && new Date(s).toISOString().slice(0, 10) === s;
+var isProof = (v) => strings(v, ["source", "date", "finding"]) && ["unknown", "assumed", "reviewed", "fail"].includes(v.state);
+var rows3 = (v, fn) => Array.isArray(v) && v.length <= 300 && new Set(v.map((x) => x?.id)).size === v.length && v.every((x) => strings(x, ["id"]) && x.id && fn(x));
+function isDevelopment(v) {
+  return strings(v, ["planName", "planScope"]) && v.version === "industrial.layout.v1" && ["unknown", "rental", "self", "mixed"].includes(v.operation) && ["unknown", "self", "nonself"].includes(v.applicantUse) && isProof(v.planEvidence) && rows3(v.allocations, (x) => strings(x, ["floorId", ...Object.keys(allocationFields)]) && isProof(x.evidence)) && rows3(v.constraints, (x) => strings(x, ["name", "scope", "unit", "actual", "limit", "effective", "expires"]) && Object.keys(constraintKinds).includes(x.kind) && ["max", "min", "equal"].includes(x.operator) && ["general", "plan", "exception"].includes(x.basis) && isProof(x.evidence));
+}
+function checkProof(e, label, mode, date, issues) {
+  if (e.state === "fail") issues.push(label + "\u5DF2\u78BA\u8A8D\u4E0D\u7B26");
+  if (!e.source.trim() || !e.finding.trim() || !validDate3(e.date) || e.state === "unknown") issues.push(label + "\u7F3A\u4F86\u6E90\u3001\u65E5\u671F\u6216\u9069\u7528\u5224\u65B7");
+  if (mode === "document" && e.state !== "reviewed") issues.push(label + "\u4E0D\u80FD\u4EE5\u5047\u8A2D\u901A\u904E\u6587\u4EF6\u8986\u6838");
+  if (validDate3(date) && e.date > date) issues.push(label + "\u6587\u4EF6\u65E5\u671F\u665A\u65BC\u8A55\u4F30\u65E5");
+}
+function explicitNumber(s, label, issues) {
+  if (!/^\d+(\.\d+)?$/.test(s.trim()) || !Number.isFinite(+s) || +s > 1e12) {
+    issues.push(label + "\u9808\u660E\u586B\u975E\u8CA0\u6578\uFF0C\u7121\u5247\u586B0");
+    return null;
+  }
+  return +s;
+}
+function calculateDevelopment(d, floors, mode, date) {
+  const issues = [], totals2 = { physical: 0, rent: 0, self: 0, donated: 0, common: 0, vacant: 0, registered: 0 };
+  if (!d || !isDevelopment(d)) return { ready: false, issues: ["\u5DE5\u696D\u5C08\u5C6C\u914D\u7F6E\u5C1A\u672A\u5EFA\u7ACB"], totals: null };
+  const num = (s, l) => explicitNumber(s, l, issues);
+  checkProof(d.planEvidence, "\u500B\u5225\u8A08\u756B\u7BC4\u570D", mode, date, issues);
+  if (!d.planName.trim() || !d.planScope.trim()) issues.push("\u9808\u586B\u8A08\u756B\u540D\u7A31\u3001\u5730\u865F\u7BC4\u570D\u53CA\u7248\u672C\uFF0C\u4E0D\u80FD\u53EA\u586B\u884C\u653F\u5340");
+  if (d.operation === "unknown" || d.applicantUse === "unknown") issues.push("\u51FA\u79DF\uFF0F\u81EA\u7528\u6A21\u5F0F\u8207\u7533\u8ACB\u4EBA\u81EA\u7528\u8A8D\u5B9A\u9808\u5206\u5225\u9078\u5B9A");
+  const seen = /* @__PURE__ */ new Set();
+  for (const a of d.allocations) {
+    const f8 = floors.find((f9) => f9.id === a.floorId);
+    if (!f8 || seen.has(a.floorId)) {
+      issues.push("\u914D\u7F6E\u5C0D\u61C9\u6A13\u5C64\u4E0D\u5B58\u5728\u6216\u91CD\u8907");
+      continue;
+    }
+    seen.add(a.floorId);
+    checkProof(a.evidence, "\u9762\u7A4D\u914D\u7F6E", mode, date, issues);
+    const vals = Object.fromEntries(Object.keys(allocationFields).map((k) => [k, num(a[k], allocationFields[k])]));
+    const count = num(f8.count, "\u5C0D\u61C9\u5C64\u6578"), area2 = num(f8.area, "\u5C0D\u61C9\u6BCF\u5C64\u8A08\u5BB9");
+    if (count === null || area2 === null || Object.values(vals).some((v2) => v2 === null)) continue;
+    const v = vals, physical = count * area2 + v.exempt;
+    const allocated = v.rent + v.self + v.donated + v.common + v.vacant;
+    if (Math.abs(allocated - physical) > 0.01) issues.push("\u51FA\u79DF\u3001\u81EA\u7528\u3001\u6350\u8D08\u3001\u5171\u7528\u53CA\u672A\u914D\u7F6E\u9762\u7A4D\u5408\u8A08\u9808\u7B49\u65BC\u8A08\u5BB9\u52A0\u514D\u8A08\u5BE6\u9AD4\u6A13\u677F");
+    totals2.physical += physical;
+    for (const k of ["rent", "self", "donated", "common", "vacant", "registered"]) totals2[k] += v[k];
+  }
+  if (!floors.length || seen.size !== floors.length) issues.push("\u6BCF\u4E00\u5217\u7528\u9014\u6A13\u5C64\u90FD\u9808\u6709\u4E00\u7B46\u9762\u7A4D\u914D\u7F6E");
+  if (d.operation === "rental" && totals2.self > 0 || d.operation === "self" && totals2.rent > 0) issues.push("\u7D93\u71DF\u6A21\u5F0F\u8207\u51FA\u79DF\uFF0F\u81EA\u7528\u9762\u7A4D\u4E0D\u7B26");
+  if (d.operation === "rental" && totals2.rent <= 0 || d.operation === "self" && totals2.self <= 0 || d.operation === "mixed" && (totals2.rent <= 0 || totals2.self <= 0)) issues.push("\u6240\u9078\u7D93\u71DF\u6A21\u5F0F\u7F3A\u5C0D\u61C9\u9762\u7A4D");
+  if (d.applicantUse === "self" && totals2.rent > 0) issues.push("\u6709\u51FA\u79DF\u914D\u7F6E\u537B\u4E3B\u5F35\u7533\u8ACB\u4EBA\u5168\u81EA\u7528\uFF0C\u9808\u4F9D\u8A8D\u5B9A\u6587\u4EF6\u8ABF\u6574");
+  for (const kind of Object.keys(constraintKinds)) if (!d.constraints.some((c) => c.kind === kind)) issues.push(constraintKinds[kind] + "\u7F3A\u689D\u4EF6\u5206\u9805\uFF1B\u4E0D\u9069\u7528\u4E5F\u9808\u660E\u5217\u7406\u7531\u53CA0");
+  for (const c of d.constraints) {
+    checkProof(c.evidence, c.name || constraintKinds[c.kind], mode, date, issues);
+    if (!c.name.trim() || !c.scope.trim() || !c.unit.trim()) issues.push("\u6BCF\u9805\u9650\u5236\u9808\u6709\u540D\u7A31\u3001\u9069\u7528\u7BC4\u570D\u53CA\u55AE\u4F4D");
+    if (!validDate3(c.effective) || c.effective > date || c.expires && (!validDate3(c.expires) || c.expires < date || c.expires < c.effective)) issues.push(c.name + "\u898F\u5B9A\u65BD\u884C\u671F\u9593\u672A\u6DB5\u84CB\u8A55\u4F30\u65E5");
+    const actual = num(c.actual, c.name + "\u8A2D\u8A08\u503C"), limit = num(c.limit, c.name + "\u6587\u4EF6\u9650\u5236");
+    if (actual !== null && limit !== null && !(c.operator === "max" && actual <= limit + 1e-6 || c.operator === "min" && actual + 1e-6 >= limit || c.operator === "equal" && Math.abs(actual - limit) < 1e-6)) issues.push(c.name + "\u672A\u7B26\u5408\u6587\u4EF6\u9650\u5236");
+  }
+  return { ready: issues.length === 0, issues, totals: issues.length ? null : totals2 };
+}
+
+// ../sanze-release-app/src/components/industrial/DevelopmentPanel.tsx
+import { jsx as jsx15, jsxs as jsxs15 } from "react/jsx-runtime";
+function Input({ label, value: value2, onChange, type = "text" }) {
+  return /* @__PURE__ */ jsxs15("label", { className: "mz-field", children: [
+    /* @__PURE__ */ jsx15("span", { children: label }),
+    /* @__PURE__ */ jsx15("input", { "aria-label": label, type, value: value2, onChange: (e) => onChange(e.target.value) })
+  ] });
+}
+function Choice({ label, value: value2, options, onChange }) {
+  return /* @__PURE__ */ jsxs15("label", { className: "mz-field", children: [
+    /* @__PURE__ */ jsx15("span", { children: label }),
+    /* @__PURE__ */ jsx15("select", { "aria-label": label, value: value2, onChange: (e) => onChange(e.target.value), children: Object.entries(options).map(([k, v]) => /* @__PURE__ */ jsx15("option", { value: k, children: v }, k)) })
+  ] });
+}
+function ProofFields({ value: v, onChange }) {
+  return /* @__PURE__ */ jsxs15("details", { children: [
+    /* @__PURE__ */ jsx15("summary", { children: "\u6587\u4EF6\u4F86\u6E90\u8207\u9069\u7528\u5224\u65B7" }),
+    /* @__PURE__ */ jsxs15("div", { className: "mz-fields", children: [
+      /* @__PURE__ */ jsx15(Input, { label: "\u6587\u4EF6\u540D\u7A31\u3001\u6587\u865F\u53CA\u9801\u6B21", value: v.source, onChange: (source) => onChange({ ...v, source }) }),
+      /* @__PURE__ */ jsx15(Input, { label: "\u6587\u4EF6\u65E5\u671F", type: "date", value: v.date, onChange: (date) => onChange({ ...v, date }) }),
+      /* @__PURE__ */ jsx15(Input, { label: "\u9069\u7528\u7BC4\u570D\u3001\u9650\u5236\u53CA\u8A08\u7B97\u4F9D\u64DA", value: v.finding, onChange: (finding) => onChange({ ...v, finding }) }),
+      /* @__PURE__ */ jsx15(Choice, { label: "\u4F9D\u64DA\u72C0\u614B", value: v.state, options: { unknown: "\u672A\u78BA\u8A8D", assumed: "\u898F\u5283\u65B9\u660E\u5217\u5047\u8A2D", reviewed: "\u5DF2\u4F9D\u6587\u4EF6\u8986\u6838", fail: "\u5DF2\u78BA\u8A8D\u4E0D\u7B26" }, onChange: (state) => onChange({ ...v, state }) })
+    ] })
+  ] });
+}
+function DevelopmentPanel({ model: m, onChange }) {
+  const d = m.development;
+  if (!d) return /* @__PURE__ */ jsxs15("section", { children: [
+    /* @__PURE__ */ jsx15("h3", { children: "\u5DE5\u696D\u5C08\u5C6C\u914D\u7F6E" }),
+    /* @__PURE__ */ jsx15("p", { children: "\u9010\u5C64\u8A08\u5BB9\u5B8C\u6210\u5F8C\uFF0C\u53E6\u5217\u51FA\u79DF\u3001\u81EA\u7528\u3001\u6350\u8D08\u8207\u5171\u7528\u5BE6\u9AD4\u9762\u7A4D\u3002\u672A\u5EFA\u7ACB\u6642\u4E0D\u80FD\u627F\u63A5 App \u8CA1\u52D9\u3002" }),
+    /* @__PURE__ */ jsx15("button", { onClick: () => onChange({ ...m, development: newDevelopment() }), children: "\u5EFA\u7ACB\u5DE5\u696D\u5C08\u5C6C\u914D\u7F6E" })
+  ] });
+  const edit = (p) => onChange({ ...m, development: { ...d, ...p } });
+  return /* @__PURE__ */ jsxs15("section", { "aria-label": "\u5DE5\u696D\u5C08\u5C6C\u914D\u7F6E", children: [
+    /* @__PURE__ */ jsx15("h3", { children: "\u5DE5\u696D\u5C08\u5C6C\u914D\u7F6E\u8207\u500B\u5225\u8A08\u756B" }),
+    /* @__PURE__ */ jsxs15("details", { children: [
+      /* @__PURE__ */ jsx15("summary", { children: "\u5DF2\u67E5\u660E\u7684\u500B\u5225\u8A08\u756B\u8207\u4F8B\u5916" }),
+      /* @__PURE__ */ jsx15("p", { children: "\u4EE5\u4E0B\u70BA\u5DF2\u67E5\u660E\u7684\u898F\u5B9A\u53CA\u7248\u672C\uFF0C\u4E0D\u4EE3\u8868\u57FA\u5730\u5FC5\u7136\u4F4D\u65BC\u5176\u7BC4\u570D\uFF0C\u4E5F\u4E0D\u6703\u4EE3\u586B\u6BD4\u4F8B\u3002\u5176\u4ED6\u8A08\u756B\u4ECD\u9808\u4F9D\u8A72\u6848\u516C\u544A\u66F8\u5716\u8207\u5F8C\u7E8C\u8B8A\u66F4\u6838\u5C0D\u3002" }),
+      industrialPlanGuidance.map((g) => /* @__PURE__ */ jsxs15("section", { children: [
+        /* @__PURE__ */ jsx15("h4", { children: /* @__PURE__ */ jsx15("a", { href: g.url, target: "_blank", rel: "noreferrer", children: g.name }) }),
+        /* @__PURE__ */ jsx15("p", { children: g.detail })
+      ] }, g.name))
+    ] }),
+    /* @__PURE__ */ jsxs15("div", { className: "mz-fields", children: [
+      /* @__PURE__ */ jsx15(Choice, { label: "\u7D93\u71DF\u914D\u7F6E", value: d.operation, options: { unknown: "\u5C1A\u672A\u9078\u5B9A", rental: "\u51FA\u79DF", self: "\u81EA\u7528", mixed: "\u51FA\u79DF\u53CA\u81EA\u7528\u5206\u5217" }, onChange: (operation) => edit({ operation }) }),
+      /* @__PURE__ */ jsx15(Choice, { label: "\u7ACB\u9AD4\u5316\u7533\u8ACB\u4EBA\u81EA\u7528\u8A8D\u5B9A", value: d.applicantUse, options: { unknown: "\u5C1A\u672A\u78BA\u8A8D", self: "\u7533\u8ACB\u4EBA\u81EA\u7528", nonself: "\u975E\u7533\u8ACB\u4EBA\u81EA\u7528" }, onChange: (applicantUse) => edit({ applicantUse }) }),
+      /* @__PURE__ */ jsx15(Input, { label: "\u500B\u5225\u8A08\u756B\u540D\u7A31\u8207\u7248\u672C\uFF08\u4E00\u822C\u898F\u5B9A\u4E5F\u9808\u8F09\u660E\uFF09", value: d.planName, onChange: (planName) => edit({ planName }) }),
+      /* @__PURE__ */ jsx15(Input, { label: "\u9069\u7528\u5730\u865F\u3001\u7BC4\u570D\u53CA\u6CD5\u898F\u512A\u5148\u95DC\u4FC2", value: d.planScope, onChange: (planScope) => edit({ planScope }) })
+    ] }),
+    /* @__PURE__ */ jsx15(ProofFields, { value: d.planEvidence, onChange: (planEvidence) => edit({ planEvidence }) }),
+    /* @__PURE__ */ jsx15("p", { children: "\u6BCF\u5217\u70BA\u5C0D\u61C9\u6A13\u5C64\u7D44\u7684\u5408\u8A08\u5BE6\u9AD4\u9762\u7A4D\uFF0C\u4E0D\u662F\u6BCF\u5C64\u3002\u51FA\u79DF\u3001\u81EA\u7528\u3001\u6350\u8D08\u3001\u5171\u7528\u53CA\u672A\u914D\u7F6E\u4E0D\u5F97\u91CD\u8907\uFF1B\u7E3D\u548C\u9808\u7B49\u65BC\u8A08\u5BB9\u52A0\u514D\u8A08\u6A13\u677F\u3002\u767B\u8A18\u9762\u7A4D\u53E6\u5217\uFF0C\u4E0D\u81EA\u52D5\u63DB\u7B97\u79DF\u8CC3\u9762\u7A4D\u3002" }),
+    d.allocations.map((a, i) => {
+      const change = (p) => edit({ allocations: d.allocations.map((x) => x.id === a.id ? { ...a, ...p } : x) });
+      return /* @__PURE__ */ jsxs15("fieldset", { children: [
+        /* @__PURE__ */ jsxs15("legend", { children: [
+          "\u5BE6\u9AD4\u914D\u7F6E ",
+          i + 1
+        ] }),
+        /* @__PURE__ */ jsxs15("div", { className: "mz-fields", children: [
+          /* @__PURE__ */ jsx15(Choice, { label: "\u5C0D\u61C9\u7528\u9014\u6A13\u5C64", value: a.floorId, options: { "": "\u5C1A\u672A\u9078\u5B9A", ...Object.fromEntries(m.floors.map((f8) => [f8.id, [f8.building, f8.level].join(" ")])) }, onChange: (floorId) => change({ floorId }) }),
+          Object.entries(allocationFields).map(([k, l]) => /* @__PURE__ */ jsx15(Input, { label: l, value: a[k], type: "number", onChange: (v) => change({ [k]: v }) }, k))
+        ] }),
+        /* @__PURE__ */ jsx15(ProofFields, { value: a.evidence, onChange: (evidence3) => change({ evidence: evidence3 }) }),
+        /* @__PURE__ */ jsxs15("button", { onClick: () => edit({ allocations: d.allocations.filter((x) => x.id !== a.id) }), children: [
+          "\u79FB\u9664\u5BE6\u9AD4\u914D\u7F6E ",
+          i + 1
+        ] })
+      ] }, a.id);
+    }),
+    /* @__PURE__ */ jsx15("button", { onClick: () => edit({ allocations: [...d.allocations, newAllocation2()] }), children: "\u65B0\u589E\u5BE6\u9AD4\u9762\u7A4D\u914D\u7F6E" }),
+    /* @__PURE__ */ jsxs15("details", { children: [
+      /* @__PURE__ */ jsx15("summary", { children: "\u5EFA\u7BC9\u3001\u505C\u8ECA\u3001\u88DD\u5378\u3001\u6D88\u9632\u53CA\u7528\u9014\u9650\u5236" }),
+      /* @__PURE__ */ jsx15("p", { children: "\u5404\u7A2E\u9650\u5236\u5206\u9805\u586B\u8A2D\u8A08\u503C\u3001\u6587\u4EF6\u9650\u5236\u3001\u55AE\u4F4D\u8207\u7BC4\u570D\u3002\u500B\u5225\u8A08\u756B\u6216\u4F8B\u5916\u4E0D\u80FD\u522A\u6389\u4E00\u822C\u898F\u5B9A\u7684\u6AA2\u67E5\uFF1B\u6709\u4E0D\u9069\u7528\u9805\u76EE\u4E5F\u9808\u586B\u7406\u7531\u3002\u6B64\u8655\u6AA2\u67E5\u6587\u4EF6\u6578\u91CF\uFF0C\u4E0D\u4EE3\u66FF\u5716\u8AAA\u5BE9\u67E5\uFF0C\u4E5F\u4E0D\u4EE5\u586B\u5B8C\u4EE3\u8868\u6838\u51C6\u3002" }),
+      d.constraints.map((c, i) => {
+        const change = (p) => edit({ constraints: d.constraints.map((x) => x.id === c.id ? { ...c, ...p } : x) });
+        return /* @__PURE__ */ jsxs15("fieldset", { children: [
+          /* @__PURE__ */ jsxs15("legend", { children: [
+            "\u9650\u5236 ",
+            i + 1
+          ] }),
+          /* @__PURE__ */ jsxs15("div", { className: "mz-fields", children: [
+            /* @__PURE__ */ jsx15(Choice, { label: "\u9650\u5236\u9805\u76EE", value: c.kind, options: constraintKinds, onChange: (kind) => change({ kind }) }),
+            /* @__PURE__ */ jsx15(Input, { label: "\u689D\u6587\u53CA\u689D\u4EF6\u540D\u7A31", value: c.name, onChange: (name) => change({ name }) }),
+            /* @__PURE__ */ jsx15(Choice, { label: "\u898F\u5247\u4F86\u6E90", value: c.basis, options: { general: "\u4E00\u822C\u898F\u5B9A", plan: "\u500B\u5225\u8A08\u756B", exception: "\u7279\u6B8A\u4F8B\u5916\uFF08\u9808\u8A8D\u5B9A\u4F9D\u64DA\uFF09" }, onChange: (basis) => change({ basis }) }),
+            /* @__PURE__ */ jsx15(Input, { label: "\u9069\u7528\u5E62\u5225\u3001\u5730\u865F\u6216\u7528\u9014\u7BC4\u570D", value: c.scope, onChange: (scope) => change({ scope }) }),
+            /* @__PURE__ */ jsx15(Input, { label: "\u8A08\u7B97\u55AE\u4F4D", value: c.unit, onChange: (unit) => change({ unit }) }),
+            /* @__PURE__ */ jsx15(Input, { label: "\u8A2D\u8A08\u503C", type: "number", value: c.actual, onChange: (actual) => change({ actual }) }),
+            /* @__PURE__ */ jsx15(Choice, { label: "\u6BD4\u8F03\u65B9\u5F0F", value: c.operator, options: { max: "\u4E0D\u5F97\u8D85\u904E", min: "\u4E0D\u5F97\u4F4E\u65BC", equal: "\u61C9\u7B49\u65BC" }, onChange: (operator) => change({ operator }) }),
+            /* @__PURE__ */ jsx15(Input, { label: "\u6587\u4EF6\u9650\u5236\u503C", type: "number", value: c.limit, onChange: (limit) => change({ limit }) }),
+            /* @__PURE__ */ jsx15(Input, { label: "\u65BD\u884C\u65E5\u671F", type: "date", value: c.effective, onChange: (effective) => change({ effective }) }),
+            /* @__PURE__ */ jsx15(Input, { label: "\u5931\u6548\u65E5\u671F\uFF08\u7121\u671F\u9650\u53EF\u7559\u7A7A\uFF09", type: "date", value: c.expires, onChange: (expires) => change({ expires }) })
+          ] }),
+          /* @__PURE__ */ jsx15(ProofFields, { value: c.evidence, onChange: (evidence3) => change({ evidence: evidence3 }) }),
+          /* @__PURE__ */ jsxs15("button", { onClick: () => edit({ constraints: d.constraints.filter((x) => x.id !== c.id) }), children: [
+            "\u79FB\u9664\u9650\u5236 ",
+            i + 1
+          ] })
+        ] }, c.id);
+      }),
+      /* @__PURE__ */ jsx15("button", { onClick: () => edit({ constraints: [...d.constraints, newConstraint()] }), children: "\u65B0\u589E\u5DE5\u696D\u9650\u5236" })
+    ] })
+  ] });
+}
+
+// ../sanze-release-app/src/components/industrial/IndustrialPanel.tsx
+import { useState as useState5 } from "react";
+
+// ../sanze-release-app/src/lib/industrial/model.ts
+var INDUSTRIAL_CALCULATION_VERSION = "industrial.rules.2026-10-24.v2";
+var INDUSTRIAL_VERSION = "industrial.2026-10-24.v1";
+var sources = [
+  ["\u65B0\u5317\u5E02\u5DE5\u696D\u5340\u7ACB\u9AD4\u5316\u65B9\u6848\uFF08115\u5E744\u6708\uFF09\u53CAQ&A", "https://www.economic.ntpc.gov.tw/Custom/\u65B0\u5317\u5E02\u5DE5\u696D\u5340\u7ACB\u9AD4\u5316\u65B9\u6848"],
+  ["\u65B0\u5317\u5E02\u65BD\u884C\u7D30\u5247\uFF08114.11.05\uFF09\u7B2C18\u300136\u300139\u300145\u300147\u300148\u689D", "https://web.law.ntpc.gov.tw/Scripts/FLAWDAT0202.aspx?fcode=C0150108"],
+  ["\u65B0\u5317\u90FD\u5E02\u66F4\u65B0\u5BE9\u8B70\u539F\u5247\uFF08114.11.25\uFF09\u7B2C17\u9EDE", "https://web.law.ntpc.gov.tw/Scripts/FLAWDAT0202.aspx?fcode=C0150019"],
+  ["\u81FA\u5317\u571F\u5730\u4F7F\u7528\u5206\u5340\u7BA1\u5236\u81EA\u6CBB\u689D\u4F8B\uFF1A\u5DE5\u696D\u5340", "https://laws.gov.taipei/Law/LawSearch/LawChapterArticle/FL003962?chapterno=4"],
+  ["\u81FA\u5317\u5BB9\u7A4D\u79FB\u8F49\u81EA\u6CBB\u689D\u4F8B\u7B2C2-1\u30016\u30017\u30019\u689D", "https://laws.gov.taipei/law/LawSearch/LawArticleContent/FL074357"],
+  ["\u90FD\u5E02\u66F4\u65B0\u689D\u4F8B\u7B2C65\u689D", "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0070008"],
+  ["\u90FD\u5E02\u66F4\u65B0\u5EFA\u7BC9\u5BB9\u7A4D\u734E\u52F5\u8FA6\u6CD5\u7B2C3\u81F35\u689D", "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0070027"],
+  ["\u90FD\u5E02\u8A08\u756B\u5BB9\u7A4D\u79FB\u8F49\u5BE6\u65BD\u8FA6\u6CD5\u7B2C8\u689D", "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0070028"],
+  ["\u65B0\u5317\u5BB9\u7A4D\u79FB\u8F49\u8A31\u53EF\u5BE9\u67E5\u8981\u9EDE\uFF08111.12.30\uFF09", "https://web.law.ntpc.gov.tw/Scripts/FLAWDAT0202.aspx?fcode=C0150015"]
+];
+var awardKinds = { unknown: "\u672A\u5206\u985E", renewal: "\u90FD\u5E02\u66F4\u65B0", f1: "\u7ACB\u9AD4\u5316\uFF1A\u65B0\u589E\u6295\u8CC7", f2: "\u7ACB\u9AD4\u5316\uFF1A\u80FD\u6E90\u7BA1\u7406", f3: "\u7ACB\u9AD4\u5316\uFF1A\u71DF\u904B\u7E3D\u90E8", feedback: "\u7ACB\u9AD4\u5316\uFF1A\u56DE\u994B\uFF0F\u6350\u8D08\u7A7A\u9593", other: "\u5176\u4ED6\u734E\u52F5", tdr: "\u5BB9\u7A4D\u79FB\u8F49" };
+var purposes = { unknown: "\u5C1A\u672A\u9078\u5B9A", factory: "\u751F\u7522\uFF0F\u5DE5\u5EE0", warehouse: "\u5009\u5132", research: "\u7814\u767C", office: "\u8FA6\u516C", exhibition: "\u5C55\u552E", ancillary: "\u9644\u5C6C\u8A2D\u65BD", dorm: "\u54E1\u5DE5\u5BBF\u820D", housing: "\u4E00\u822C\u4F4F\u5B85", shared: "\u5171\u7528\u7A7A\u9593" };
+var checks = { plan: "\u571F\u5730\u8EAB\u5206\u3001\u500B\u5225\u90FD\u5E02\u8A08\u756B\u8207\u5EFA\u7BC9\u57FA\u5730\u63A1\u8A08\u7BC4\u570D", use: "\u884C\u696D\u8207\u7528\u9014\u8A31\u53EF\u3001\u7E3D\u91CF\u7BA1\u5236\uFF08\u5340\u57DF\u984D\u5EA6\u8207\u57FA\u5730\u984D\u5EA6\u5206\u958B\uFF09", original: "\u539F\u5408\u6CD5\u5EFA\u7BC9\u5BB9\u7A4D\u7C3D\u8B49\u8207\u63A1\u7528\u8DEF\u5F91", renewal: "\u66F4\u65B0\u8CC7\u683C\u3001\u4E2D\u592E\u53CA\u5730\u65B9\u734E\u52F5\u3001\u5176\u4ED6\u6A5F\u95DC\u5148\u884C\u7533\u8ACB\u8207\u91CD\u8907\u6263\u9664", vertical: "\u7ACB\u9AD4\u5316\u516C\u544A\u7BC4\u570D\u3001\u6295\u8CC7\u3001\u589E\u91CF\u7528\u9014\u3001\u7533\u8ACB\u671F\u9650\u53CA\u56DE\u994B\u7FA9\u52D9", tdr: "\u5BB9\u79FB\u4F86\u6E90\u3001\u63A5\u53D7\u57FA\u5730\u3001\u81E8\u8DEF\u3001\u91CF\u9AD4\u8A55\u5B9A\u8207\u8A31\u53EF", layout: "\u5EFA\u853D\u3001\u9000\u7E2E\u3001\u9AD8\u5EA6\u3001\u6D88\u9632\u3001\u88DD\u5378\u3001\u505C\u8ECA\u3001\u90FD\u8A2D\u8207\u74B0\u8A55", combined: "\u4F75\u7528\u898F\u5B9A\u3001\u5404\u4E0A\u9650\u9069\u7528\u7BC4\u570D\u53CA\u5408\u4F75\u5BE9\u67E5\u6587\u4EF6" };
+var conditionFields = { road: "\u9023\u63A5\u9053\u8DEF\u5BEC\u5EA6m", front: "\u540C\u8DEF\u6BB5\u9762\u5BECm", opened: "\u8DB3\u5BEC\u958B\u95E2\u53CA\u9023\u901A\u9053\u8DEF\u5BEC\u5EA6m", slope: "\u662F\u5426\u5C71\u5761\u5730\uFF08\u662F\uFF0F\u5426\uFF09", nonOpen: "\u65B0\u5317\u975E\u4E94\u9805\u958B\u653E\u6027\u516C\u8A2D\u9001\u51FA\u984D\u5EA6\u33A1", iso: "ISO50001\uFF08\u662F\uFF0F\u5426\uFF09", solar: "\u592A\u967D\u80FD\u6C34\u5E73\u6295\u5F71\u5360\u5C4B\u9802\u53EF\u8A2D\u7F6E\u5340\u57DF%", dc: "DC\u5145\u96FB\u5C08\u7528\u8ECA\u4F4D\u5360\u5168\u90E8\u8ECA\u4F4D%", ems: "\u80FD\u6E90\u7BA1\u7406\u7CFB\u7D71\uFF08\u662F\uFF0F\u5426\uFF09", storage: "\u5132\u80FD\u5BB9\u91CFkWh", hq: "\u71DF\u904B\u7E3D\u90E8\u8A8D\u5B9A\u8207\u767B\u8A18\u5730\u5740\u7B26\u5408\uFF08\u662F\uFF0F\u5426\uFF09", taipeiLocation: "\u81FA\u5317\u5BB9\u79FB\u4F4D\u7F6E\u689D\u4EF6\uFF08\u6377\u904B\uFF0F\u516C\u5712\uFF0F\u6B77\u53F2\u5EFA\u7BC9\uFF09", distance: "\u81F3\u6377\u904B\u51FA\u5165\u53E3\u6216\u516C\u5712\u8DDD\u96E2m", parkArea: "\u516C\u5712\u9762\u7A4D\u516C\u9803", secondRoad: "\u7B2C\u4E8C\u689D\u5DF2\u958B\u95E2\u9053\u8DEF\u5BEC\u5EA6m" };
+var newEvidence = () => ({ source: "", date: "", finding: "", state: "unknown" });
+var newParcel = () => ({ id: crypto.randomUUID(), name: "", zone: "", area: "", excluded: "", far: "", tdrRate: "", original: "", originalMode: "unknown", evidence: newEvidence() });
+var newAward2 = () => ({ id: crypto.randomUUID(), name: "", parcelId: "", kind: "unknown", amount: "", deduct: "", evidence: newEvidence() });
+var newFloor = () => ({ id: crypto.randomUUID(), building: "", level: "", count: "", area: "", purpose: "unknown", increment: "", incrementBasis: "unknown", evidence: newEvidence() });
+var obj3 = (v) => v && typeof v === "object" && !Array.isArray(v);
+var str2 = (v) => typeof v === "string" && v.length <= 12e3;
+var fields3 = (v, keys) => obj3(v) && keys.every((k) => str2(v[k]));
+var one2 = (v, choices2) => choices2.includes(v);
+var ev = (v) => fields3(v, ["source", "date", "finding"]) && one2(v.state, ["unknown", "assumed", "reviewed", "fail"]);
+var rows4 = (v, test) => Array.isArray(v) && v.length <= 300 && new Set(v.map((x) => x?.id)).size === v.length && v.every((x) => fields3(x, ["id"]) && x.id && test(x));
+function isIndustrial(v) {
+  return (v?.development === void 0 || isDevelopment(v.development)) && fields3(v, ["name", "edition", "date", "investment", "applicationDate", "combinedCap", "tdrCap", "tdrCash", "declared"]) && v.version === INDUSTRIAL_VERSION && fields3(v.conditions, Object.keys(conditionFields)) && one2(v.mode, ["planning", "document"]) && one2(v.city, ["unknown", "taipei", "ntpc"]) && one2(v.regime, ["unknown", "urban", "nonurban", "park"]) && one2(v.route, ["unknown", "ordinary", "renewal"]) && one2(v.vertical, ["unknown", "none", "ntpc", "specific"]) && one2(v.awardMode, ["unknown", "none", "items"]) && one2(v.transferMode, ["unknown", "none", "items"]) && one2(v.originalRoute, ["unknown", "base", "original30", "original120", "hazard130", "strategic"]) && rows4(v.parcels, (p) => fields3(p, ["name", "zone", "area", "excluded", "far", "tdrRate", "original"]) && one2(p.originalMode, ["unknown", "none", "replace"]) && ev(p.evidence)) && rows4(v.awards, (a) => fields3(a, ["name", "parcelId", "amount", "deduct"]) && one2(a.kind, Object.keys(awardKinds)) && ev(a.evidence)) && rows4(v.floors, (f8) => fields3(f8, ["building", "level", "count", "area", "increment"]) && one2(f8.purpose, Object.keys(purposes)) && one2(f8.incrementBasis, ["unknown", "18-2-1", "18-2-2"]) && ev(f8.evidence)) && obj3(v.reviews) && Object.keys(checks).every((k) => ev(v.reviews[k]));
+}
+function calculateIndustrial(raw) {
+  const errors = [], missing = [], notes = [], limits = [];
+  const quantities = { site: null, base: null, originalIncrease: null, awards: null, tdr: null, total: null, design: null };
+  const parcelResults = [], items = [];
+  const out = () => ({ development: isIndustrial(raw) ? calculateDevelopment(raw.development, raw.floors, raw.mode, raw.date) : null, version: INDUSTRIAL_CALCULATION_VERSION, quantities, parcelResults, items, limits, errors, missing, notes, status: errors.length ? "\u9700\u4FEE\u6B63" : missing.length ? "\u8CC7\u6599\u672A\u9F4A" : raw.mode === "planning" ? "\u898F\u5283\u8A66\u7B97\u5B8C\u6210" : "\u6587\u4EF6\u6578\u91CF\u6838\u5C0D\u5B8C\u6210", legallyApproved: false });
+  if (!isIndustrial(raw)) {
+    errors.push("\u8CC7\u6599\u683C\u5F0F\u6216\u7248\u672C\u7121\u6548");
+    return out();
+  }
+  const m = raw;
+  const n = (s, label, positive = false) => {
+    if (!s.trim()) {
+      missing.push(label + "\u672A\u586B");
+      return null;
+    }
+    if (!/^\d+(\.\d+)?$/.test(s.trim()) || !Number.isFinite(Number(s)) || Number(s) > 1e12 || Number(s) < 0 || positive && Number(s) <= 0) {
+      errors.push(label + "\u9808\u70BA" + (positive ? "\u6B63\u6578" : "\u975E\u8CA0\u6578"));
+      return null;
+    }
+    return Number(s);
+  };
+  const evidence3 = (e, label) => {
+    if (e.state === "fail") errors.push(label + "\uFF1A\u5DF2\u78BA\u8A8D\u4E0D\u7B26");
+    else if (e.state === "unknown" || !e.source.trim() || !e.finding.trim() || !validDate3(e.date)) missing.push(label + "\u7F3A\u4F86\u6E90\u3001\u65E5\u671F\u6216\u9069\u7528\u5224\u65B7");
+    else if (m.mode === "document" && e.state !== "reviewed") missing.push(label + "\u5C1A\u672A\u4F9D\u6587\u4EF6\u8986\u6838");
+    if (e.date && m.date && e.date > m.date) errors.push(label + "\u6587\u4EF6\u65E5\u671F\u665A\u65BC\u8A55\u4F30\u65E5");
+  };
+  const cap = (label, used, maximum) => {
+    const pass = used <= maximum + 1e-7;
+    limits.push({ label, used, cap: maximum, pass });
+    if (!pass) errors.push(label + "\u8D85\u9650");
+  };
+  if (!m.name.trim() || !m.edition.trim() || !validDate3(m.date)) missing.push("\u6848\u4EF6\u540D\u7A31\u3001\u8CC7\u6599\u7248\u672C\u8207\u8A55\u4F30\u65E5\u672A\u5B8C\u6574");
+  if (m.city === "unknown" || m.regime === "unknown" || m.route === "unknown" || m.vertical === "unknown") missing.push("\u57CE\u5E02\u3001\u571F\u5730\u5236\u5EA6\u53CA\u958B\u767C\u9014\u5F91\u672A\u9078\u5B9A");
+  if (["nonurban", "park"].includes(m.regime)) missing.push("\u975E\u90FD\u5E02\u6216\u5712\u5340\u9808\u53E6\u5EFA\u9069\u7528\u8A08\u756B\u898F\u5247\uFF1B\u672C\u7248\u4E0D\u5957\u90FD\u5E02\u8A08\u756B\u4E00\u822C\u5DE5\u696D\u5340\u898F\u5247");
+  for (const k of ["plan", "use", "original", "layout"]) evidence3(m.reviews[k], checks[k]);
+  if (!m.parcels.length) missing.push("\u5C1A\u7121\u571F\u5730\u5206\u9805");
+  for (const p of m.parcels) {
+    evidence3(p.evidence, "\u571F\u5730 " + p.name);
+    if (!p.name.trim() || !p.zone.trim()) missing.push("\u571F\u5730\u540D\u7A31\u53CA\u5206\u5340\u672A\u586B");
+    const a = n(p.area, "\u571F\u5730\u7E3D\u9762\u7A4D", true), x = n(p.excluded, "\u6392\u9664\u9762\u7A4D"), f8 = n(p.far, "\u57FA\u6E96\u5BB9\u7A4D\u7387", true);
+    if (a === null || x === null || f8 === null) continue;
+    if (x > a) {
+      errors.push("\u6392\u9664\u9762\u7A4D\u8D85\u904E\u571F\u5730\u9762\u7A4D");
+      continue;
+    }
+    const site = a - x, base = site * f8 / 100;
+    let adopted = base;
+    if (p.originalMode === "unknown") {
+      missing.push("\u539F\u5BB9\u7A4D\u8655\u7406\u672A\u78BA\u8A8D");
+      continue;
+    }
+    if (p.originalMode === "replace") {
+      const o = n(p.original, "\u539F\u5408\u6CD5\u5BB9\u7A4D", true);
+      if (o === null) continue;
+      if (o < base) {
+        errors.push("\u539F\u5BB9\u7A4D\u66FF\u4EE3\u4F4E\u65BC\u57FA\u6E96\uFF0C\u9808\u6838\u5C0D\u9069\u7528\u8DEF\u5F91");
+        continue;
+      }
+      adopted = o;
+    }
+    parcelResults.push({ id: p.id, name: p.name, site, base, adopted });
+  }
+  if (parcelResults.length === m.parcels.length && m.parcels.length) {
+    quantities.site = parcelResults.reduce((s, p) => s + p.site, 0);
+    quantities.base = parcelResults.reduce((s, p) => s + p.base, 0);
+    quantities.originalIncrease = parcelResults.reduce((s, p) => s + p.adopted - p.base, 0);
+  }
+  let awardsValid = true, tdrValid = true;
+  const awardKeys = m.awards.map((a) => [a.name.trim(), a.evidence.source.trim(), a.kind, a.parcelId].join("|"));
+  if (new Set(awardKeys).size !== awardKeys.length) errors.push("\u76F8\u540C\u4F86\u6E90\u8207\u540D\u7A31\u7684\u984D\u5EA6\u91CD\u8907\u5217\u5165\uFF0C\u9808\u6838\u5C0D\u552F\u4E00\u6838\u51C6\u9805\u6B21");
+  for (const a of m.awards) {
+    const isTdr = a.kind === "tdr";
+    evidence3(a.evidence, "\u984D\u5EA6 " + a.name);
+    if (!a.name.trim()) missing.push("\u984D\u5EA6\u540D\u7A31\u672A\u586B");
+    if (a.kind === "unknown") {
+      missing.push("\u984D\u5EA6\u672A\u5206\u985E");
+      awardsValid = false;
+      tdrValid = false;
+    }
+    if (!m.parcels.some((p) => p.id === a.parcelId)) errors.push("\u984D\u5EA6\u5FC5\u9808\u6B78\u5C6C\u6709\u6548\u571F\u5730\u7D44\u5225");
+    const amount = n(a.amount, "\u7533\u8ACB\uFF0F\u6587\u4EF6\u984D\u5EA6"), deduct = n(a.deduct, "\u91CD\u8907\u6216\u4E0D\u63A1\u8A08\u6263\u9664\u984D");
+    if (amount === null || deduct === null) {
+      if (isTdr) tdrValid = false;
+      else awardsValid = false;
+      continue;
+    }
+    if (deduct > amount) {
+      errors.push("\u6263\u9664\u8D85\u904E\u7533\u8ACB\u984D\u5EA6");
+      if (isTdr) tdrValid = false;
+      else awardsValid = false;
+      continue;
+    }
+    if ((isTdr ? m.transferMode : m.awardMode) !== "items") errors.push("\u984D\u5EA6\u8655\u7406\u9078\u9805\u8207\u5206\u9805\u8CC7\u6599\u77DB\u76FE");
+    items.push({ name: a.name, kind: a.kind, gross: amount, deduct, net: amount - deduct });
+  }
+  const sum3 = (k) => items.filter((a) => a.kind === k).reduce((s, a) => s + a.net, 0), V = sum3("f1") + sum3("f2") + sum3("f3") + sum3("feedback"), U = sum3("renewal"), O = sum3("other"), T = sum3("tdr"), B = quantities.base;
+  for (const [key, mode, valid] of [["awards", m.awardMode, awardsValid], ["tdr", m.transferMode, tdrValid]]) {
+    if (mode === "unknown") missing.push((key === "awards" ? "\u734E\u52F5" : "\u5BB9\u79FB") + "\u8655\u7406\u672A\u78BA\u8A8D");
+    else if (mode === "items" && !m.awards.some((a) => a.kind === "tdr" === (key === "tdr"))) missing.push("\u9078\u64C7\u9010\u9805\u4F46\u672A\u586B\u5206\u9805");
+    else if (valid) quantities[key] = key === "awards" ? U + V + O : T;
+  }
+  if (B !== null) {
+    for (const p of parcelResults) {
+      const a = m.awards.filter((a2) => a2.parcelId === p.id), net = (k) => a.filter((a2) => a2.kind === k).reduce((t, a2) => t + (Number(a2.amount) - Number(a2.deduct)), 0);
+      if (m.vertical === "ntpc") {
+        cap(p.name + "\uFF1AF1\u5206\u7D4415%", net("f1"), p.base * 0.15);
+        cap(p.name + "\uFF1AF2\u5206\u7D445%", net("f2"), p.base * 0.05);
+        cap(p.name + "\uFF1AF3\u5206\u7D445%", net("f3"), p.base * 0.05);
+        cap(p.name + "\uFF1A\u4E09\u9805\u5206\u7D4420%", net("f1") + net("f2") + net("f3"), p.base * 0.2);
+        cap(p.name + "\uFF1A\u56DE\u994B\u5206\u7D4430%", net("feedback"), p.base * 0.3);
+        cap(p.name + "\uFF1A\u7ACB\u9AD4\u5316\u53CA\u5BB9\u79FB\u5206\u7D4450%", net("f1") + net("f2") + net("f3") + net("feedback") + net("tdr"), p.base * 0.5);
+      }
+    }
+  }
+  if (m.route === "ordinary" && U > 0) errors.push("\u4E00\u822C\u65B0\u6539\u5EFA\u4E0D\u80FD\u8A08\u5165\u90FD\u5E02\u66F4\u65B0\u734E\u52F5");
+  if (m.route === "renewal") {
+    evidence3(m.reviews.renewal, checks.renewal);
+    if (m.originalRoute === "unknown") missing.push("\u90FD\u5E02\u66F4\u65B0\u4E0A\u9650\u8DEF\u5F91\u672A\u9078\u5B9A");
+    if (B !== null && quantities.originalIncrease !== null) {
+      const adopted = B + quantities.originalIncrease;
+      let ceiling = null;
+      if (m.originalRoute === "base") ceiling = 1.5 * B;
+      if (m.originalRoute === "original30") ceiling = adopted + 0.3 * B;
+      if (m.originalRoute === "original120") ceiling = 1.2 * adopted;
+      if (m.originalRoute === "hazard130") ceiling = 1.3 * adopted;
+      if (m.originalRoute !== "base" && m.originalRoute !== "unknown" && m.originalRoute !== "strategic" && quantities.originalIncrease <= 0) errors.push("\u539F\u5BB9\u7A4D\u4E0A\u9650\u8DEF\u5F91\u9808\u539F\u5408\u6CD5\u5BB9\u7A4D\u9AD8\u65BC\u57FA\u6E96");
+      if (ceiling !== null) cap("\u90FD\u5E02\u66F4\u65B0\u6240\u63A1\u4E0A\u9650\uFF08\u542B\u539F\u5BB9\u7A4D\u589E\u52A0\u91CF\uFF09", adopted + U, ceiling);
+      if (m.originalRoute === "hazard130" && V + O > 0) errors.push("\u7B2C65\u689D\u7B2C2\u9805\u7B2C2\u6B3E\u4E0D\u5F97\u518D\u7533\u8ACB\u5176\u4ED6\u734E\u52F5");
+      if (m.originalRoute === "strategic") missing.push("\u7B56\u7565\u6027\u66F4\u65B0\u9700\u53E6\u6838\u5B9A\u7B2C65\u689D\u5C08\u6848\u4E0A\u9650\uFF0C\u4E0D\u5957\u4E00\u822C\u4E0A\u9650");
+    }
+  }
+  if (m.vertical === "none" && V > 0) errors.push("\u672A\u63A1\u7ACB\u9AD4\u5316\u537B\u5217\u5165\u7ACB\u9AD4\u5316\u734E\u52F5");
+  if (m.vertical === "specific") missing.push("\u5176\u4ED6\u7ACB\u9AD4\u5316\u9808\u6709\u7368\u7ACB\u65B9\u6848\u898F\u5247\uFF1B\u4E0D\u5F97\u4F7F\u7528\u65B0\u5317\u5E02\u65B9\u6848");
+  if (m.vertical === "ntpc") {
+    evidence3(m.reviews.vertical, checks.vertical);
+    if (m.city !== "ntpc" || m.regime !== "urban") errors.push("\u65B0\u5317\u5E02\u7ACB\u9AD4\u5316\u65B9\u6848\u4E0D\u80FD\u5957\u7528\u5176\u4ED6\u57CE\u5E02\u6216\u571F\u5730\u5236\u5EA6");
+    if (m.parcels.some((p) => !["\u4E59\u7A2E\u5DE5\u696D\u5340", "\u7522\u696D\u5C08\u7528\u5340"].includes(p.zone) || Number(p.far) > 240)) errors.push("\u65B0\u5317\u7ACB\u9AD4\u5316\u9808\u4E59\u7A2E\u5DE5\u696D\u5340\uFF0F\u7522\u696D\u5C08\u7528\u5340\u4E14\u57FA\u6E96\u5BB9\u7A4D\u7387\u4E0D\u8D85\u904E240%");
+    if (!validDate3(m.applicationDate)) missing.push("\u7ACB\u9AD4\u5316\u7533\u8ACB\u65E5\u672A\u78BA\u8A8D");
+    else if (m.applicationDate < "2026-04-27") missing.push("\u672C\u7248\u63A1115\u5E744\u670827\u65E5\u516C\u544A\uFF1B\u8F03\u65E9\u7533\u8ACB\u9808\u6838\u5C0D\u6B77\u53F2\u7248\u672C\u8207\u9069\u7528\u898F\u5B9A");
+    else if (m.applicationDate > "2026-12-25") errors.push("\u8D85\u904E\u672C\u6B21\u516C\u544A\u7ACB\u9AD4\u5316\u53D7\u7406\u622A\u6B62\u65E5");
+    const yes2 = (k) => {
+      if (!["\u662F", "\u5426"].includes(m.conditions[k])) missing.push(conditionFields[k] + "\u672A\u660E\u78BA\u586B\u5BEB");
+      return m.conditions[k] === "\u662F";
+    };
+    const iso = yes2("iso"), ems = yes2("ems"), hq = yes2("hq"), solar = n(m.conditions.solar, "\u5C4B\u9802\u592A\u967D\u80FD\u6BD4\u4F8B"), dc = n(m.conditions.dc, "DC\u5145\u96FB\u8ECA\u4F4D\u6BD4\u4F8B"), storage = n(m.conditions.storage, "\u5132\u80FD\u5BB9\u91CF");
+    if (solar !== null && solar > 100 || dc !== null && dc > 100) errors.push("\u80FD\u6E90\u8A2D\u65BD\u6BD4\u4F8B\u4E0D\u80FD\u8D85\u904E100%");
+    if (B !== null && solar !== null && dc !== null && storage !== null) {
+      const energy = Math.min(5, (iso ? 2 : 0) + (solar >= 50 ? 3 : 0) + Math.min(5, Math.floor(Math.max(0, dc - 6))) + (ems && storage >= 30 ? 1 : 0));
+      cap("\u80FD\u6E90\u8A2D\u65BD\u689D\u4EF6\u6838\u5C0D\u4E0A\u9650", sum3("f2"), B * energy / 100);
+      if (!hq && sum3("f3") > 0) errors.push("\u71DF\u904B\u7E3D\u90E8\u689D\u4EF6\u672A\u7B26\u5408\uFF0C\u4E0D\u80FD\u8A08\u5165F3");
+    }
+    const investment = n(m.investment, "\u65B0\u589E\u6295\u8CC7\uFF08\u4E0D\u542B\u571F\u5730\uFF0C\u5104\u5143\uFF09", true);
+    if (B !== null && quantities.site !== null && quantities.site > 0) {
+      const ha = quantities.site / 1e4;
+      if (investment !== null) {
+        if (investment <= ha * 4.5) errors.push("\u65B0\u589E\u6295\u8CC7\u672A\u8D85\u904E\u6BCF\u516C\u98034.5\u5104\u5143");
+        const maxF1 = Math.min(0.15, Math.max(0, (investment - ha * 4.5) / (ha * 0.1) * 0.01)) * B;
+        cap("\u65B0\u589E\u6295\u8CC7\u516C\u5F0F\u53CA15%\u4E0A\u9650", sum3("f1"), maxF1);
+      }
+      cap("\u80FD\u6E90\u7BA1\u74065%\u4E0A\u9650", sum3("f2"), 0.05 * B);
+      cap("\u71DF\u904B\u7E3D\u90E85%\u4E0A\u9650", sum3("f3"), 0.05 * B);
+      cap("\u4E09\u9805\u7522\u696D\u734E\u52F5\u5408\u8A0820%", V - sum3("feedback"), 0.2 * B);
+      cap("\u56DE\u994B\u6216\u6350\u8D08\u7A7A\u959330%", sum3("feedback"), 0.3 * B);
+      cap("\u7ACB\u9AD4\u5316\u8207\u5BB9\u79FB\u5408\u8A0850%", V + T, 0.5 * B);
+      if (T > sum3("feedback") + 1e-7) errors.push("\u4F75\u5BB9\u79FB\u9808\u4F9D\u5BB9\u79FB\u984D\u5EA61\u500D\u7533\u8ACB\u56DE\u994B\u91D1\u6216\u6350\u8D08\u7A7A\u9593");
+    }
+    notes.push("F2\u4F9D115\u5E744\u6708\u65B9\u6848\u6838\u5C0D\uFF1AISO50001\u3001\u5C4B\u9802\u592A\u967D\u80FD\u3001\u8D85\u904E6%\u7684DC\u5145\u96FB\u8A2D\u65BD\u3001\u80FD\u6E90\u7BA1\u7406\u53CA30kWh\u5132\u80FD\uFF1B\u4E0D\u6CBF\u7528\u820AQ&A\u80FD\u6E90\u6BD4\u4F8B\u3002F2/F3\u5747\u9808\u5148\u7B26\u5408\u65B0\u589E\u6295\u8CC7\u9580\u6ABB\u3002", "\u589E\u91CF\u7528\u9014\u9650\u7D30\u5247\u7B2C18\u689D\u7B2C2\u9805\u7B2C1\u30012\u6B3E\uFF1B\u4E00\u822C\u5546\u696D\u7528\u9014\u4E0D\u80FD\u76F4\u63A5\u5206\u914D\u7ACB\u9AD4\u5316\u589E\u91CF\u3002", "\u53E6\u6709\u81EA\u7528\uFF0F\u975E\u81EA\u7528\u56DE\u994B\u3001\u4FDD\u8B49\u91D1\u53CA\u79FB\u8F49\u9650\u5236\uFF1B\u8A08\u5BB9\u9762\u7A4D\u4E0D\u7B49\u65BC\u53EF\u552E\u6216\u53EF\u79DF\u9762\u7A4D\u3002");
+  }
+  if (m.transferMode === "items") {
+    evidence3(m.reviews.tdr, checks.tdr);
+    const road = n(m.conditions.road, "\u9023\u63A5\u9053\u8DEF\u5BEC\u5EA6"), front = n(m.conditions.front, "\u540C\u8DEF\u6BB5\u9762\u5BEC"), opened = n(m.conditions.opened, "\u8DB3\u5BEC\u958B\u95E2\u53CA\u9023\u901A\u9053\u8DEF\u5BEC\u5EA6");
+    if (!["\u662F", "\u5426"].includes(m.conditions.slope)) missing.push("\u5C71\u5761\u5730\u8EAB\u5206\u672A\u78BA\u8A8D");
+    let groupCap = 0, groupCapKnown = true;
+    for (const p of m.parcels) {
+      const rate = n(p.tdrRate, p.name + "\u5BB9\u79FB\u6CD5\u5B9A\u4E0A\u9650\u6BD4\u4F8B"), pr = parcelResults.find((x) => x.id === p.id);
+      if (rate === null || !pr) {
+        groupCapKnown = false;
+        continue;
+      }
+      if (![30, 40].includes(rate)) {
+        errors.push("\u4E00\u822C\u5BB9\u79FB\u6CD5\u5B9A\u4E0A\u9650\u6BD4\u4F8B\u965030\u621640\uFF1B\u7279\u6B8A\u8A08\u756B\u9808\u53E6\u5EFA\u898F\u5247");
+        groupCapKnown = false;
+        continue;
+      }
+      groupCap += pr.base * rate / 100;
+    }
+    if (groupCapKnown) cap("\u90FD\u5E02\u8A08\u756B\u5BB9\u79FB\u6CD5\u5B9A\u4E0A\u9650\uFF08\u8DE8\u7BC4\u570D\u5206\u7D44\u6838\u7B97\uFF09", T, groupCap);
+    if (m.city === "ntpc" && B !== null) {
+      if (quantities.site !== null && quantities.site < 500) errors.push("\u65B0\u5317\u4E00\u822C\u63A5\u53D7\u57FA\u5730\u9808\u9054500\u33A1\uFF1B\u5371\u96AA\u5EFA\u7269\u4F8B\u5916\u9808\u53E6\u6848\u8986\u6838");
+      if (front !== null && front < 8) errors.push("\u65B0\u5317\u540C\u8DEF\u6BB5\u9762\u5BEC\u9808\u90548m");
+      if (road !== null && road < 8) {
+        if (m.route !== "renewal" || road < 6) errors.push("\u672A\u7B26\u5408\u65B0\u5317\u4E00\u822C\u6216\u90FD\u66F46\u81F38m\u9053\u8DEF\u5BB9\u79FB\u689D\u4EF6");
+        else cap("\u65B0\u5317\u90FD\u66F46\u81F38m\u9053\u8DEF15%\u4E0A\u9650", T, 0.15 * B);
+      } else if (opened !== null && opened < 8) errors.push("\u65B0\u5317\u4E00\u822C\u9053\u8DEF\u9808\u8DB3\u5BEC\u958B\u95E2\u4E26\u9023\u901A8m\u9053\u8DEF");
+      if (m.conditions.slope === "\u662F") cap("\u65B0\u5317\u5C71\u5761\u573020%\u4E0A\u9650", T, 0.2 * B);
+      const nonOpen = n(m.conditions.nonOpen, "\u975E\u4E94\u9805\u958B\u653E\u6027\u516C\u8A2D\u4F86\u6E90\u984D\u5EA6");
+      if (nonOpen !== null) {
+        cap("\u65B0\u5317\u975E\u4E94\u9805\u958B\u653E\u6027\u516C\u8A2D\u4F86\u6E9020%\u4E0A\u9650", nonOpen, 0.2 * B);
+        if (nonOpen > T) errors.push("\u9001\u51FA\u4F86\u6E90\u984D\u5EA6\u8D85\u904E\u5BB9\u79FB\u7E3D\u91CF");
+      }
+    }
+    if (m.city === "taipei") {
+      if (m.conditions.slope === "\u662F") errors.push("\u81FA\u5317\u4E00\u822C\u5BB9\u79FB\u4E0D\u5F97\u4F4D\u65BC\u5C71\u5761\u5730");
+      const loc = m.conditions.taipeiLocation;
+      if (!["\u6377\u904B", "\u516C\u5712", "\u6B77\u53F2\u5EFA\u7BC9"].includes(loc)) missing.push("\u81FA\u5317\u5BB9\u79FB\u4F4D\u7F6E\u689D\u4EF6\u672A\u78BA\u8A8D");
+      if (loc !== "\u6B77\u53F2\u5EFA\u7BC9") {
+        const d = n(m.conditions.distance, "\u81F3\u6377\u904B\u6216\u516C\u5712\u8DDD\u96E2");
+        if (loc === "\u6377\u904B" && d !== null && road !== null && opened !== null && (d > 800 || road < 8 || opened < 8)) errors.push("\u81FA\u5317\u6377\u904B\u689D\u4EF6\u9808800m\u5167\u53CA\u5DF2\u958B\u95E28m\u9053\u8DEF");
+        if (loc === "\u516C\u5712") {
+          const park = n(m.conditions.parkArea, "\u516C\u5712\u9762\u7A4D"), second = n(m.conditions.secondRoad, "\u7B2C\u4E8C\u689D\u9053\u8DEF\u5BEC\u5EA6");
+          if (d !== null && park !== null && road !== null && second !== null && opened !== null && (d > 500 || park < 0.5 || !(road >= 15 && opened >= 15 || road >= 12 && second > 0 && opened >= 12))) errors.push("\u81FA\u5317\u516C\u5712\u7BC4\u570D\u3001\u9762\u7A4D\u6216\u5DF2\u958B\u95E2\u9053\u8DEF\u689D\u4EF6\u4E0D\u7B26");
+        }
+      }
+    }
+    const tcap = n(m.tdrCap, "\u5BB9\u79FB\u6838\u5B9A\uFF0F\u9069\u7528\u4E0A\u9650\u33A1");
+    if (tcap !== null) cap("\u5BB9\u79FB\u500B\u6848\u4E0A\u9650", T, tcap);
+    if (m.city === "taipei" && B !== null) {
+      if (quantities.site !== null && quantities.site <= 1e3) errors.push("\u81FA\u5317\u4E00\u822C\u5BB9\u79FB\u63A5\u53D7\u57FA\u5730\u9808\u8D85\u904E1000\u33A1\uFF1B\u500B\u5225\u8A08\u756B\u4F8B\u5916\u53E6\u6848\u8986\u6838");
+      cap("\u81FA\u5317\u5BB9\u79FB\u52A0\u5176\u4ED6\u734E\u52F5\uFF08\u4E0D\u542B\u90FD\u66F4\uFF09", T + V + O, 0.5 * B);
+      const cash = n(m.tdrCash, "\u5BB9\u79FB\u4EE3\u91D1\u53D6\u5F97\u984D\u5EA6\u33A1");
+      if (cash !== null && (cash < T * 0.5 || cash > T)) errors.push("\u81FA\u5317\u4EE3\u91D1\u53D6\u5F97\u984D\u5EA6\u9808\u4ECB\u65BC\u5BB9\u79FB50%\u81F3100%");
+    }
+  }
+  if (m.route === "renewal" && m.vertical !== "none" || O > 0) {
+    evidence3(m.reviews.combined, checks.combined);
+    const c = n(m.combinedCap, "\u4F9D\u5408\u4F75\u5BE9\u67E5\u6587\u4EF6\u78BA\u8A8D\u7684\u5168\u6848\u4E0A\u9650\u33A1");
+    if (c !== null && B !== null && quantities.originalIncrease !== null) cap("\u6587\u4EF6\u5408\u4F75\u5BE9\u67E5\u4E0A\u9650", B + quantities.originalIncrease + U + V + O + T, c);
+    notes.push("\u53EF\u4F75\u884C\u7533\u8ACB\u4E0D\u7B49\u65BC\u4E0A\u9650\u53EF\u76F4\u63A5\u76F8\u52A0\uFF1B\u5408\u4F75\u4E0A\u9650\u9808\u8F09\u660E\u9069\u7528\u7BC4\u570D\u53CA\u91CD\u8907\u6263\u9664\u3002");
+  }
+  if (m.city === "ntpc" && m.route === "ordinary" && m.vertical === "none" && B !== null && quantities.originalIncrease !== null) cap("\u65B0\u5317\u4E00\u822C\u589E\u52A0\u5BB9\u7A4D\u4E0A\u9650\uFF08\u4E0D\u542B\u5BB9\u79FB\u7B49\u6CD5\u5B9A\u6392\u9664\u9805\uFF09", B + quantities.originalIncrease + O, 1.2 * B);
+  let floorTotal = 0, floorValid = m.floors.length > 0, incrementTotal = 0;
+  if (!m.floors.length) missing.push("\u9010\u68DF\u9010\u5C64\u7528\u9014\u5C1A\u672A\u586B\u5BEB");
+  for (const f8 of m.floors) {
+    evidence3(f8.evidence, "\u7528\u9014 " + f8.building + " " + f8.level);
+    if (!f8.building.trim() || !f8.level.trim() || f8.purpose === "unknown") missing.push("\u5E62\u5225\u3001\u6A13\u5C64\u6216\u7528\u9014\u672A\u586B");
+    const count = n(f8.count, "\u5C64\u6578", true), area2 = n(f8.area, "\u6BCF\u5C64\u8A08\u5BB9\u9762\u7A4D"), inc = n(f8.increment, "\u672C\u5217\u7ACB\u9AD4\u5316\u589E\u91CF\u9762\u7A4D");
+    if (count === null || area2 === null || inc === null) {
+      floorValid = false;
+      continue;
+    }
+    if (!Number.isInteger(count)) errors.push("\u5C64\u6578\u9808\u70BA\u6574\u6578");
+    floorTotal += count * area2;
+    incrementTotal += inc;
+    if (m.vertical === "ntpc" && inc > 0 && f8.incrementBasis === "unknown") missing.push("\u7ACB\u9AD4\u5316\u589E\u91CF\u9808\u78BA\u8A8D\u7B2C18\u689D\u7B2C2\u9805\u7B2C1\u62162\u6B3E\u7528\u9014");
+    if (inc > count * area2) errors.push("\u7528\u9014\u589E\u91CF\u8D85\u904E\u672C\u5217\u9762\u7A4D");
+    if (f8.purpose === "housing") errors.push("\u4E00\u822C\u4F4F\u5B85\u4E0D\u5F97\u4EE5\u5DE5\u696D\u7528\u9014\u6216\u54E1\u5DE5\u5BBF\u820D\u540D\u7FA9\u8A08\u5165\uFF1B\u9808\u5148\u5B8C\u6210\u5206\u5340\u8B8A\u66F4\u53CA\u7528\u9014\u8A31\u53EF");
+  }
+  if (floorValid) {
+    quantities.design = floorTotal;
+    if (m.vertical === "ntpc" && Math.abs(incrementTotal - V) > 0.01) errors.push("\u5404\u7528\u9014\u7ACB\u9AD4\u5316\u589E\u91CF\u8207\u734E\u52F5\u5408\u8A08\u4E0D\u7B26");
+  }
+  if (B !== null && quantities.originalIncrease !== null && quantities.awards !== null && quantities.tdr !== null) quantities.total = B + quantities.originalIncrease + quantities.awards + quantities.tdr;
+  if (quantities.total !== null && quantities.design !== null && quantities.design > quantities.total + 0.01) errors.push("\u7528\u9014\u914D\u7F6E\u8D85\u904E\u7533\u8ACB\u8A08\u5BB9\u7E3D\u91CF");
+  if (m.mode === "document") {
+    const d = n(m.declared, "\u6587\u4EF6\u7E3D\u8A08\u33A1");
+    if (d !== null && quantities.total !== null && Math.abs(d - quantities.total) > 0.01) errors.push("\u6587\u4EF6\u7E3D\u8A08\u8207\u5206\u9805\u52A0\u7E3D\u4E0D\u7B26");
+    if (d !== null && quantities.design !== null && Math.abs(d - quantities.design) > 0.01) errors.push("\u6587\u4EF6\u7E3D\u8A08\u8207\u7528\u9014\u914D\u7F6E\u4E0D\u7B26");
+  }
+  notes.push("\u672C\u7D50\u679C\u6AA2\u67E5\u5DF2\u8F38\u5165\u6578\u91CF\u8207\u5217\u660E\u689D\u4EF6\uFF0C\u4E0D\u4EE3\u8868\u4E3B\u7BA1\u6A5F\u95DC\u6838\u51C6\u3002\u898F\u5283\u5047\u8A2D\u8207\u4F9D\u6587\u4EF6\u8986\u6838\u4E0D\u5F97\u4E92\u76F8\u5192\u7528\u3002");
+  return out();
+}
+var quantityLabels = { site: "\u6263\u9664\u5F8C\u57FA\u5730\u9762\u7A4D", base: "\u57FA\u6E96\u5BB9\u7A4D", originalIncrease: "\u539F\u5BB9\u7A4D\u66FF\u4EE3\u589E\u52A0\u91CF", awards: "\u6263\u9664\u91CD\u8907\u5F8C\u734E\u52F5", tdr: "\u5BB9\u7A4D\u79FB\u8F49", total: "\u8F38\u5165\u5206\u9805\u5408\u8A08\uFF08\u975E\u6838\u51C6\u984D\u5EA6\uFF09", design: "\u9010\u5C64\u914D\u7F6E\u8A08\u5BB9\u9762\u7A4D" };
+
+// ../sanze-release-app/src/components/industrial/IndustrialPanel.tsx
+import { Fragment as Fragment10, jsx as jsx16, jsxs as jsxs16 } from "react/jsx-runtime";
+function IndustrialPanel({ value: m, onChange, onReport }) {
+  const [snapshot, setSnapshot] = useState5(null), signature = JSON.stringify(m), r = snapshot?.signature === signature ? snapshot.result : null;
+  const edit = (p) => onChange({ ...m, ...p });
+  const field = (label, value2, change, type = "text") => /* @__PURE__ */ jsxs16("label", { className: "mz-field", children: [
+    /* @__PURE__ */ jsx16("span", { children: label }),
+    /* @__PURE__ */ jsx16("input", { "aria-label": label, type, value: value2, onChange: (e) => change(e.target.value) })
+  ] });
+  const select = (label, value2, options, change) => /* @__PURE__ */ jsxs16("label", { className: "mz-field", children: [
+    /* @__PURE__ */ jsx16("span", { children: label }),
+    /* @__PURE__ */ jsx16("select", { "aria-label": label, value: value2, onChange: (e) => change(e.target.value), children: Object.entries(options).map(([k, v]) => /* @__PURE__ */ jsx16("option", { value: k, children: v }, k)) })
+  ] });
+  const ev2 = (v, change) => /* @__PURE__ */ jsxs16("details", { children: [
+    /* @__PURE__ */ jsx16("summary", { children: "\u4F86\u6E90\u3001\u65E5\u671F\u8207\u9069\u7528\u5224\u65B7" }),
+    /* @__PURE__ */ jsxs16("div", { className: "mz-fields", children: [
+      field("\u4F86\u6E90\u53CA\u9801\u6B21", v.source, (s) => change({ ...v, source: s })),
+      field("\u4F86\u6E90\u65E5\u671F", v.date, (s) => change({ ...v, date: s }), "date"),
+      field("\u9069\u7528\u689D\u4EF6\u8207\u7406\u7531", v.finding, (s) => change({ ...v, finding: s })),
+      select("\u8CC7\u6599\u72C0\u614B", v.state, { unknown: "\u5C1A\u672A\u78BA\u8A8D", assumed: "\u660E\u5217\u898F\u5283\u5047\u8A2D", reviewed: "\u5DF2\u4F9D\u6587\u4EF6\u8986\u6838", fail: "\u5DF2\u78BA\u8A8D\u4E0D\u7B26" }, (state) => change({ ...v, state }))
+    ] })
+  ] });
+  const fmt = (n) => n === null ? "\u8CC7\u6599\u672A\u9F4A" : n.toLocaleString("zh-TW", { maximumFractionDigits: 2 }) + " \u33A1";
+  return /* @__PURE__ */ jsxs16("section", { className: "mixed-zone", "aria-label": "\u5DE5\u696D\u571F\u5730\u8207\u5EE0\u623F\u958B\u767C", children: [
+    /* @__PURE__ */ jsx16("h2", { children: "\u5DE5\u696D\u571F\u5730\u8207\u5EE0\u623F\u958B\u767C" }),
+    /* @__PURE__ */ jsx16("p", { children: "\u571F\u5730\u8EAB\u5206 \u2192 \u7528\u9014 \u2192 \u958B\u767C\u9014\u5F91 \u2192 \u539F\u5BB9\u7A4D\u3001\u734E\u52F5\u8207\u5BB9\u79FB \u2192 \u6A13\u5C64\u914D\u7F6E\u3002\u7A7A\u767D\u4E0D\u88DC\u96F6\uFF0C\u734E\u52F5\u4E0D\u9810\u586B\u3002" }),
+    /* @__PURE__ */ jsxs16("div", { className: "mz-fields", children: [
+      select("\u5DE5\u696D\u8A55\u4F30\u6A21\u5F0F", m.mode, { planning: "\u898F\u5283\u8A66\u7B97", document: "\u4F9D\u6587\u4EF6\u8986\u6838" }, (mode) => edit({ mode })),
+      field("\u5DE5\u696D\u6848\u4EF6\u540D\u7A31", m.name, (name) => edit({ name })),
+      field("\u540C\u4E00\u4EFD\u8CC7\u6599\u7248\u672C\uFF0F\u6587\u865F", m.edition, (edition) => edit({ edition })),
+      field("\u5DE5\u696D\u8A55\u4F30\u65E5", m.date, (date) => edit({ date }), "date"),
+      select("\u5DE5\u696D\u57FA\u5730\u57CE\u5E02", m.city, { unknown: "\u5C1A\u672A\u9078\u5B9A", taipei: "\u81FA\u5317\u5E02", ntpc: "\u65B0\u5317\u5E02" }, (city) => edit({ city })),
+      select("\u571F\u5730\u5236\u5EA6", m.regime, { unknown: "\u5C1A\u672A\u78BA\u8A8D", urban: "\u90FD\u5E02\u8A08\u756B\u5DE5\u696D\u5340", nonurban: "\u975E\u90FD\u5E02\u571F\u5730\u5206\u5340\u8207\u7DE8\u5B9A", park: "\u5712\u5340\uFF0F\u7279\u5225\u8A08\u756B" }, (regime) => edit({ regime }))
+    ] }),
+    /* @__PURE__ */ jsxs16("p", { children: [
+      m.mode === "planning" ? "\u898F\u5283\u503C\u9808\u7531\u898F\u5283\u65B9\u660E\u586B\u4E26\u8AAA\u660E\u5047\u8A2D\uFF1B\u4E0D\u6703\u5347\u683C\u70BA\u6838\u51C6\u6578\u5B57\u3002" : "\u9010\u9805\u586B\u5165\u540C\u4E00\u7248\u672C\u6587\u4EF6\u503C\u3002\u898F\u5283\u5047\u8A2D\u4E0D\u80FD\u901A\u904E\u6587\u4EF6\u8986\u6838\u3002",
+      "\u5207\u63DB\u6A21\u5F0F\u4FDD\u7559\u8F38\u5165\uFF0C\u91CD\u65B0\u6AA2\u67E5\u8B49\u64DA\u72C0\u614B\u3002"
+    ] }),
+    /* @__PURE__ */ jsxs16("details", { open: true, children: [
+      /* @__PURE__ */ jsx16("summary", { children: "1. \u571F\u5730\u5206\u9805\u8207\u63A1\u8A08\u7BC4\u570D" }),
+      /* @__PURE__ */ jsx16("p", { children: "\u7E3D\u9762\u7A4D\u8207\u6392\u9664\u9762\u7A4D\u5206\u586B\u3002\u66F4\u65B0\u7BC4\u570D\u3001\u5EFA\u7BC9\u57FA\u5730\u3001\u5BB9\u7A4D\u63A1\u8A08\u7BC4\u570D\u4E0D\u80FD\u6DF7\u70BA\u4E00\u8AC7\u3002\u516C\u8A2D\u3001\u9053\u8DEF\u3001\u5EE2\u5DF7\u4F9D\u8B8A\u66F4\u53CA\u6838\u5B9A\u6587\u4EF6\u6C7A\u5B9A\u63A1\u8A08\uFF0C\u4E0D\u4E00\u5F8B\u7D0D\u5165\u6216\u522A\u9664\u3002" }),
+      m.parcels.map((p, i) => {
+        const change = (v) => edit({ parcels: m.parcels.map((x) => x.id === p.id ? { ...p, ...v } : x) });
+        return /* @__PURE__ */ jsxs16("fieldset", { children: [
+          /* @__PURE__ */ jsxs16("legend", { children: [
+            "\u571F\u5730 ",
+            i + 1
+          ] }),
+          /* @__PURE__ */ jsxs16("div", { className: "mz-fields", children: [
+            field("\u5730\u865F\uFF0F\u540C\u689D\u4EF6\u571F\u5730\u7D44", p.name, (name) => change({ name })),
+            field("\u7CBE\u78BA\u5206\u5340\u540D\u7A31", p.zone, (zone) => change({ zone })),
+            field("\u571F\u5730\u7E3D\u9762\u7A4D\u33A1", p.area, (area2) => change({ area: area2 }), "number"),
+            field("\u4E0D\u63A1\u8A08\u9762\u7A4D\u33A1\uFF08\u7121\u5247\u586B0\uFF09", p.excluded, (excluded) => change({ excluded }), "number"),
+            field("\u672C\u7D44\u57FA\u6E96\u5BB9\u7A4D\u7387%", p.far, (far) => change({ far }), "number"),
+            m.transferMode === "items" && field("\u672C\u7D44\u5BB9\u79FB\u6CD5\u5B9A\u4E0A\u9650%\uFF0830\u621640\uFF0C\u9700\u7BC4\u570D\u4F9D\u64DA\uFF09", p.tdrRate, (tdrRate) => change({ tdrRate }), "number"),
+            select("\u672C\u7D44\u539F\u5BB9\u7A4D\u8655\u7406", p.originalMode, { unknown: "\u5C1A\u672A\u78BA\u8A8D", none: "\u4E0D\u63A1\u539F\u5BB9\u7A4D", replace: "\u4EE5\u5408\u6CD5\u539F\u5BB9\u7A4D\u66FF\u4EE3" }, (originalMode) => change({ originalMode })),
+            p.originalMode === "replace" && field("\u539F\u5408\u6CD5\u5BB9\u7A4D\u33A1", p.original, (original) => change({ original }), "number")
+          ] }),
+          ev2(p.evidence, (evidence3) => change({ evidence: evidence3 })),
+          /* @__PURE__ */ jsxs16("button", { onClick: () => edit({ parcels: m.parcels.filter((x) => x.id !== p.id) }), children: [
+            "\u79FB\u9664\u571F\u5730 ",
+            i + 1
+          ] })
+        ] }, p.id);
+      }),
+      /* @__PURE__ */ jsx16("button", { onClick: () => edit({ parcels: [...m.parcels, newParcel()] }), children: "\u65B0\u589E\u5DE5\u696D\u571F\u5730\u5206\u9805" })
+    ] }),
+    /* @__PURE__ */ jsxs16("details", { open: true, children: [
+      /* @__PURE__ */ jsx16("summary", { children: "2. \u958B\u767C\u9014\u5F91\u53CA\u4F75\u7528\u689D\u4EF6" }),
+      /* @__PURE__ */ jsxs16("div", { className: "mz-fields", children: [
+        select("\u91CD\u5EFA\u9014\u5F91", m.route, { unknown: "\u5C1A\u672A\u78BA\u8A8D", ordinary: "\u4E00\u822C\u65B0\u6539\u5EFA", renewal: "\u90FD\u5E02\u66F4\u65B0" }, (route) => edit({ route })),
+        select("\u7ACB\u9AD4\u5316\u65B9\u6848", m.vertical, { unknown: "\u5C1A\u672A\u78BA\u8A8D", none: "\u672C\u6848\u4E0D\u7533\u8ACB", ntpc: "\u65B0\u5317\u5E02\u7ACB\u9AD4\u5316\uFF08115\u5E744\u6708\u65B9\u6848\uFF09", specific: "\u5176\u4ED6\u65B9\u6848\uFF0F\u5712\u5340\u5C08\u6848" }, (vertical) => edit({ vertical })),
+        m.route === "renewal" && select("\u90FD\u66F4\u4E0A\u9650\u8DEF\u5F91\uFF08\u4E0D\u662F\u6838\u7D66\u6BD4\u4F8B\uFF09", m.originalRoute, { unknown: "\u5C1A\u672A\u9078\u5B9A", base: "\u57FA\u6E96\u5BB9\u7A4D1.5\u500D", original30: "\u539F\u5BB9\u7A4D\u52A0\u57FA\u6E960.3\u500D", original120: "\u539F\u5BB9\u7A4D1.2\u500D", hazard130: "\u7D93\u8A8D\u5B9A\u5371\u96AA\u539F\u5BB9\u7A4D1.3\u500D\uFF08\u4E0D\u5F97\u518D\u7533\u8ACB\u5176\u4ED6\u734E\u52F5\uFF09", strategic: "\u7B56\u7565\u6027\u66F4\u65B0\u5C08\u6848" }, (originalRoute) => edit({ originalRoute }))
+      ] }),
+      m.vertical === "ntpc" && /* @__PURE__ */ jsxs16(Fragment10, { children: [
+        /* @__PURE__ */ jsx16("p", { children: "\u9808\u6838\u5C0D\u516C\u544A\u5716\u7BC4\u570D\uFF0C\u4E0D\u4EE5\u884C\u653F\u5340\u6216\u5730\u6BB5\u540D\u7A31\u63A8\u5B9A\u7B26\u5408\u3002\u4E59\u7A2E\u5DE5\u696D\u5340\uFF0F\u7522\u696D\u5C08\u7528\u5340\u3001\u57FA\u6E96\u5BB9\u7A4D\u7387\u4E0D\u8D85\u904E240%\u3002" }),
+        /* @__PURE__ */ jsxs16("div", { className: "mz-fields", children: [
+          field("\u7ACB\u9AD4\u5316\u7533\u8ACB\u65E5", m.applicationDate, (applicationDate) => edit({ applicationDate }), "date"),
+          field("\u65B0\u589E\u6295\u8CC7\u5104\u5143\uFF08\u4E0D\u542B\u571F\u5730\uFF09", m.investment, (investment) => edit({ investment }), "number")
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx16("p", { children: "\u65B0\u5317\u7ACB\u9AD4\u5316\u53EF\u4F75\u884C\u90FD\u66F4\uFF1B\u9808\u5148\u7533\u8ACB\u5176\u4ED6\u6A5F\u95DC\u734E\u52F5\u4E26\u6263\u9664\u91CD\u8907\u90E8\u5206\u3002\u7ACB\u9AD4\u5316\uFF0B\u5BB9\u79FB\u53E6\u6AA2\u67E550%\u4E0A\u9650\u53CA\u7B49\u984D\u56DE\u994B\u3002\u81FA\u5317\u5BB9\u79FB\u768450%\u5408\u8A08\u4E0A\u9650\u4E0D\u542B\u90FD\u66F4\u734E\u52F5\uFF0C\u4E0D\u80FD\u5C07\u4E0D\u540C\u898F\u5B9A\u7684\u4E0A\u9650\u76F4\u63A5\u76F8\u52A0\u3002" })
+    ] }),
+    /* @__PURE__ */ jsxs16("details", { open: true, children: [
+      /* @__PURE__ */ jsx16("summary", { children: "3. \u734E\u52F5\u3001\u5BB9\u79FB\u8207\u91CD\u8907\u6263\u9664" }),
+      /* @__PURE__ */ jsxs16("div", { className: "mz-fields", children: [
+        select("\u5DE5\u696D\u734E\u52F5\u8655\u7406", m.awardMode, { unknown: "\u5C1A\u672A\u78BA\u8A8D", none: "\u660E\u78BA\u4E0D\u7533\u8ACB\u734E\u52F5", items: "\u9010\u9805\u586B\u5BEB" }, (awardMode) => edit({ awardMode })),
+        select("\u5DE5\u696D\u5BB9\u79FB\u8655\u7406", m.transferMode, { unknown: "\u5C1A\u672A\u78BA\u8A8D", none: "\u660E\u78BA\u4E0D\u7533\u8ACB\u5BB9\u79FB", items: "\u9010\u9805\u586B\u5BEB" }, (transferMode) => edit({ transferMode }))
+      ] }),
+      m.awards.map((a, i) => {
+        const change = (v) => edit({ awards: m.awards.map((x) => x.id === a.id ? { ...a, ...v } : x) });
+        return /* @__PURE__ */ jsxs16("fieldset", { children: [
+          /* @__PURE__ */ jsxs16("legend", { children: [
+            "\u984D\u5EA6 ",
+            i + 1
+          ] }),
+          /* @__PURE__ */ jsxs16("div", { className: "mz-fields", children: [
+            field("\u5206\u9805\u540D\u7A31\uFF0F\u8A31\u53EF\u6587\u865F", a.name, (name) => change({ name })),
+            select("\u984D\u5EA6\u985E\u578B", a.kind, awardKinds, (kind) => change({ kind })),
+            select("\u9069\u7528\u571F\u5730\u7D44", a.parcelId, { "": "\u5C1A\u672A\u9078\u5B9A", ...Object.fromEntries(m.parcels.map((p) => [p.id, p.name || "\u672A\u547D\u540D\u571F\u5730"])) }, (parcelId) => change({ parcelId })),
+            field("\u7533\u8ACB\u6216\u6587\u4EF6\u984D\u5EA6\u33A1", a.amount, (amount) => change({ amount }), "number"),
+            field("\u91CD\u8907\uFF0F\u4E0D\u63A1\u8A08\u6263\u9664\u33A1\uFF08\u7121\u5247\u586B0\uFF09", a.deduct, (deduct) => change({ deduct }), "number")
+          ] }),
+          ev2(a.evidence, (evidence3) => change({ evidence: evidence3 })),
+          /* @__PURE__ */ jsxs16("button", { onClick: () => edit({ awards: m.awards.filter((x) => x.id !== a.id) }), children: [
+            "\u79FB\u9664\u984D\u5EA6 ",
+            i + 1
+          ] })
+        ] }, a.id);
+      }),
+      /* @__PURE__ */ jsx16("button", { onClick: () => edit({ awards: [...m.awards, newAward2()] }), children: "\u65B0\u589E\u5DE5\u696D\u984D\u5EA6\u5206\u9805" }),
+      /* @__PURE__ */ jsxs16("div", { className: "mz-fields", children: [
+        m.transferMode === "items" && field("\u5BB9\u79FB\u500B\u6848\u4E0A\u9650\u33A1\uFF08\u9808\u9644\u8A55\u5B9A\u4F9D\u64DA\uFF09", m.tdrCap, (tdrCap) => edit({ tdrCap }), "number"),
+        m.transferMode === "items" && m.city === "taipei" && field("\u5BB9\u79FB\u4E2D\u4EE5\u4EE3\u91D1\u53D6\u5F97\u7684\u984D\u5EA6\u33A1", m.tdrCash, (tdrCash) => edit({ tdrCash }), "number"),
+        field("\u5408\u4F75\u5BE9\u67E5\u5168\u6848\u4E0A\u9650\u33A1\uFF08\u4F75\u884C\u90FD\u66F4\u7ACB\u9AD4\u5316\u6216\u5176\u4ED6\u734E\u52F5\u6642\u5FC5\u586B\uFF09", m.combinedCap, (combinedCap) => edit({ combinedCap }), "number")
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs16("details", { open: true, children: [
+      /* @__PURE__ */ jsx16("summary", { children: "4. \u9010\u68DF\u9010\u5C64\u7528\u9014\u914D\u7F6E" }),
+      /* @__PURE__ */ jsx16("p", { children: "\u6BCF\u5217\u53EA\u586B\u540C\u4E00\u7528\u9014\u3002\u9644\u5C6C\u8FA6\u516C\u3001\u4E00\u822C\u8FA6\u516C\u3001\u54E1\u5DE5\u5BBF\u820D\u3001\u4E00\u822C\u4F4F\u5B85\u7684\u898F\u5247\u4E0D\u540C\uFF1B\u5404\u5217\u4F86\u6E90\u9808\u8AAA\u660E\u7528\u9014\u8A31\u53EF\u53CA\u5DE5\u696D\u4F7F\u7528\u7E3D\u91CF\u63A1\u8A08\u3002\u589E\u91CF\u586B\u672C\u5217\u5408\u8A08\uFF0C\u4E0D\u662F\u6BCF\u5C64\u503C\u3002" }),
+      m.floors.map((f8, i) => {
+        const change = (v) => edit({ floors: m.floors.map((x) => x.id === f8.id ? { ...f8, ...v } : x) });
+        return /* @__PURE__ */ jsxs16("fieldset", { children: [
+          /* @__PURE__ */ jsxs16("legend", { children: [
+            "\u914D\u7F6E ",
+            i + 1
+          ] }),
+          /* @__PURE__ */ jsxs16("div", { className: "mz-fields", children: [
+            field("\u5E62\u5225", f8.building, (building) => change({ building })),
+            field("\u6A13\u5C64", f8.level, (level) => change({ level })),
+            field("\u76F8\u540C\u914D\u7F6E\u5C64\u6578", f8.count, (count) => change({ count }), "number"),
+            field("\u6BCF\u5C64\u8A08\u5BB9\u33A1", f8.area, (area2) => change({ area: area2 }), "number"),
+            select("\u5DE5\u696D\u914D\u7F6E\u7528\u9014", f8.purpose, purposes, (purpose) => change({ purpose })),
+            m.vertical === "ntpc" && select("\u672C\u5217\u589E\u91CF\u7528\u9014\u4F9D\u64DA", f8.incrementBasis, { unknown: "\u5C1A\u672A\u78BA\u8A8D", "18-2-1": "\u7B2C18\u689D\u7B2C2\u9805\u7B2C1\u6B3E\u5FC5\u8981\u8A2D\u65BD", "18-2-2": "\u7B2C18\u689D\u7B2C2\u9805\u7B2C2\u6B3E\u7522\u696D\u8A2D\u65BD" }, (incrementBasis) => change({ incrementBasis })),
+            field("\u672C\u5217\u7ACB\u9AD4\u5316\u589E\u91CF\u33A1\uFF08\u7121\u5247\u586B0\uFF09", f8.increment, (increment) => change({ increment }), "number")
+          ] }),
+          ev2(f8.evidence, (evidence3) => change({ evidence: evidence3 })),
+          /* @__PURE__ */ jsxs16("button", { onClick: () => edit({ floors: m.floors.filter((x) => x.id !== f8.id) }), children: [
+            "\u79FB\u9664\u914D\u7F6E ",
+            i + 1
+          ] })
+        ] }, f8.id);
+      }),
+      /* @__PURE__ */ jsx16("button", { onClick: () => edit({ floors: [...m.floors, newFloor()] }), children: "\u65B0\u589E\u5DE5\u696D\u7528\u9014\u914D\u7F6E" }),
+      m.mode === "document" && field("\u540C\u7248\u672C\u6587\u4EF6\u7E3D\u8A08\u33A1", m.declared, (declared) => edit({ declared }), "number")
+    ] }),
+    /* @__PURE__ */ jsxs16("details", { children: [
+      /* @__PURE__ */ jsx16("summary", { children: "5. \u7ACB\u9AD4\u5316\u80FD\u6E90\u8207\u5BB9\u79FB\u57FA\u5730\u689D\u4EF6" }),
+      /* @__PURE__ */ jsx16("p", { children: "\u4F9D\u6240\u9078\u9014\u5F91\u586B\u5BEB\u3002\u662F\uFF0F\u5426\u8ACB\u660E\u586B\uFF1B\u4E0D\u9069\u7528\u7684\u6578\u91CF\u7531\u4F7F\u7528\u8005\u78BA\u8A8D\u5F8C\u586B0\u300240%\u5BB9\u79FB\u9808\u9644\u6307\u5B9A\u5730\u5340\u7BC4\u570D\u4F9D\u64DA\uFF1B\u8DE8\u7BC4\u570D\u4E0D\u80FD\u5168\u6848\u5957\u8F03\u9AD8\u6BD4\u4F8B\u3002" }),
+      /* @__PURE__ */ jsx16("div", { className: "mz-fields", children: Object.entries(conditionFields).map(([k, label]) => /* @__PURE__ */ jsx16("div", { children: field(label, m.conditions[k], (v) => edit({ conditions: { ...m.conditions, [k]: v } })) }, k)) })
+    ] }),
+    /* @__PURE__ */ jsxs16("details", { children: [
+      /* @__PURE__ */ jsx16("summary", { children: "6. \u6CD5\u898F\u689D\u4EF6\u8207\u63A1\u8A08\u6587\u4EF6" }),
+      Object.entries(checks).map(([k, label]) => /* @__PURE__ */ jsxs16("fieldset", { children: [
+        /* @__PURE__ */ jsx16("legend", { children: label }),
+        ev2(m.reviews[k], (e) => edit({ reviews: { ...m.reviews, [k]: e } }))
+      ] }, k))
+    ] }),
+    /* @__PURE__ */ jsxs16("details", { children: [
+      /* @__PURE__ */ jsx16("summary", { children: "\u5DF2\u6838\u5C0D\u7684\u6CD5\u898F\u53CA\u7248\u672C" }),
+      /* @__PURE__ */ jsx16("p", { children: "\u6838\u5C0D\u65E5\u671F\uFF1A2026-10-24\u3002\u81FA\u5317\u7B2C\u4E8C\u7A2E\uFF0F\u7B2C\u4E09\u7A2E\u5DE5\u696D\u5340\u4E00\u822C\u5EFA\u853D\u8207\u5BB9\u7A4D\u70BA45%\uFF0F200%\u300155%\uFF0F300%\uFF1B\u653E\u5BEC\u5EFA\u853D\u8207\u500B\u5225\u8A08\u756B\u9808\u53E6\u6838\u5C0D\uFF0C\u9019\u4E9B\u6578\u5B57\u4E0D\u6703\u81EA\u52D5\u586B\u5165\u3002\u65B0\u5317\u4F9D\u65BD\u884C\u7D30\u5247\u53CA\u500B\u5225\u8A08\u756B\u3002\u81FA\u5317\u672A\u4EE5\u65B0\u5317\u7ACB\u9AD4\u5316\u65B9\u6848\u4F5C\u70BA\u901A\u7528\u4F9D\u64DA\u3002" }),
+      sources.map(([n, u]) => /* @__PURE__ */ jsx16("p", { children: /* @__PURE__ */ jsx16("a", { href: u, target: "_blank", rel: "noreferrer", children: n }) }, u))
+    ] }),
+    /* @__PURE__ */ jsx16(DevelopmentPanel, { model: m, onChange }),
+    /* @__PURE__ */ jsxs16("div", { className: "mz-actions", children: [
+      /* @__PURE__ */ jsx16("button", { className: "mz-primary", onClick: () => setSnapshot({ signature, result: calculateIndustrial(m) }), children: "\u8A08\u7B97\u5DE5\u696D\u8A55\u4F30\u7D50\u679C" }),
+      snapshot && !r && /* @__PURE__ */ jsx16("p", { role: "status", children: "\u8CC7\u6599\u5DF2\u8B8A\u66F4\uFF0C\u820A\u7D50\u679C\u5931\u6548\uFF0C\u8ACB\u91CD\u65B0\u8A08\u7B97\u3002" })
+    ] }),
+    r && /* @__PURE__ */ jsxs16("section", { className: "mz-results", "aria-label": "\u5DE5\u696D\u8A55\u4F30\u7D50\u679C", children: [
+      /* @__PURE__ */ jsx16("h3", { children: r.status }),
+      /* @__PURE__ */ jsx16("p", { children: /* @__PURE__ */ jsx16("strong", { children: m.name || "\u672A\u547D\u540D\u5DE5\u696D\u8A55\u4F30" }) }),
+      /* @__PURE__ */ jsxs16("p", { children: [
+        m.mode === "planning" ? "\u898F\u5283\u8A66\u7B97" : "\u4F9D\u6587\u4EF6\u8986\u6838",
+        " \xB7 ",
+        m.edition || "\u7248\u672C\u672A\u586B",
+        " \xB7 \u6CD5\u898F\u7248\u672C ",
+        r.version
+      ] }),
+      /* @__PURE__ */ jsx16("dl", { className: "mz-totals", children: Object.entries(r.quantities).map(([k, v]) => /* @__PURE__ */ jsxs16("div", { children: [
+        /* @__PURE__ */ jsx16("dt", { children: quantityLabels[k] }),
+        /* @__PURE__ */ jsx16("dd", { children: fmt(v) })
+      ] }, k)) }),
+      r.development && /* @__PURE__ */ jsxs16("section", { children: [
+        /* @__PURE__ */ jsxs16("h4", { children: [
+          "\u5DE5\u696D\u5C08\u5C6C\u914D\u7F6E\uFF1A",
+          r.development.ready ? "\u5206\u9805\u6578\u91CF\u6AA2\u67E5\u901A\u904E" : "\u5C1A\u672A\u5B8C\u6210"
+        ] }),
+        r.development.totals && /* @__PURE__ */ jsxs16("p", { children: [
+          "\u5BE6\u9AD4\u6A13\u677F ",
+          fmt(r.development.totals.physical),
+          "\uFF1B\u51FA\u79DF ",
+          fmt(r.development.totals.rent),
+          "\uFF1B\u81EA\u7528 ",
+          fmt(r.development.totals.self),
+          "\uFF1B\u6350\u8D08 ",
+          fmt(r.development.totals.donated),
+          "\uFF1B\u5171\u7528 ",
+          fmt(r.development.totals.common),
+          "\uFF1B\u672A\u914D\u7F6E ",
+          fmt(r.development.totals.vacant),
+          "\uFF1B\u6587\u4EF6\u767B\u8A18 ",
+          fmt(r.development.totals.registered)
+        ] }),
+        /* @__PURE__ */ jsx16("ul", { children: r.development.issues.map((x, i) => /* @__PURE__ */ jsx16("li", { children: x }, i)) })
+      ] }),
+      r.items.map((a, i) => /* @__PURE__ */ jsxs16("p", { children: [
+        a.name,
+        "\uFF1A",
+        fmt(a.gross),
+        " \u2212 ",
+        fmt(a.deduct),
+        " \uFF1D ",
+        fmt(a.net)
+      ] }, i)),
+      r.limits.map((l, i) => /* @__PURE__ */ jsxs16("p", { children: [
+        l.label,
+        "\uFF1A\u672C\u6B21 ",
+        fmt(l.used),
+        "\uFF0F\u4E0A\u9650 ",
+        fmt(l.cap),
+        " \xB7 ",
+        l.pass ? "\u6578\u91CF\u672A\u8D85\u904E" : "\u8D85\u9650"
+      ] }, i)),
+      /* @__PURE__ */ jsx16("ul", { children: [...r.errors, ...r.missing].map((x, i) => /* @__PURE__ */ jsx16("li", { children: x }, i)) }),
+      r.notes.map((x, i) => /* @__PURE__ */ jsx16("p", { children: x }, i)),
+      onReport && /* @__PURE__ */ jsx16("button", { onClick: () => onReport(m), children: "\u532F\u51FA\u5DE5\u696D\u8A55\u4F30\u5831\u544A" })
+    ] })
+  ] });
+}
 export {
   AreaReviewPanel,
+  AssessmentMode,
   BonusAssessmentPanel,
+  CommercialIntensityPanel,
+  DocumentCasePanel,
+  IndustrialPanel,
   LegalParkingPanel,
+  MixedZonePanel,
+  ProgramReviewPanel,
   RegulatoryReviewPanel,
   SiteRoadConditionsPanel
 };

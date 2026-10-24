@@ -17,3 +17,5 @@ work/
 /*.jpg
 /*.pdf
 docs/report-portal/
+
+/node_modules

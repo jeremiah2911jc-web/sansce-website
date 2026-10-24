@@ -15,7 +15,7 @@ export function collectiveDelivery(snapshot){
  const s=summary('集合住宅',snapshot.name,'依輸入及規劃假設試算；資格與圖說另核',PLANNING_VERSION);
  s.createdAt=snapshot.calculatedAt||s.createdAt;
  s.metrics=[['房屋可售面積',v.salePing,'坪'],['公設比（估算）',v.commonRatio,'%'],['規劃戶數',v.units,'戶'],['汽車位',v.cars,'位'],['推估地上樓層',v.equivalentFloors,'層'],['地下層數',v.floors,'層']];
- s.conditions=[['地區',snapshot.district],['基地面積',`${displayNumber(Number(i.site))}㎡`],['建蔽／基準容積',`${i.coverage}%／${i.far}%`],['獎勵與容移',`都更${displayNumber(v.renewalApplied)}%、危老${displayNumber(v.dangerApplied)}%、容移${displayNumber(v.tdrApplied)}%、規模${displayNumber(v.scaleApplied)}%`],['每戶地上分攤',`${i.unitPing}坪／戶`],['總樓地板（不含陽台）',`${displayNumber(v.totalWithoutBalcony)}㎡`]];
+ s.conditions=[['地區',snapshot.district],['基地面積',`${displayNumber(Number(i.site))}㎡`],['建蔽／基準容積',`${i.coverage}%／${r.commercialReview?displayNumber(r.commercialReview.effectiveFar)+'%（分段換算）':i.far+'%'}`],['獎勵與容移',`都更${displayNumber(v.renewalApplied)}%、危老${displayNumber(v.dangerApplied)}%、容移${displayNumber(v.tdrApplied)}%、規模${displayNumber(v.scaleApplied)}%`],['每戶地上分攤',`${i.unitPing}坪／戶`],['總樓地板（不含陽台）',`${displayNumber(v.totalWithoutBalcony)}㎡`]];
  s.charts=[{title:'容積使用',unit:'㎡',note:'以同一允建容積為範圍；正值小於0.01㎡時另作標示。',rows:[['地上計容',v.aboveCounted],['地下計容',v.basementCounted],['未使用容積',v.unused]]},{title:'樓地板構成',unit:'㎡',note:'此圖含陽台；與不含陽台的總樓地板分開呈現。',rows:[['地上樓板（不含陽台）',v.aboveWithoutBalcony],['陽台',v.balcony],['地下室',v.basement]]}];
  s.assumptions=distinct(r.notes||[]);s.issues=s.assumptions.filter(x=>/待|未確認|未取得|另核|覆核|假設/.test(x));
  s.assumptions=s.assumptions.filter(x=>!s.issues.includes(x));
@@ -23,6 +23,7 @@ export function collectiveDelivery(snapshot){
  s.inputs=planningFields.map(([key,label,unit])=>[label,i[key]===''?'未填／待確認':`${text(i[key])}${unit?' '+unit:''}`]);
  s.inputs.push(['道路名稱',text(i.roadConditions?.roadName)],['計畫／開闢道路寬度',`${text(i.roadConditions?.plannedWidth)}／${text(i.roadConditions?.openedWidth)} m`],['同路段基地面寬',`${text(i.roadConditions?.frontage)} m`],['道路確認狀態',i.roadConditions?.status==='confirmed'?'已填查證，資格依檢核':i.roadConditions?.status==='assumed'?'明示暫採值':'待確認'],['路寬查證日期',text(i.roadConditions?.checkedAt)],['停車規則',i.parkingDesign?.mode==='general'?'地區通則初估':'本次個案條件'],['開挖率上限',r.basementDemandReview?`${displayNumber(r.basementDemandReview.capPercent)}%`:text(i.excavationCap)],['建築／容積使用比例',`${i.coverageUse}%／${i.volumeUse}%`]);
  s.inputs.push(['採用面積口徑','機電、梯廳、屋突及地下預留採逐層／量體檢核；固定比例設定不直接等於實際採用面積，詳計算說明。'],['梯廳淨深',({assumed:'暫按達2m初估',confirmed:'已核對達2m',failed:'不符免計資格，計容'})[i.lobbyDepth]||'待確認'],['屋頂電梯通達',i.elevator==='yes'?'依通達屋頂條件檢核':'依未通達屋頂條件檢核'],['停車方式',`${r.parking?.values?.smallSite?.access==='lift'?'汽車升降機':'依本次停車配置'}；平面${displayNumber(r.parking?.values?.flatCars)}位／機械${displayNumber(r.parking?.values?.mechanicalCars)}位`]);
+ if(i.commercialIntensity?.enabled){s.inputs.push(['商業分區原始條件',JSON.stringify(i.commercialIntensity)],['商業分區基準容積',displayNumber(r.commercialReview?.base)+'㎡']);s.sources.push(i.commercialIntensity.planSource,i.commercialIntensity.useSource,i.commercialIntensity.boundarySource,i.commercialIntensity.documentSource);}
  return s;
 }
 export function landDelivery(a,review){

@@ -24,9 +24,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// ../../../../../../src/sanze-cases-desktop/node_modules/polygon-clipping/dist/polygon-clipping.umd.js
+// ../../../../src/sanze-cases-desktop/node_modules/polygon-clipping/dist/polygon-clipping.umd.js
 var require_polygon_clipping_umd = __commonJS({
-  "../../../../../../src/sanze-cases-desktop/node_modules/polygon-clipping/dist/polygon-clipping.umd.js"(exports, module) {
+  "../../../../src/sanze-cases-desktop/node_modules/polygon-clipping/dist/polygon-clipping.umd.js"(exports, module) {
     (function(global, factory) {
       typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, global.polygonClipping = factory());
     })(exports, (function() {
@@ -759,7 +759,7 @@ var require_polygon_clipping_umd = __commonJS({
       const epsilon = 11102230246251565e-32;
       const splitter = 134217729;
       const resulterrbound = (3 + 8 * epsilon) * epsilon;
-      function sum2(elen, e, flen, f, h) {
+      function sum3(elen, e, flen, f, h) {
         let Q, Qnew, hh, bvirt;
         let enow = e[0];
         let fnow = f[0];
@@ -930,7 +930,7 @@ var require_polygon_clipping_umd = __commonJS({
         bvirt = u3 - _j;
         u[2] = _j - (u3 - bvirt) + (_i - bvirt);
         u[3] = u3;
-        const C1len = sum2(4, B, 4, u, C1);
+        const C1len = sum3(4, B, 4, u, C1);
         s1 = acx * bcytail;
         c = splitter * acx;
         ahi = c - (c - acx);
@@ -960,7 +960,7 @@ var require_polygon_clipping_umd = __commonJS({
         bvirt = u3 - _j;
         u[2] = _j - (u3 - bvirt) + (_i - bvirt);
         u[3] = u3;
-        const C2len = sum2(C1len, C1, 4, u, C2);
+        const C2len = sum3(C1len, C1, 4, u, C2);
         s1 = acxtail * bcytail;
         c = splitter * acxtail;
         ahi = c - (c - acxtail);
@@ -990,7 +990,7 @@ var require_polygon_clipping_umd = __commonJS({
         bvirt = u3 - _j;
         u[2] = _j - (u3 - bvirt) + (_i - bvirt);
         u[3] = u3;
-        const Dlen = sum2(C2len, C2, 4, u, D);
+        const Dlen = sum3(C2len, C2, 4, u, D);
         return D[Dlen - 1];
       }
       function orient2d(ax, ay, bx, by, cx, cy) {
@@ -2089,7 +2089,1178 @@ var require_polygon_clipping_umd = __commonJS({
   }
 });
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/escapeStairs.ts
+// ../sanze-release-app/src/lib/industrial/development.ts
+var allocationFields = { exempt: "\u514D\u8A08\u5BB9\u5BE6\u9AD4\u6A13\u5730\u677F\u33A1", rent: "\u51FA\u79DF\u5C08\u7528\u5BE6\u9AD4\u9762\u7A4D\u33A1", self: "\u81EA\u7528\u5C08\u7528\u5BE6\u9AD4\u9762\u7A4D\u33A1", donated: "\u6350\u8D08\u5BE6\u9AD4\u9762\u7A4D\u33A1", common: "\u5171\u7528\u5BE6\u9AD4\u9762\u7A4D\u33A1", vacant: "\u672A\u914D\u7F6E\u5BE6\u9AD4\u9762\u7A4D\u33A1", registered: "\u6587\u4EF6\u767B\u8A18\u9762\u7A4D\u33A1" };
+var constraintKinds = { coverage: "\u5EFA\u853D\uFF0F\u5EFA\u7BC9\u9762\u7A4D", excavation: "\u958B\u6316", height: "\u9AD8\u5EA6", yard: "\u9000\u7E2E\u8207\u9662\u843D", parking: "\u6C7D\u6A5F\u8ECA\u53CA\u81EA\u884C\u8ECA\u505C\u8ECA", loading: "\u88DD\u5378\u4F4D\u8207\u8ECA\u9053", fire: "\u6D88\u9632\u8207\u670D\u52D9\u6838\u5FC3", quota: "\u5DE5\u696D\u4F7F\u7528\u7E3D\u91CF", permission: "\u7528\u9014\u8207\u884C\u696D\u8A31\u53EF" };
+var object = (v) => v && typeof v === "object" && !Array.isArray(v);
+var strings = (v, keys) => object(v) && keys.every((k) => typeof v[k] === "string" && v[k].length <= 12e3);
+var validDate = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s) && Number.isFinite(Date.parse(s)) && new Date(s).toISOString().slice(0, 10) === s;
+var isProof = (v) => strings(v, ["source", "date", "finding"]) && ["unknown", "assumed", "reviewed", "fail"].includes(v.state);
+var rows = (v, fn) => Array.isArray(v) && v.length <= 300 && new Set(v.map((x) => x?.id)).size === v.length && v.every((x) => strings(x, ["id"]) && x.id && fn(x));
+function isDevelopment(v) {
+  return strings(v, ["planName", "planScope"]) && v.version === "industrial.layout.v1" && ["unknown", "rental", "self", "mixed"].includes(v.operation) && ["unknown", "self", "nonself"].includes(v.applicantUse) && isProof(v.planEvidence) && rows(v.allocations, (x) => strings(x, ["floorId", ...Object.keys(allocationFields)]) && isProof(x.evidence)) && rows(v.constraints, (x) => strings(x, ["name", "scope", "unit", "actual", "limit", "effective", "expires"]) && Object.keys(constraintKinds).includes(x.kind) && ["max", "min", "equal"].includes(x.operator) && ["general", "plan", "exception"].includes(x.basis) && isProof(x.evidence));
+}
+function checkProof(e, label, mode, date, issues) {
+  if (e.state === "fail") issues.push(label + "\u5DF2\u78BA\u8A8D\u4E0D\u7B26");
+  if (!e.source.trim() || !e.finding.trim() || !validDate(e.date) || e.state === "unknown") issues.push(label + "\u7F3A\u4F86\u6E90\u3001\u65E5\u671F\u6216\u9069\u7528\u5224\u65B7");
+  if (mode === "document" && e.state !== "reviewed") issues.push(label + "\u4E0D\u80FD\u4EE5\u5047\u8A2D\u901A\u904E\u6587\u4EF6\u8986\u6838");
+  if (validDate(date) && e.date > date) issues.push(label + "\u6587\u4EF6\u65E5\u671F\u665A\u65BC\u8A55\u4F30\u65E5");
+}
+function explicitNumber(s, label, issues) {
+  if (!/^\d+(\.\d+)?$/.test(s.trim()) || !Number.isFinite(+s) || +s > 1e12) {
+    issues.push(label + "\u9808\u660E\u586B\u975E\u8CA0\u6578\uFF0C\u7121\u5247\u586B0");
+    return null;
+  }
+  return +s;
+}
+function calculateDevelopment(d, floors, mode, date) {
+  const issues = [], totals2 = { physical: 0, rent: 0, self: 0, donated: 0, common: 0, vacant: 0, registered: 0 };
+  if (!d || !isDevelopment(d)) return { ready: false, issues: ["\u5DE5\u696D\u5C08\u5C6C\u914D\u7F6E\u5C1A\u672A\u5EFA\u7ACB"], totals: null };
+  const num = (s, l) => explicitNumber(s, l, issues);
+  checkProof(d.planEvidence, "\u500B\u5225\u8A08\u756B\u7BC4\u570D", mode, date, issues);
+  if (!d.planName.trim() || !d.planScope.trim()) issues.push("\u9808\u586B\u8A08\u756B\u540D\u7A31\u3001\u5730\u865F\u7BC4\u570D\u53CA\u7248\u672C\uFF0C\u4E0D\u80FD\u53EA\u586B\u884C\u653F\u5340");
+  if (d.operation === "unknown" || d.applicantUse === "unknown") issues.push("\u51FA\u79DF\uFF0F\u81EA\u7528\u6A21\u5F0F\u8207\u7533\u8ACB\u4EBA\u81EA\u7528\u8A8D\u5B9A\u9808\u5206\u5225\u9078\u5B9A");
+  const seen = /* @__PURE__ */ new Set();
+  for (const a of d.allocations) {
+    const f = floors.find((f2) => f2.id === a.floorId);
+    if (!f || seen.has(a.floorId)) {
+      issues.push("\u914D\u7F6E\u5C0D\u61C9\u6A13\u5C64\u4E0D\u5B58\u5728\u6216\u91CD\u8907");
+      continue;
+    }
+    seen.add(a.floorId);
+    checkProof(a.evidence, "\u9762\u7A4D\u914D\u7F6E", mode, date, issues);
+    const vals = Object.fromEntries(Object.keys(allocationFields).map((k) => [k, num(a[k], allocationFields[k])]));
+    const count = num(f.count, "\u5C0D\u61C9\u5C64\u6578"), area2 = num(f.area, "\u5C0D\u61C9\u6BCF\u5C64\u8A08\u5BB9");
+    if (count === null || area2 === null || Object.values(vals).some((v2) => v2 === null)) continue;
+    const v = vals, physical = count * area2 + v.exempt;
+    const allocated = v.rent + v.self + v.donated + v.common + v.vacant;
+    if (Math.abs(allocated - physical) > 0.01) issues.push("\u51FA\u79DF\u3001\u81EA\u7528\u3001\u6350\u8D08\u3001\u5171\u7528\u53CA\u672A\u914D\u7F6E\u9762\u7A4D\u5408\u8A08\u9808\u7B49\u65BC\u8A08\u5BB9\u52A0\u514D\u8A08\u5BE6\u9AD4\u6A13\u677F");
+    totals2.physical += physical;
+    for (const k of ["rent", "self", "donated", "common", "vacant", "registered"]) totals2[k] += v[k];
+  }
+  if (!floors.length || seen.size !== floors.length) issues.push("\u6BCF\u4E00\u5217\u7528\u9014\u6A13\u5C64\u90FD\u9808\u6709\u4E00\u7B46\u9762\u7A4D\u914D\u7F6E");
+  if (d.operation === "rental" && totals2.self > 0 || d.operation === "self" && totals2.rent > 0) issues.push("\u7D93\u71DF\u6A21\u5F0F\u8207\u51FA\u79DF\uFF0F\u81EA\u7528\u9762\u7A4D\u4E0D\u7B26");
+  if (d.operation === "rental" && totals2.rent <= 0 || d.operation === "self" && totals2.self <= 0 || d.operation === "mixed" && (totals2.rent <= 0 || totals2.self <= 0)) issues.push("\u6240\u9078\u7D93\u71DF\u6A21\u5F0F\u7F3A\u5C0D\u61C9\u9762\u7A4D");
+  if (d.applicantUse === "self" && totals2.rent > 0) issues.push("\u6709\u51FA\u79DF\u914D\u7F6E\u537B\u4E3B\u5F35\u7533\u8ACB\u4EBA\u5168\u81EA\u7528\uFF0C\u9808\u4F9D\u8A8D\u5B9A\u6587\u4EF6\u8ABF\u6574");
+  for (const kind of Object.keys(constraintKinds)) if (!d.constraints.some((c) => c.kind === kind)) issues.push(constraintKinds[kind] + "\u7F3A\u689D\u4EF6\u5206\u9805\uFF1B\u4E0D\u9069\u7528\u4E5F\u9808\u660E\u5217\u7406\u7531\u53CA0");
+  for (const c of d.constraints) {
+    checkProof(c.evidence, c.name || constraintKinds[c.kind], mode, date, issues);
+    if (!c.name.trim() || !c.scope.trim() || !c.unit.trim()) issues.push("\u6BCF\u9805\u9650\u5236\u9808\u6709\u540D\u7A31\u3001\u9069\u7528\u7BC4\u570D\u53CA\u55AE\u4F4D");
+    if (!validDate(c.effective) || c.effective > date || c.expires && (!validDate(c.expires) || c.expires < date || c.expires < c.effective)) issues.push(c.name + "\u898F\u5B9A\u65BD\u884C\u671F\u9593\u672A\u6DB5\u84CB\u8A55\u4F30\u65E5");
+    const actual = num(c.actual, c.name + "\u8A2D\u8A08\u503C"), limit = num(c.limit, c.name + "\u6587\u4EF6\u9650\u5236");
+    if (actual !== null && limit !== null && !(c.operator === "max" && actual <= limit + 1e-6 || c.operator === "min" && actual + 1e-6 >= limit || c.operator === "equal" && Math.abs(actual - limit) < 1e-6)) issues.push(c.name + "\u672A\u7B26\u5408\u6587\u4EF6\u9650\u5236");
+  }
+  return { ready: issues.length === 0, issues, totals: issues.length ? null : totals2 };
+}
+
+// ../sanze-release-app/src/lib/industrial/model.ts
+var INDUSTRIAL_CALCULATION_VERSION = "industrial.rules.2026-10-24.v2";
+var INDUSTRIAL_VERSION = "industrial.2026-10-24.v1";
+var sources = [
+  ["\u65B0\u5317\u5E02\u5DE5\u696D\u5340\u7ACB\u9AD4\u5316\u65B9\u6848\uFF08115\u5E744\u6708\uFF09\u53CAQ&A", "https://www.economic.ntpc.gov.tw/Custom/\u65B0\u5317\u5E02\u5DE5\u696D\u5340\u7ACB\u9AD4\u5316\u65B9\u6848"],
+  ["\u65B0\u5317\u5E02\u65BD\u884C\u7D30\u5247\uFF08114.11.05\uFF09\u7B2C18\u300136\u300139\u300145\u300147\u300148\u689D", "https://web.law.ntpc.gov.tw/Scripts/FLAWDAT0202.aspx?fcode=C0150108"],
+  ["\u65B0\u5317\u90FD\u5E02\u66F4\u65B0\u5BE9\u8B70\u539F\u5247\uFF08114.11.25\uFF09\u7B2C17\u9EDE", "https://web.law.ntpc.gov.tw/Scripts/FLAWDAT0202.aspx?fcode=C0150019"],
+  ["\u81FA\u5317\u571F\u5730\u4F7F\u7528\u5206\u5340\u7BA1\u5236\u81EA\u6CBB\u689D\u4F8B\uFF1A\u5DE5\u696D\u5340", "https://laws.gov.taipei/Law/LawSearch/LawChapterArticle/FL003962?chapterno=4"],
+  ["\u81FA\u5317\u5BB9\u7A4D\u79FB\u8F49\u81EA\u6CBB\u689D\u4F8B\u7B2C2-1\u30016\u30017\u30019\u689D", "https://laws.gov.taipei/law/LawSearch/LawArticleContent/FL074357"],
+  ["\u90FD\u5E02\u66F4\u65B0\u689D\u4F8B\u7B2C65\u689D", "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0070008"],
+  ["\u90FD\u5E02\u66F4\u65B0\u5EFA\u7BC9\u5BB9\u7A4D\u734E\u52F5\u8FA6\u6CD5\u7B2C3\u81F35\u689D", "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0070027"],
+  ["\u90FD\u5E02\u8A08\u756B\u5BB9\u7A4D\u79FB\u8F49\u5BE6\u65BD\u8FA6\u6CD5\u7B2C8\u689D", "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0070028"],
+  ["\u65B0\u5317\u5BB9\u7A4D\u79FB\u8F49\u8A31\u53EF\u5BE9\u67E5\u8981\u9EDE\uFF08111.12.30\uFF09", "https://web.law.ntpc.gov.tw/Scripts/FLAWDAT0202.aspx?fcode=C0150015"]
+];
+var awardKinds = { unknown: "\u672A\u5206\u985E", renewal: "\u90FD\u5E02\u66F4\u65B0", f1: "\u7ACB\u9AD4\u5316\uFF1A\u65B0\u589E\u6295\u8CC7", f2: "\u7ACB\u9AD4\u5316\uFF1A\u80FD\u6E90\u7BA1\u7406", f3: "\u7ACB\u9AD4\u5316\uFF1A\u71DF\u904B\u7E3D\u90E8", feedback: "\u7ACB\u9AD4\u5316\uFF1A\u56DE\u994B\uFF0F\u6350\u8D08\u7A7A\u9593", other: "\u5176\u4ED6\u734E\u52F5", tdr: "\u5BB9\u7A4D\u79FB\u8F49" };
+var purposes = { unknown: "\u5C1A\u672A\u9078\u5B9A", factory: "\u751F\u7522\uFF0F\u5DE5\u5EE0", warehouse: "\u5009\u5132", research: "\u7814\u767C", office: "\u8FA6\u516C", exhibition: "\u5C55\u552E", ancillary: "\u9644\u5C6C\u8A2D\u65BD", dorm: "\u54E1\u5DE5\u5BBF\u820D", housing: "\u4E00\u822C\u4F4F\u5B85", shared: "\u5171\u7528\u7A7A\u9593" };
+var checks = { plan: "\u571F\u5730\u8EAB\u5206\u3001\u500B\u5225\u90FD\u5E02\u8A08\u756B\u8207\u5EFA\u7BC9\u57FA\u5730\u63A1\u8A08\u7BC4\u570D", use: "\u884C\u696D\u8207\u7528\u9014\u8A31\u53EF\u3001\u7E3D\u91CF\u7BA1\u5236\uFF08\u5340\u57DF\u984D\u5EA6\u8207\u57FA\u5730\u984D\u5EA6\u5206\u958B\uFF09", original: "\u539F\u5408\u6CD5\u5EFA\u7BC9\u5BB9\u7A4D\u7C3D\u8B49\u8207\u63A1\u7528\u8DEF\u5F91", renewal: "\u66F4\u65B0\u8CC7\u683C\u3001\u4E2D\u592E\u53CA\u5730\u65B9\u734E\u52F5\u3001\u5176\u4ED6\u6A5F\u95DC\u5148\u884C\u7533\u8ACB\u8207\u91CD\u8907\u6263\u9664", vertical: "\u7ACB\u9AD4\u5316\u516C\u544A\u7BC4\u570D\u3001\u6295\u8CC7\u3001\u589E\u91CF\u7528\u9014\u3001\u7533\u8ACB\u671F\u9650\u53CA\u56DE\u994B\u7FA9\u52D9", tdr: "\u5BB9\u79FB\u4F86\u6E90\u3001\u63A5\u53D7\u57FA\u5730\u3001\u81E8\u8DEF\u3001\u91CF\u9AD4\u8A55\u5B9A\u8207\u8A31\u53EF", layout: "\u5EFA\u853D\u3001\u9000\u7E2E\u3001\u9AD8\u5EA6\u3001\u6D88\u9632\u3001\u88DD\u5378\u3001\u505C\u8ECA\u3001\u90FD\u8A2D\u8207\u74B0\u8A55", combined: "\u4F75\u7528\u898F\u5B9A\u3001\u5404\u4E0A\u9650\u9069\u7528\u7BC4\u570D\u53CA\u5408\u4F75\u5BE9\u67E5\u6587\u4EF6" };
+var conditionFields = { road: "\u9023\u63A5\u9053\u8DEF\u5BEC\u5EA6m", front: "\u540C\u8DEF\u6BB5\u9762\u5BECm", opened: "\u8DB3\u5BEC\u958B\u95E2\u53CA\u9023\u901A\u9053\u8DEF\u5BEC\u5EA6m", slope: "\u662F\u5426\u5C71\u5761\u5730\uFF08\u662F\uFF0F\u5426\uFF09", nonOpen: "\u65B0\u5317\u975E\u4E94\u9805\u958B\u653E\u6027\u516C\u8A2D\u9001\u51FA\u984D\u5EA6\u33A1", iso: "ISO50001\uFF08\u662F\uFF0F\u5426\uFF09", solar: "\u592A\u967D\u80FD\u6C34\u5E73\u6295\u5F71\u5360\u5C4B\u9802\u53EF\u8A2D\u7F6E\u5340\u57DF%", dc: "DC\u5145\u96FB\u5C08\u7528\u8ECA\u4F4D\u5360\u5168\u90E8\u8ECA\u4F4D%", ems: "\u80FD\u6E90\u7BA1\u7406\u7CFB\u7D71\uFF08\u662F\uFF0F\u5426\uFF09", storage: "\u5132\u80FD\u5BB9\u91CFkWh", hq: "\u71DF\u904B\u7E3D\u90E8\u8A8D\u5B9A\u8207\u767B\u8A18\u5730\u5740\u7B26\u5408\uFF08\u662F\uFF0F\u5426\uFF09", taipeiLocation: "\u81FA\u5317\u5BB9\u79FB\u4F4D\u7F6E\u689D\u4EF6\uFF08\u6377\u904B\uFF0F\u516C\u5712\uFF0F\u6B77\u53F2\u5EFA\u7BC9\uFF09", distance: "\u81F3\u6377\u904B\u51FA\u5165\u53E3\u6216\u516C\u5712\u8DDD\u96E2m", parkArea: "\u516C\u5712\u9762\u7A4D\u516C\u9803", secondRoad: "\u7B2C\u4E8C\u689D\u5DF2\u958B\u95E2\u9053\u8DEF\u5BEC\u5EA6m" };
+var newEvidence = () => ({ source: "", date: "", finding: "", state: "unknown" });
+var newIndustrial = () => ({ conditions: Object.fromEntries(Object.keys(conditionFields).map((k) => [k, ""])), version: INDUSTRIAL_VERSION, mode: "planning", name: "", edition: "", date: "", city: "unknown", regime: "unknown", route: "unknown", vertical: "unknown", awardMode: "unknown", transferMode: "unknown", originalRoute: "unknown", investment: "", applicationDate: "", combinedCap: "", tdrCap: "", tdrCash: "", declared: "", parcels: [], awards: [], floors: [], reviews: Object.fromEntries(Object.keys(checks).map((k) => [k, newEvidence()])) });
+var obj = (v) => v && typeof v === "object" && !Array.isArray(v);
+var str = (v) => typeof v === "string" && v.length <= 12e3;
+var fields = (v, keys) => obj(v) && keys.every((k) => str(v[k]));
+var one = (v, choices2) => choices2.includes(v);
+var ev = (v) => fields(v, ["source", "date", "finding"]) && one(v.state, ["unknown", "assumed", "reviewed", "fail"]);
+var rows2 = (v, test) => Array.isArray(v) && v.length <= 300 && new Set(v.map((x) => x?.id)).size === v.length && v.every((x) => fields(x, ["id"]) && x.id && test(x));
+function isIndustrial(v) {
+  return (v?.development === void 0 || isDevelopment(v.development)) && fields(v, ["name", "edition", "date", "investment", "applicationDate", "combinedCap", "tdrCap", "tdrCash", "declared"]) && v.version === INDUSTRIAL_VERSION && fields(v.conditions, Object.keys(conditionFields)) && one(v.mode, ["planning", "document"]) && one(v.city, ["unknown", "taipei", "ntpc"]) && one(v.regime, ["unknown", "urban", "nonurban", "park"]) && one(v.route, ["unknown", "ordinary", "renewal"]) && one(v.vertical, ["unknown", "none", "ntpc", "specific"]) && one(v.awardMode, ["unknown", "none", "items"]) && one(v.transferMode, ["unknown", "none", "items"]) && one(v.originalRoute, ["unknown", "base", "original30", "original120", "hazard130", "strategic"]) && rows2(v.parcels, (p) => fields(p, ["name", "zone", "area", "excluded", "far", "tdrRate", "original"]) && one(p.originalMode, ["unknown", "none", "replace"]) && ev(p.evidence)) && rows2(v.awards, (a) => fields(a, ["name", "parcelId", "amount", "deduct"]) && one(a.kind, Object.keys(awardKinds)) && ev(a.evidence)) && rows2(v.floors, (f) => fields(f, ["building", "level", "count", "area", "increment"]) && one(f.purpose, Object.keys(purposes)) && one(f.incrementBasis, ["unknown", "18-2-1", "18-2-2"]) && ev(f.evidence)) && obj(v.reviews) && Object.keys(checks).every((k) => ev(v.reviews[k]));
+}
+function calculateIndustrial(raw) {
+  const errors = [], missing = [], notes = [], limits = [];
+  const quantities = { site: null, base: null, originalIncrease: null, awards: null, tdr: null, total: null, design: null };
+  const parcelResults = [], items = [];
+  const out = () => ({ development: isIndustrial(raw) ? calculateDevelopment(raw.development, raw.floors, raw.mode, raw.date) : null, version: INDUSTRIAL_CALCULATION_VERSION, quantities, parcelResults, items, limits, errors, missing, notes, status: errors.length ? "\u9700\u4FEE\u6B63" : missing.length ? "\u8CC7\u6599\u672A\u9F4A" : raw.mode === "planning" ? "\u898F\u5283\u8A66\u7B97\u5B8C\u6210" : "\u6587\u4EF6\u6578\u91CF\u6838\u5C0D\u5B8C\u6210", legallyApproved: false });
+  if (!isIndustrial(raw)) {
+    errors.push("\u8CC7\u6599\u683C\u5F0F\u6216\u7248\u672C\u7121\u6548");
+    return out();
+  }
+  const m = raw;
+  const n = (s, label, positive = false) => {
+    if (!s.trim()) {
+      missing.push(label + "\u672A\u586B");
+      return null;
+    }
+    if (!/^\d+(\.\d+)?$/.test(s.trim()) || !Number.isFinite(Number(s)) || Number(s) > 1e12 || Number(s) < 0 || positive && Number(s) <= 0) {
+      errors.push(label + "\u9808\u70BA" + (positive ? "\u6B63\u6578" : "\u975E\u8CA0\u6578"));
+      return null;
+    }
+    return Number(s);
+  };
+  const evidence3 = (e, label) => {
+    if (e.state === "fail") errors.push(label + "\uFF1A\u5DF2\u78BA\u8A8D\u4E0D\u7B26");
+    else if (e.state === "unknown" || !e.source.trim() || !e.finding.trim() || !validDate(e.date)) missing.push(label + "\u7F3A\u4F86\u6E90\u3001\u65E5\u671F\u6216\u9069\u7528\u5224\u65B7");
+    else if (m.mode === "document" && e.state !== "reviewed") missing.push(label + "\u5C1A\u672A\u4F9D\u6587\u4EF6\u8986\u6838");
+    if (e.date && m.date && e.date > m.date) errors.push(label + "\u6587\u4EF6\u65E5\u671F\u665A\u65BC\u8A55\u4F30\u65E5");
+  };
+  const cap = (label, used, maximum) => {
+    const pass = used <= maximum + 1e-7;
+    limits.push({ label, used, cap: maximum, pass });
+    if (!pass) errors.push(label + "\u8D85\u9650");
+  };
+  if (!m.name.trim() || !m.edition.trim() || !validDate(m.date)) missing.push("\u6848\u4EF6\u540D\u7A31\u3001\u8CC7\u6599\u7248\u672C\u8207\u8A55\u4F30\u65E5\u672A\u5B8C\u6574");
+  if (m.city === "unknown" || m.regime === "unknown" || m.route === "unknown" || m.vertical === "unknown") missing.push("\u57CE\u5E02\u3001\u571F\u5730\u5236\u5EA6\u53CA\u958B\u767C\u9014\u5F91\u672A\u9078\u5B9A");
+  if (["nonurban", "park"].includes(m.regime)) missing.push("\u975E\u90FD\u5E02\u6216\u5712\u5340\u9808\u53E6\u5EFA\u9069\u7528\u8A08\u756B\u898F\u5247\uFF1B\u672C\u7248\u4E0D\u5957\u90FD\u5E02\u8A08\u756B\u4E00\u822C\u5DE5\u696D\u5340\u898F\u5247");
+  for (const k of ["plan", "use", "original", "layout"]) evidence3(m.reviews[k], checks[k]);
+  if (!m.parcels.length) missing.push("\u5C1A\u7121\u571F\u5730\u5206\u9805");
+  for (const p of m.parcels) {
+    evidence3(p.evidence, "\u571F\u5730 " + p.name);
+    if (!p.name.trim() || !p.zone.trim()) missing.push("\u571F\u5730\u540D\u7A31\u53CA\u5206\u5340\u672A\u586B");
+    const a = n(p.area, "\u571F\u5730\u7E3D\u9762\u7A4D", true), x = n(p.excluded, "\u6392\u9664\u9762\u7A4D"), f = n(p.far, "\u57FA\u6E96\u5BB9\u7A4D\u7387", true);
+    if (a === null || x === null || f === null) continue;
+    if (x > a) {
+      errors.push("\u6392\u9664\u9762\u7A4D\u8D85\u904E\u571F\u5730\u9762\u7A4D");
+      continue;
+    }
+    const site = a - x, base = site * f / 100;
+    let adopted = base;
+    if (p.originalMode === "unknown") {
+      missing.push("\u539F\u5BB9\u7A4D\u8655\u7406\u672A\u78BA\u8A8D");
+      continue;
+    }
+    if (p.originalMode === "replace") {
+      const o = n(p.original, "\u539F\u5408\u6CD5\u5BB9\u7A4D", true);
+      if (o === null) continue;
+      if (o < base) {
+        errors.push("\u539F\u5BB9\u7A4D\u66FF\u4EE3\u4F4E\u65BC\u57FA\u6E96\uFF0C\u9808\u6838\u5C0D\u9069\u7528\u8DEF\u5F91");
+        continue;
+      }
+      adopted = o;
+    }
+    parcelResults.push({ id: p.id, name: p.name, site, base, adopted });
+  }
+  if (parcelResults.length === m.parcels.length && m.parcels.length) {
+    quantities.site = parcelResults.reduce((s, p) => s + p.site, 0);
+    quantities.base = parcelResults.reduce((s, p) => s + p.base, 0);
+    quantities.originalIncrease = parcelResults.reduce((s, p) => s + p.adopted - p.base, 0);
+  }
+  let awardsValid = true, tdrValid = true;
+  const awardKeys = m.awards.map((a) => [a.name.trim(), a.evidence.source.trim(), a.kind, a.parcelId].join("|"));
+  if (new Set(awardKeys).size !== awardKeys.length) errors.push("\u76F8\u540C\u4F86\u6E90\u8207\u540D\u7A31\u7684\u984D\u5EA6\u91CD\u8907\u5217\u5165\uFF0C\u9808\u6838\u5C0D\u552F\u4E00\u6838\u51C6\u9805\u6B21");
+  for (const a of m.awards) {
+    const isTdr = a.kind === "tdr";
+    evidence3(a.evidence, "\u984D\u5EA6 " + a.name);
+    if (!a.name.trim()) missing.push("\u984D\u5EA6\u540D\u7A31\u672A\u586B");
+    if (a.kind === "unknown") {
+      missing.push("\u984D\u5EA6\u672A\u5206\u985E");
+      awardsValid = false;
+      tdrValid = false;
+    }
+    if (!m.parcels.some((p) => p.id === a.parcelId)) errors.push("\u984D\u5EA6\u5FC5\u9808\u6B78\u5C6C\u6709\u6548\u571F\u5730\u7D44\u5225");
+    const amount = n(a.amount, "\u7533\u8ACB\uFF0F\u6587\u4EF6\u984D\u5EA6"), deduct = n(a.deduct, "\u91CD\u8907\u6216\u4E0D\u63A1\u8A08\u6263\u9664\u984D");
+    if (amount === null || deduct === null) {
+      if (isTdr) tdrValid = false;
+      else awardsValid = false;
+      continue;
+    }
+    if (deduct > amount) {
+      errors.push("\u6263\u9664\u8D85\u904E\u7533\u8ACB\u984D\u5EA6");
+      if (isTdr) tdrValid = false;
+      else awardsValid = false;
+      continue;
+    }
+    if ((isTdr ? m.transferMode : m.awardMode) !== "items") errors.push("\u984D\u5EA6\u8655\u7406\u9078\u9805\u8207\u5206\u9805\u8CC7\u6599\u77DB\u76FE");
+    items.push({ name: a.name, kind: a.kind, gross: amount, deduct, net: amount - deduct });
+  }
+  const sum3 = (k) => items.filter((a) => a.kind === k).reduce((s, a) => s + a.net, 0), V = sum3("f1") + sum3("f2") + sum3("f3") + sum3("feedback"), U = sum3("renewal"), O = sum3("other"), T = sum3("tdr"), B = quantities.base;
+  for (const [key, mode, valid] of [["awards", m.awardMode, awardsValid], ["tdr", m.transferMode, tdrValid]]) {
+    if (mode === "unknown") missing.push((key === "awards" ? "\u734E\u52F5" : "\u5BB9\u79FB") + "\u8655\u7406\u672A\u78BA\u8A8D");
+    else if (mode === "items" && !m.awards.some((a) => a.kind === "tdr" === (key === "tdr"))) missing.push("\u9078\u64C7\u9010\u9805\u4F46\u672A\u586B\u5206\u9805");
+    else if (valid) quantities[key] = key === "awards" ? U + V + O : T;
+  }
+  if (B !== null) {
+    for (const p of parcelResults) {
+      const a = m.awards.filter((a2) => a2.parcelId === p.id), net = (k) => a.filter((a2) => a2.kind === k).reduce((t, a2) => t + (Number(a2.amount) - Number(a2.deduct)), 0);
+      if (m.vertical === "ntpc") {
+        cap(p.name + "\uFF1AF1\u5206\u7D4415%", net("f1"), p.base * 0.15);
+        cap(p.name + "\uFF1AF2\u5206\u7D445%", net("f2"), p.base * 0.05);
+        cap(p.name + "\uFF1AF3\u5206\u7D445%", net("f3"), p.base * 0.05);
+        cap(p.name + "\uFF1A\u4E09\u9805\u5206\u7D4420%", net("f1") + net("f2") + net("f3"), p.base * 0.2);
+        cap(p.name + "\uFF1A\u56DE\u994B\u5206\u7D4430%", net("feedback"), p.base * 0.3);
+        cap(p.name + "\uFF1A\u7ACB\u9AD4\u5316\u53CA\u5BB9\u79FB\u5206\u7D4450%", net("f1") + net("f2") + net("f3") + net("feedback") + net("tdr"), p.base * 0.5);
+      }
+    }
+  }
+  if (m.route === "ordinary" && U > 0) errors.push("\u4E00\u822C\u65B0\u6539\u5EFA\u4E0D\u80FD\u8A08\u5165\u90FD\u5E02\u66F4\u65B0\u734E\u52F5");
+  if (m.route === "renewal") {
+    evidence3(m.reviews.renewal, checks.renewal);
+    if (m.originalRoute === "unknown") missing.push("\u90FD\u5E02\u66F4\u65B0\u4E0A\u9650\u8DEF\u5F91\u672A\u9078\u5B9A");
+    if (B !== null && quantities.originalIncrease !== null) {
+      const adopted = B + quantities.originalIncrease;
+      let ceiling = null;
+      if (m.originalRoute === "base") ceiling = 1.5 * B;
+      if (m.originalRoute === "original30") ceiling = adopted + 0.3 * B;
+      if (m.originalRoute === "original120") ceiling = 1.2 * adopted;
+      if (m.originalRoute === "hazard130") ceiling = 1.3 * adopted;
+      if (m.originalRoute !== "base" && m.originalRoute !== "unknown" && m.originalRoute !== "strategic" && quantities.originalIncrease <= 0) errors.push("\u539F\u5BB9\u7A4D\u4E0A\u9650\u8DEF\u5F91\u9808\u539F\u5408\u6CD5\u5BB9\u7A4D\u9AD8\u65BC\u57FA\u6E96");
+      if (ceiling !== null) cap("\u90FD\u5E02\u66F4\u65B0\u6240\u63A1\u4E0A\u9650\uFF08\u542B\u539F\u5BB9\u7A4D\u589E\u52A0\u91CF\uFF09", adopted + U, ceiling);
+      if (m.originalRoute === "hazard130" && V + O > 0) errors.push("\u7B2C65\u689D\u7B2C2\u9805\u7B2C2\u6B3E\u4E0D\u5F97\u518D\u7533\u8ACB\u5176\u4ED6\u734E\u52F5");
+      if (m.originalRoute === "strategic") missing.push("\u7B56\u7565\u6027\u66F4\u65B0\u9700\u53E6\u6838\u5B9A\u7B2C65\u689D\u5C08\u6848\u4E0A\u9650\uFF0C\u4E0D\u5957\u4E00\u822C\u4E0A\u9650");
+    }
+  }
+  if (m.vertical === "none" && V > 0) errors.push("\u672A\u63A1\u7ACB\u9AD4\u5316\u537B\u5217\u5165\u7ACB\u9AD4\u5316\u734E\u52F5");
+  if (m.vertical === "specific") missing.push("\u5176\u4ED6\u7ACB\u9AD4\u5316\u9808\u6709\u7368\u7ACB\u65B9\u6848\u898F\u5247\uFF1B\u4E0D\u5F97\u4F7F\u7528\u65B0\u5317\u5E02\u65B9\u6848");
+  if (m.vertical === "ntpc") {
+    evidence3(m.reviews.vertical, checks.vertical);
+    if (m.city !== "ntpc" || m.regime !== "urban") errors.push("\u65B0\u5317\u5E02\u7ACB\u9AD4\u5316\u65B9\u6848\u4E0D\u80FD\u5957\u7528\u5176\u4ED6\u57CE\u5E02\u6216\u571F\u5730\u5236\u5EA6");
+    if (m.parcels.some((p) => !["\u4E59\u7A2E\u5DE5\u696D\u5340", "\u7522\u696D\u5C08\u7528\u5340"].includes(p.zone) || Number(p.far) > 240)) errors.push("\u65B0\u5317\u7ACB\u9AD4\u5316\u9808\u4E59\u7A2E\u5DE5\u696D\u5340\uFF0F\u7522\u696D\u5C08\u7528\u5340\u4E14\u57FA\u6E96\u5BB9\u7A4D\u7387\u4E0D\u8D85\u904E240%");
+    if (!validDate(m.applicationDate)) missing.push("\u7ACB\u9AD4\u5316\u7533\u8ACB\u65E5\u672A\u78BA\u8A8D");
+    else if (m.applicationDate < "2026-04-27") missing.push("\u672C\u7248\u63A1115\u5E744\u670827\u65E5\u516C\u544A\uFF1B\u8F03\u65E9\u7533\u8ACB\u9808\u6838\u5C0D\u6B77\u53F2\u7248\u672C\u8207\u9069\u7528\u898F\u5B9A");
+    else if (m.applicationDate > "2026-12-25") errors.push("\u8D85\u904E\u672C\u6B21\u516C\u544A\u7ACB\u9AD4\u5316\u53D7\u7406\u622A\u6B62\u65E5");
+    const yes2 = (k) => {
+      if (!["\u662F", "\u5426"].includes(m.conditions[k])) missing.push(conditionFields[k] + "\u672A\u660E\u78BA\u586B\u5BEB");
+      return m.conditions[k] === "\u662F";
+    };
+    const iso = yes2("iso"), ems = yes2("ems"), hq = yes2("hq"), solar = n(m.conditions.solar, "\u5C4B\u9802\u592A\u967D\u80FD\u6BD4\u4F8B"), dc = n(m.conditions.dc, "DC\u5145\u96FB\u8ECA\u4F4D\u6BD4\u4F8B"), storage = n(m.conditions.storage, "\u5132\u80FD\u5BB9\u91CF");
+    if (solar !== null && solar > 100 || dc !== null && dc > 100) errors.push("\u80FD\u6E90\u8A2D\u65BD\u6BD4\u4F8B\u4E0D\u80FD\u8D85\u904E100%");
+    if (B !== null && solar !== null && dc !== null && storage !== null) {
+      const energy = Math.min(5, (iso ? 2 : 0) + (solar >= 50 ? 3 : 0) + Math.min(5, Math.floor(Math.max(0, dc - 6))) + (ems && storage >= 30 ? 1 : 0));
+      cap("\u80FD\u6E90\u8A2D\u65BD\u689D\u4EF6\u6838\u5C0D\u4E0A\u9650", sum3("f2"), B * energy / 100);
+      if (!hq && sum3("f3") > 0) errors.push("\u71DF\u904B\u7E3D\u90E8\u689D\u4EF6\u672A\u7B26\u5408\uFF0C\u4E0D\u80FD\u8A08\u5165F3");
+    }
+    const investment = n(m.investment, "\u65B0\u589E\u6295\u8CC7\uFF08\u4E0D\u542B\u571F\u5730\uFF0C\u5104\u5143\uFF09", true);
+    if (B !== null && quantities.site !== null && quantities.site > 0) {
+      const ha = quantities.site / 1e4;
+      if (investment !== null) {
+        if (investment <= ha * 4.5) errors.push("\u65B0\u589E\u6295\u8CC7\u672A\u8D85\u904E\u6BCF\u516C\u98034.5\u5104\u5143");
+        const maxF1 = Math.min(0.15, Math.max(0, (investment - ha * 4.5) / (ha * 0.1) * 0.01)) * B;
+        cap("\u65B0\u589E\u6295\u8CC7\u516C\u5F0F\u53CA15%\u4E0A\u9650", sum3("f1"), maxF1);
+      }
+      cap("\u80FD\u6E90\u7BA1\u74065%\u4E0A\u9650", sum3("f2"), 0.05 * B);
+      cap("\u71DF\u904B\u7E3D\u90E85%\u4E0A\u9650", sum3("f3"), 0.05 * B);
+      cap("\u4E09\u9805\u7522\u696D\u734E\u52F5\u5408\u8A0820%", V - sum3("feedback"), 0.2 * B);
+      cap("\u56DE\u994B\u6216\u6350\u8D08\u7A7A\u959330%", sum3("feedback"), 0.3 * B);
+      cap("\u7ACB\u9AD4\u5316\u8207\u5BB9\u79FB\u5408\u8A0850%", V + T, 0.5 * B);
+      if (T > sum3("feedback") + 1e-7) errors.push("\u4F75\u5BB9\u79FB\u9808\u4F9D\u5BB9\u79FB\u984D\u5EA61\u500D\u7533\u8ACB\u56DE\u994B\u91D1\u6216\u6350\u8D08\u7A7A\u9593");
+    }
+    notes.push("F2\u4F9D115\u5E744\u6708\u65B9\u6848\u6838\u5C0D\uFF1AISO50001\u3001\u5C4B\u9802\u592A\u967D\u80FD\u3001\u8D85\u904E6%\u7684DC\u5145\u96FB\u8A2D\u65BD\u3001\u80FD\u6E90\u7BA1\u7406\u53CA30kWh\u5132\u80FD\uFF1B\u4E0D\u6CBF\u7528\u820AQ&A\u80FD\u6E90\u6BD4\u4F8B\u3002F2/F3\u5747\u9808\u5148\u7B26\u5408\u65B0\u589E\u6295\u8CC7\u9580\u6ABB\u3002", "\u589E\u91CF\u7528\u9014\u9650\u7D30\u5247\u7B2C18\u689D\u7B2C2\u9805\u7B2C1\u30012\u6B3E\uFF1B\u4E00\u822C\u5546\u696D\u7528\u9014\u4E0D\u80FD\u76F4\u63A5\u5206\u914D\u7ACB\u9AD4\u5316\u589E\u91CF\u3002", "\u53E6\u6709\u81EA\u7528\uFF0F\u975E\u81EA\u7528\u56DE\u994B\u3001\u4FDD\u8B49\u91D1\u53CA\u79FB\u8F49\u9650\u5236\uFF1B\u8A08\u5BB9\u9762\u7A4D\u4E0D\u7B49\u65BC\u53EF\u552E\u6216\u53EF\u79DF\u9762\u7A4D\u3002");
+  }
+  if (m.transferMode === "items") {
+    evidence3(m.reviews.tdr, checks.tdr);
+    const road = n(m.conditions.road, "\u9023\u63A5\u9053\u8DEF\u5BEC\u5EA6"), front = n(m.conditions.front, "\u540C\u8DEF\u6BB5\u9762\u5BEC"), opened = n(m.conditions.opened, "\u8DB3\u5BEC\u958B\u95E2\u53CA\u9023\u901A\u9053\u8DEF\u5BEC\u5EA6");
+    if (!["\u662F", "\u5426"].includes(m.conditions.slope)) missing.push("\u5C71\u5761\u5730\u8EAB\u5206\u672A\u78BA\u8A8D");
+    let groupCap = 0, groupCapKnown = true;
+    for (const p of m.parcels) {
+      const rate = n(p.tdrRate, p.name + "\u5BB9\u79FB\u6CD5\u5B9A\u4E0A\u9650\u6BD4\u4F8B"), pr = parcelResults.find((x) => x.id === p.id);
+      if (rate === null || !pr) {
+        groupCapKnown = false;
+        continue;
+      }
+      if (![30, 40].includes(rate)) {
+        errors.push("\u4E00\u822C\u5BB9\u79FB\u6CD5\u5B9A\u4E0A\u9650\u6BD4\u4F8B\u965030\u621640\uFF1B\u7279\u6B8A\u8A08\u756B\u9808\u53E6\u5EFA\u898F\u5247");
+        groupCapKnown = false;
+        continue;
+      }
+      groupCap += pr.base * rate / 100;
+    }
+    if (groupCapKnown) cap("\u90FD\u5E02\u8A08\u756B\u5BB9\u79FB\u6CD5\u5B9A\u4E0A\u9650\uFF08\u8DE8\u7BC4\u570D\u5206\u7D44\u6838\u7B97\uFF09", T, groupCap);
+    if (m.city === "ntpc" && B !== null) {
+      if (quantities.site !== null && quantities.site < 500) errors.push("\u65B0\u5317\u4E00\u822C\u63A5\u53D7\u57FA\u5730\u9808\u9054500\u33A1\uFF1B\u5371\u96AA\u5EFA\u7269\u4F8B\u5916\u9808\u53E6\u6848\u8986\u6838");
+      if (front !== null && front < 8) errors.push("\u65B0\u5317\u540C\u8DEF\u6BB5\u9762\u5BEC\u9808\u90548m");
+      if (road !== null && road < 8) {
+        if (m.route !== "renewal" || road < 6) errors.push("\u672A\u7B26\u5408\u65B0\u5317\u4E00\u822C\u6216\u90FD\u66F46\u81F38m\u9053\u8DEF\u5BB9\u79FB\u689D\u4EF6");
+        else cap("\u65B0\u5317\u90FD\u66F46\u81F38m\u9053\u8DEF15%\u4E0A\u9650", T, 0.15 * B);
+      } else if (opened !== null && opened < 8) errors.push("\u65B0\u5317\u4E00\u822C\u9053\u8DEF\u9808\u8DB3\u5BEC\u958B\u95E2\u4E26\u9023\u901A8m\u9053\u8DEF");
+      if (m.conditions.slope === "\u662F") cap("\u65B0\u5317\u5C71\u5761\u573020%\u4E0A\u9650", T, 0.2 * B);
+      const nonOpen = n(m.conditions.nonOpen, "\u975E\u4E94\u9805\u958B\u653E\u6027\u516C\u8A2D\u4F86\u6E90\u984D\u5EA6");
+      if (nonOpen !== null) {
+        cap("\u65B0\u5317\u975E\u4E94\u9805\u958B\u653E\u6027\u516C\u8A2D\u4F86\u6E9020%\u4E0A\u9650", nonOpen, 0.2 * B);
+        if (nonOpen > T) errors.push("\u9001\u51FA\u4F86\u6E90\u984D\u5EA6\u8D85\u904E\u5BB9\u79FB\u7E3D\u91CF");
+      }
+    }
+    if (m.city === "taipei") {
+      if (m.conditions.slope === "\u662F") errors.push("\u81FA\u5317\u4E00\u822C\u5BB9\u79FB\u4E0D\u5F97\u4F4D\u65BC\u5C71\u5761\u5730");
+      const loc = m.conditions.taipeiLocation;
+      if (!["\u6377\u904B", "\u516C\u5712", "\u6B77\u53F2\u5EFA\u7BC9"].includes(loc)) missing.push("\u81FA\u5317\u5BB9\u79FB\u4F4D\u7F6E\u689D\u4EF6\u672A\u78BA\u8A8D");
+      if (loc !== "\u6B77\u53F2\u5EFA\u7BC9") {
+        const d = n(m.conditions.distance, "\u81F3\u6377\u904B\u6216\u516C\u5712\u8DDD\u96E2");
+        if (loc === "\u6377\u904B" && d !== null && road !== null && opened !== null && (d > 800 || road < 8 || opened < 8)) errors.push("\u81FA\u5317\u6377\u904B\u689D\u4EF6\u9808800m\u5167\u53CA\u5DF2\u958B\u95E28m\u9053\u8DEF");
+        if (loc === "\u516C\u5712") {
+          const park = n(m.conditions.parkArea, "\u516C\u5712\u9762\u7A4D"), second = n(m.conditions.secondRoad, "\u7B2C\u4E8C\u689D\u9053\u8DEF\u5BEC\u5EA6");
+          if (d !== null && park !== null && road !== null && second !== null && opened !== null && (d > 500 || park < 0.5 || !(road >= 15 && opened >= 15 || road >= 12 && second > 0 && opened >= 12))) errors.push("\u81FA\u5317\u516C\u5712\u7BC4\u570D\u3001\u9762\u7A4D\u6216\u5DF2\u958B\u95E2\u9053\u8DEF\u689D\u4EF6\u4E0D\u7B26");
+        }
+      }
+    }
+    const tcap = n(m.tdrCap, "\u5BB9\u79FB\u6838\u5B9A\uFF0F\u9069\u7528\u4E0A\u9650\u33A1");
+    if (tcap !== null) cap("\u5BB9\u79FB\u500B\u6848\u4E0A\u9650", T, tcap);
+    if (m.city === "taipei" && B !== null) {
+      if (quantities.site !== null && quantities.site <= 1e3) errors.push("\u81FA\u5317\u4E00\u822C\u5BB9\u79FB\u63A5\u53D7\u57FA\u5730\u9808\u8D85\u904E1000\u33A1\uFF1B\u500B\u5225\u8A08\u756B\u4F8B\u5916\u53E6\u6848\u8986\u6838");
+      cap("\u81FA\u5317\u5BB9\u79FB\u52A0\u5176\u4ED6\u734E\u52F5\uFF08\u4E0D\u542B\u90FD\u66F4\uFF09", T + V + O, 0.5 * B);
+      const cash = n(m.tdrCash, "\u5BB9\u79FB\u4EE3\u91D1\u53D6\u5F97\u984D\u5EA6\u33A1");
+      if (cash !== null && (cash < T * 0.5 || cash > T)) errors.push("\u81FA\u5317\u4EE3\u91D1\u53D6\u5F97\u984D\u5EA6\u9808\u4ECB\u65BC\u5BB9\u79FB50%\u81F3100%");
+    }
+  }
+  if (m.route === "renewal" && m.vertical !== "none" || O > 0) {
+    evidence3(m.reviews.combined, checks.combined);
+    const c = n(m.combinedCap, "\u4F9D\u5408\u4F75\u5BE9\u67E5\u6587\u4EF6\u78BA\u8A8D\u7684\u5168\u6848\u4E0A\u9650\u33A1");
+    if (c !== null && B !== null && quantities.originalIncrease !== null) cap("\u6587\u4EF6\u5408\u4F75\u5BE9\u67E5\u4E0A\u9650", B + quantities.originalIncrease + U + V + O + T, c);
+    notes.push("\u53EF\u4F75\u884C\u7533\u8ACB\u4E0D\u7B49\u65BC\u4E0A\u9650\u53EF\u76F4\u63A5\u76F8\u52A0\uFF1B\u5408\u4F75\u4E0A\u9650\u9808\u8F09\u660E\u9069\u7528\u7BC4\u570D\u53CA\u91CD\u8907\u6263\u9664\u3002");
+  }
+  if (m.city === "ntpc" && m.route === "ordinary" && m.vertical === "none" && B !== null && quantities.originalIncrease !== null) cap("\u65B0\u5317\u4E00\u822C\u589E\u52A0\u5BB9\u7A4D\u4E0A\u9650\uFF08\u4E0D\u542B\u5BB9\u79FB\u7B49\u6CD5\u5B9A\u6392\u9664\u9805\uFF09", B + quantities.originalIncrease + O, 1.2 * B);
+  let floorTotal = 0, floorValid = m.floors.length > 0, incrementTotal = 0;
+  if (!m.floors.length) missing.push("\u9010\u68DF\u9010\u5C64\u7528\u9014\u5C1A\u672A\u586B\u5BEB");
+  for (const f of m.floors) {
+    evidence3(f.evidence, "\u7528\u9014 " + f.building + " " + f.level);
+    if (!f.building.trim() || !f.level.trim() || f.purpose === "unknown") missing.push("\u5E62\u5225\u3001\u6A13\u5C64\u6216\u7528\u9014\u672A\u586B");
+    const count = n(f.count, "\u5C64\u6578", true), area2 = n(f.area, "\u6BCF\u5C64\u8A08\u5BB9\u9762\u7A4D"), inc = n(f.increment, "\u672C\u5217\u7ACB\u9AD4\u5316\u589E\u91CF\u9762\u7A4D");
+    if (count === null || area2 === null || inc === null) {
+      floorValid = false;
+      continue;
+    }
+    if (!Number.isInteger(count)) errors.push("\u5C64\u6578\u9808\u70BA\u6574\u6578");
+    floorTotal += count * area2;
+    incrementTotal += inc;
+    if (m.vertical === "ntpc" && inc > 0 && f.incrementBasis === "unknown") missing.push("\u7ACB\u9AD4\u5316\u589E\u91CF\u9808\u78BA\u8A8D\u7B2C18\u689D\u7B2C2\u9805\u7B2C1\u62162\u6B3E\u7528\u9014");
+    if (inc > count * area2) errors.push("\u7528\u9014\u589E\u91CF\u8D85\u904E\u672C\u5217\u9762\u7A4D");
+    if (f.purpose === "housing") errors.push("\u4E00\u822C\u4F4F\u5B85\u4E0D\u5F97\u4EE5\u5DE5\u696D\u7528\u9014\u6216\u54E1\u5DE5\u5BBF\u820D\u540D\u7FA9\u8A08\u5165\uFF1B\u9808\u5148\u5B8C\u6210\u5206\u5340\u8B8A\u66F4\u53CA\u7528\u9014\u8A31\u53EF");
+  }
+  if (floorValid) {
+    quantities.design = floorTotal;
+    if (m.vertical === "ntpc" && Math.abs(incrementTotal - V) > 0.01) errors.push("\u5404\u7528\u9014\u7ACB\u9AD4\u5316\u589E\u91CF\u8207\u734E\u52F5\u5408\u8A08\u4E0D\u7B26");
+  }
+  if (B !== null && quantities.originalIncrease !== null && quantities.awards !== null && quantities.tdr !== null) quantities.total = B + quantities.originalIncrease + quantities.awards + quantities.tdr;
+  if (quantities.total !== null && quantities.design !== null && quantities.design > quantities.total + 0.01) errors.push("\u7528\u9014\u914D\u7F6E\u8D85\u904E\u7533\u8ACB\u8A08\u5BB9\u7E3D\u91CF");
+  if (m.mode === "document") {
+    const d = n(m.declared, "\u6587\u4EF6\u7E3D\u8A08\u33A1");
+    if (d !== null && quantities.total !== null && Math.abs(d - quantities.total) > 0.01) errors.push("\u6587\u4EF6\u7E3D\u8A08\u8207\u5206\u9805\u52A0\u7E3D\u4E0D\u7B26");
+    if (d !== null && quantities.design !== null && Math.abs(d - quantities.design) > 0.01) errors.push("\u6587\u4EF6\u7E3D\u8A08\u8207\u7528\u9014\u914D\u7F6E\u4E0D\u7B26");
+  }
+  notes.push("\u672C\u7D50\u679C\u6AA2\u67E5\u5DF2\u8F38\u5165\u6578\u91CF\u8207\u5217\u660E\u689D\u4EF6\uFF0C\u4E0D\u4EE3\u8868\u4E3B\u7BA1\u6A5F\u95DC\u6838\u51C6\u3002\u898F\u5283\u5047\u8A2D\u8207\u4F9D\u6587\u4EF6\u8986\u6838\u4E0D\u5F97\u4E92\u76F8\u5192\u7528\u3002");
+  return out();
+}
+var quantityLabels = { site: "\u6263\u9664\u5F8C\u57FA\u5730\u9762\u7A4D", base: "\u57FA\u6E96\u5BB9\u7A4D", originalIncrease: "\u539F\u5BB9\u7A4D\u66FF\u4EE3\u589E\u52A0\u91CF", awards: "\u6263\u9664\u91CD\u8907\u5F8C\u734E\u52F5", tdr: "\u5BB9\u7A4D\u79FB\u8F49", total: "\u8F38\u5165\u5206\u9805\u5408\u8A08\uFF08\u975E\u6838\u51C6\u984D\u5EA6\uFF09", design: "\u9010\u5C64\u914D\u7F6E\u8A08\u5BB9\u9762\u7A4D" };
+function industrialReport(m) {
+  const r = calculateIndustrial(m), esc2 = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  return '<!doctype html><meta charset="utf-8"><title>\u5DE5\u696D\u571F\u5730\u8207\u5EE0\u623F\u958B\u767C</title><style>body{max-width:1000px;margin:40px auto;font:16px/1.7 system-ui}td,th{padding:8px;border-bottom:1px solid #ddd;text-align:left}pre{white-space:pre-wrap}</style><h1>' + esc2(m.name || "\u5DE5\u696D\u571F\u5730\u8207\u5EE0\u623F\u958B\u767C") + "</h1><p>" + esc2(m.mode === "planning" ? "\u898F\u5283\u8A66\u7B97" : "\u4F9D\u6587\u4EF6\u8986\u6838") + "\uFF5C" + esc2(r.status) + "\uFF5C" + esc2(m.edition) + "</p><table>" + Object.entries(r.quantities).map(([k, v]) => "<tr><th>" + quantityLabels[k] + "</th><td>" + esc2(v === null ? "\u8CC7\u6599\u672A\u9F4A" : v + "\u33A1") + "</td></tr>").join("") + "</table>" + r.errors.concat(r.missing, r.notes).map((s) => "<p>" + esc2(s) + "</p>").join("") + "<h2>\u5DE5\u696D\u5C08\u5C6C\u914D\u7F6E</h2><pre>" + esc2(JSON.stringify(r.development, null, 2)) + "</pre><h2>\u4E0A\u9650\u6AA2\u67E5</h2><pre>" + esc2(JSON.stringify(r.limits, null, 2)) + "</pre><h2>\u539F\u59CB\u8F38\u5165\u8207\u6587\u4EF6\u4F9D\u64DA</h2><pre>" + esc2(JSON.stringify(m, null, 2)) + "</pre><h2>\u6CD5\u898F\u4F86\u6E90</h2>" + sources.map(([n, u]) => '<p><a href="' + esc2(u) + '">' + esc2(n) + "</a></p>").join("");
+}
+
+// ../sanze-release-app/src/lib/mixed-zone/documentCase.ts
+var DOCUMENT_CASE_VERSION = "document-case.2026-10-24.v1";
+var documentTopics = { land: "\u571F\u5730\u7BC4\u570D\u3001\u516C\u8A2D\u6392\u9664\u53CA\u63A1\u8A08\u4F9D\u64DA", original: "\u539F\u5BB9\u7A4D\u9069\u7528\u571F\u5730\u8207\u7C3D\u8B49", awards: "\u734E\u52F5\u8CC7\u683C\u3001\u5206\u9805\u6BCD\u6578\u53CA\u4E0A\u9650", transfer: "\u5BB9\u79FB\u4F86\u6E90\u3001\u63A5\u53D7\u57FA\u5730\u8207\u8A31\u53EF", use: "\u7528\u9014\u8A31\u53EF\u3001\u4F4F\u5B85\u57FA\u6E96\u9650\u5236\u8207\u5171\u7528\u7A7A\u9593", layout: "\u8DE8\u5340\u914D\u7F6E\u3001\u9053\u8DEF\u3001\u9000\u7E2E\u3001\u9AD8\u5EA6\u8207\u505C\u8ECA" };
+var newDocumentEvidence = () => ({ source: "", date: "", status: "unknown", finding: "" });
+var newDocumentCase = () => ({ version: DOCUMENT_CASE_VERSION, name: "", edition: "", assessmentDate: "", designMode: "unknown", source: "", groups: [], awardMode: "unknown", awards: [], transferMode: "unknown", transfers: [], floors: [], declaredTotal: "", reviews: Object.fromEntries(Object.keys(documentTopics).map((k) => [k, newDocumentEvidence()])) });
+var text = (v) => typeof v === "string" && v.length <= 12e3;
+var one2 = (v, a) => typeof v === "string" && a.includes(v);
+var obj2 = (v) => !!v && typeof v === "object" && !Array.isArray(v);
+var fields2 = (v, ks) => ks.every((k) => text(v[k]));
+var evidence = (v) => obj2(v) && fields2(v, ["source", "date", "finding"]) && one2(v.status, ["unknown", "documented", "reviewed"]);
+var rows3 = (v, fn) => Array.isArray(v) && v.length <= 300 && new Set(v.map((r) => r?.id)).size === v.length && v.every((r) => obj2(r) && text(r.id) && !!r.id && fn(r));
+function isDocumentCase(v) {
+  if (!obj2(v)) return false;
+  const amount = (r) => fields2(r, ["name", "groupId", "area", "percent", "base"]) && one2(r.method, ["area", "percent"]) && evidence(r.evidence);
+  return v.version === DOCUMENT_CASE_VERSION && fields2(v, ["name", "edition", "assessmentDate", "source", "declaredTotal"]) && one2(v.designMode, ["unknown", "residential", "mixed", "nonresidential"]) && one2(v.awardMode, ["unknown", "none", "items"]) && one2(v.transferMode, ["unknown", "none", "items"]) && rows3(v.groups, (r) => fields2(r, ["name", "area", "far", "original"]) && one2(r.originalMode, ["unknown", "none", "replace"]) && evidence(r.evidence)) && rows3(v.awards, amount) && rows3(v.transfers, amount) && rows3(v.floors, (r) => fields2(r, ["building", "levels", "count", "area", "residentialBase"]) && one2(r.use, ["unknown", "residential", "retail", "office", "shared", "other"]) && evidence(r.evidence)) && obj2(v.reviews) && Object.keys(documentTopics).every((k) => evidence(v.reviews[k]));
+}
+var validDate2 = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s) && Number.isFinite(Date.parse(s)) && new Date(s).toISOString().slice(0, 10) === s;
+function calculateDocumentCase(raw) {
+  const issues = [], gaps = [];
+  const empty = { base: null, originalIncrease: null, adopted: null, award: null, transfer: null, total: null, design: null, declared: null };
+  const groups = [], amounts = [], floors = [];
+  const out = () => ({ values: empty, groups, amounts, floors, issues, gaps, status: issues.length ? "conflict" : gaps.length ? "incomplete" : "reconciled", legallyAdoptable: false });
+  if (!isDocumentCase(raw)) {
+    issues.push("\u6587\u4EF6\u8986\u6838\u683C\u5F0F\u3001\u7248\u672C\u6216\u91CD\u8907\u8B58\u5225\u7121\u6548\uFF1B\u672A\u8A08\u7B97\u3001\u672A\u5957\u898F\u5283\u9810\u8A2D\u3002");
+    return out();
+  }
+  const m = raw;
+  const number2 = (s, label) => {
+    if (!s.trim()) {
+      gaps.push(label + "\u672A\u586B");
+      return null;
+    }
+    const n = Number(s);
+    if (!Number.isFinite(n) || n < 0 || n > 1e9) {
+      issues.push(label + "\u6578\u503C\u7121\u6548");
+      return null;
+    }
+    return n;
+  };
+  const sum3 = (xs) => xs.length && xs.every((x) => x !== null) ? xs.reduce((a, b) => a + b, 0) : null;
+  const ev2 = (e, label) => {
+    if (!e.source.trim() || !e.finding.trim() || !validDate2(e.date) || e.status === "unknown") gaps.push(label + "\u7F3A\u6587\u4EF6\u3001\u65E5\u671F\u6216\u5224\u65B7");
+    if (validDate2(e.date) && validDate2(m.assessmentDate) && e.date > m.assessmentDate) issues.push(label + "\u6587\u4EF6\u65E5\u671F\u665A\u65BC\u8A55\u4F30\u57FA\u6E96\u65E5");
+    if (e.status !== "reviewed") gaps.push(label + "\u9069\u7528\u6027\u672A\u5B8C\u6210\u8986\u6838");
+  };
+  if (!m.name.trim() || !m.edition.trim() || !m.source.trim()) gaps.push("\u6848\u4EF6\u540D\u7A31\u3001\u540C\u4E00\u6587\u4EF6\u7248\u672C\u53CA\u4F86\u6E90\u672A\u9F4A");
+  if (!validDate2(m.assessmentDate)) gaps.push("\u8A55\u4F30\u57FA\u6E96\u65E5\u672A\u586B\u6216\u7121\u6548");
+  if (m.designMode === "unknown") gaps.push("\u898F\u5283\u7528\u9014\u5C1A\u672A\u78BA\u8A8D");
+  for (const [k, label] of Object.entries(documentTopics)) ev2(m.reviews[k], label);
+  if (!m.groups.length) gaps.push("\u571F\u5730\u7D44\u5225\u5C1A\u672A\u5EFA\u7ACB");
+  for (const g of m.groups) {
+    ev2(g.evidence, "\u571F\u5730\uFF0F" + g.name);
+    if (!g.name.trim()) gaps.push("\u571F\u5730\u7D44\u5225\u540D\u7A31\u672A\u586B");
+    const a = number2(g.area, "\u571F\u5730\u9762\u7A4D"), f = number2(g.far, "\u6CD5\u5B9A\u5BB9\u7A4D\u7387"), base = a === null || f === null ? null : a * f / 100;
+    let adopted = null;
+    if (g.originalMode === "none") {
+      adopted = base;
+      if (g.original.trim()) issues.push("\u4E0D\u63A1\u539F\u5BB9\u7A4D\u7684\u571F\u5730\u4ECD\u586B\u539F\u5BB9\u7A4D\uFF0C\u8ACB\u6838\u5C0D");
+    } else if (g.originalMode === "replace") adopted = number2(g.original, "\u539F\u5BB9\u7A4D");
+    else gaps.push("\u539F\u5BB9\u7A4D\u63A1\u7528\u65B9\u5F0F\u672A\u78BA\u8A8D");
+    groups.push({ name: g.name, base, adopted, increase: base === null || adopted === null ? null : adopted - base });
+  }
+  empty.base = sum3(groups.map((g) => g.base));
+  empty.adopted = sum3(groups.map((g) => g.adopted));
+  empty.originalIncrease = sum3(groups.map((g) => g.increase));
+  const amount = (mode, items, kind) => {
+    if (mode === "unknown") {
+      gaps.push(kind + "\u8655\u7406\u65B9\u5F0F\u672A\u78BA\u8A8D");
+      return null;
+    }
+    if (mode === "none") {
+      if (items.length) {
+        issues.push(kind + "\u9078\u7121\u4F46\u4ECD\u6709\u5206\u9805");
+        return null;
+      }
+      return 0;
+    }
+    if (!items.length) {
+      gaps.push(kind + "\u5206\u9805\u5C1A\u672A\u5EFA\u7ACB");
+      return null;
+    }
+    const vals = items.map((r) => {
+      ev2(r.evidence, kind + "\uFF0F" + r.name);
+      if (!r.name.trim()) gaps.push(kind + "\u540D\u7A31\u672A\u586B");
+      if (r.groupId && !m.groups.some((g) => g.id === r.groupId)) issues.push(kind + "\u6240\u5C6C\u571F\u5730\u4E0D\u5B58\u5728");
+      let quantity = null;
+      if (r.method === "area") quantity = number2(r.area, kind + "\u6587\u4EF6\u9762\u7A4D");
+      else {
+        const b = number2(r.base, kind + "\u6587\u4EF6\u6BCD\u6578"), p = number2(r.percent, kind + "\u6BD4\u4F8B");
+        quantity = b === null || p === null ? null : b * p / 100;
+      }
+      amounts.push({ kind, name: r.name, quantity });
+      return quantity;
+    });
+    return sum3(vals);
+  };
+  empty.award = amount(m.awardMode, m.awards, "\u734E\u52F5");
+  empty.transfer = amount(m.transferMode, m.transfers, "\u5BB9\u79FB");
+  empty.total = sum3([empty.adopted, empty.award, empty.transfer]);
+  if (!m.floors.length) gaps.push("\u9010\u5C64\u7528\u9014\u5C1A\u672A\u5EFA\u7ACB");
+  for (const f of m.floors) {
+    ev2(f.evidence, "\u6A13\u5C64\uFF0F" + f.building + f.levels);
+    const a = number2(f.area, "\u6BCF\u5C64\u8A08\u5BB9\u9762\u7A4D"), c = number2(f.count, "\u5C64\u6578");
+    let quantity = a === null || c === null ? null : a * c;
+    if (c !== null && (!Number.isSafeInteger(c) || c < 1)) {
+      issues.push("\u5C64\u6578\u9808\u70BA\u6B63\u6574\u6578");
+      quantity = null;
+    }
+    if (!f.building.trim() || !f.levels.trim()) gaps.push("\u5E62\u5225\u53CA\u6A13\u5C64\u7BC4\u570D\u672A\u586B");
+    if (f.use === "unknown") gaps.push("\u6A13\u5C64\u7528\u9014\u672A\u78BA\u8A8D");
+    if (f.use === "shared") gaps.push("\u5171\u7528\u6216\u6DF7\u5408\u7528\u9014\u9808\u4F9D\u6587\u4EF6\u5206\u5217\uFF0C\u4E0D\u6309\u6BD4\u4F8B\u5206\u914D");
+    if (m.designMode === "residential" && ["retail", "office", "other"].includes(f.use) || m.designMode === "nonresidential" && f.use === "residential") issues.push("\u8A2D\u8A08\u6A21\u5F0F\u8207\u6A13\u5C64\u7528\u9014\u77DB\u76FE");
+    const residentialBase = f.use === "residential" ? number2(f.residentialBase, "\u4F4F\u5B85\u57FA\u6E96\u5BB9\u7A4D\u6B78\u5C6C") : null;
+    if (residentialBase !== null && quantity !== null && residentialBase > quantity + 0.01) issues.push("\u4F4F\u5B85\u57FA\u6E96\u90E8\u5206\u8D85\u904E\u8A72\u5217\u8A08\u5BB9\u91CF");
+    floors.push({ building: f.building, levels: f.levels, use: f.use, quantity, residentialBase });
+  }
+  if (m.designMode === "mixed" && (!m.floors.some((f) => f.use === "residential") || !m.floors.some((f) => ["retail", "office"].includes(f.use)))) gaps.push("\u4F4F\u5546\u6DF7\u5408\u9808\u540C\u6642\u5206\u5217\u4F4F\u5B85\u8207\u5546\u696D\u7528\u9014");
+  empty.design = sum3(floors.map((f) => f.quantity));
+  empty.declared = number2(m.declaredTotal, "\u6587\u4EF6\u7E3D\u8A08");
+  for (const [label, n] of [["\u7D44\u6210\u7E3D\u91CF", empty.total], ["\u9010\u5C64\u5408\u8A08", empty.design]]) if (n !== null && empty.declared !== null && Math.abs(n - empty.declared) > 0.011) issues.push(label + "\u8207\u6587\u4EF6\u7E3D\u8A08\u4E0D\u4E00\u81F4\uFF0C\u5DEE " + Math.abs(n - empty.declared).toFixed(2) + "\u33A1");
+  return out();
+}
+function documentCaseSummary(m) {
+  const r = calculateDocumentCase(m);
+  const inputs = [];
+  const labels = { ...documentTopics, version: "\u8CC7\u6599\u7248\u672C", name: "\u540D\u7A31", edition: "\u6587\u4EF6\u7248\u672C\uFF0F\u6587\u865F", assessmentDate: "\u8A55\u4F30\u57FA\u6E96\u65E5", designMode: "\u898F\u5283\u7528\u9014", source: "\u4F86\u6E90", groups: "\u571F\u5730\u7D44\u5225", area: "\u9762\u7A4D\u33A1", far: "\u6CD5\u5B9A\u5BB9\u7A4D\u7387%", originalMode: "\u539F\u5BB9\u7A4D\u8655\u7406", original: "\u539F\u5BB9\u7A4D\u33A1", evidence: "\u63A1\u8A08\u4F9D\u64DA", date: "\u6587\u4EF6\u65E5\u671F", status: "\u8986\u6838\u72C0\u614B", finding: "\u9069\u7528\u5224\u65B7\u8207\u689D\u4EF6", awardMode: "\u734E\u52F5\u8655\u7406", transferMode: "\u5BB9\u79FB\u8655\u7406", awards: "\u734E\u52F5\u5206\u9805", transfers: "\u5BB9\u79FB\u5206\u9805", groupId: "\u6240\u5C6C\u571F\u5730", method: "\u53D6\u503C\u65B9\u5F0F", percent: "\u6BD4\u4F8B%", base: "\u6587\u4EF6\u6BCD\u6578\u33A1", floors: "\u7528\u9014\u6A13\u5C64", building: "\u5E62\u5225", levels: "\u6A13\u5C64\u7BC4\u570D", count: "\u5C64\u6578", use: "\u7528\u9014", residentialBase: "\u4F4F\u5B85\u57FA\u6E96\u5BB9\u7A4D\u6B78\u5C6C\u33A1", declaredTotal: "\u6587\u4EF6\u7E3D\u8A08\u33A1", reviews: "\u6CD5\u898F\u689D\u4EF6" };
+  const enums2 = { unknown: "\u5C1A\u672A\u78BA\u8A8D", residential: "\u7D14\u4F4F\u5B85", mixed: "\u4F4F\u5B85\u8207\u5546\u696D\u6DF7\u5408", nonresidential: "\u7D14\u975E\u4F4F\u5B85", none: "\u672C\u9805\u4E0D\u63A1\u7528", replace: "\u4F9D\u6587\u4EF6\u539F\u5BB9\u7A4D\u66FF\u4EE3", items: "\u4F9D\u6587\u4EF6\u9010\u9805\u586B\u5BEB", area: "\u6587\u4EF6\u8A18\u8F09\u9762\u7A4D", percent: "\u6587\u4EF6\u6BCD\u6578\u4E58\u6BD4\u4F8B", retail: "\u5E97\u8216", office: "\u8FA6\u516C", shared: "\u5171\u7528\uFF0F\u6DF7\u5408\u672A\u5206\u5217", other: "\u5176\u4ED6", documented: "\u6587\u4EF6\u8A18\u8F09", reviewed: "\u5DF2\u4F9D\u539F\u4EF6\u8986\u6838\u9069\u7528" };
+  const flatten = (x, p, key = "") => {
+    if (x && typeof x === "object") Object.entries(x).forEach(([k, v]) => {
+      if (k !== "id") flatten(v, `${p}\uFF0F${/^\d+$/.test(k) ? Number(k) + 1 : labels[k] ?? k}`, k);
+    });
+    else {
+      const value2 = x === "" ? "\u672A\u586B" : String(x ?? "\u672A\u586B");
+      inputs.push([p, ["designMode", "originalMode", "awardMode", "transferMode", "method", "use", "status"].includes(key) ? enums2[value2] ?? value2 : key === "groupId" ? m.groups.find((g) => g.id === value2)?.name || "\u5168\u6848" : value2]);
+    }
+  };
+  flatten(m, "\u6587\u4EF6\u539F\u59CB\u8F38\u5165");
+  return { title: m.name || "\u4F9D\u6587\u4EF6\u8986\u6838", kind: "\u4F9D\u6587\u4EF6\u8986\u6838\uFF08\u975E\u6838\u51C6\u6B0A\u5229\uFF09", status: { conflict: "\u8CC7\u6599\u885D\u7A81", incomplete: "\u8CC7\u6599\u6216\u8986\u6838\u672A\u9F4A", reconciled: "\u6587\u4EF6\u6578\u91CF\u76F8\u7B26\uFF08\u975E\u4E3B\u7BA1\u6A5F\u95DC\u6838\u51C6\uFF09" }[r.status], createdAt: (/* @__PURE__ */ new Date()).toISOString(), ruleVersion: DOCUMENT_CASE_VERSION, reviewedAt: m.assessmentDate || "\u672A\u586B", metrics: [["\u6CD5\u5B9A\u57FA\u6E96\u5BB9\u7A4D", r.values.base, "\u33A1"], ["\u539F\u5BB9\u7A4D\u66FF\u4EE3\u5F8C", r.values.adopted, "\u33A1"], ["\u6587\u4EF6\u734E\u52F5", r.values.award, "\u33A1"], ["\u6587\u4EF6\u5BB9\u79FB", r.values.transfer, "\u33A1"], ["\u7D44\u6210\u7E3D\u91CF", r.values.total, "\u33A1"], ["\u9010\u5C64\u5408\u8A08", r.values.design, "\u33A1"]], conditions: [["\u6A21\u5F0F", "\u4F9D\u6587\u4EF6\u8986\u6838\uFF1B\u4E0D\u4F7F\u7528\u898F\u5283\u5047\u8A2D"], ["\u6587\u4EF6\u7248\u672C", m.edition], ["\u7528\u9014", enums2[m.designMode]]], charts: [], inputs, issues: [...r.issues, ...r.gaps], assumptions: ["\u8F38\u5165\u6309\u672C\u6848\u65B9\u6848\u4FDD\u5B58\uFF1B\u6539\u503C\u5F8C\u91CD\u65B0\u8A08\u7B97\u3002", "\u4F86\u6E90\u8207\u8CC7\u683C\u7531\u8986\u6838\u4EBA\u4F9D\u539F\u4EF6\u5224\u65B7\uFF1B\u6578\u91CF\u76F8\u7B26\u4E0D\u7B49\u65BC\u5EFA\u7167\u6216\u5BB9\u79FB\u6838\u51C6\u3002", "\u672A\u5F62\u6210\u53EF\u552E\uFF0F\u6210\u672C\uFF0F\u878D\u8CC7\u4F86\u6E90\uFF1B\u4E0D\u5F97\u7531\u6587\u4EF6\u8A08\u5BB9\u91CF\u63A8\u5B9A\u53EF\u552E\u9762\u7A4D\u3002"], sources: [m.source, ...Object.values(m.reviews).map((e) => e.source)].filter(Boolean) };
+}
+
+// ../sanze-release-app/src/lib/mixed-zone/programReview.ts
+function calculateProgramReview(m) {
+  const issues = [];
+  const read = (v, label) => {
+    const n = v.trim() ? Number(v) : NaN;
+    if (!Number.isFinite(n) || n < 0 || n > 1e9) {
+      issues.push(label + "\u672A\u586B\u6216\u6578\u503C\u7121\u6548");
+      return null;
+    }
+    return n;
+  };
+  const sum3 = (v) => v.length && v.every((x) => x !== null) ? v.reduce((a, b) => a + b, 0) : null;
+  const pct = (a, b) => a === null || b === null ? null : a * b / 100;
+  if (!m.source.trim()) issues.push("\u7F3A\u5C11\u6587\u4EF6\u7248\u672C\u8207\u4F86\u6E90");
+  if (!m.groups.length || new Set(m.groups.map((g) => g.id)).size !== m.groups.length) issues.push("\u571F\u5730\u7D44\u5225\u7F3A\u5C11\u6216\u8B58\u5225\u91CD\u8907");
+  const groups = m.groups.map((g) => {
+    if (!g.source.trim()) issues.push(g.name + "\u7F3A\u5C11\u4F86\u6E90");
+    const area2 = read(g.area, g.name + "\u571F\u5730\u9762\u7A4D"), rate2 = read(g.far, g.name + "\u6CD5\u5B9A\u5BB9\u7A4D\u7387"), base2 = pct(area2, rate2), original = g.original.trim() ? read(g.original, g.name + "\u539F\u5BB9\u7A4D") : null, adopted2 = g.original.trim() ? original : base2;
+    return { ...g, base: base2, adopted: adopted2, increment: base2 === null || adopted2 === null ? null : adopted2 - base2, cap: pct(base2, read(g.capPercent, g.name + "\u734E\u52F5\u4E0A\u9650")) };
+  });
+  const base = sum3(groups.map((g) => g.base)), adopted = sum3(groups.map((g) => g.adopted)), cap = sum3(groups.map((g) => g.cap)), award = read(m.award, "\u6587\u4EF6\u734E\u52F5\u9762\u7A4D"), rate = read(m.awardPercent, "\u6587\u4EF6\u734E\u52F5\u767E\u5206\u6BD4"), tdr2 = pct(base, read(m.tdrPercent, "\u5BB9\u79FB\u767E\u5206\u6BD4")), total = sum3([adopted, award, tdr2]);
+  const allRateAward = pct(base, rate), otherBase = sum3(groups.filter((g) => !g.original.trim()).map((g) => g.base)), originalCaps = sum3(groups.filter((g) => g.original.trim()).map((g) => g.cap));
+  const formulaWithoutOriginalCap = sum3([adopted, pct(otherBase, rate), tdr2]);
+  const formulaWithOriginalCap = sum3([adopted, pct(otherBase, rate), originalCaps, tdr2]);
+  const declared = read(m.documentTotal, "\u6587\u4EF6\u7E3D\u8A08"), declaredTdr = read(m.documentTdr, "\u6587\u4EF6\u5BB9\u79FB\u9762\u7A4D"), declaredCapRate = read(m.documentCapPercent, "\u6587\u4EF6\u4E0A\u9650\u767E\u5206\u6BD4");
+  const compare = (name, a, b, tolerance = 0.011) => {
+    if (a !== null && b !== null && Math.abs(a - b) > tolerance) issues.push(`${name}\u4E0D\u4E00\u81F4\uFF1A\u5FA9\u7B97 ${a.toFixed(2)}\uFF0C\u6587\u4EF6 ${b.toFixed(2)}\uFF0C\u5DEE ${Math.abs(a - b).toFixed(2)}`);
+  };
+  compare("\u8868\u5217\u7D44\u6210\u7E3D\u91CF", total, declared);
+  compare("\u767E\u5206\u6BD4\u63DB\u7B97\u734E\u52F5", allRateAward, award);
+  compare("\u5BB9\u79FB", tdr2, declaredTdr);
+  compare("\u5167\u6587\u542B\u539F\u5BB9\u7A4D\u7D44\u4E0A\u9650\u7684\u516C\u5F0F", formulaWithOriginalCap, declared);
+  compare("\u5167\u6587\u672A\u52A0\u539F\u5BB9\u7A4D\u7D44\u4E0A\u9650\u7684\u516C\u5F0F", formulaWithoutOriginalCap, declared);
+  compare("\u734E\u52F5\u4E0A\u9650\u767E\u5206\u6BD4", base && cap !== null ? cap / base * 100 : null, declaredCapRate);
+  if (award !== null && cap !== null && award > cap + 0.01) issues.push("\u6587\u4EF6\u734E\u52F5\u8D85\u904E\u5206\u7D44\u4E0A\u9650");
+  if (!m.floors.length || new Set(m.floors.map((f) => f.id)).size !== m.floors.length) issues.push("\u9010\u5C64\u8CC7\u6599\u7F3A\u5C11\u6216\u8B58\u5225\u91CD\u8907");
+  const floors = m.floors.map((f) => {
+    if (!f.source.trim()) issues.push(f.block + f.levels + "\u7F3A\u5C11\u4F86\u6E90");
+    let count = read(f.count, "\u5C64\u6578");
+    if (count !== null && (!Number.isSafeInteger(count) || count < 1)) {
+      issues.push("\u5C64\u6578\u9808\u70BA\u6B63\u6574\u6578");
+      count = null;
+    }
+    const area2 = read(f.unitArea, "\u6BCF\u5C64\u8A08\u5BB9\u9762\u7A4D");
+    return { ...f, total: count === null || area2 === null ? null : count * area2 };
+  });
+  const design = sum3(floors.map((f) => f.total));
+  compare("\u9010\u5C64\u8A08\u5BB9\u5408\u8A08", design, declared);
+  const uses = Object.fromEntries(["residential", "retail", "office", "shared"].map((u) => [u, sum3(floors.filter((f) => f.use === u).map((f) => f.total))]));
+  if (floors.some((f) => f.use === "shared")) issues.push("\u516C\u5171\u9580\u5EF3\u3001\u7BA1\u59D4\u6703\u7A7A\u9593\u6216\u672A\u5206\u5217\u7528\u9014\u9762\u7A4D\u53E6\u5217\uFF1B\u4E0D\u80FD\u6309\u5E97\u8216\u6BD4\u4F8B\u6216\u5DEE\u984D\u81EA\u52D5\u5206\u914D\u4F4F\u5B85\u3001\u5546\u696D\u57FA\u6E96\u5BB9\u7A4D");
+  const units = Object.fromEntries(Object.entries(m.units).map(([k, v]) => {
+    let n = read(v, k + "\u6236\u6578");
+    if (n !== null && !Number.isSafeInteger(n)) {
+      issues.push("\u6236\u6578\u9808\u70BA\u6574\u6578");
+      n = null;
+    }
+    return [k, n];
+  }));
+  return { groups, base, adopted, cap, award, allRateAward, tdr: tdr2, total, declared, formulaWithoutOriginalCap, formulaWithOriginalCap, design, floors, uses, units, unitTotal: sum3(Object.values(units)), issues, legallyAdoptable: false };
+}
+
+// ../sanze-release-app/src/lib/mixed-zone/commercialIntensity.ts
+var COMMERCIAL_VERSION = "commercial-intensity.2026-10-24.v1";
+var newCommercialIntensity = () => ({ version: COMMERCIAL_VERSION, enabled: true, designMode: "unknown", city: "unknown", mode: "unknown", commercialClass: "unknown", planSource: "", checkedAt: "", residentialUse: "unknown", useSource: "", boundarySource: "", bands: [], documentFar: "", documentCoverage: "", documentSource: "", ntpcHousing: { mode: "unknown", far: "", source: "" } });
+var text2 = (v) => typeof v === "string" && v.length <= 12e3;
+var choices = (v, a) => typeof v === "string" && a.includes(v);
+function isCommercialIntensity(raw) {
+  if (!raw || typeof raw !== "object") return false;
+  const v = raw;
+  return (v.designMode === void 0 || choices(v.designMode, ["unknown", "residential", "mixed"])) && (v.ntpcHousing === void 0 || v.ntpcHousing && choices(v.ntpcHousing.mode, ["unknown", "standard", "exception"]) && text2(v.ntpcHousing.far) && text2(v.ntpcHousing.source)) && v.version === COMMERCIAL_VERSION && typeof v.enabled === "boolean" && choices(v.city, ["unknown", "\u81FA\u5317\u5E02", "\u65B0\u5317\u5E02"]) && choices(v.mode, ["unknown", "taipei25", "document"]) && choices(v.commercialClass, ["unknown", "1", "2", "3", "4"]) && choices(v.residentialUse, ["unknown", "allowed", "forbidden"]) && ["planSource", "checkedAt", "useSource", "boundarySource", "documentFar", "documentCoverage", "documentSource"].every((k) => text2(v[k])) && Array.isArray(v.bands) && v.bands.length <= 100 && new Set(v.bands.map((b) => b.id)).size === v.bands.length && v.bands.every((b) => b && ["id", "area", "width", "frontage", "source"].every((k) => text2(b[k])) && !!b.id && choices(b.kind, ["unknown", "road", "residual"]));
+}
+var number = (s, max = 1e9) => s.trim() !== "" && Number.isFinite(Number(s)) && Number(s) >= 0 && Number(s) <= max ? Number(s) : null;
+function calculateCommercialIntensity(raw, site, coverage, requireResidential = false) {
+  const errors = [], notes = [], bands = [];
+  let base = null, maximumCoverage = null;
+  const result = () => ({ errors, notes, bands, base, maximumCoverage, effectiveFar: base !== null && area2 !== null && area2 > 0 ? base / area2 * 100 : null });
+  const area2 = number(site), c = number(coverage, 100);
+  if (!isCommercialIntensity(raw)) {
+    errors.push("\u5546\u696D\u5206\u5340\u898F\u5247\u683C\u5F0F\u7121\u6548\u3002");
+    return result();
+  }
+  const x = raw;
+  if (area2 === null || area2 <= 0) errors.push("\u5546\u696D\u5206\u5340\u9808\u586B\u5BE6\u969B\u7D0D\u5165\u9762\u7A4D\u3002");
+  if (c === null) errors.push("\u8ACB\u586B\u672C\u6848\u63A1\u7528\u5EFA\u853D\u7387\u3002");
+  if (x.city === "unknown" || x.mode === "unknown") errors.push("\u5148\u78BA\u8A8D\u5546\u696D\u5340\u6240\u5728\u5730\u53CA\u9069\u7528\u5F37\u5EA6\u898F\u5247\u3002");
+  if (!x.planSource.trim()) errors.push("\u8ACB\u586B\u500B\u5225\u90FD\u5E02\u8A08\u756B\u53CA\u662F\u5426\u53E6\u6709\u898F\u5B9A\u7684\u67E5\u6838\u4F9D\u64DA\u3002");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(x.checkedAt) || !Number.isFinite(Date.parse(x.checkedAt)) || new Date(x.checkedAt).toISOString().slice(0, 10) !== x.checkedAt) errors.push("\u8ACB\u586B\u6709\u6548\u7684\u5546\u696D\u5340\u6CD5\u898F\u67E5\u6838\u65E5\u671F\u3002");
+  if (requireResidential && (!x.designMode || x.designMode === "unknown")) errors.push("\u8ACB\u5148\u78BA\u8A8D\u898F\u5283\u65B9\u7684\u9810\u5B9A\u8A2D\u8A08\u6A21\u5F0F\uFF1A\u7D14\u4F4F\u5B85\u6216\u4F4F\u5B85\u8207\u5546\u696D\u6DF7\u5408\u3002");
+  if (requireResidential && x.designMode === "mixed") errors.push("\u4F4F\u5546\u6DF7\u5408\u8A2D\u8A08\u9808\u4F7F\u7528\u6DF7\u5408\u5206\u5340\uFF0F\u500B\u5225\u571F\u7BA1\uFF0C\u5206\u5217\u7528\u9014\u3001\u4F4F\u5B85\u57FA\u6E96\u90E8\u5206\u53CA\u914D\u7F6E\uFF0C\u4E0D\u63A1\u55AE\u4E00\u4F4F\u5B85\u516C\u5F0F\u3002");
+  if (requireResidential && (x.residentialUse !== "allowed" || !x.useSource.trim())) errors.push(x.residentialUse === "forbidden" ? "\u6240\u5217\u5546\u696D\u5340\u4F9D\u64DA\u4E0D\u5141\u8A31\u96C6\u5408\u4F4F\u5B85\u7528\u9014\uFF0C\u4E0D\u80FD\u5957\u4F4F\u5B85\u898F\u5283\u3002" : "\u5546\u696D\u5340\u96C6\u5408\u4F4F\u5B85\u7528\u9014\u53CA\u9644\u5E36\u689D\u4EF6\u9808\u5148\u78BA\u8A8D\u4E26\u5217\u660E\u4F9D\u64DA\u3002");
+  if (x.mode === "taipei25") {
+    if (x.city !== "\u81FA\u5317\u5E02") errors.push("\u81FA\u5317\u5E02\u7B2C25\u689D\u4E0D\u80FD\u5957\u7528\u65B0\u5317\u5E02\u3002");
+    if (x.commercialClass === "unknown") errors.push("\u8ACB\u9078\u64C7\u5546\u4E00\u81F3\u5546\u56DB\u7684\u78BA\u5B9A\u5206\u5340\u3002");
+    else {
+      const caps = { 1: 360, 2: 630, 3: 560, 4: 800 }, coverages = { 1: 55, 2: 65, 3: 65, 4: 75 };
+      maximumCoverage = coverages[x.commercialClass];
+      if (!x.boundarySource.trim()) errors.push("\u9808\u8A18\u9304\u9053\u8DEF\u9069\u7528\u7BC4\u570D\u5716\u53CA\u5206\u6BB5\u4E0D\u91CD\u8907\u8986\u6838\uFF1B\u4E0D\u80FD\u81EA\u52D5\u628A\u5168\u57FA\u5730\u5957\u6700\u5BEC\u9053\u8DEF\u3002");
+      if (!x.bands.length) errors.push("\u5C1A\u672A\u586B\u5165\u6309\u5716\u8AAA\u5283\u5206\u7684\u9053\u8DEF\u9069\u7528\u7BC4\u570D\u3002");
+      for (const b of x.bands) {
+        const a = number(b.area), w = number(b.width, 1e3), front = number(b.frontage, 1e5);
+        if (a === null || a <= 0 || !b.source.trim() || b.kind === "unknown") {
+          errors.push("\u5404\u9053\u8DEF\u7BC4\u570D\u9808\u6709\u9762\u7A4D\u3001\u9069\u7528\u985E\u578B\u53CA\u5716\u8AAA\u4F86\u6E90\u3002");
+          continue;
+        }
+        let far = 300;
+        if (b.kind === "road") {
+          if (w === null || w <= 0 || front === null || front < 5) {
+            errors.push("\u4EE5\u9053\u8DEF\u5BEC\u5EA6\u6838\u8A08\u7684\u7BC4\u570D\u9808\u6709\u6709\u6548\u8DEF\u5BEC\uFF0C\u81E8\u63A5\u8A72\u8DEF\u9762\u5BEC\u81F3\u5C115\u516C\u5C3A\uFF1B\u4E0D\u8DB3\u90E8\u5206\u6539\u4F9D\u5716\u8AAA\u5217\u6B21\u5BEC\u8DEF\u6216\u5269\u9918\u7BC4\u570D\u3002");
+            continue;
+          }
+          if (a > (15 * front) ** 2 / (4 * Math.PI) + 0.01) {
+            errors.push("\u9053\u8DEF\u9069\u7528\u9762\u7A4D\u8D85\u904E15\u500D\u9762\u5BEC\u5468\u9577\u53EF\u570D\u9762\u7A4D\u7684\u6578\u5B78\u4E0A\u9650\uFF0C\u8ACB\u6838\u5C0D\u9762\u5BEC\u53CA\u5716\u8AAA\uFF1B\u901A\u904E\u6B64\u4E0A\u9650\u4E5F\u4E0D\u4EE3\u8868\u5E7E\u4F55\u7BC4\u570D\u5DF2\u6838\u5B9A\u3002");
+            continue;
+          }
+          far = Math.min(caps[x.commercialClass], Math.max(300, w * 50));
+        }
+        bands.push({ id: b.id, area: a, far, base: a * far / 100 });
+      }
+      if (bands.length === x.bands.length && bands.length && area2 !== null) {
+        if (Math.abs(bands.reduce((n, b) => n + b.area, 0) - area2) > 0.01) errors.push("\u9053\u8DEF\u5206\u6BB5\u9762\u7A4D\u5408\u8A08\u9808\u7B49\u65BC\u672C\u5546\u696D\u7BC4\u570D\u9762\u7A4D\uFF0C\u4E0D\u80FD\u6F0F\u5217\u6216\u91CD\u8907\u3002");
+        else base = bands.reduce((n, b) => n + b.base, 0);
+      }
+      notes.push("\u6309\u7B2C25\u689D\u8868\u5B9A\u4E0A\u9650\u3001\u8DEF\u5BEC\u53CA\u5DF2\u63D0\u4F9B\u7684\u5716\u8AAA\u5206\u6BB5\u8A08\u7B97\uFF1B5\u516C\u5C3A\u9762\u5BEC\u820715\u500D\u9762\u5BEC\u5468\u9577\u6240\u570D\u6700\u5927\u9069\u7528\u7BC4\u570D\u9808\u5148\u4F9D\u5716\u8AAA\u6838\u5B9A\uFF0C\u7CFB\u7D71\u4E0D\u63A8\u9020\u5E7E\u4F55\u9762\u7A4D\u3002", "\u8DE8\u4F4F\u4E09\u5546\u4E09\u6848\u4F8B8705\u9808\u4F75\u6838\u73FE\u884C\u898F\u5B9A\uFF1B\u53EF\u53C3\u8003\u5168\u57FA\u5730\u9053\u8DEF\uFF0C\u4E0D\u4EE3\u8868\u5168\u57FA\u5730\u5747\u53EF\u63A1\u6700\u5BEC\u8DEF\u3002\u5EFA\u853D\u653E\u5BEC\u9808\u6709\u7B26\u5408\u689D\u4EF6\u7684\u500B\u6848\u4F9D\u64DA\uFF0C\u672C\u6A21\u5F0F\u672A\u81EA\u52D5\u63A1\u653E\u5BEC\u503C\u3002");
+    }
+  } else if (x.mode === "document") {
+    const far = number(x.documentFar, 3e3);
+    maximumCoverage = number(x.documentCoverage, 100);
+    if (far === null || maximumCoverage === null || !x.documentSource.trim()) errors.push("\u500B\u5225\u8A08\u756B\uFF0F\u6838\u5B9A\u6A21\u5F0F\u9808\u586B\u660E\u78BA\u5BB9\u7A4D\u7387\u3001\u5EFA\u853D\u4E0A\u9650\u8207\u6587\u4EF6\u4F86\u6E90\u3002");
+    else if (area2 !== null) base = area2 * far / 100;
+    notes.push("\u63A1\u7528\u6240\u5217\u5730\u65B9\uFF0F\u500B\u6848\u6587\u4EF6\u7684\u5F37\u5EA6\uFF1B\u6587\u4EF6\u9069\u7528\u5730\u57DF\u3001\u6642\u9EDE\u3001\u81E8\u8DEF\u689D\u4EF6\u8207\u7528\u9014\u9808\u4E00\u4F75\u8986\u6838\u3002");
+  }
+  if (requireResidential && x.city === "\u65B0\u5317\u5E02") {
+    const h = reviewNtpcHousing(x, site);
+    errors.push(...h.errors);
+    if (h.cap !== null && base !== null) {
+      base = Math.min(base, h.cap);
+      notes.push("\u5168\u4F4F\u5B85\u65B9\u6848\u4F9D\u65B0\u5317\u5E02\u7B2C17\u689D\u4F4F\u5B85\u57FA\u6E96\u5BB9\u7A4D\u4E0A\u9650\u8A08\u7B97\uFF1B\u542B\u975E\u4F4F\u5B85\u8005\u9808\u5206\u5217\u7528\u9014\u53CA\u734E\u52F5\u4F86\u6E90\u3002");
+    }
+  }
+  if (c !== null && maximumCoverage !== null && c > maximumCoverage) errors.push("\u63A1\u7528\u5EFA\u853D\u7387\u8D85\u904E\u672C\u6B21\u898F\u5247\u4E0A\u9650\uFF0C\u4E0D\u80FD\u81EA\u52D5\u5957\u653E\u5BEC\u503C\u3002");
+  return result();
+}
+function reviewNtpcHousing(x, site) {
+  const errors = [];
+  let cap = null;
+  if (x.city !== "\u65B0\u5317\u5E02") return { errors, cap };
+  const h = x.ntpcHousing, area2 = number(site);
+  if (!h || h.mode === "unknown" || !h.source.trim()) errors.push("\u65B0\u5317\u5E02\u7B2C17\u689D\uFF1A\u8ACB\u78BA\u8A8D\u4F4F\u5B85\u57FA\u6E96\u5BB9\u7A4D\u9650\u5236\u6216\u5DF2\u6838\u51C6\u4F8B\u5916\uFF0C\u4E26\u586B\u6587\u4EF6\u53CA\u9069\u7528\u689D\u4EF6\u3002");
+  else if (h.mode === "standard") {
+    const far = number(h.far, 3e3);
+    if (far === null || far <= 0 || area2 === null) errors.push("\u65B0\u5317\u5E02\u7B2C17\u689D\uFF1A\u9808\u586B\u8A72\u90FD\u5E02\u8A08\u756B\u4F4F\u5B85\u5340\u57FA\u6E96\u5BB9\u7A4D\u7387\u53CA\u672C\u5546\u696D\u5340\u9762\u7A4D\u3002");
+    else cap = area2 * far / 100;
+  }
+  return { errors, cap };
+}
+
+// ../sanze-release-app/src/lib/mixed-zone/landBasis.ts
+var basisLabels = { site: "\u5EFA\u7BC9\u57FA\u5730\u63A1\u8A08\u9762\u7A4D", far: "\u57FA\u6E96\u5BB9\u7A4D\u8A08\u7B97\u571F\u5730\u9762\u7A4D", coverage: "\u5EFA\u853D\u7387\u8A08\u7B97\u571F\u5730\u9762\u7A4D", openCredit: "\u5BE6\u969B\u53EF\u8A8D\u5217\u6CD5\u5B9A\u7A7A\u5730\u9762\u7A4D" };
+var validDate3 = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s) && Number.isFinite(Date.parse(s)) && new Date(s).toISOString().slice(0, 10) === s;
+var text3 = (x) => typeof x === "string" && x.length <= 12e3;
+function isLandBasis(v) {
+  if (!v || typeof v !== "object") return false;
+  const x = v;
+  return (x.publicAdoption === void 0 || x.publicAdoption && ["unknown", "currentPlan", "effectiveChange"].includes(x.publicAdoption.kind) && text3(x.publicAdoption.date) && text3(x.publicAdoption.source)) && (x.procedures === void 0 || Array.isArray(x.procedures) && x.procedures.length <= 30 && new Set(x.procedures.map((p) => p.id)).size === x.procedures.length && x.procedures.every((p) => p && text3(p.id) && !!p.id && ["planChange", "alleyClosure", "alleyReroute", "acquisition", "other"].includes(p.kind) && ["unknown", "proposed", "approved", "effective", "completed"].includes(p.status) && text3(p.date) && text3(p.source) && Array.isArray(p.affects) && p.affects.every((k) => Object.prototype.hasOwnProperty.call(basisLabels, k)))) && ["unknown", "inside", "outside"].includes(x.renewal) && ["unknown", "building", "publicPedestrian", "publicRoad", "publicOther", "privateAccess", "setback", "other"].includes(x.role) && Object.keys(basisLabels).every((k) => {
+    const a = x[k];
+    return a && ["unknown", "count", "exclude"].includes(a.status) && text3(a.area) && (a.deduction === void 0 || text3(a.deduction)) && text3(a.source);
+  }) && !!x.tdr && ["unknown", "none", "proposed", "approved"].includes(x.tdr.status) && text3(x.tdr.area) && text3(x.tdr.receivingZone) && text3(x.tdr.source);
+}
+function calculateLandBasis(x, landArea, assessmentDate) {
+  const issues = [];
+  const values = { site: null, far: null, coverage: null, openCredit: null };
+  if (!x || !isLandBasis(x)) {
+    issues.push({ message: "\u8ACB\u5EFA\u7ACB\u66F4\u65B0\u7BC4\u570D\u3001\u5EFA\u7BC9\u57FA\u5730\u3001\u5BB9\u7A4D\u3001\u5EFA\u853D\u53CA\u6CD5\u5B9A\u7A7A\u5730\u7684\u5206\u9805\u4F9D\u64DA\uFF1B\u820A\u8A08\u5165\u9078\u9805\u4E0D\u81EA\u52D5\u8F49\u63DB", kind: "missing" });
+    return { values, issues };
+  }
+  if (x.renewal === "unknown") issues.push({ message: "\u662F\u5426\u4F4D\u65BC\u672C\u6B21\u66F4\u65B0\uFF0F\u8A55\u4F30\u7BC4\u570D\u5C1A\u672A\u78BA\u8A8D", kind: "missing" });
+  if (x.role === "unknown") issues.push({ message: "\u571F\u5730\u6CD5\u5B9A\u7528\u9014\u5C1A\u672A\u78BA\u8A8D\uFF1B\u4EBA\u884C\u6B65\u9053\u5206\u5340\u3001\u79C1\u8A2D\u901A\u8DEF\u53CA\u9000\u7E2E\u6B65\u9053\u4E0D\u80FD\u4E92\u4EE3", kind: "missing" });
+  for (const key of Object.keys(basisLabels)) {
+    const d = x[key], label = basisLabels[key];
+    if (d.status === "unknown") {
+      issues.push({ message: label + "\u8CC7\u683C\u5C1A\u672A\u78BA\u8A8D", kind: "missing" });
+      continue;
+    }
+    if (!d.source.trim()) {
+      issues.push({ message: label + "\u9808\u5217\u9069\u7528\u6CD5\u898F\u53CA\u500B\u6848\u5716\u8AAA\u4F9D\u64DA", kind: "missing" });
+      continue;
+    }
+    if (d.status === "exclude") {
+      if (d.area.trim() && Number(d.area) !== 0) issues.push({ message: label + "\u5DF2\u9078\u4E0D\u63A1\u8A08\uFF0C\u4E0D\u5F97\u53E6\u586B\u975E\u96F6\u9762\u7A4D", kind: "conflict" });
+      else if (d.deduction?.trim() && Number(d.deduction) !== 0) issues.push({ message: label + "\u4E0D\u63A1\u8A08\u6642\u4E0D\u5F97\u53E6\u586B\u6263\u9664\u9762\u7A4D", kind: "conflict" });
+      else values[key] = 0;
+      continue;
+    }
+    const n = d.area.trim() ? Number(d.area) : NaN;
+    if (!Number.isFinite(n) || n < 0 || n > 1e9) {
+      issues.push({ message: label + "\u6578\u503C\u5C1A\u7F3A\u6216\u7121\u6548", kind: "missing" });
+      continue;
+    }
+    if (landArea === null) {
+      issues.push({ message: label + "\u9808\u5148\u6838\u5C0D\u672C\u7BC4\u570D\u571F\u5730\u9762\u7A4D", kind: "missing" });
+      continue;
+    }
+    if (n > landArea + 0.01) {
+      issues.push({ message: label + "\u8D85\u904E\u672C\u7BC4\u570D\u571F\u5730\u9762\u7A4D", kind: "conflict" });
+      continue;
+    }
+    const deduction = d.deduction?.trim() ? Number(d.deduction) : 0;
+    if (!Number.isFinite(deduction) || deduction < 0 || deduction > n) {
+      issues.push({ message: label + "\u6263\u9664\u9762\u7A4D\u7121\u6548\u6216\u8D85\u904E\u539F\u9762\u7A4D", kind: "conflict" });
+      continue;
+    }
+    values[key] = n - deduction;
+  }
+  if (values.site !== null && values.openCredit !== null && values.openCredit > values.site + 0.01) {
+    issues.push({ message: "\u6CD5\u5B9A\u7A7A\u5730\u4E0D\u80FD\u8D85\u904E\u5176\u6240\u5C6C\u5EFA\u7BC9\u57FA\u5730\u63A1\u8A08\u9762\u7A4D", kind: "conflict" });
+    values.openCredit = null;
+  }
+  if ((x.role === "publicPedestrian" || x.role === "publicRoad" || x.role === "publicOther") && [values.site, values.far, values.coverage, values.openCredit].some((n) => n !== null && n > 0)) issues.push({ message: "\u516C\u5171\u8A2D\u65BD\u7528\u5730\u63A1\u8A08\u9808\u9010\u9805\u6838\u5C0D\u6709\u6548\u90FD\u5E02\u8A08\u756B\uFF0F\u8B8A\u66F4\u53CA\u6838\u5B9A\u5716\u8AAA\uFF1B\u4E0D\u80FD\u53EA\u4EE5\u4F4D\u65BC\u66F4\u65B0\u7BC4\u570D\u4F5C\u4F9D\u64DA", kind: "review" });
+  if (values.site === 0 && [values.far, values.coverage, values.openCredit].some((n) => n !== null && n > 0)) issues.push({ message: "\u975E\u5EFA\u7BC9\u57FA\u5730\u4E0D\u5F97\u76F4\u63A5\u7522\u751F\u672C\u57FA\u5730\u5BB9\u7A4D\u3001\u5EFA\u853D\u6216\u6CD5\u5B9A\u7A7A\u5730\uFF1B\u5BB9\u7A4D\u79FB\u8F49\u53E6\u5217\u63A5\u53D7\u57FA\u5730", kind: "conflict" });
+  for (const p of x.procedures ?? []) {
+    const ready = ["effective", "completed"].includes(p.status) && p.source.trim() && validDate3(p.date) && (!assessmentDate || p.date <= assessmentDate);
+    if (!ready) {
+      issues.push({ message: "\u5EE2\u5DF7\u3001\u6539\u9053\u3001\u8A08\u756B\u8B8A\u66F4\u6216\u53D6\u5F97\u7A0B\u5E8F\u5C1A\u672A\u5177\u5099\u751F\u6548\u4F9D\u64DA\uFF1B\u53D7\u5176\u5F71\u97FF\u7684\u63A1\u8A08\u9762\u7A4D\u4E0D\u5217\u5165\u73FE\u6CC1\u984D\u5EA6", kind: "missing" });
+      for (const key of p.affects) values[key] = null;
+    }
+  }
+  if (["publicPedestrian", "publicRoad", "publicOther"].includes(x.role)) {
+    const a = x.publicAdoption;
+    const ready = a && a.kind !== "unknown" && a.source.trim() && validDate3(a.date) && !!assessmentDate && validDate3(assessmentDate) && a.date <= assessmentDate;
+    const requested = Object.keys(basisLabels).filter((k) => x[k].status === "count");
+    if (requested.length && !ready) {
+      issues.push({ message: "\u516C\u8A2D\u7528\u5730\u539F\u5247\u4E0D\u5217\u5165\u4E00\u822C\u4F4F\u5B85\uFF0F\u5546\u696D\u5EFA\u7BC9\u57FA\u5730\u53CA\u5176\u958B\u767C\u91CF\uFF1B\u63A1\u8A08\u9808\u53E6\u9644\u73FE\u884C\u90FD\u5E02\u8A08\u756B\u5141\u8A31\u4F9D\u64DA\uFF0C\u6216\u5DF2\u767C\u5E03\u5BE6\u65BD\u7684\u8A08\u756B\u8B8A\u66F4\u3001\u65E5\u671F\u53CA\u500B\u6848\u5716\u8AAA\u3002\u5EE2\u5DF7\u6838\u51C6\u3001\u53D6\u5F97\u571F\u5730\u6216\u7D0D\u5165\u66F4\u65B0\u7BC4\u570D\u5747\u4E0D\u80FD\u4EE3\u66FF", kind: "missing" });
+      for (const k of requested) values[k] = null;
+    }
+  }
+  if (x.tdr.status === "unknown") issues.push({ message: "\u516C\u5171\u8A2D\u65BD\u5BB9\u7A4D\u79FB\u8F49\u8655\u7406\u65B9\u5F0F\u5C1A\u672A\u78BA\u8A8D\uFF1B\u4E0D\u81EA\u52D5\u4EE5\u4F4F\u5B85\u5BB9\u7A4D\u7387\u63DB\u7B97", kind: "missing" });
+  if (x.tdr.status !== "unknown" && !x.tdr.source.trim()) issues.push({ message: "\u5BB9\u7A4D\u79FB\u8F49\u8655\u7406\u9808\u6709\u6587\u4EF6\u4F9D\u64DA", kind: "missing" });
+  if (x.tdr.status === "proposed") issues.push({ message: "\u64EC\u7533\u8ACB\u7684\u516C\u5171\u8A2D\u65BD\u5BB9\u7A4D\u79FB\u8F49\u672A\u5217\u5165\u5DF2\u6838\u51C6\u958B\u767C\u91CF", kind: "review" });
+  return { values, issues };
+}
+
+// ../sanze-release-app/src/lib/mixed-zone/ntpcCross.ts
+function isNtpcCross(x) {
+  if (!x || typeof x !== "object") return false;
+  const v = x;
+  return ["unknown", "same", "different"].includes(v.nature) && ["unknown", "yes", "no"].includes(v.partition) && ["unknown", "yes", "no"].includes(v.entrances) && typeof v.source === "string" && v.source.length <= 12e3 && Array.isArray(v.transfers) && v.transfers.length <= 100 && v.transfers.every((t) => t && ["id", "from", "to", "area"].every((k) => typeof t[k] === "string")) && new Set(v.transfers.map((t) => t.id)).size === v.transfers.length;
+}
+function reviewNtpcCross(x, zones, crossesBuilding) {
+  const issues = [];
+  const add2 = (message, kind = "missing") => issues.push({ message, kind });
+  if (!x || !isNtpcCross(x)) {
+    add2("\u8ACB\u586B\u65B0\u53171080894762\u8DE8\u5340\u7528\u9014\u8207\u5BB9\u7A4D\u8ABF\u914D\u6AA2\u6838");
+    return issues;
+  }
+  if (!x.source.trim()) add2("\u8ACB\u586B\u672C\u6848\u8DE8\u5340\u7528\u9014\u5224\u5B9A\u53CA\u914D\u7F6E\u5716\u8AAA\u4F9D\u64DA");
+  if (crossesBuilding) {
+    if (x.nature === "unknown") add2("\u540C\u68DF\u8DE8\u5340\u9808\u78BA\u8A8D\u5169\u5074\u5EFA\u7BC9\u7269\u4F7F\u7528\u9805\u76EE\u6027\u8CEA\u662F\u5426\u4E0D\u540C");
+    if (x.nature === "different") {
+      if (x.partition !== "yes") add2("\u4E0D\u540C\u6027\u8CEA\u7528\u9014\u9808\u7531\u5206\u5340\u754C\u7DDA\u5BE6\u9AD4\u5340\u9694", x.partition === "no" ? "conflict" : "missing");
+      if (x.entrances !== "yes") add2("\u4E0D\u540C\u6027\u8CEA\u7528\u9014\u9808\u8A2D\u5404\u5225\u7368\u7ACB\u51FA\u5165\u53E3", x.entrances === "no" ? "conflict" : "missing");
+    }
+  }
+  const incoming = /* @__PURE__ */ new Map(), outgoing = /* @__PURE__ */ new Map();
+  for (const t of x.transfers) {
+    const from = zones.find((z) => z.id === t.from), to = zones.find((z) => z.id === t.to), area2 = t.area.trim() ? Number(t.area) : NaN;
+    if (!from || !to || from.id === to.id || !Number.isFinite(area2) || area2 <= 0) {
+      add2("\u5BB9\u7A4D\u8ABF\u914D\u9808\u6709\u4E0D\u540C\u4E14\u6709\u6548\u7684\u4F86\u6E90\u3001\u76EE\u7684\u5206\u5340\u53CA\u5927\u65BC0\u9762\u7A4D", "conflict");
+      continue;
+    }
+    if (!["residential", "commercial", "industrial"].includes(from.kind ?? "") || !["residential", "commercial", "industrial"].includes(to.kind ?? "")) add2("\u672C\u51FD\u8ABF\u914D\u9650\u4F4F\u5B85\u3001\u5546\u696D\u3001\u5DE5\u696D\u985E\u578B\uFF0C\u5176\u4ED6\u5206\u5340\u9808\u53E6\u6838");
+    if (from.kind === "industrial" && to.kind !== "industrial") add2("\u672C\u51FD\u7981\u6B62\u5DE5\u696D\u5340\u5BB9\u7A4D\u8ABF\u914D\u81F3\u4F4F\u5B85\u6216\u5546\u696D\u5340", "conflict");
+    incoming.set(to.id, (incoming.get(to.id) ?? 0) + area2);
+    outgoing.set(from.id, (outgoing.get(from.id) ?? 0) + area2);
+  }
+  for (const z of zones) {
+    const plus = incoming.get(z.id) ?? 0, minus = outgoing.get(z.id) ?? 0;
+    if (z.allowed !== null) {
+      if (minus > z.allowed + 0.01) add2("\u79FB\u51FA\u5BB9\u7A4D\u4E0D\u5F97\u8D85\u904E\u4F86\u6E90\u5206\u5340\u984D\u5EA6", "conflict");
+      if (z.counted !== null && z.counted > z.allowed + plus - minus + 0.01) add2("\u914D\u7F6E\u8D85\u904E\u4F86\u6E90\u984D\u5EA6\u53CA\u5DF2\u5217\u8ABF\u914D\u6DE8\u984D\uFF0C\u8ACB\u5206\u5217\u5BB9\u7A4D\u8ABF\u914D", "conflict");
+    }
+  }
+  return issues;
+}
+
+// ../sanze-release-app/src/lib/mixed-zone/model.ts
+var MIXED_VERSION = "mixed-zone.2026-10-24.v2";
+var reviewTopics = [
+  ["boundary", "\u4E00\u5B97\u57FA\u5730\u3001\u5206\u5340\u8B49\u660E\u53CA\u754C\u7DDA", "\u5EFA\u6280\u7B2C1\u689D\u4E00\u5B97\u571F\u5730\u5B9A\u7FA9\u3001\u5730\u7C4D\u53CA\u5206\u5340\u5957\u7E6A\uFF1B\u4E0D\u80FD\u56E0\u540C\u6848\u5C31\u8996\u70BA\u540C\u4E00\u57FA\u5730\u3002"],
+  ["intensity", "\u5EFA\u853D\u3001\u5BB9\u7A4D\u8207\u81E8\u8DEF\u9650\u5236", "\u81FA\u5317\u6838\u7B2C25\u689D\u5546\u696D\u5340\u9053\u8DEF\u5BEC\u3001\u9762\u5BEC\u8207\u9069\u7528\u7BC4\u570D\uFF1B\u65B0\u5317\u6838\u500B\u5225\u8A08\u756B\u53CA\u7B2C38\u300139\u689D\u3002"],
+  ["use", "\u7528\u9014\u3001\u9644\u689D\u4EF6\u4F7F\u7528\u53CA\u8DE8\u5340\u914D\u7F6E", "\u6838\u7B2C160\u3001165\u689D\u53CA\u500B\u5225\u8A08\u756B\uFF1B\u81FA\u5317\u53E6\u6838\u9644\u689D\u4EF6\u6A19\u6E96\u7B2C4\u689D\u4F8B\u5916\uFF0C\u65B0\u5317\u6838\u8DE8\u5340\u5408\u4F75\u5EFA\u7BC9\u51FD\u793A\u9069\u7528\u7BC4\u570D\u3002"],
+  ["envelope", "\u9000\u7E2E\u3001\u5EAD\u9662\u3001\u9AD8\u5EA6\u8207\u65E5\u7167", "\u6309\u5404\u4F4D\u7F6E\u53CA\u898F\u5B9A\u6AA2\u8A0E\uFF0C\u4E0D\u5C07\u7B2C165\u689D\u89E3\u8B80\u70BA\u9AD8\u5EA6\u6216\u7528\u9014\u4E00\u8D77\u653E\u5BEC\u3002"],
+  ["below", "\u5730\u4E0B\u958B\u6316\u3001\u505C\u8ECA\u8207\u88DD\u5378", "\u958B\u6316\u9762\u7A4D\u8207\u914D\u7F6E\u5206\u958B\uFF1B\u81FA\u5317\u505C\u8ECA\u7B2C86-1\u300186-2\u689D\uFF0C\u65B0\u5317\u5148\u6838\u500B\u5225\u8A08\u756B\u53CA\u65BD\u884C\u7D30\u5247\u3002"],
+  ["award", "\u734E\u52F5\u3001\u5BB9\u79FB\u8207\u56DE\u994B", "\u9010\u9805\u78BA\u8A8D\u6BCD\u6578\u3001\u9069\u7528\u7BC4\u570D\u3001\u91CD\u8907\u9650\u5236\u3001\u7E3D\u4E0A\u9650\u53CA\u56DE\u994B\uFF1B\u540C\u6848\u4E0D\u4EE3\u8868\u5404\u5340\u734E\u52F5\u76F8\u540C\u3002"]
+];
+function reviewBasis(m) {
+  const { reviews, ...inputs } = m;
+  return JSON.stringify(inputs);
+}
+var newLayoutRules = () => ({ openSpace: "unknown", volume: "unknown", municipality: "", localPlan: "", conditions: "", evidence: blankEvidence() });
+var blankEvidence = () => ({ state: "unknown", source: "", date: "" });
+var id = () => crypto.randomUUID();
+var newZone = () => ({ id: id(), name: "", parcel: "", parcelArea: "", area: "", zoningClass: "unknown", regime: "unknown", plan: "", inclusion: "pending", evidence: blankEvidence(), coverage: "", far: "", maxHeight: "", constraints: "", bonusMode: "unknown", bonuses: [], obligation: "", obligationSource: "" });
+var newMixedSite = (date = "") => ({ version: MIXED_VERSION, enabled: true, designMode: "unknown", layout: newLayoutRules(), reviews: [], name: "", assessmentDate: date, declaredArea: "", boundary: blankEvidence(), joint: "unknown", jointEvidence: blankEvidence(), zones: [newZone()], allocations: [], buildings: [] });
+var obj3 = (v) => !!v && typeof v === "object" && !Array.isArray(v);
+var str2 = (v) => typeof v === "string" && v.length <= 12e3;
+var fields3 = (o, ks) => ks.every((k) => str2(o[k]));
+var choice = (v, values) => typeof v === "string" && values.includes(v);
+var evidence2 = (v) => obj3(v) && choice(v.state, ["unknown", "documented", "scenario", "verified"]) && fields3(v, ["source", "date"]);
+var rows4 = (v, max, check) => Array.isArray(v) && v.length <= max && v.every((x) => obj3(x) && str2(x.id) && !!x.id && check(x)) && new Set(v.map((x) => x.id)).size === v.length;
+function isMixedSite(v) {
+  return obj3(v) && (v.ntpcCross === void 0 || isNtpcCross(v.ntpcCross)) && (v.designMode === void 0 || choice(v.designMode, ["unknown", "residential", "mixed", "nonresidential"])) && [MIXED_VERSION, "mixed-zone.2026-10-24.v1"].includes(v.version) && typeof v.enabled === "boolean" && fields3(v, ["name", "assessmentDate", "declaredArea"]) && evidence2(v.boundary) && choice(v.joint, ["unknown", "allowed", "forbidden"]) && evidence2(v.jointEvidence) && (v.reviews === void 0 || rows4(v.reviews, 6, (r) => choice(r.id, reviewTopics.map((t) => t[0])) && choice(r.state, ["unknown", "recorded", "conflict"]) && fields3(r, ["finding"]) && typeof r.basis === "string" && r.basis.length <= 3e6 && evidence2(r.evidence))) && (v.layout === void 0 || obj3(v.layout) && choice(v.layout.openSpace, ["unknown", "article29", "separate"]) && choice(v.layout.volume, ["unknown", "article165", "separate", "project"]) && fields3(v.layout, ["municipality", "localPlan", "conditions"]) && evidence2(v.layout.evidence)) && rows4(v.zones, 100, (z) => (z.landBasis === void 0 || isLandBasis(z.landBasis)) && (z.ntpcUse === void 0 || choice(z.ntpcUse, ["unknown", "residential", "commercial", "industrial"])) && (z.commercialIntensity === void 0 || isCommercialIntensity(z.commercialIntensity)) && (z.zoningClass === void 0 || choice(z.zoningClass, ["unknown", "standard", "other", "special", "public"])) && fields3(z, ["name", "parcel", "parcelArea", "area", "plan", "coverage", "far", "maxHeight", "constraints", "obligation", "obligationSource"]) && choice(z.regime, ["unknown", "urban", "nonurban", "special"]) && choice(z.inclusion, ["pending", "included", "excluded"]) && evidence2(z.evidence) && choice(z.bonusMode, ["unknown", "none", "items"]) && rows4(z.bonuses, 30, (b) => fields3(b, ["name", "value", "customBase"]) && choice(b.mode, ["percent", "area"]) && choice(b.base, ["base", "custom"]) && evidence2(b.evidence))) && rows4(v.allocations, 300, (a) => (a.residentialBase === void 0 || str2(a.residentialBase)) && (a.taipeiGroup === void 0 || choice(a.taipeiGroup, ["unknown", "2", "17", "19", "20a", "28", "29"])) && fields3(a, ["zoneId", "building", "counted", "footprint", "height", "parkingArea", "units"]) && choice(a.use, ["residential", "retail", "office", "other"]) && choice(a.permission, ["unknown", "allowed", "forbidden"]) && evidence2(a.evidence)) && rows4(v.buildings, 50, (b) => fields3(b, ["name", "reviewedCars"]) && choice(b.mode, ["unknown", "article59", "taipei861", "reviewed"]) && choice(b.exemption, ["unknown", "first", "second"]) && choice(b.publicBuilding, ["unknown", "no", "yes"]) && evidence2(b.evidence));
+}
+var mixedSources = [
+  { title: "\u65B0\u5317\u5E02\u90FD\u5E02\u66F4\u65B0\u55AE\u5143\u5283\u5B9A\u57FA\u6E96\uFF08115\u5E741\u67089\u65E5\uFF09\uFF1A\u7B2C\u516D\u9EDE\u9580\u6ABB\u50C5\u8A08\u53EF\u5EFA\u7BC9\u57FA\u5730", url: "https://web.law.ntpc.gov.tw/Scripts/FLAWDAT0202.aspx?fcode=C0150018" },
+  { title: "\u90FD\u5E02\u66F4\u65B0\u689D\u4F8B\u7B2C35\u300136\u300151\u300166\u689D\uFF1A\u8A08\u756B\u8B8A\u66F4\u3001\u516C\u8A2D\u8207\u5BB9\u7A4D\u79FB\u8F49\u5206\u5225\u8655\u7406", url: "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0070008" },
+  { title: "\u5EFA\u7BC9\u6CD5\u7B2C11\u689D\uFF1A\u5EFA\u7BC9\u57FA\u5730\u8207\u6CD5\u5B9A\u7A7A\u5730", url: "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0070109&flno=11" },
+  { title: "\u90FD\u5E02\u66F4\u65B0\u689D\u4F8B\u7B2C66\u689D\u53CA\u90FD\u5E02\u8A08\u756B\u5BB9\u7A4D\u79FB\u8F49\u5BE6\u65BD\u8FA6\u6CD5\uFF1A\u516C\u5171\u8A2D\u65BD\u79FB\u8F49\u9808\u53E6\u6838", url: "https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=D0070028" },
+  { title: "\u65B0\u53171080894762\u539F\u51FD\u3001\u9644\u8868\u53CA\u57161\u3001\u57162\uFF08\u516C\u6703\u8F49\u77E5\uFF09", url: "https://www.naa.org.tw/view_article.php?id=4117" },
+  { title: "\u81FA\u5317\u5E02\u571F\u7BA1\u81EA\u6CBB\u689D\u4F8B\uFF1A\u7B2C25\u689D\u5546\u696D\u5340\u5F37\u5EA6\u3001\u7B2C86-1\u689D\u6C7D\u6A5F\u8ECA\u7B49", url: "https://laws.gov.taipei/Law/LawSearch/LawArticleContent/FL003962" },
+  { title: "\u81FA\u5317\u5E02\u9644\u689D\u4EF6\u5141\u8A31\u4F7F\u7528\u6A19\u6E96\uFF1A\u4F4F\u5B85\u52A0\u7D1A\u5730\u5340\u8DE8\u5340\u4F8B\u5916", url: "https://laws.gov.taipei/Law/LawSearch/LawArticleContent/FL025529" },
+  { title: "\u81FA\u5317\u5E02\u5EFA\u7BA1\u6848\u4F8B8705\uFF1A\u4F4F\u4E09\u8207\u5546\u4E09\u8DE8\u5340\u81E8\u8DEF\u5224\u65B7\uFF08\u9808\u4F75\u6838\u73FE\u884C\u7B2C25\u689D\uFF09", url: "https://www.dbaweb.tcg.gov.tw/taipeilaw/law_content.aspx?ID=11708" },
+  { title: "\u5EFA\u7BC9\u6280\u8853\u898F\u5247\u7B2C160\u3001165\u689D\uFF1A\u90FD\u5E02\u8A08\u756B\u53E6\u6709\u898F\u5B9A\u53CA\u8DE8\u5206\u5340\u6A13\u5730\u677F\u914D\u7F6E", url: "https://www.nlma.gov.tw/ch/legislation/law%26regusw/6175" },
+  { title: "\u5167\u653F\u90E879\u5E747\u67086\u65E5\u51FD\uFF1A\u8DE8\u4F4F\u5546\u5206\u5340\u53EF\u5408\u4F75\u5EFA\u7BC9\uFF0C\u4F7F\u7528\u4ECD\u5206\u5340\u7BA1\u5236", url: "https://www.nlma.gov.tw/ch/titlelist/interpcomp/6495" },
+  { title: "\u65B0\u5317\u5E02\u65BD\u884C\u7D30\u5247\u7B2C40\u689D\uFF1A\u500B\u5225\u90FD\u5E02\u8A08\u756B\u571F\u5730\u4F7F\u7528\u7BA1\u5236", url: "https://web.law.ntpc.gov.tw/Scripts/FLAWDOC01.aspx?fcode=C0150108&flno=40" },
+  { title: "\u5EFA\u7BC9\u6280\u8853\u898F\u5247\u8A2D\u8A08\u65BD\u5DE5\u7DE8\u7B2C29\u689D\uFF1A\u8DE8\u5206\u5340\u7A7A\u5730\u8207\u9AD8\u5EA6", url: "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0070115&flno=29" },
+  { title: "\u5167\u653F\u90E887\u5E742\u670810\u65E5\u51FD\uFF1A\u8DE8\u5206\u5340\u5206\u5225\u6838\u7B97\u958B\u767C\u91CF", url: "https://www.nlma.gov.tw/ch/titlelist/interpcomp/12338" },
+  { title: "\u5167\u653F\u90E865\u5E7410\u67084\u65E5\u51FD\uFF1A\u5206\u5340\u7528\u9014\u5206\u5225\u7BA1\u5236", url: "https://uract.nlma.gov.tw/uploads/ruleExplain/A32-10903-1624431727.pdf" },
+  { title: "\u5EFA\u7BC9\u6280\u8853\u898F\u5247\u8A2D\u8A08\u65BD\u5DE5\u7DE8\u7B2C59\u689D\uFF1A\u6DF7\u5408\u7528\u9014\u505C\u8ECA", url: "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0070115&flno=59" },
+  { title: "\u65B0\u5317\u5E02\u65BD\u884C\u7D30\u5247\u7B2C39\u689D\uFF1A\u4F9D\u90FD\u5E02\u8A08\u756B\u66F8\u5BB9\u7A4D\u7387", url: "https://web.law.ntpc.gov.tw/Scripts/FLAWDOC01.aspx?fcode=C0150108&flno=39" }
+];
+var value = (s, max = 1e9) => s.trim() !== "" && Number.isFinite(Number(s)) && Number(s) >= 0 && Number(s) <= max ? Number(s) : null;
+var sum = (ns) => ns.length && ns.every((n) => n !== null) ? ns.reduce((a, b) => a + b, 0) : null;
+var dateValid = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s) && !isNaN(Date.parse(s)) && new Date(s).toISOString().slice(0, 10) === s;
+function calculateMixedSite(raw) {
+  const issues = [], zones = [], parking = [];
+  const totals2 = { renewal: null, farArea: null, coverageArea: null, openCredit: null, tdr: null, area: null, included: null, excluded: null, base: null, footprint: null, openSpace: null, award: null, allowed: null, obligation: null, afterObligation: null, counted: null, cars: null };
+  const out = (status) => ({ version: MIXED_VERSION, issues, zones, parking, totals: totals2, status, notes: [
+    "\u984D\u5EA6\u4F86\u6E90\u8207\u5BE6\u969B\u914D\u7F6E\u5206\u958B\uFF1A\u4F9D\u5404\u5206\u5340\u8A08\u7B97\u5BB9\u7A4D\u53CA\u61C9\u7559\u7A7A\u5730\uFF1B\u7B26\u5408\u7B2C29\u3001165\u689D\u53CA\u5730\u65B9\u571F\u7BA1\u8005\u5F97\u6574\u9AD4\u914D\u7F6E\uFF0C\u4E0D\u628A\u5206\u5340\u754C\u7DDA\u7576\u6210\u4E00\u5F8B\u4E0D\u5F97\u8DE8\u8D8A\u7684\u5EFA\u7BC9\u754C\u7DDA\u3002\u7528\u9014\u4ECD\u4F9D\u5BE6\u969B\u5EA7\u843D\u5206\u5340\u6AA2\u6838\u3002",
+    "\u734E\u52F5\u8207\u5BB9\u79FB\u63A1\u9010\u9805\u4F86\u6E90\u53CA\u6307\u5B9A\u6BCD\u6578\uFF1B\u7CFB\u7D71\u4E0D\u81EA\u52D5\u63A8\u5B9A\u53D6\u5F97\u8CC7\u683C\u3001\u4E0A\u9650\u6216\u5404\u9805\u53EF\u758A\u52A0\u3002\u91CD\u8907\u9805\u76EE\u53CA\u540C\u4E00\u56DE\u994B\u4E0D\u5F97\u91CD\u8907\u5217\u5165\u3002",
+    "\u516C\u76CA\u6350\u8D08\uFF0F\u56DE\u994B\u50C5\u5217\u5BB9\u7A4D\u9762\u7A4D\u8CA0\u64D4\uFF0C\u4E0D\u628A\u6263\u5F8C\u5BB9\u7A4D\u7576\u6210\u767B\u8A18\u6216\u53EF\u552E\u9762\u7A4D\uFF1B\u53E6\u6709\u571F\u5730\u3001\u91D1\u984D\u3001\u7BA1\u7406\u7DAD\u8B77\u7B49\u7FA9\u52D9\u4ECD\u9808\u6838\u5C0D\u3002",
+    "\u672C\u6A21\u7D44\u8A08\u7B97\u5206\u5340\u958B\u767C\u91CF\u3001\u914D\u7F6E\u7E3D\u91CF\u6838\u5C0D\u53CA\u5206\u5E62\u7528\u9014\u505C\u8ECA\u3002\u5730\u7C4D\u5E7E\u4F55\u3001\u8DE8\u5340\u914D\u7F6E\u3001\u65E5\u7167\u3001\u9000\u7E2E\u3001\u6D88\u9632\u3001\u5730\u4E0B\u958B\u6316\u3001\u514D\u8A08\u767B\u8A18\u8207\u53EF\u552E\u576A\u6548\u9808\u53E6\u4F9D\u5716\u8AAA\u5B8C\u6210\u6AA2\u8A0E\uFF1B\u4E0D\u5957\u7528\u55AE\u4E00\u5206\u5340\u6A21\u578B\u88DC\u503C\u3002",
+    "\u81FA\u5317\u5E02\u7B2C86-1\u689D\u81EA\u52D5\u8A08\u7B97\u652F\u63F4\u7B2C\u4E8C\u7D44\u4F4F\u5B85\u3001\u7B2C17\uFF0F19\uFF0F20\u7D44\u975E\u767E\u8CA8\u96F6\u552E\u3001\u7B2C28\uFF0F29\u7D44\u8FA6\u516C\u4E4B\u975E\u516C\u6709\u5EFA\u7BC9\uFF0C\u6309\u540C\u5E62\u5206\u985E\u7D2F\u52A0\u5F8C\u9032\u4F4D\uFF1B\u5176\u4ED6\u7D44\u5225\u53CA\u500B\u6848\u505C\u8ECA\u53E6\u6838\u3002",
+    "\u7B2C59\u689D\u81EA\u52D5\u8A08\u7B97\u7BC4\u570D\u9650\u5DF2\u78BA\u8A8D\u9069\u7528\u4E2D\u592E\u901A\u5247\u7684\u90FD\u5E02\u8A08\u756B\u5167\u7B2C\u4E00\u3001\u4E8C\u985E\u975E\u516C\u6709\u7528\u9014\u3002\u5730\u65B9\u7279\u5225\u898F\u5B9A\u3001\u5176\u4ED6\u7528\u9014\u6216\u516C\u6709\u5EFA\u7BC9\u6539\u63A1\u5177\u4F86\u6E90\u7684\u5C08\u6848\u8986\u6838\u6578\u91CF\u3002"
+  ] });
+  if (!isMixedSite(raw)) {
+    issues.push({ scope: "\u683C\u5F0F", message: "\u6DF7\u5408\u5206\u5340\u8CC7\u6599\u683C\u5F0F\u6216\u7248\u672C\u7121\u6548\uFF0C\u672A\u6539\u7528\u55AE\u4E00\u5206\u5340\u8A08\u7B97\u3002", kind: "conflict" });
+    return out("conflict");
+  }
+  const m = { ...raw, zones: raw.zones.map((z) => ({ ...z, inclusion: z.landBasis?.site.status === "count" ? "included" : z.landBasis?.site.status === "exclude" ? "excluded" : "pending" })) }, layout = m.layout ?? newLayoutRules(), add2 = (scope, message, kind = "missing") => issues.push({ scope, message, kind });
+  const num = (s, label, scope, max = 1e9) => {
+    const n = value(s, max);
+    if (n === null) add2(scope, `${label}\u672A\u586B\u6216\u6578\u503C\u7121\u6548`);
+    return n;
+  };
+  const ev2 = (e, scope) => {
+    if (e.state === "unknown") add2(scope, "\u9069\u7528\u4F9D\u64DA\u5C1A\u672A\u78BA\u8A8D");
+    if (!e.source.trim()) add2(scope, "\u8ACB\u586B\u6587\u4EF6\uFF0F\u689D\u6587\u53CA\u9069\u7528\u7BC4\u570D");
+    if (!dateValid(e.date) || !dateValid(m.assessmentDate) || e.date > m.assessmentDate) add2(scope, "\u4F9D\u64DA\u65E5\u671F\u9808\u6709\u6548\u4E14\u4E0D\u665A\u65BC\u8A55\u4F30\u57FA\u6E96\u65E5");
+    if (e.state === "documented" || e.state === "scenario") add2(scope, e.state === "scenario" ? "\u6B64\u7BC4\u570D\u63A1\u660E\u793A\u60C5\u5883\uFF0C\u5C1A\u5F85\u6838\u5B9A\uFF0F\u8986\u6838" : "\u6587\u4EF6\u5DF2\u8A18\u8F09\uFF0C\u500B\u6848\u9069\u7528\u6027\u5F85\u8986\u6838", "review");
+  };
+  for (const [id2, title] of reviewTopics) {
+    const record = m.reviews?.find((r) => r.id === id2);
+    if (!record || record.state === "unknown") {
+      add2("\u96D9\u5317\u6CD5\u898F\uFF0F" + title, "\u5C1A\u672A\u8A18\u9304\u500B\u6848\u9069\u7528\u6838\u5C0D");
+      continue;
+    }
+    if (record.state === "conflict") add2("\u96D9\u5317\u6CD5\u898F\uFF0F" + title, record.finding || "\u6240\u5217\u4F9D\u64DA\u8207\u672C\u6848\u689D\u4EF6\u885D\u7A81", "conflict");
+    ev2(record.evidence, "\u96D9\u5317\u6CD5\u898F\uFF0F" + title);
+    if (!record.finding.trim()) add2(title, "\u8ACB\u8A18\u9304\u9069\u7528\u5224\u65B7\u53CA\u4F9D\u64DA\uFF0C\u4E0D\u80FD\u50C5\u52FE\u9078\u5DF2\u6838\u5C0D");
+    if (record.basis !== reviewBasis(raw)) add2(title, "\u8F38\u5165\u5DF2\u8B8A\u66F4\uFF0C\u6B64\u9805\u9069\u7528\u6838\u5C0D\u9808\u91CD\u65B0\u78BA\u8A8D");
+  }
+  if (!m.designMode || m.designMode === "unknown") add2("\u898F\u5283\u9700\u6C42", "\u5C1A\u672A\u78BA\u8A8D\u898F\u5283\u65B9\u8981\u7D14\u4F4F\u5B85\u3001\u4F4F\u5546\u6DF7\u5408\u6216\u7D14\u975E\u4F4F\u5B85\uFF0C\u4E0D\u80FD\u63A8\u5B9A\u8A2D\u8A08\u6A21\u5F0F");
+  if (m.designMode === "residential" && m.allocations.some((a) => a.use !== "residential")) add2("\u898F\u5283\u9700\u6C42", "\u7D14\u4F4F\u5B85\u8A2D\u8A08\u8207\u975E\u4F4F\u5B85\u7528\u9014\u5217\u4E0D\u4E00\u81F4\uFF0C\u8ACB\u5148\u78BA\u8A8D\u898F\u5283\u9700\u6C42", "conflict");
+  if (m.designMode === "nonresidential" && m.allocations.some((a) => a.use === "residential")) add2("\u898F\u5283\u9700\u6C42", "\u7D14\u975E\u4F4F\u5B85\u8A2D\u8A08\u8207\u4F4F\u5B85\u7528\u9014\u5217\u4E0D\u4E00\u81F4", "conflict");
+  if (m.designMode === "mixed" && (!m.allocations.some((a) => a.use === "residential") || !m.allocations.some((a) => a.use === "retail" || a.use === "office"))) add2("\u898F\u5283\u9700\u6C42", "\u4F4F\u5546\u6DF7\u5408\u8A2D\u8A08\u9808\u5206\u5217\u4F4F\u5B85\u8207\u5546\u696D\u5BE6\u969B\u7528\u9014\u53CA\u9762\u7A4D\uFF0C\u4E0D\u80FD\u50C5\u586B\u5E97\u8216\u6BD4\u4F8B");
+  if (!dateValid(m.assessmentDate)) add2("\u6848\u4EF6", "\u8ACB\u586B\u6709\u6548\u8A55\u4F30\u57FA\u6E96\u65E5");
+  ev2(m.boundary, "\u7BC4\u570D\u76E4\u67E5");
+  if (m.joint === "forbidden") add2("\u5171\u540C\u958B\u767C", "\u5DF2\u78BA\u8A8D\u4E0D\u7B26\u5408\u4F75\u958B\u767C\u689D\u4EF6", "conflict");
+  else if (m.joint === "unknown") add2("\u5171\u540C\u958B\u767C", "\u540C\u4E00\u5EFA\u7BC9\u57FA\u5730\u53CA\u5171\u540C\u7533\u8ACB\u689D\u4EF6\u5F85\u78BA\u8A8D");
+  ev2(m.jointEvidence, "\u5171\u540C\u958B\u767C");
+  if (m.allocations.length) {
+    ev2(layout.evidence, "\u914D\u7F6E\u898F\u5247");
+    if (!layout.municipality.trim() || !layout.localPlan.trim()) add2("\u914D\u7F6E\u898F\u5247", "\u8ACB\u8A18\u9304\u6240\u5728\u5730\u53CA\u5DF2\u6838\u5C0D\u7684\u5730\u65B9\u571F\u7BA1\uFF0F\u90FD\u5E02\u8A08\u756B");
+    if (!layout.conditions.trim()) add2("\u914D\u7F6E\u898F\u5247", "\u8ACB\u8A18\u9304\u7528\u9014\u5340\u9694\u3001\u51FA\u5165\u53E3\u3001\u9000\u7E2E\u3001\u9AD8\u5EA6\u7B49\u9069\u7528\u689D\u4EF6\u53CA\u5716\u8AAA\u6AA2\u8A0E");
+    if (layout.openSpace === "unknown") add2("\u914D\u7F6E\u898F\u5247", "\u7A7A\u5730\u914D\u7F6E\u898F\u5247\u5F85\u78BA\u8A8D\uFF1B\u4E0D\u76F4\u63A5\u5224\u5B9A\u5404\u5340\u5EFA\u7BC9\u6295\u5F71\u8D85\u984D\u9055\u6CD5");
+    if (layout.volume === "unknown") add2("\u914D\u7F6E\u898F\u5247", "\u6A13\u5730\u677F\u8DE8\u5340\u914D\u7F6E\u898F\u5247\u5F85\u78BA\u8A8D\uFF1B\u4E0D\u76F4\u63A5\u5224\u5B9A\u8DE8\u5340\u914D\u7F6E\u9055\u6CD5");
+  }
+  if (layout.volume === "article165" && m.zones.some((z) => z.inclusion === "included" && (z.regime !== "urban" || z.zoningClass !== "standard"))) add2("\u914D\u7F6E\u898F\u5247", "\u7B2C165\u689D\u9808\u78BA\u8A8D\u9069\u7528\u5206\u5340\uFF1B\u5176\u4ED6\u4F7F\u7528\u5340\u3001\u7279\u5B9A\u5C08\u7528\u5340\u53CA\u516C\u5171\u8A2D\u65BD\u7528\u5730\u4E0D\u5F97\u9015\u5957\uFF0C\u672A\u77E5\u5206\u985E\u9808\u5148\u6838\u5C0D", "conflict");
+  if (!m.zones.length) add2("\u571F\u5730", "\u81F3\u5C11\u65B0\u589E\u4E00\u500B\u5206\u5340\u7BC4\u570D");
+  const parcelMap = /* @__PURE__ */ new Map();
+  for (const z of m.zones) {
+    const scope = z.name || "\u672A\u547D\u540D\u7BC4\u570D", a = num(z.area, "\u5206\u5340\u9762\u7A4D", scope);
+    if (a === 0) add2(scope, "\u5206\u5340\u9762\u7A4D\u9808\u5927\u65BC0", "conflict");
+    if (!z.name.trim() || !z.parcel.trim() || !z.plan.trim()) add2(scope, "\u8ACB\u586B\u7BC4\u570D\u540D\u7A31\u3001\u5730\u865F\uFF0F\u7BC4\u570D\u8B58\u5225\u53CA\u9069\u7528\u8A08\u756B");
+    if (z.parcel.trim()) {
+      const pa = num(z.parcelArea, "\u8A72\u7B46\u5730\u865F\u767B\u8A18\u9762\u7A4D", scope), key = z.parcel.trim(), existing = parcelMap.get(key);
+      if (existing) {
+        if (existing.area !== pa) add2(scope, "\u540C\u4E00\u5730\u865F\u767B\u8A18\u9762\u7A4D\u4E0D\u4E00\u81F4", "conflict");
+        existing.parts.push(a);
+      } else parcelMap.set(key, { area: pa, parts: [a] });
+    }
+    ev2(z.evidence, scope);
+    const lb = calculateLandBasis(z.landBasis, a, m.assessmentDate);
+    if (z.landBasis?.procedures?.some((p) => p.date > m.assessmentDate)) {
+      add2(scope, "\u7A0B\u5E8F\u65E5\u671F\u665A\u65BC\u8A55\u4F30\u57FA\u6E96\u65E5\uFF0C\u4E0D\u80FD\u63A1\u8A08\u5C1A\u672A\u751F\u6548\u689D\u4EF6");
+      for (const p of z.landBasis.procedures.filter((p2) => p2.date > m.assessmentDate)) for (const key of p.affects) lb.values[key] = null;
+    }
+    for (const i of lb.issues) add2(scope, i.message, i.kind);
+    if (z.inclusion === "pending") add2(scope, "\u662F\u5426\u8A08\u5165\u5EFA\u7BC9\u57FA\u5730\u5C1A\u672A\u78BA\u8A8D");
+    if (z.inclusion === "included" && z.regime !== "urban") add2(scope, "\u975E\u90FD\u5E02\u3001\u7279\u6B8A\u6216\u672A\u77E5\u7BA1\u5236\u5C1A\u672A\u652F\u63F4\u81EA\u52D5\u5224\u5B9A\uFF0C\u9808\u53E6\u8FA6\u5C08\u6848\u8A55\u4F30");
+    if (z.inclusion === "excluded") {
+      zones.push({ siteArea: lb.values.site, farArea: lb.values.far, coverageArea: lb.values.coverage, openCredit: lb.values.openCredit, id: z.id, name: scope, area: a, base: null, footprint: null, openSpace: null, award: null, allowed: null, obligation: null, afterObligation: null, counted: null, plannedFootprint: null, remaining: null });
+      continue;
+    }
+    if (layout.municipality === "\u65B0\u5317\u5E02" && z.ntpcUse === "commercial" && !z.commercialIntensity?.enabled) add2(scope, "\u5546\u696D\u5206\u5340\u9808\u958B\u555F\u5546\u696D\u5F37\u5EA6\u5C08\u9805\u6AA2\u6838\uFF0C\u4F4F\u5B85\u7528\u9014\u9808\u6AA2\u8A0E\u7B2C17\u689D");
+    const c = num(z.coverage, "\u5EFA\u853D\u7387", scope, 100), cr = z.commercialIntensity?.enabled ? calculateCommercialIntensity(z.commercialIntensity, lb.values.far === null ? "" : String(lb.values.far), z.coverage) : null, f = cr ? null : num(z.far, "\u57FA\u6E96\u5BB9\u7A4D\u7387", scope, 3e3);
+    if (cr) {
+      for (const error of cr.errors) add2(scope, error);
+      if (z.commercialIntensity.city !== layout.municipality.trim().replace("\u53F0\u5317", "\u81FA\u5317")) add2(scope, "\u5206\u5340\u5546\u696D\u5F37\u5EA6\u6240\u5728\u5730\u8207\u5168\u6848\u6240\u5728\u5730\u4E0D\u4E00\u81F4", "conflict");
+    }
+    const base = cr ? cr.errors.length ? null : cr.base : lb.values.far === null || f === null ? null : lb.values.far * f / 100, footprint = lb.values.coverage === null || c === null ? null : lb.values.coverage * c / 100;
+    let award = z.bonusMode === "none" ? 0 : null;
+    if (z.bonusMode === "unknown") add2(scope, "\u734E\u52F5\uFF0F\u5BB9\u79FB\u662F\u5426\u63A1\u8A08\u5C1A\u672A\u78BA\u8A8D");
+    if (z.bonusMode === "items") {
+      if (!z.bonuses.length) add2(scope, "\u5DF2\u9078\u9010\u9805\u8A08\u7B97\u4F46\u6C92\u6709\u734E\u52F5\u9805\u76EE");
+      const seen = /* @__PURE__ */ new Set();
+      const amounts = z.bonuses.map((b) => {
+        const s = scope + "\uFF0F" + (b.name || "\u672A\u547D\u540D\u734E\u52F5");
+        ev2(b.evidence, s);
+        if (!b.name.trim()) add2(s, "\u8ACB\u586B\u734E\u52F5\u540D\u7A31");
+        if (seen.has(b.name.trim())) add2(s, "\u540C\u7BC4\u570D\u6709\u540C\u540D\u734E\u52F5\uFF0C\u8ACB\u6392\u9664\u91CD\u8907\u5217\u8A08", "conflict");
+        seen.add(b.name.trim());
+        const v = num(b.value, b.mode === "percent" ? "\u734E\u52F5\u767E\u5206\u6BD4" : "\u734E\u52F5\u9762\u7A4D", s, b.mode === "percent" ? 1e3 : 1e9);
+        const denominator = b.base === "base" ? base : num(b.customBase, "\u6587\u4EF6\u53E6\u5B9A\u6BCD\u6578\u9762\u7A4D", s);
+        return v === null ? null : b.mode === "area" ? v : denominator === null ? null : denominator * v / 100;
+      });
+      award = sum(amounts);
+    }
+    const allowed = base === null || award === null ? null : base + award;
+    const obligation = num(z.obligation, "\u6350\u8D08\uFF0F\u56DE\u994B\u5BB9\u7A4D\u9762\u7A4D\uFF08\u7121\u5247\u586B0\uFF09", scope);
+    if (obligation !== null && obligation > 0 && !z.obligationSource.trim()) add2(scope, "\u8ACB\u586B\u6350\u8D08\uFF0F\u56DE\u994B\u9762\u7A4D\u4F9D\u64DA");
+    if (allowed !== null && obligation !== null && obligation > allowed) add2(scope, "\u56DE\u994B\u5BB9\u7A4D\u8D85\u904E\u8A72\u7BC4\u570D\u7E3D\u5BB9\u7A4D", "conflict");
+    if (z.commercialIntensity?.enabled && z.commercialIntensity.city === "\u65B0\u5317\u5E02" && m.allocations.some((a2) => a2.zoneId === z.id && a2.use === "residential")) {
+      const h = reviewNtpcHousing(z.commercialIntensity, lb.values.far === null ? "" : String(lb.values.far));
+      for (const error of h.errors) add2(scope, error);
+      const housing = m.allocations.filter((a2) => a2.zoneId === z.id && a2.use === "residential");
+      const bases = housing.map((a2) => num(a2.residentialBase ?? "", "\u4F4F\u5B85\u914D\u7F6E\u4E2D\u57FA\u6E96\u5BB9\u7A4D\u90E8\u5206", scope));
+      for (const a2 of housing) {
+        const b = value(a2.residentialBase ?? ""), t = value(a2.counted);
+        if (b !== null && t !== null && b > t + 0.01) add2(scope, "\u4F4F\u5B85\u57FA\u6E96\u90E8\u5206\u4E0D\u5F97\u8D85\u904E\u8A72\u5217\u4F4F\u5B85\u8A08\u5BB9\u7E3D\u9762\u7A4D", "conflict");
+      }
+      const used = sum(bases);
+      if (h.cap !== null && used !== null && used > h.cap + 0.01) add2(scope, "\u4F4F\u5B85\u914D\u7F6E\u57FA\u6E96\u5BB9\u7A4D\u8D85\u904E\u65B0\u5317\u5E02\u7B2C17\u689D\u4E0A\u9650", "conflict");
+      add2(scope, "\u4F4F\u5B85\u734E\u52F5\u8207\u8DE8\u5340\u4F86\u6E90\u6B78\u5C6C\u9808\u4F9D\u6838\u51C6\u6587\u4EF6\u6AA2\u8A0E\uFF0C\u4E0D\u4EE5\u7E3D\u5BB9\u7A4D\u5DEE\u984D\u63A8\u5B9A\u4F4F\u5B85\u734E\u52F5", "review");
+    }
+    const entries = m.allocations.filter((a2) => a2.zoneId === z.id), counted = sum(entries.map((a2) => value(a2.counted))), plannedFootprint = sum(entries.map((a2) => value(a2.footprint)));
+    if (counted !== null && allowed !== null && counted > allowed + 0.01) {
+      if (layout.volume === "separate") add2(scope, "\u672C\u6B21\u6240\u5217\u4F9D\u64DA\u8981\u6C42\u5206\u5340\u914D\u7F6E\uFF0C\u914D\u7F6E\u8A08\u5BB9\u9762\u7A4D\u8D85\u904E\u672C\u5340\u7522\u751F\u984D\u5EA6", "conflict");
+      else if (layout.volume === "unknown") add2(scope, "\u914D\u7F6E\u8A08\u5BB9\u8D85\u904E\u672C\u5340\u7522\u751F\u984D\u5EA6\uFF1B\u53EF\u80FD\u5C6C\u5408\u6CD5\u8DE8\u5340\u914D\u7F6E\uFF0C\u9808\u78BA\u8A8D\u7B2C165\u689D\u53CA\u5730\u65B9\u571F\u7BA1");
+    }
+    if (plannedFootprint !== null && footprint !== null && plannedFootprint > footprint + 0.01 && layout.openSpace === "separate") add2(scope, "\u672C\u6B21\u6240\u5217\u4F9D\u64DA\u8981\u6C42\u7A7A\u5730\u5206\u5340\u7559\u8A2D\uFF0C\u914D\u7F6E\u5EFA\u7BC9\u9762\u7A4D\u8D85\u904E\u672C\u5340\u984D\u5EA6", "conflict");
+    if (plannedFootprint !== null && a !== null && plannedFootprint > a + 0.01) add2(scope, "\u672C\u5340\u4E0D\u91CD\u8907\u5EFA\u7BC9\u6295\u5F71\u8D85\u904E\u672C\u5340\u571F\u5730\u9762\u7A4D\uFF0C\u8ACB\u6838\u5C0D\u91CD\u8907\u6216\u754C\u7DDA", "conflict");
+    zones.push({ siteArea: lb.values.site, farArea: lb.values.far, coverageArea: lb.values.coverage, openCredit: lb.values.openCredit, id: z.id, name: scope, area: a, base, footprint, openSpace: lb.values.coverage === null || footprint === null ? null : lb.values.coverage - footprint, award, allowed, obligation, afterObligation: allowed === null || obligation === null ? null : allowed - obligation, counted, plannedFootprint, remaining: allowed === null || counted === null ? null : allowed - counted });
+  }
+  totals2.tdr = m.zones.some((z) => !z.landBasis || z.landBasis.tdr.status === "unknown") ? null : 0;
+  const transferSources = /* @__PURE__ */ new Set();
+  for (const z of m.zones) {
+    const t = z.landBasis?.tdr;
+    if (t?.status !== "approved") continue;
+    const n = value(t.area), dest = zones.find((r) => r.id === t.receivingZone);
+    if (n === null || !t.source.trim() || !dest || dest.id === z.id || dest.siteArea === null || !dest.siteArea) {
+      add2(z.name, "\u5DF2\u6838\u51C6\u5BB9\u7A4D\u79FB\u8F49\u9808\u6709\u984D\u5EA6\u3001\u6838\u51C6\u4F9D\u64DA\u53CA\u6709\u6548\u63A5\u53D7\u57FA\u5730");
+      totals2.tdr = null;
+      continue;
+    }
+    if (transferSources.has(t.source.trim())) {
+      add2(z.name, "\u540C\u4E00\u5BB9\u7A4D\u79FB\u8F49\u6838\u51C6\u4F86\u6E90\u91CD\u8907\u5217\u5165\uFF0C\u8ACB\u5408\u4F75\u4E00\u7B46", "conflict");
+      totals2.tdr = null;
+      continue;
+    }
+    transferSources.add(t.source.trim());
+    if (m.zones.some((r) => r.bonuses.some((b) => b.evidence.source.trim() === t.source.trim()))) {
+      add2(z.name, "\u540C\u4E00\u5BB9\u7A4D\u79FB\u8F49\u4F86\u6E90\u5DF2\u5728\u4E00\u822C\u734E\u52F5\uFF0F\u5BB9\u79FB\u91CD\u8907\u5217\u5165", "conflict");
+      totals2.tdr = null;
+      continue;
+    }
+    if (dest.award !== null && dest.allowed !== null) {
+      dest.award += n;
+      dest.allowed += n;
+      if (dest.afterObligation !== null) dest.afterObligation += n;
+      if (dest.remaining !== null) dest.remaining += n;
+    }
+    if (totals2.tdr !== null) totals2.tdr += n;
+  }
+  for (const [p, v] of parcelMap) {
+    const parts = sum(v.parts);
+    if (parts !== null && v.area !== null && parts > v.area + 0.01) add2(p, "\u5206\u5340\u7BC4\u570D\u5408\u8A08\u8D85\u904E\u767B\u8A18\u9762\u7A4D\uFF0C\u53EF\u80FD\u91CD\u8907\u8A08\u5165", "conflict");
+  }
+  totals2.area = sum(m.zones.map((z) => value(z.area)));
+  totals2.renewal = m.zones.some((z) => !z.landBasis || z.landBasis.renewal === "unknown") ? null : sum(m.zones.filter((z) => z.landBasis?.renewal === "inside").map((z) => value(z.area)));
+  const declared = num(m.declaredArea, "\u66F4\u65B0\uFF0F\u8A55\u4F30\u7BC4\u570D\u7533\u5831\u9762\u7A4D", "\u7BC4\u570D\u76E4\u67E5");
+  if (declared !== null && totals2.renewal !== null && Math.abs(declared - totals2.renewal) > 0.01) add2("\u7BC4\u570D\u76E4\u67E5", `\u5404\u7BC4\u570D\u9762\u7A4D\u5408\u8A08 ${totals2.renewal.toLocaleString("zh-TW", { maximumFractionDigits: 2 })}\u33A1\uFF0C\u8207\u7533\u5831\u9762\u7A4D ${declared.toLocaleString("zh-TW", { maximumFractionDigits: 2 })}\u33A1 \u4E0D\u4E00\u81F4\uFF0C\u5DEE\u984D ${Math.abs(declared - totals2.renewal).toLocaleString("zh-TW", { maximumFractionDigits: 2 })}\u33A1\uFF1B\u4E0D\u5F97\u81EA\u52D5\u88DC\u5165\u4EFB\u4F55\u5206\u5340`, "conflict");
+  const included = m.zones.filter((z) => z.inclusion === "included");
+  if (m.zones.some((z) => z.inclusion === "pending")) add2("\u571F\u5730", "\u5C1A\u6709\u672A\u6C7A\u5B9A\u662F\u5426\u8A08\u5165\u57FA\u5730\u7684\u7BC4\u570D\uFF0C\u5168\u6848\u984D\u5EA6\u4E0D\u5B8C\u6574");
+  else if (included.length) {
+    totals2.included = sum(zones.map((z) => z.siteArea ?? null));
+    const excluded = m.zones.filter((z) => z.inclusion === "excluded");
+    totals2.excluded = totals2.area !== null && totals2.included !== null ? totals2.area - totals2.included : null;
+    const rs = zones.filter((z) => included.some((i) => i.id === z.id));
+    for (const k of ["base", "footprint", "openSpace", "award", "allowed", "obligation", "afterObligation"]) totals2[k] = sum(rs.map((z) => z[k]));
+  }
+  for (const a of m.allocations) {
+    const scope = "\u914D\u7F6E\uFF0F" + (m.buildings.find((b) => b.id === a.building)?.name || "\u672A\u6307\u5B9A\u5E62\u5225"), z = m.zones.find((z2) => z2.id === a.zoneId);
+    if (!z || z.inclusion !== "included") add2(scope, "\u914D\u7F6E\u9808\u6307\u5B9A\u5DF2\u7D0D\u5165\u7684\u5206\u5340\u7BC4\u570D", "conflict");
+    if (!m.buildings.some((b) => b.id === a.building)) add2(scope, "\u914D\u7F6E\u7F3A\u5C11\u6709\u6548\u5EFA\u7BC9\u5E62\u5225", "conflict");
+    for (const [k, label] of [["counted", "\u8A08\u5BB9\u9762\u7A4D"], ["footprint", "\u6B64\u7528\u9014\u4E0D\u91CD\u8907\u5EFA\u7BC9\u6295\u5F71\u9762\u7A4D"], ["height", "\u914D\u7F6E\u9AD8\u5EA6"], ["parkingArea", "\u505C\u8ECA\u6AA2\u8A0E\u6A13\u5730\u677F\u9762\u7A4D"], ["units", "\u55AE\u5143\u6578"]]) {
+      const n = num(a[k], label, scope);
+      if (k === "units" && n !== null && !Number.isSafeInteger(n)) add2(scope, "\u55AE\u5143\u6578\u9808\u70BA\u6574\u6578", "conflict");
+    }
+    if (a.permission === "forbidden") add2(scope, "\u6B64\u7528\u9014\u5728\u6240\u5C6C\u5206\u5340\u4E0D\u5141\u8A31", "conflict");
+    if (a.permission === "unknown") add2(scope, "\u7528\u9014\u5BB9\u8A31\u689D\u4EF6\u5F85\u78BA\u8A8D");
+    ev2(a.evidence, scope);
+    if (z) {
+      const limit = value(z.maxHeight), height = value(a.height);
+      if (limit === null) add2(scope, "\u6240\u5C6C\u5206\u5340\u9AD8\u5EA6\u9650\u5236\uFF0F\u4E0D\u8A2D\u56FA\u5B9A\u4E0A\u9650\u4F9D\u64DA\u5F85\u8986\u6838", "review");
+      else if (height !== null && height > limit) add2(scope, "\u914D\u7F6E\u9AD8\u5EA6\u8D85\u904E\u6240\u5C6C\u5206\u5340\u4E0A\u9650", "conflict");
+      if (!z.constraints.trim()) add2(scope, "\u9000\u7E2E\u3001\u81E8\u8DEF\u53CA\u5176\u4ED6\u500B\u6848\u9650\u5236\u5C1A\u672A\u8A18\u9304", "review");
+    }
+  }
+  if (layout.municipality === "\u65B0\u5317\u5E02" && included.length > 1) {
+    const crosses = m.buildings.some((b) => new Set(m.allocations.filter((a) => a.building === b.id).map((a) => a.zoneId)).size > 1);
+    const zs = zones.filter((z) => included.some((i) => i.id === z.id)).map((z) => ({ ...z, kind: m.zones.find((i) => i.id === z.id)?.ntpcUse }));
+    if (included.some((z) => !z.ntpcUse || z.ntpcUse === "unknown")) add2("\u65B0\u53171080894762", "\u8ACB\u78BA\u8A8D\u5404\u7BC4\u570D\u571F\u5730\u5206\u5340\u985E\u578B\uFF0C\u4E0D\u4EE5\u5206\u5340\u540D\u7A31\u63A8\u5B9A");
+    if (included.some((z) => z.ntpcUse === "industrial")) add2("\u65B0\u53171080894762", "\u5DE5\u696D\u5340\u79FB\u5165\u5BB9\u7A4D\u4E0D\u5F97\u7D0D\u5165\u5DE5\u696D\u4F7F\u7528\u7E3D\u91CF\u7BA1\u5236\u6BCD\u6578\uFF1B\u9808\u53E6\u9644\u7E3D\u91CF\u7BA1\u5236\u8A08\u7B97\u53CA\u5404\u9805\u5206\u5340\u6AA2\u8A0E", "review");
+    for (const i of reviewNtpcCross(m.ntpcCross, zs, crosses)) add2("\u65B0\u53171080894762", i.message, i.kind);
+  }
+  if (totals2.tdr === null) {
+    totals2.award = null;
+    totals2.allowed = null;
+    totals2.afterObligation = null;
+  }
+  totals2.counted = sum(m.allocations.map((a) => value(a.counted)));
+  totals2.farArea = sum(zones.map((z) => z.farArea ?? null));
+  totals2.coverageArea = sum(zones.map((z) => z.coverageArea ?? null));
+  totals2.openCredit = sum(zones.map((z) => z.openCredit ?? null));
+  if (totals2.openCredit !== null && totals2.openSpace !== null && totals2.openCredit + 0.01 < totals2.openSpace) add2("\u6CD5\u5B9A\u7A7A\u5730", "\u5BE6\u969B\u8A8D\u5217\u6CD5\u5B9A\u7A7A\u5730\u4E0D\u8DB3\uFF0C\u516C\u5171\u4EBA\u884C\u6B65\u9053\u9762\u7A4D\u4E0D\u6703\u81EA\u52D5\u62B5\u5145", "conflict");
+  const totalProjection = sum(m.allocations.map((a) => value(a.footprint)));
+  if (totals2.counted !== null && totals2.allowed !== null && totals2.counted > totals2.allowed + 0.01) add2("\u5168\u6848\u914D\u7F6E", "\u5168\u6848\u8A08\u5BB9\u914D\u7F6E\u8D85\u904E\u5404\u5206\u5340\u7522\u751F\u7684\u5BB9\u7A4D\u5408\u8A08", "conflict");
+  if (totalProjection !== null && totals2.footprint !== null && totalProjection > totals2.footprint + 0.01) add2("\u5168\u6848\u914D\u7F6E", "\u5168\u6848\u5EFA\u7BC9\u6295\u5F71\u8D85\u904E\u5408\u8A08\u5EFA\u7BC9\u9762\u7A4D\u984D\u5EA6\uFF0C\u61C9\u7559\u7A7A\u5730\u4E0D\u8DB3", "conflict");
+  if (layout.volume === "project" && m.allocations.length) add2("\u914D\u7F6E\u898F\u5247", "\u6309\u6240\u5217\u500B\u6848\u4F9D\u64DA\u6AA2\u8A0E\u8DE8\u5340\u914D\u7F6E\uFF1B\u672C\u7248\u50C5\u6838\u5C0D\u7E3D\u91CF\uFF0C\u500B\u6848\u9644\u5E36\u689D\u4EF6\u9808\u53E6\u6838", "review");
+  if (!m.allocations.length) add2("\u914D\u7F6E", "\u5C1A\u672A\u63D0\u4F9B\u5206\u5340\u7528\u9014\u914D\u7F6E\uFF0C\u4FDD\u7559\u958B\u767C\u91CF\u7D50\u679C\uFF0C\u672A\u63A8\u4F30\u6236\u6578\uFF0F\u53EF\u552E\u9762\u7A4D");
+  const buildingNames = /* @__PURE__ */ new Set();
+  for (const b of m.buildings) {
+    const scope = "\u505C\u8ECA\uFF0F" + (b.name || "\u672A\u547D\u540D\u5E62\u5225");
+    if (!b.name.trim()) add2(scope, "\u8ACB\u586B\u5E62\u5225\u540D\u7A31");
+    if (buildingNames.has(b.name.trim())) add2(scope, "\u540C\u540D\u5E62\u5225\u53EF\u80FD\u91CD\u8907\u53D6\u5F97\u514D\u8A2D\u984D\u5EA6", "conflict");
+    buildingNames.add(b.name.trim());
+    const entries = m.allocations.filter((a) => a.building === b.id), first = sum(entries.filter((a) => a.use === "retail" || a.use === "office").map((a) => value(a.parkingArea))), second = sum(entries.filter((a) => a.use === "residential").map((a) => value(a.parkingArea)));
+    const r = { id: b.id, name: b.name, cars: null, motos: null, first, second, formula: "\u5F85\u78BA\u8A8D", method: b.mode === "reviewed" ? "\u5C08\u6848\u6587\u4EF6\u8A18\u8F09\u503C" : b.mode === "taipei861" ? "\u81FA\u5317\u5E02\u7B2C86-1\u689D\u8A08\u7B97" : "\u4E2D\u592E\u7B2C59\u689D\u8A08\u7B97" };
+    parking.push(r);
+    ev2(b.evidence, scope);
+    if (b.mode === "unknown") {
+      add2(scope, "\u5C1A\u672A\u78BA\u8A8D\u90FD\u5E02\u8A08\u756B\u505C\u8ECA\u898F\u5247");
+      continue;
+    }
+    if (!entries.length) {
+      add2(scope, "\u672C\u5E62\u5C1A\u7121\u7528\u9014\u6A13\u5730\u677F\u9762\u7A4D");
+      continue;
+    }
+    if (b.mode === "reviewed") {
+      const n = num(b.reviewedCars, "\u5C08\u6848\u8986\u6838\u6CD5\u5B9A\u8ECA\u4F4D\u6578", scope);
+      if (n !== null && Number.isSafeInteger(n) && b.evidence.state === "verified" && b.evidence.source.trim()) {
+        r.cars = n;
+        r.formula = "\u4F9D\u500B\u6848\u8986\u6838\u6587\u4EF6\uFF0C\u4E0D\u5192\u7A31\u7CFB\u7D71\u81EA\u52D5\u8A08\u7B97";
+      } else add2(scope, "\u6587\u4EF6\u8ECA\u4F4D\u6578\u9808\u70BA\u975E\u8CA0\u6574\u6578\u4E14\u5177\u5DF2\u8986\u6838\u4F86\u6E90");
+      continue;
+    }
+    const city = layout.municipality.trim().replace("\u53F0\u5317", "\u81FA\u5317");
+    if (!city) {
+      add2(scope, "\u5148\u78BA\u8A8D\u6240\u5728\u5730\uFF0C\u907F\u514D\u8AA4\u7528\u4E2D\u592E\u6216\u5730\u65B9\u505C\u8ECA\u898F\u5247");
+      continue;
+    }
+    if (b.mode === "article59" && city === "\u81FA\u5317\u5E02") {
+      add2(scope, "\u81FA\u5317\u5E02\u53E6\u6709\u7B2C86-1\u689D\uFF0C\u4E0D\u80FD\u56E0\u500B\u6848\u8A08\u756B\u672A\u8A02\u5373\u5957\u4E2D\u592E\u7B2C59\u689D", "conflict");
+      continue;
+    }
+    if (b.mode === "taipei861") {
+      if (city !== "\u81FA\u5317\u5E02") {
+        add2(scope, "\u81FA\u5317\u5E02\u7B2C86-1\u689D\u4E0D\u9069\u7528\u5176\u4ED6\u7E23\u5E02", "conflict");
+        continue;
+      }
+      if (b.publicBuilding !== "no") {
+        add2(scope, "\u516C\u6709\u5EFA\u7BC9\u9808\u53E6\u6838\u884C\u653F\u6A5F\u95DC\u53CA\u57FA\u5730\u898F\u6A21\u52A0\u500D\u898F\u5B9A");
+        continue;
+      }
+      if (entries.some((a) => m.zones.find((z) => z.id === a.zoneId)?.regime !== "urban")) {
+        add2(scope, "\u672C\u5206\u5340\u4E0D\u5728\u90FD\u5E02\u8A08\u756B\u81EA\u52D5\u8A08\u7B97\u7BC4\u570D");
+        continue;
+      }
+      if (entries.some((a) => !a.taipeiGroup || a.taipeiGroup === "unknown" || value(a.parkingArea) === null)) {
+        add2(scope, "\u8ACB\u9010\u7528\u9014\u586B\u81FA\u5317\u5E02\u4F7F\u7528\u7D44\u5225\u53CA\u505C\u8ECA\u9762\u7A4D\uFF1B\u5176\u4ED6\u7D44\u5225\u53E6\u4F5C\u5C08\u6848\u8986\u6838");
+        continue;
+      }
+      if (entries.some((a) => a.taipeiGroup === "2" ? a.use !== "residential" : ["17", "19", "20a"].includes(a.taipeiGroup) ? a.use !== "retail" : a.use !== "office")) {
+        add2(scope, "\u4F7F\u7528\u7D44\u5225\u8207\u5EFA\u7BC9\u7528\u9014\u77DB\u76FE", "conflict");
+        continue;
+      }
+      const housing = entries.filter((a) => a.taipeiGroup === "2").reduce((n, a) => n + value(a.parkingArea), 0);
+      const shops = entries.filter((a) => ["17", "19", "20a"].includes(a.taipeiGroup)).reduce((n, a) => n + value(a.parkingArea), 0);
+      const offices = entries.filter((a) => ["28", "29"].includes(a.taipeiGroup)).reduce((n, a) => n + value(a.parkingArea), 0);
+      const tier = (a) => Math.min(a, 2e3) / 100 + Math.min(Math.max(a - 2e3, 0), 2e3) / 150 + Math.min(Math.max(a - 4e3, 0), 6e3) / 200 + Math.max(a - 1e4, 0) / 250;
+      r.cars = Math.ceil(housing / 120 + tier(shops) + tier(offices));
+      r.motos = Math.ceil(housing / 100 + shops / 200 + offices / 140);
+      r.formula = `\u6C7D\u8ECA ceil(\u4F4F\u5B85${housing}/120 + \u96F6\u552E${shops}\u53CA\u8FA6\u516C${offices}\u5404\u985E\u5206\u6BB5\u7D2F\u52A0)\uFF1B\u6A5F\u8ECA ceil(${housing}/100 + ${shops}/200 + ${offices}/140)\uFF1B\u540C\u5E62\u5408\u8A08\u5F8C\u9032\u4F4D\uFF0C\u7121300\uFF0F500\u33A1\u514D\u8A2D\u984D\u5EA6`;
+      add2(scope, "\u672C\u6B21\u8A08\u6C7D\u6A5F\u8ECA\uFF1B\u7B2C86-2\u689D\u88DD\u5378\u4F4D\u3001\u5176\u4ED6\u7528\u9014\u3001\u516C\u6709\u8EAB\u5206\u53CA\u500B\u6848\u7279\u6B8A\u8981\u6C42\u53E6\u6838", "review");
+      continue;
+    }
+    if (b.publicBuilding !== "no") {
+      add2(scope, "\u516C\u6709\u5EFA\u7BC9\u6216\u8EAB\u5206\u672A\u77E5\uFF0C\u9808\u53E6\u6838\u7B2C59\u689D\u52A0\u500D\u7B49\u898F\u5B9A");
+      continue;
+    }
+    if (entries.some((a) => a.use === "other" || m.zones.find((z) => z.id === a.zoneId)?.regime !== "urban")) {
+      add2(scope, "\u672C\u5E62\u7528\u9014\u6216\u7BA1\u5236\u4E0D\u5728\u90FD\u5E02\u7B2C\u4E00\u3001\u4E8C\u985E\u81EA\u52D5\u8A08\u7B97\u7BC4\u570D");
+      continue;
+    }
+    if (entries.some((a) => value(a.parkingArea) === null)) {
+      add2(scope, "\u505C\u8ECA\u6AA2\u8A0E\u9762\u7A4D\u4E0D\u5B8C\u6574");
+      continue;
+    }
+    const f = first ?? 0, s = second ?? 0;
+    let free2;
+    if (f > 0 && s > 0) {
+      if (f <= 300 || s <= 500) {
+        free2 = 300;
+        r.formula = `ceil(max(0, (${f} + ${s}) \u2212 300) \xF7 150)`;
+      } else {
+        if (b.exemption === "unknown") {
+          add2(scope, "\u540C\u5E62\u6DF7\u5408\u7528\u9014\u9808\u64C7\u4E00\u514D\u8A2D\u984D\u5EA6");
+          continue;
+        }
+        free2 = b.exemption === "first" ? 300 : 500;
+        r.formula = `ceil(max(0, (${f} + ${s}) \u2212 ${free2}) \xF7 150)`;
+      }
+    } else {
+      free2 = f > 0 ? 300 : 500;
+      r.formula = `ceil(max(0, ${f + s} \u2212 ${free2}) \xF7 150)`;
+    }
+    r.cars = Math.ceil(Math.max(0, f + s - free2) / 150);
+  }
+  totals2.cars = sum(parking.map((p) => p.cars));
+  if (!m.buildings.length) add2("\u505C\u8ECA", "\u5C1A\u672A\u5EFA\u7ACB\u5EFA\u7BC9\u5E62\u5225\uFF0C\u672A\u8A08\u7B97\u6CD5\u5B9A\u505C\u8ECA");
+  return out(issues.some((i) => i.kind === "conflict") ? "conflict" : issues.some((i) => i.kind === "missing") ? "incomplete" : issues.length ? "conditional" : "checked");
+}
+function mixedSummary(m, r) {
+  const inputs = [];
+  const flatten = (v, path) => {
+    if (v && typeof v === "object") {
+      for (const [k, x] of Object.entries(v)) {
+        if (["basis", "id", "version"].includes(k)) continue;
+        flatten(x, path ? path + "\uFF0F" + k : k);
+      }
+    } else inputs.push([path, v === "" ? "\u672A\u586B" : String(v ?? "\u672A\u586B")]);
+  };
+  flatten(m, "\u539F\u59CB\u8F38\u5165");
+  const fmt = (v) => v === null ? "\u5F85\u88DC\u8CC7\u6599" : v.toLocaleString("zh-TW", { maximumFractionDigits: 2 });
+  for (const z of r.zones) inputs.unshift([z.name, `\u571F\u5730${fmt(z.area)}\u33A1\uFF1B\u57FA\u6E96\u5BB9\u7A4D${fmt(z.base)}\u33A1\uFF1B\u734E\u52F5${fmt(z.award)}\u33A1\uFF1B\u5408\u8A08${fmt(z.allowed)}\u33A1\uFF1B\u5EFA\u7BC9\u9762\u7A4D${fmt(z.footprint)}\u33A1\uFF1B\u61C9\u7559\u7A7A\u5730${fmt(z.openSpace)}\u33A1`]);
+  for (const p of r.parking) inputs.push(["\u505C\u8ECA\uFF0F" + p.name, `${p.method}\uFF1A${p.formula}\uFF1D${fmt(p.cars)}\u4F4D\uFF1B\u6A5F\u8ECA${fmt(p.motos)}\u4F4D`]);
+  return { title: m.name || "\u6DF7\u5408\u5206\u5340\u8A55\u4F30", kind: "\u5206\u5340\u958B\u767C\u91CF\u8207\u7528\u9014\u6AA2\u6838", status: { incomplete: "\u8CC7\u6599\u5C1A\u7F3A", conflict: "\u689D\u4EF6\u885D\u7A81", conditional: "\u9644\u689D\u4EF6\u8A55\u4F30", checked: "\u8F38\u5165\u76E4\u67E5\u5B8C\u6210\uFF08\u975E\u5EFA\u7167\u5BE9\u67E5\uFF09" }[r.status], createdAt: (/* @__PURE__ */ new Date()).toISOString(), ruleVersion: MIXED_VERSION, reviewedAt: "2026-10-24", metrics: [["\u57FA\u6E96\u5BB9\u7A4D", r.totals.base, "\u33A1"], ["\u5BB9\u7A4D\u984D\u5EA6\u5408\u8A08", r.totals.allowed, "\u33A1"], ["\u5EFA\u7BC9\u9762\u7A4D\u984D\u5EA6\u5408\u8A08", r.totals.footprint, "\u33A1"], ["\u6CD5\u5B9A\u6C7D\u8ECA\u4F4D", r.totals.cars, "\u4F4D"]], conditions: [["\u8A55\u4F30\u57FA\u6E96\u65E5", m.assessmentDate || "\u672A\u586B"], ["\u5168\u6848\u7D0D\u5165\u571F\u5730", m.declaredArea ? m.declaredArea + "\u33A1" : "\u672A\u586B"], ["\u8A55\u4F30\u7BC4\u570D", "\u984D\u5EA6\u5206\u5340\u6838\u7B97\u3001\u914D\u7F6E\u4F9D\u9069\u7528\u6CD5\u898F\u6574\u9AD4\u6AA2\u8A0E\uFF1B\u7528\u9014\u4F9D\u5EA7\u843D\u5206\u5340\u7BA1\u5236"], ["\u5F8C\u7E8C\u929C\u63A5", "\u672A\u7522\u751F\u53EF\u552E\u576A\u6548\uFF0C\u672A\u5957\u5165\u6210\u672C\u3001\u552E\u50F9\u6216\u878D\u8CC7"]], charts: [], inputs, issues: r.issues.map((i) => i.scope + "\uFF1A" + i.message), assumptions: r.notes, sources: [m.boundary.source, m.jointEvidence.source, m.layout?.evidence.source || "", ...m.zones.flatMap((z) => [z.evidence.source, z.obligationSource, ...z.bonuses.map((b) => b.evidence.source)]), ...mixedSources.map((s) => s.title + " " + s.url)].filter(Boolean) };
+}
+
+// ../sanze-release-app/src/lib/planning/escapeStairs.ts
 function reviewEscapeStairs(i) {
   const aboveTwo = i.aboveFloors >= 8 || i.abovePlate > 240;
   const basementTwo = i.basementPlates.some((a) => a >= 200);
@@ -2106,7 +3277,7 @@ function reviewEscapeStairs(i) {
   };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/smallSiteParking.ts
+// ../sanze-release-app/src/lib/planning/smallSiteParking.ts
 var SMALL_SITE_VERSION = "small-site.2026-10-19.v1";
 var defaultGroundAccessibility = () => ({ available: true, routeWidth: 1.5, routeLength: 4, otherArea: 54 });
 var defaultSmallSiteParking = () => ({ version: SMALL_SITE_VERSION, groundAccessibility: defaultGroundAccessibility(), mechanicalType: "stacked", warehouseAisleWidth: 3, warehouseTransferArea: 20, warehouseEquipmentArea: 12, access: "ramp", mechanical: false, allocation: "b1", groundCars: 0, targetCars: 0, groundArea: 0, liftCount: 1, shaftWidth: 3.5, shaftLength: 5.7, waitingWidth: 6, waitingDepth: 6, landingArea: 20, twoWheelLiftArea: 9, mechanicalSpaces: 2, mechanicalWidth: 2.5, mechanicalLength: 5.5, mechanicalClearHeight: 1.8, mechanicalHeight: 4, overhead: 0.3, pit: 0.6, targetMechanical: 0, localReview: "unknown", reviewSource: "", tdrPoints: "" });
@@ -2195,7 +3366,7 @@ function allocateSmallSite(s, c) {
   const accessArea = s.access === "lift" ? s.shaftWidth * s.shaftLength * s.liftCount + s.landingArea + s.twoWheelLiftArea : c.rampArea;
   function simulate(floors2, mechanicalTarget) {
     let motos = c.motos, bikes = c.bikes, mechanical = mechanicalTarget, flat = c.requested - groundCars - mechanicalTarget, accessibleLeft = Math.max(0, c.accessible - groundCars);
-    const rows = [];
+    const rows5 = [];
     const quantityFloors = [];
     let capacity = groundCars, mechanicalArea = 0, warehouseArea = 0, flatArea = 0, equipmentArea = 0, lossArea = 0, spareArea = 0;
     for (let j = 0; j < floors2; j++) {
@@ -2239,7 +3410,7 @@ function allocateSmallSite(s, c) {
       equipmentArea += eq + (j === 0 ? c.bicycleLiftArea : 0);
       lossArea += turn;
       spareArea += shelterOnly;
-      rows.push({ label: `B${j + 1}`, flat: takeFlat + takeAccessible, mechanical: takeMechanical, motos: takeM, bikes: takeB, plate, used: slab, remaining: plate - slab });
+      rows5.push({ label: `B${j + 1}`, flat: takeFlat + takeAccessible, mechanical: takeMechanical, motos: takeM, bikes: takeB, plate, used: slab, remaining: plate - slab });
       quantityFloors.push({ label: `B${j + 1}`, cars: takeMechanical + takeFlat + takeAccessible, equipment: eq + (j === 0 ? c.bicycleLiftArea : 0), ramp: accessArea, fixed: fixed - (j === 0 ? c.bicycleLiftArea : 0), loss: turn, slab, shelterOnly });
     }
     if (motos || bikes || mechanical || flat || accessibleLeft) return null;
@@ -2247,8 +3418,8 @@ function allocateSmallSite(s, c) {
     mechanicalArea += warehouseArea;
     const carArea = flatArea + mechanicalArea, motoArea = c.motos * c.motoModule + c.motoAccessibleExtra, bikeArea = c.bikes * c.motoModule, communityArea = c.community * c.carModule;
     const parkingArea = carArea + motoArea + bikeArea + communityArea + rampTotal + lossArea;
-    const smallSite = { status: s.localReview === "confirmed" ? "documented" : "conditional", access: s.access, rows, groundArea, waitingArea, groundReview, conditions };
-    return { smallSite, quantityFloors, flatCars: cars - mechanicalTarget, mechanicalCars: mechanicalTarget, mechanicalArea, undergroundFlatCars: cars - groundCars - mechanicalTarget, groundCars, cars, capacity, floors: floors2, neededFloors: floors2, basement, carArea, motoArea, bikeArea, communityArea, parkingArea, basementCommon: basement - parkingArea, equipmentArea, rampTotal, lossArea, spareArea, b1Capacity: rows[0].flat + rows[0].mechanical, otherCapacity: rows.length > 1 ? Math.min(...rows.slice(1).map((r) => r.flat + r.mechanical)) : 0 };
+    const smallSite = { status: s.localReview === "confirmed" ? "documented" : "conditional", access: s.access, rows: rows5, groundArea, waitingArea, groundReview, conditions };
+    return { smallSite, quantityFloors, flatCars: cars - mechanicalTarget, mechanicalCars: mechanicalTarget, mechanicalArea, undergroundFlatCars: cars - groundCars - mechanicalTarget, groundCars, cars, capacity, floors: floors2, neededFloors: floors2, basement, carArea, motoArea, bikeArea, communityArea, parkingArea, basementCommon: basement - parkingArea, equipmentArea, rampTotal, lossArea, spareArea, b1Capacity: rows5[0].flat + rows5[0].mechanical, otherCapacity: rows5.length > 1 ? Math.min(...rows5.slice(1).map((r) => r.flat + r.mechanical)) : 0 };
   }
   function fit(floors2) {
     if (!automaticMechanical) return simulate(floors2, fixedMechanical);
@@ -2288,7 +3459,7 @@ function allocateSmallSite(s, c) {
   return { errors, notes, values, capacityFailure: false };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/basementDemand.ts
+// ../sanze-release-app/src/lib/planning/basementDemand.ts
 var BASEMENT_DEMAND_VERSION = "basement-demand.2026-10-19.v1";
 var defaultBasementDemand = (district = "") => ({ version: BASEMENT_DEMAND_VERSION, enabled: true, mechanicalType: "stacked", rule: /新北/.test(district) ? "ntpc_general" : /臺北|台北/.test(district) ? "taipei_general" : "documented", source: "", maxFloors: "30", allowAlternatives: true });
 var isBasementDemand = (x) => !!x && typeof x === "object" && x.version === BASEMENT_DEMAND_VERSION && typeof x.enabled === "boolean" && (x.mechanicalType === void 0 || ["stacked", "warehouse"].includes(x.mechanicalType)) && ["documented", "ntpc_general", "taipei_general", "nangang_general", "nangang_rebuild"].includes(x.rule) && (x.stricterCap === void 0 || typeof x.stricterCap === "string") && (x.stricterSource === void 0 || typeof x.stricterSource === "string") && (x.taipeiPlanUnspecified === void 0 || typeof x.taipeiPlanUnspecified === "boolean") && (x.taipeiZone === void 0 || ["res12", "res34", "commercial", "industrial", "protected", "public", "other"].includes(x.taipeiZone)) && ["source", "maxFloors"].every((k) => typeof x[k] === "string") && typeof x.allowAlternatives === "boolean" && (x.warehouse === void 0 || ["aisleWidth", "transferArea", "equipmentArea", "levels", "equipmentHeight"].every((k) => Number.isFinite(x.warehouse[k]) && x.warehouse[k] >= 0));
@@ -2370,18 +3541,18 @@ function calculateDemandBasement(i, run) {
   candidates.sort((a, b) => a.result.values.floors - b.result.values.floors || (a.result.parking?.values?.mechanicalCars ?? 0) - (b.result.parking?.values?.mechanicalCars ?? 0) || a.rank - b.rank);
   const selected = candidates[0];
   if (!selected) return { ...run({ ...plain, excavation: String(limit.cap) }), values: null, errors: ["\u5728\u76EE\u524D\u57FA\u5730\u958B\u6316\u7BC4\u570D\u3001\u8A2D\u5099\u5C3A\u5BF8\u8207\u641C\u5C0B\u5C64\u6578\u5167\uFF0C\u6C92\u6709\u5B8C\u6210\u505C\u8ECA\u53CA\u5BB9\u7A4D\u6AA2\u6838\u7684\u65B9\u6848\uFF1B\u8ACB\u6AA2\u67E5\u500B\u6848\u9650\u5236\u53CA\u5177\u540D\u5FC5\u8981\u7A7A\u9593\u3002", ...new Set(trials.flatMap((t) => t.errors))], notes: [...limit.notes, ...trials.map((t) => `${t.mode}\uFF1A${t.errors.join("\uFF1B")}`)] };
-  const rows = selected.result.parking?.values?.quantityFloors ?? [], actualMaxPlate = Math.max(...rows.map((r) => r.slab)), actualExcavationPercent = actualMaxPlate / Number(i.site) * 100;
+  const rows5 = selected.result.parking?.values?.quantityFloors ?? [], actualMaxPlate = Math.max(...rows5.map((r) => r.slab)), actualExcavationPercent = actualMaxPlate / Number(i.site) * 100;
   const review = { resolved: { excavation: selected.input.excavation, excavationCap: selected.input.excavationCap, excavationReference: selected.input.excavationReference, basementFloors: selected.input.basementFloors, basementMode: selected.input.basementMode, parkingDesign: selected.input.parkingDesign, quantityReserve: selected.input.quantityReserve }, capPercent: limit.cap, source: limit.source, actualMaxPlate, actualExcavationPercent, mode: selected.name, trials };
   return { ...selected.result, basementDemandReview: review, notes: [...limit.notes, `\u5730\u4E0B\u9700\u6C42\u6AA2\u8A0E\uFF1A\u958B\u6316\u4E0A\u9650${limit.cap}%\uFF08${(Number(i.site) * limit.cap / 100).toFixed(2)}\u33A1\uFF09\uFF1B\u4F9D\u5FC5\u8981\u7A7A\u9593\u9010\u5C64\u52A0\u7E3D\uFF0C\u6700\u5927\u5BE6\u7528\u6A13\u677F${actualMaxPlate.toFixed(2)}\u33A1\uFF08${actualExcavationPercent.toFixed(2)}%\uFF09\uFF0C\u63A1${selected.name}\u3001\u5730\u4E0B${selected.result.values.floors}\u5C64\u3002`, ...trials.map((t) => `${t.mode}\uFF1A${t.floors === null ? "\u672C\u641C\u5C0B\u7BC4\u570D\u672A\u901A\u904E" : `\u81F3\u5C11\u5730\u4E0B${t.floors}\u5C64\u3001\u6C7D\u8ECA${t.cars}\u4F4D\u3001\u6A5F\u68B0${t.mechanical}\u4F4D`}\u3002`), "\u9078\u64C7\u9806\u5E8F\uFF1A\u5148\u6BD4\u8F03\u5761\u9053\u5E73\u9762\uFF0C\u6309\u5B8C\u6574\u9700\u6C42\u9078\u5730\u4E0B\u5C64\u6578\u8F03\u5C11\u8005\uFF1B\u540C\u5C64\u6578\u512A\u5148\u5C11\u6A5F\u68B0\u3001\u518D\u512A\u5148\u5761\u9053\u3002\u672A\u4F7F\u7528\u5EFA\u7167\u539F\u8ECA\u4F4D\u6216\u5730\u4E0B\u5C64\u6578\u4F5C\u76EE\u6A19\uFF1B\u7121\u5761\u9053\u65B9\u6848\u50C5\u4F8B\u5916\u7559\u5FC5\u8981\u5730\u9762\u7121\u969C\u7919\u8ECA\u4F4D\uFF0C\u5305\u542B\u65BC\u7E3D\u9700\u6C42\uFF1B\u4E0D\u589E\u52A0\u4E00\u822C\u5730\u9762\u505C\u8ECA\u3002", "\u672A\u53D6\u5F97\u5730\u8CEA\u3001\u65BD\u5DE5\u53CA\u5BE6\u969B\u5E73\u9762\u8CC7\u6599\uFF1B\u672C\u7D50\u679C\u70BA\u9762\u7A4D\u914D\u7F6E\u5019\u9078\uFF0C\u641C\u5C0B\u4E0A\u9650\u4E0D\u662F\u5DE5\u7A0B\u53EF\u884C\u6DF1\u5EA6\uFF0C\u5347\u964D\u6A5F\u53CA\u6A5F\u68B0\u8A2D\u5099\u5C64\u9AD8\u8207\u7121\u969C\u7919\u5BA2\u68AF\u901A\u8DEF\u4ECD\u9808\u5716\u8AAA\u8986\u6838\u3002", ...selected.result.notes] };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/landAreaRatios.ts
+// ../sanze-release-app/src/lib/planning/landAreaRatios.ts
 function landAreaRatios(totalFloorAreaSqm, saleableAreaSqm, siteAreaSqm) {
   const ratio = (area2) => Number.isFinite(siteAreaSqm) && siteAreaSqm > 0 && Number.isFinite(area2) && area2 >= 0 ? area2 / siteAreaSqm : null;
   return { building: ratio(totalFloorAreaSqm), saleable: ratio(saleableAreaSqm) };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/site/siteRoadConditions.ts
+// ../sanze-release-app/src/lib/site/siteRoadConditions.ts
 var newSiteRoadConditions = () => ({ version: "site-road.v1", roadName: "", plannedWidth: "", openedWidth: "", frontage: "", connected: "unknown", status: "unknown", source: "", checkedAt: "" });
 function reviewSiteRoad(r, referenceDate = (/* @__PURE__ */ new Date()).toLocaleDateString("sv-SE", { timeZone: "Asia/Taipei" })) {
   const errors = [], notes = [];
@@ -2399,7 +3570,7 @@ function applySiteRoad(t, r) {
   return { ...t, roadWidth: r.plannedWidth, roadFrontage: r.frontage, roadOpened: r.connected === "no" || r.openedWidth.trim() && Number(r.openedWidth) < 8 ? "no" : r.openedWidth.trim() && r.connected === "yes" ? "yes" : "unknown" };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/permittedAward.ts
+// ../sanze-release-app/src/lib/planning/permittedAward.ts
 function isPermittedAward(x) {
   if (!x || typeof x !== "object") return false;
   const a = x;
@@ -2418,7 +3589,7 @@ function reviewPermittedAward(a, route, base, referenceDate = (/* @__PURE__ */ n
   return { errors, percent: errors.length ? 0 : amount / base * 100 };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/tdrApplication.ts
+// ../sanze-release-app/src/lib/planning/tdrApplication.ts
 var TDR_APPLICATION_VERSION = "tdr-application.2026-10-19.v1";
 var inferTdrCity = (district) => district.includes("\u65B0\u5317") ? "ntpc" : /臺北|台北/.test(district) ? "taipei" : "other";
 var newTdrApplication = (city) => ({ version: TDR_APPLICATION_VERSION, city, method: "unselected", cashPercent: "", quantityBasis: "target", taipeiCap: "general30", taipeiRequested: "30", receiverUnitValue: "", senderParcels: [], cashSqm: "", valuationUnitPrice: "", valuationStatus: "assumed", valuationDate: "", valuationSource: "", appraisalFee: "", otherFee: "", paidAmount: "", stage: "planning", receiverEligibility: "unknown", methodEligibility: "unknown", roadWidth: "", roadOpened: "unknown", roadFrontage: "", specialRoadApproved: false, taipeiLocation: "unknown", source: "" });
@@ -2430,7 +3601,7 @@ function isTdrApplication(x) {
 }
 function tdrCashPercent(t, legacy) {
   if (!t) return legacy;
-  return t.method === "cash" ? 100 : t.method === "land" || t.method === "unselected" ? 0 : t.cashPercent.trim() ? Number(t.cashPercent) : 50;
+  return t.method === "cash" ? 100 : t.method === "land" || t.method === "unselected" ? 0 : t.cashPercent.trim() ? Number(t.cashPercent) : NaN;
 }
 function reviewTdrApplication(t, c, requestedPercent, capPercent, otherAwardPercent = 0) {
   t = applySiteRoad(t, c.roadConditions);
@@ -2463,7 +3634,7 @@ function reviewTdrApplication(t, c, requestedPercent, capPercent, otherAwardPerc
   if (!Number.isFinite(cashPercent) || cashPercent < 0 || cashPercent > 100) errors.push("\u4EE3\u91D1\u6BD4\u4F8B\u9808\u70BA0\u81F3100%");
   if (t.method === "mixed" && (cashPercent <= 0 || cashPercent >= 100)) errors.push("\u6DF7\u5408\u65B9\u5F0F\u4EE3\u91D1\u6BD4\u4F8B\u9808\u5927\u65BC0\u4E14\u5C0F\u65BC100%\uFF1B\u7D14\u4EE3\u91D1\u8ACB\u9078\u5168\u4EE3\u91D1");
   if (t.method === "unselected") gaps.push("\u5C1A\u672A\u9078\u5B9A\u53D6\u5F97\u65B9\u5F0F\uFF0C\u50C5\u8A66\u7B97\u76EE\u6A19\u5BB9\u7A4D\uFF0C\u672A\u78BA\u8A8D\u9001\u51FA\u5730\u6216\u4EE3\u91D1\u69CB\u6210");
-  if (t.method === "mixed" && !t.cashPercent.trim()) gaps.push("\u6DF7\u5408\u65B9\u5F0F\u6BD4\u4F8B\u672A\u586B\uFF0C\u66AB\u63A1\u4EE3\u91D150%\u4F5C\u660E\u793A\u5047\u8A2D");
+  if (t.method === "mixed" && !t.cashPercent.trim()) errors.push("\u6DF7\u5408\u65B9\u5F0F\u6BD4\u4F8B\u672A\u586B\uFF0C\u4E0D\u8A08\u7B97\u4EE3\u91D1\u8207\u9001\u51FA\u5730\u5206\u914D");
   if (t.city === "taipei" && t.method !== "unselected" && cashPercent < 50) errors.push("\u81FA\u5317\u5E02\u4E00\u822C\u90FD\u5E02\u8A08\u756B\u5BB9\u79FB\u81F3\u5C1150%\u4EE3\u91D1\uFF1B\u4E0D\u53EF\u7528\u5168\u9001\u51FA\u5730\u6350\u8D08\u6216\u4F4E\u65BC50%\u4EE3\u91D1\u69CB\u6210");
   if (t.receiverEligibility === "no" || t.methodEligibility === "no") {
     eligible = false;
@@ -2591,7 +3762,7 @@ function reviewTdrApplication(t, c, requestedPercent, capPercent, otherAwardPerc
   return { city: t.city, method: t.method, landActive, cashActive, cashPercent, eligible, capPercent: cap, targetSqm, landTarget, cashTarget, donorSqm, cashSupplied, supplySqm, appliedSqm, appliedPercent: base > 0 ? appliedSqm / base * 100 : 0, actualLand, actualCash, cashCost, landCost, fees, totalCost: t.method === "unselected" ? null : cashActive && cashCost === null || landActive && landCost === null ? null : (cashCost ?? 0) + (landCost ?? 0) + fees, senders, errors, notes, gaps, stage: t.stage, valuationStatus: t.valuationStatus === "approved" && t.valuationSource.trim() && unitPrice !== null ? "approved" : "assumed" };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/bonusAssessment.ts
+// ../sanze-release-app/src/lib/planning/bonusAssessment.ts
 var BONUS_VERSION = "bonus-assessment.2026-10-19.v1";
 var central = "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0070027";
 var local = "https://web.law.ntpc.gov.tw/Scripts/FLAWDAT0202.aspx?fcode=C0150143";
@@ -2638,7 +3809,7 @@ var bonusItems = [
   { id: "t-cash", group: "internal", label: "\u767E\u5206\u4E4B\u767E\u6298\u7E73\u4EE3\u91D1", law: tdr, options: yes(10), condition: "100%\u6298\u4EE3\u91D1\u6642\u9001\u51FA\u57FA\u5730\u4F4D\u7F6E\u6574\u7D44\u4EE510\u5206\u53D6\u4EE3\uFF1B\u4E0D\u518D\u52A0\u8A08\u5176\u4ED6\u9001\u51FA\u57FA\u5730\u4F4D\u7F6E\u7D30\u76EE\u3002" },
   { id: "t-plaza", group: "internal", label: "\u5EE3\u5834\u5F0F\u958B\u653E\u7A7A\u9593", law: tdr, options: opts([["\u6CD5\u5B9A\u7A7A\u5730\u226540%\uFF1A8\u5206", 8], ["30\u81F3\u672A\u905440%\uFF1A6\u5206", 6], ["20\u81F3\u672A\u905430%\uFF1A4\u5206", 4], ["10\u81F3\u672A\u905420%\uFF1A2\u5206", 2]]), condition: "\u7B26\u5408\u5EFA\u6280283\u689D\u53CA\u65B0\u5317\u90FD\u5BE9\uFF0C\u9806\u5E73\u3001\u8857\u9053\u5BB6\u5177\u3001\u6A19\u793A\u3001\u898F\u7D04\u53CA\u7DAD\u8B77\u57FA\u91D1\uFF1B\u4E0D\u5F97\u91CD\u8907\u958B\u653E\u7A7A\u9593\u734E\u52F5\u3001\u6CD5\u5B9A\u9000\u7E2E\u3002" },
   { id: "t-walk", group: "internal", label: "\u6CBF\u8857\u6B65\u9053\u5F0F\u958B\u653E\u7A7A\u9593", law: tdr, options: opts([["\u55AE\u50741.5\u81F3\u672A\u90544m\uFF1A1\u5206", 1], ["\u5169\u50741.5\u81F3\u672A\u90544m\uFF1A2\u5206", 2], ["\u4E09\u50741.5\u81F3\u672A\u90544m\uFF1A3\u5206", 3], ["\u55AE\u5074\u22654m\uFF1A2\u5206", 2], ["\u5169\u5074\u22654m\uFF1A4\u5206", 4], ["\u4E09\u5074\u22654m\uFF1A6\u5206", 6]]), condition: "\u540C\u958B\u653E\u7A7A\u9593\u516C\u5171\u4F7F\u7528\u3001\u7DAD\u8B77\u53CA\u4E0D\u5F97\u91CD\u8907\u689D\u4EF6\uFF1B\u540C\u4E00\u7BC4\u570D\u4E0D\u91CD\u8907\u7B97\u5EE3\u5834\u8207\u6B65\u9053\u3002" },
-  ...[["t-social", "\u6350\u8D08\u793E\u6703\u4F4F\u5B85"], ["t-care", "\u6350\u8D08\u516C\u5171\u6258\u80B2"], ["t-elder", "\u6350\u8D08\u8001\u4EBA\u5B89\u990A"]].map(([id, label]) => ({ id, label, group: "internal", law: tdr, options: yes(2), condition: "\u57FA\u5730\u22653000\u33A1\uFF1B\u7B26\u5408\u65B0\u5317\u7D30\u524748\u689D\u3001\u51FA\u5165\u53E3\u3001\u505C\u8ECA\u3001\u5C64\u9AD8\u3001\u7DAD\u8B77\u57FA\u91D1\u53CA\u76EE\u7684\u4E8B\u696D\uFF0F\u63A5\u7BA1\u6A5F\u95DC\u540C\u610F\u3002" })),
+  ...[["t-social", "\u6350\u8D08\u793E\u6703\u4F4F\u5B85"], ["t-care", "\u6350\u8D08\u516C\u5171\u6258\u80B2"], ["t-elder", "\u6350\u8D08\u8001\u4EBA\u5B89\u990A"]].map(([id2, label]) => ({ id: id2, label, group: "internal", law: tdr, options: yes(2), condition: "\u57FA\u5730\u22653000\u33A1\uFF1B\u7B26\u5408\u65B0\u5317\u7D30\u524748\u689D\u3001\u51FA\u5165\u53E3\u3001\u505C\u8ECA\u3001\u5C64\u9AD8\u3001\u7DAD\u8B77\u57FA\u91D1\u53CA\u76EE\u7684\u4E8B\u696D\uFF0F\u63A5\u7BA1\u6A5F\u95DC\u540C\u610F\u3002" })),
   { id: "t-ex-infra", group: "external", label: "\u5354\u52A9\u958B\u95E2\u516C\u5171\u8A2D\u65BD", law: tdr, options: opts([["\u9130\u63A5\u57FA\u5730\u56DB\u5468\uFF1A4\u5206", 4], ["500m\u5167\u57FA\u5730\u5916\u570D\uFF1A2\u5206", 2]]), condition: "\u6B0A\u7BA1\u540C\u610F\uFF1B\u958B\u95E2\u9762\u7A4D>\u7533\u8ACB\u79FB\u5165\u6A13\u5730\u677F\u9762\u7A4D1/2\u4E14\u2265500\u33A1\u3002" },
   { id: "t-ex-price", group: "external", label: "\u74B0\u5883\u6539\u5584\u50F9\u91D1", law: tdr, options: yes(1), formula: "percent", amount: "\u76EE\u6A19\u7A4D\u5206%", condition: "\u50F9\u91D1\uFF1D\u57FA\u5730\u9762\u7A4D\xD7\u6CD5\u5B9A\u5BB9\u7A4D\u7387\xD71.31\xD720000\u5143\xD7\u7A4D\u5206\u6578\uFF1B\u53D7\u5916\u90E8\u5408\u8A08\u4E0A\u9650\uFF08\u52A0\u8A08\u5F8C\u5167\u90E8\u689D\u4EF61/3\uFF09\u63A7\u5236\u3002" },
   { id: "t-ex-green", group: "external", label: "\u516C\u5171\u81EA\u884C\u8ECA\uFF0F\u5019\u8ECA\u4EAD", law: tdr, options: yes(1), condition: "4\xD740m\u62166\xD720m\u4EE5\u4E0A\u3001\u5EFA\u7F6E\u7DAD\u8B77\u8CBB200\u842C\u5143\uFF1B\u57FA\u6E96\u5916\u589E\u52A0\u5BB9\u7A4D\u22656000\u33A1\u52A0\u500D\u7559\u8A2D\uFF0C\u4EA4\u901A\u5C40\u8A55\u4F30\u540C\u610F\u3002" },
@@ -2657,7 +3828,7 @@ var bonusItems = [
 function isBonusAssessment(x) {
   if (!x || typeof x !== "object") return false;
   const a = x;
-  return (a.awardBasis === void 0 || ["target", "permitted"].includes(a.awardBasis)) && (a.permittedAward === void 0 || isPermittedAward(a.permittedAward)) && (a.tdrApplication === void 0 || isTdrApplication(a.tdrApplication)) && (a.tdrApplications === void 0 || a.tdrApplications && typeof a.tdrApplications === "object" && !Array.isArray(a.tdrApplications) && Object.entries(a.tdrApplications).every(([k, v]) => ["ntpc", "taipei", "other"].includes(k) && isTdrApplication(v) && v.city === k)) && (a.distinctSpaces === void 0 || typeof a.distinctSpaces === "boolean") && a.version === BONUS_VERSION && ["renewal", "danger", "none"].includes(a.route) && ["renewalMode", "tdrMode", "dangerMode"].every((k) => ["quick", "detail"].includes(a[k])) && ["date", "source", "deduction", "dangerOriginal", "dangerEligibleSite", "dangerAdjacentSite"].every((k) => typeof a[k] === "string") && /^\d{4}-\d{2}-\d{2}$/.test(a.date) && ["general", "forty", "hillside", "narrow", "special50"].includes(a.tdrProfile) && ["renewalQualification", "tdrQualification", "dangerQualification"].every((k) => ["unknown", "yes", "no"].includes(a[k])) && !!a.entries && typeof a.entries === "object" && !Array.isArray(a.entries) && Object.entries(a.entries).every(([id, e]) => bonusItems.some((d) => d.id === id) && e && typeof e.choice === "string" && (e.choice === "" || bonusItems.find((d) => d.id === id).options.some((o) => o[0] === e.choice)) && ["amount", "amount2", "amount3", "share", "source"].every((k) => e[k] === void 0 || typeof e[k] === "string") && (e.status === void 0 || ["assumed", "verified", "excluded"].includes(e.status)));
+  return (a.awardBasis === void 0 || ["target", "permitted"].includes(a.awardBasis)) && (a.permittedAward === void 0 || isPermittedAward(a.permittedAward)) && (a.tdrApplication === void 0 || isTdrApplication(a.tdrApplication)) && (a.tdrApplications === void 0 || a.tdrApplications && typeof a.tdrApplications === "object" && !Array.isArray(a.tdrApplications) && Object.entries(a.tdrApplications).every(([k, v]) => ["ntpc", "taipei", "other"].includes(k) && isTdrApplication(v) && v.city === k)) && (a.distinctSpaces === void 0 || typeof a.distinctSpaces === "boolean") && a.version === BONUS_VERSION && ["renewal", "danger", "none"].includes(a.route) && ["renewalMode", "tdrMode", "dangerMode"].every((k) => ["quick", "detail"].includes(a[k])) && ["date", "source", "deduction", "dangerOriginal", "dangerEligibleSite", "dangerAdjacentSite"].every((k) => typeof a[k] === "string") && /^\d{4}-\d{2}-\d{2}$/.test(a.date) && ["general", "forty", "hillside", "narrow", "special50"].includes(a.tdrProfile) && ["renewalQualification", "tdrQualification", "dangerQualification"].every((k) => ["unknown", "yes", "no"].includes(a[k])) && !!a.entries && typeof a.entries === "object" && !Array.isArray(a.entries) && Object.entries(a.entries).every(([id2, e]) => bonusItems.some((d) => d.id === id2) && e && typeof e.choice === "string" && (e.choice === "" || bonusItems.find((d) => d.id === id2).options.some((o) => o[0] === e.choice)) && ["amount", "amount2", "amount3", "share", "source"].every((k) => e[k] === void 0 || typeof e[k] === "string") && (e.status === void 0 || ["assumed", "verified", "excluded"].includes(e.status)));
 }
 function assessBonuses(a, c, cash, updateArea) {
   const errors = [], notes = [], base = c.site * c.far / 100;
@@ -2666,7 +3837,7 @@ function assessBonuses(a, c, cash, updateArea) {
   if (city !== "ntpc") notes.push("\u76EE\u524D\u975E\u65B0\u5317\uFF1A\u65B0\u5317\u5730\u65B9\u90FD\u66F4\u734E\u52F5\u3001\u5BB9\u79FB\u8A55\u9EDE\u8207\u4EE3\u91D1\u500D\u6578\u4E0D\u5957\u7528\u3002\u81FA\u5317\u5BB9\u79FB\u53E6\u6309\u8CC7\u683C\u3001\u4E0A\u9650\u53CA\u53D6\u5F97\u65B9\u5F0F\u8A55\u4F30\uFF0C\u672A\u5EFA\u81FA\u5317\u5730\u65B9\u90FD\u66F4\u734E\u52F5\u7D30\u9805\u3002");
   const renewalActive = a.route === "renewal" && a.renewalMode === "detail" && a.renewalQualification !== "no", dangerActive = a.route === "danger" && a.dangerMode === "detail" && a.dangerQualification !== "no", tdrActive = a.tdrMode === "detail" && a.tdrQualification !== "no" && !(city === "ntpc" && a.tdrProfile === "special50");
   let validate = dangerActive;
-  const selected = (id) => !!a.entries[id]?.choice && a.entries[id]?.status !== "excluded";
+  const selected = (id2) => !!a.entries[id2]?.choice && a.entries[id2]?.status !== "excluded";
   const num = (x, label, fallback = 0) => {
     if (!x?.trim()) return fallback;
     const n = Number(x);
@@ -2676,46 +3847,50 @@ function assessBonuses(a, c, cash, updateArea) {
     }
     return n;
   };
-  const eligible = a.dangerEligibleSite.trim() ? Math.min(c.site, num(a.dangerEligibleSite, "\u5408\u683C\u539F\u57FA\u5730")) : c.site, adjacent = num(a.dangerAdjacentSite, "\u5408\u4F75\u9130\u5730"), eligibleTotal = Math.min(c.site, eligible + Math.min(adjacent, eligible, 1e3));
-  if (!a.dangerEligibleSite.trim()) notes.push("\u5371\u8001\u539F\u5408\u683C\u57FA\u5730\u672A\u63D0\u4F9B\uFF0C\u898F\u6A21\u521D\u4F30\u66AB\u4EE5\u5168\u57FA\u5730\u8996\u70BA\u5408\u683C\u539F\u57FA\u5730\uFF1B\u5982\u542B\u9130\u5730\u9808\u62C6\u5206\u3002");
+  const eligible = a.dangerEligibleSite.trim() ? Math.min(c.site, num(a.dangerEligibleSite, "\u5408\u683C\u539F\u57FA\u5730")) : NaN, adjacent = num(a.dangerAdjacentSite, "\u5408\u4F75\u9130\u5730"), eligibleTotal = Math.min(c.site, eligible + Math.min(adjacent, eligible, 1e3));
+  if (dangerActive && bonusItems.some((d) => d.formula === "dangerSize" && selected(d.id)) && (!a.dangerEligibleSite.trim() || !a.dangerAdjacentSite.trim())) errors.push("\u5371\u8001\u539F\u5408\u683C\u57FA\u5730\u53CA\u9130\u5730\u9762\u7A4D\u672A\u586B\uFF0C\u4E0D\u80FD\u5047\u5B9A\u5168\u57FA\u5730\u5408\u683C\uFF1B\u7121\u9130\u5730\u8ACB\u660E\u586B0\u3002");
   if (adjacent > Math.min(eligible, 1e3)) notes.push("\u5408\u4F75\u9130\u5730\u8D85\u904E\u539F\u5408\u683C\u57FA\u5730\u62161000\u33A1\u90E8\u5206\u4E0D\u5217\u5371\u8001\u734E\u52F5\u3002");
-  const rows = bonusItems.map((d) => {
+  const rows5 = bonusItems.map((d) => {
     const e = a.entries[d.id], option = d.options.find((o) => o[0] === e?.choice);
-    let value = option?.[2] ?? 0;
+    let value2 = option?.[2] ?? 0;
     const messages = [];
     if (!option || e?.status === "excluded") return { id: d.id, label: d.label, group: d.group, selected: false, value: 0, messages, condition: d.condition, law: d.law, status: "\u672A\u9078\u53D6" };
     validate = d.group === "danger" ? dangerActive : ["central", "local"].includes(d.group) ? renewalActive : tdrActive;
     if (city !== "ntpc" && ["internal", "external", "local"].includes(d.group)) return { id: d.id, label: d.label, group: d.group, selected: true, value: 0, messages: ["\u975E\u65B0\u5317\u6848\u4EF6\uFF0C\u4E0D\u63A1\u65B0\u5317\u5730\u65B9\u9805\u76EE\u6216\u8A55\u9EDE"], condition: d.condition, law: d.law, status: "\u4E0D\u9069\u7528\u672C\u5730\u5340" };
-    const amount = num(d.id === "t-base" && c.roadConditions ? c.roadConditions.plannedWidth : e?.amount, d.label), share = num(e?.share, d.label + "\u9069\u7528\u6BD4\u4F8B", 100);
+    const amount = num(d.id === "t-base" && c.roadConditions ? c.roadConditions.plannedWidth : e?.amount, d.label), share = ["u-old", "u-unsafe", "l-old", "d-old", "d-unsafe"].includes(d.id) ? e?.share?.trim() ? num(e.share, d.label + "\u9069\u7528\u6BD4\u4F8B") : NaN : 100;
+    if (validate && !Number.isFinite(share)) errors.push(d.label + "\u9069\u7528\u6BD4\u4F8B\u672A\u586B\uFF1B\u4E0D\u63A1\u5168\u6848100%");
+    if (validate && d.amount && !(d.id === "t-base" && c.roadConditions ? c.roadConditions.plannedWidth : e?.amount)?.trim()) errors.push(d.label + "\u8A08\u7B97\u91CF\u672A\u586B");
+    if (validate && ["public", "donation"].includes(d.formula ?? "") && !e?.amount2?.trim()) errors.push(d.label + "\u7B2C\u4E8C\u8A08\u7B97\u91CF\u672A\u586B");
+    if (validate && d.formula === "public" && !e?.amount3?.trim()) errors.push(d.label + "\u7B2C\u4E09\u8A08\u7B97\u91CF\u672A\u586B");
     if (share > 100 && validate) errors.push(d.label + "\u9069\u7528\u6BD4\u4F8B\u4E0D\u5F97\u8D85\u904E100%");
-    if (d.formula === "area") value = base > 0 ? amount * value / base * 100 : 0;
+    if (d.formula === "area") value2 = base > 0 ? amount * value2 / base * 100 : 0;
     if (d.formula === "public") {
       const sender = num(e?.amount2, d.label + "\u516C\u5171\u8A2D\u65BD\u516C\u544A\u73FE\u503C"), receiver = num(e?.amount3, d.label + "\u57FA\u5730\u516C\u544A\u73FE\u503C");
-      value = c.site > 0 && receiver > 0 ? amount * sender / receiver / c.site * 100 : 0;
+      value2 = c.site > 0 && receiver > 0 ? amount * sender / receiver / c.site * 100 : 0;
       if (!sender || !receiver) messages.push("\u516C\u544A\u73FE\u503C\u672A\u9F4A\uFF0C\u8A72\u9805\u51480\uFF1B\u7531App\u4F9D\u9762\u7A4D\u53CA\u73FE\u503C\u6BD4\u8A08\u7B97");
     }
     if (d.formula === "donation") {
       const total = num(e?.amount2, "\u5168\u57FA\u5730\u516C\u544A\u73FE\u503C\u7E3D\u984D");
-      value = total > 0 ? amount / total / 1.4 * 100 : 0;
+      value2 = total > 0 ? amount / total / 1.4 * 100 : 0;
       if (!total) messages.push("\u5168\u57FA\u5730\u516C\u544A\u73FE\u503C\u7E3D\u984D\u672A\u586B\uFF0C\u8A72\u9805\u51480");
     }
-    if (d.formula === "size") value = c.site >= 1e4 ? 30 : c.site >= 3e3 ? 5 + Math.floor((c.site - 3e3) / 100) * 0.3 : 0;
+    if (d.formula === "size") value2 = c.site >= 1e4 ? 30 : c.site >= 3e3 ? 5 + Math.floor((c.site - 3e3) / 100) * 0.3 : 0;
     if (d.formula === "time") {
       const first = a.date >= "2019-05-15" && a.date < "2024-05-15", second = a.date >= "2024-05-15" && a.date < "2029-05-15";
-      value = first ? value === 1 ? 10 : 7 : second ? value === 1 ? 5 : 3.5 : 0;
+      value2 = first ? value2 === 1 ? 10 : 7 : second ? value2 === 1 ? 5 : 3.5 : 0;
     }
-    if (d.formula === "tdrBase") value = amount >= 8 ? Math.min(20, Math.floor(amount)) : 0;
+    if (d.formula === "tdrBase") value2 = amount >= 8 ? Math.min(20, Math.floor(amount)) : 0;
     if (d.formula === "tdrMatrix") {
       const col = c.site >= 1e4 ? 5 : c.site >= 6e3 ? 4 : c.site >= 4e3 ? 3 : c.site >= 2e3 ? 2 : c.site >= 1500 ? 1 : 0;
-      value = c.site >= 500 ? [[0, 1, 1, 2, 3, 4], [0, 1, 2, 3, 4, 5], [1, 2, 3, 4, 5, 6]][value][col] : 0;
+      value2 = c.site >= 500 ? [[0, 1, 1, 2, 3, 4], [0, 1, 2, 3, 4, 5], [1, 2, 3, 4, 5, 6]][value2][col] : 0;
     }
-    if (d.formula === "percent") value = amount;
-    if (d.formula === "dangerSize") value = eligibleTotal >= 200 ? Math.min(10, 2 + Math.floor((eligibleTotal - 200) / 100) * 0.5) : 0;
+    if (d.formula === "percent") value2 = amount;
+    if (d.formula === "dangerSize") value2 = eligibleTotal >= 200 ? Math.min(10, 2 + Math.floor((eligibleTotal - 200) / 100) * 0.5) : 0;
     if (d.formula === "dangerTime") {
-      value = a.date < "2017-05-12" ? 0 : a.date < "2020-05-12" ? 10 : a.date < "2021-05-12" ? 8 : a.date < "2022-05-12" ? 6 : a.date < "2023-05-12" ? 4 : a.date < "2024-05-12" ? 2 : a.date < "2025-05-12" ? 1 : 0;
+      value2 = a.date < "2017-05-12" ? 0 : a.date < "2020-05-12" ? 10 : a.date < "2021-05-12" ? 8 : a.date < "2022-05-12" ? 6 : a.date < "2023-05-12" ? 4 : a.date < "2024-05-12" ? 2 : a.date < "2025-05-12" ? 1 : 0;
     }
     const disallow = (reason) => {
-      value = 0;
+      value2 = 0;
       messages.push(reason);
     };
     if (["u-green", "u-smart", "d-green", "d-smart"].includes(d.id) && ["4", "5"].includes(e.choice) && c.site >= 500) disallow("\u57FA\u5730\u2265500\u33A1\uFF0C\u9285\uFF0F\u5408\u683C\u4E0D\u9069\u7528");
@@ -2730,28 +3905,28 @@ function assessBonuses(a, c, cash, updateArea) {
     if (d.id === "u-agreement") messages.push("\u9700\u53E6\u6838\u226520\u9580\u724C\u53CA\u5831\u6838\u6642\u5168\u9AD4\u540C\u610F\uFF0C\u4E0D\u80FD\u4EE5\u5EFA\u865F\u6578\u4EE3\u66FF");
     if (d.id === "u-green" && ["4", "5"].includes(e.choice)) messages.push("\u53E6\u9808\u7B26\u5408\u7B2C7\u689D\u7B2C1\u9805\u7B2C3\u6B3E\u66F4\u65B0\u65B9\u5F0F\uFF0C\u4F9D\u6240\u9078\u76EE\u6A19\u5047\u8A2D");
     if (d.amount && !e?.amount?.trim()) messages.push("\u7F3A\u8A08\u7B97\u91CF\uFF0C\u8A72\u9805\u51480\uFF0C\u5176\u9918\u9078\u9805\u7E7C\u7E8C\u52A0\u7E3D");
-    value = Math.min(d.cap ?? Infinity, value) * Math.min(share, 100) / 100;
-    if (["d-old", "d-unsafe"].includes(d.id) && eligibleTotal > 0) value *= eligible / eligibleTotal;
-    return { id: d.id, label: d.label, group: d.group, selected: true, value, messages, condition: d.condition, law: d.law, status: e?.status === "verified" && e.source?.trim() ? "\u9644\u8986\u6838\u4F86\u6E90\uFF08\u975E\u6838\u5B9A\uFF09" : "\u76EE\u6A19\u5047\u8A2D" };
+    value2 = Math.min(d.cap ?? Infinity, value2) * Math.min(share, 100) / 100;
+    if (["d-old", "d-unsafe"].includes(d.id) && eligibleTotal > 0) value2 *= eligible / eligibleTotal;
+    return { id: d.id, label: d.label, group: d.group, selected: true, value: value2, messages, condition: d.condition, law: d.law, status: e?.status === "verified" && e.source?.trim() ? "\u9644\u8986\u6838\u4F86\u6E90\uFF08\u975E\u6838\u5B9A\uFF09" : "\u76EE\u6A19\u5047\u8A2D" };
   });
-  const sum2 = (ids) => rows.filter((r) => ids.includes(r.id)).reduce((t, r) => t + r.value, 0), group2 = (name) => rows.filter((r) => r.group === name).reduce((t, r) => t + r.value, 0);
+  const sum3 = (ids) => rows5.filter((r) => ids.includes(r.id)).reduce((t, r) => t + r.value, 0), group2 = (name) => rows5.filter((r) => r.group === name).reduce((t, r) => t + r.value, 0);
   validate = renewalActive;
   const localRaw = group2("local"), localApplied = Math.min(20, localRaw), deduction = num(a.deduction, "\u91CD\u8907\u734E\u52F5\u6263\u9664");
   const renewalRaw = group2("central") + localApplied, renewal = Math.max(0, Math.min(50, renewalRaw - deduction));
   validate = tdrActive;
-  const b = sum2(["t-base"]), internal = group2("internal") - b, factor = city === "ntpc" ? 1 + (updateArea ? 0.3 : 0) + (cash >= 100 ? 0.3 : cash >= 80 ? 0.2 : cash >= 60 ? 0.1 : 0) : 1, externalRaw = group2("external"), external = Math.min(externalRaw, internal * factor / 3), ntpcTdrRaw = (b + internal) * factor + external, tdrRaw = city === "ntpc" ? ntpcTdrRaw : city === "taipei" ? num(a.tdrApplication?.taipeiRequested, "\u81FA\u5317\u7533\u8ACB\u76EE\u6A19", c.tdrTarget ?? 30) : 0;
+  const b = sum3(["t-base"]), internal = group2("internal") - b, factor = city === "ntpc" ? 1 + (updateArea ? 0.3 : 0) + (cash >= 100 ? 0.3 : cash >= 80 ? 0.2 : cash >= 60 ? 0.1 : 0) : 1, externalRaw = group2("external"), external = Math.min(externalRaw, internal * factor / 3), ntpcTdrRaw = (b + internal) * factor + external, tdrRaw = city === "ntpc" ? ntpcTdrRaw : city === "taipei" ? num(a.tdrApplication?.taipeiRequested, "\u81FA\u5317\u7533\u8ACB\u76EE\u6A19", c.tdrTarget ?? 30) : 0;
   const tdrCap = city === "taipei" ? a.tdrApplication?.taipeiCap === "qualified40" ? 40 : 30 : { general: 30, forty: 40, hillside: 20, narrow: 15, special50: 30 }[a.tdrProfile];
   validate = dangerActive;
-  const coreFirst = sum2(["d-old", "d-unsafe", "d-small", "d-setback", "d-seismic"]), coreLater = sum2(["d-green", "d-smart", "d-access", "d-infra"]), original = num(a.dangerOriginal, "\u5408\u6CD5\u539F\u5BB9\u7A4D"), coreCap = eligibleTotal === c.site && eligible === c.site ? Math.max(30, base > 0 ? (original * 1.15 / base - 1) * 100 : 30) : 30, core = Math.min(coreCap, coreFirst + coreLater), extra = Math.min(10, sum2(["d-size", "d-time"])), dangerTotal = c.site > 0 ? (core + extra) * eligibleTotal / c.site : 0;
+  const coreFirst = sum3(["d-old", "d-unsafe", "d-small", "d-setback", "d-seismic"]), coreLater = sum3(["d-green", "d-smart", "d-access", "d-infra"]), original = num(a.dangerOriginal, "\u5408\u6CD5\u539F\u5BB9\u7A4D"), coreCap = eligibleTotal === c.site && eligible === c.site ? Math.max(30, base > 0 ? (original * 1.15 / base - 1) * 100 : 30) : 30, core = Math.min(coreCap, coreFirst + coreLater), extra = Math.min(10, sum3(["d-size", "d-time"])), dangerTotal = c.site > 0 ? (core + extra) * eligibleTotal / c.site : 0;
   if (original > 0 && (eligible !== c.site || eligibleTotal !== c.site)) notes.push("\u5371\u8001\u542B\u9130\u5730\u6216\u90E8\u5206\u5408\u683C\u57FA\u5730\uFF1A\u539F\u5BB9\u7A4D115%\u66FF\u4EE3\u8DEF\u5F91\u5C1A\u672A\u9010\u57FA\u5730\u62C6\u7B97\uFF0C\u672C\u6B21\u50C5\u63A1\u4E00\u822C\u57FA\u6E96\u6838\u5FC3\u4E0A\u965030%\uFF0C\u4E0D\u4EE5\u5168\u57FA\u5730\u6BCD\u6578\u91CD\u8907\u6298\u7B97\u6216\u64F4\u5F35\u539F\u5BB9\u7A4D\u3002");
   if (a.route === "danger" && a.date > "2027-05-31") notes.push("\u8D85\u904E\u73FE\u884C\u5371\u8001\u8A08\u756B\u7533\u8ACB\u671F\u96502027-05-31\uFF0C\u5371\u8001\u63A1\u8A080\uFF1B\u9700\u6CD5\u898F\u5EF6\u9577\u624D\u53EF\u518D\u8A55\u4F30\u3002");
   notes.push(`\u90FD\u66F4\u4E2D\u592E${group2("central").toFixed(2)}%\uFF0B\u5730\u65B9${localRaw.toFixed(2)}%\uFF08\u4E00\u822C\u5730\u65B9\u965020%\uFF0C\u63A1${localApplied.toFixed(2)}%\uFF09\uFF0D\u91CD\u8907\u6263\u9664${deduction}%\uFF1B\u7E3D\u734E\u52F5\u4E00\u822C\u965050%\u3002\u7279\u6B8A\u539F\u5BB9\u7A4D\u3001\u6D77\u7802\uFF0F\u8010\u9707\u5371\u96AA\u3001\u7B56\u7565\u6027\u8DEF\u5F91\u53CA\u820A\u6848\u904E\u6E21\u53E6\u9700\u5C08\u6848\u4F9D\u64DA\uFF0C\u672C\u8868\u4E0D\u81EA\u52D5\u653E\u5BEC\u3002`);
   if (city === "ntpc") notes.push(`\u5BB9\u79FB\u57FA\u6E96${b}%\uFF0B\u5167\u90E8${internal}%\uFF0C\u52A0\u8A08\u4FC2\u6578${factor}\uFF1B\u5916\u90E8\u539F${externalRaw}%\uFF0F\u63A1${external}%\uFF0C\u4E0D\u8D85\u52A0\u8A08\u5F8C\u5167\u90E81/3\u3002\u4E0A\u9650\u8DEF\u5F91${tdrCap}%\uFF1B40%\u3001\u5C71\u5761\u3001\u7A84\u8DEF\u53CA\u514D\u8A55\u5B9A\u9808\u53E6\u8B49\u8CC7\u683C\uFF0C\u4E0D\u80FD\u628A\u52FE\u9078\u8996\u70BA\u6838\u51C6\u3002`);
   notes.push(`\u5371\u8001\u7B2C3\u20136\u689D\u5408\u8A08${coreFirst}%\u5148\u9069\u7528\u3001\u7B2C7\u201310\u689D${coreLater}%\u88DC\u81F3\u6838\u5FC3\u4E0A\u9650${coreCap.toFixed(2)}%\uFF1B\u6642\u7A0B\u8207\u898F\u6A21\u53E6\u63A1${extra}%\uFF0C\u5169\u8005\u5408\u8A08\u226410%\u3002\u539F\u5408\u683C\u57FA\u5730${eligible}\u33A1\u3001\u53EF\u52A0\u9130\u5730${eligibleTotal - eligible}\u33A1\uFF0F\u5168\u57FA\u5730${c.site}\u33A1\uFF0C\u6BD4\u4F8B\u63A1\u8A08${c.site > 0 ? eligibleTotal / c.site * 100 : 0}%\u3002\u4E0D\u5F97\u758A\u52A0\u90FD\u66F4\u53CA\u5176\u4ED6\u6CD5\u4EE4\u5BB9\u7A4D\u734E\u52F5\u3002`);
-  return { rows, notes, errors, renewalRaw, localRaw, localApplied, renewal, tdrBase: b, tdrInternal: internal, tdrExternalRaw: externalRaw, tdrExternal: external, tdrFactor: factor, tdrRaw, tdrCap, tdr: Math.min(tdrCap, tdrRaw), dangerCoreFirst: coreFirst, dangerCoreLater: coreLater, dangerCoreCap: coreCap, dangerExtra: extra, danger: a.date > "2027-05-31" ? 0 : dangerTotal };
+  return { rows: rows5, notes, errors, renewalRaw, localRaw, localApplied, renewal, tdrBase: b, tdrInternal: internal, tdrExternalRaw: externalRaw, tdrExternal: external, tdrFactor: factor, tdrRaw, tdrCap, tdr: Math.min(tdrCap, tdrRaw), dangerCoreFirst: coreFirst, dangerCoreLater: coreLater, dangerCoreCap: coreCap, dangerExtra: extra, danger: a.date > "2027-05-31" ? 0 : dangerTotal };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/roofEnvelope.ts
+// ../sanze-release-app/src/lib/planning/roofEnvelope.ts
 var defaultRoofEnvelope = () => ({ version: "roof-envelope.2026-10-19.v1", classification: "auto", qualifiedUses: true, elevatorRoofOnly: true, source: "\u4F7F\u7528\u8005\u6307\u5B9A\u4F9D\u5408\u6CD5\u6295\u5F71\u3001\u9AD8\u5EA6\u53CA\u7528\u9014\u4E0A\u9650\u521D\u4F30\uFF1B\u5C4B\u7A81\u5404\u5C64\u4E0A\u4E0B\u5C0D\u4F4D\u3001\u540C\u4E00\u6295\u5F71\u3002R1\u66AB\u4F5C\u6A13\u68AF\uFF0F\u6607\u964D\u6A5F\u53CA\u6A5F\u68B0\u623F\uFF0CR2\u4EE5\u4E0A\u66AB\u4F5C\u6A13\u68AF\u53CA\u6A5F\u68B0\u623F\uFF1B\u975E\u4F4F\u5B85\u3001\u5132\u85CF\u5BA4\u3001\u4EA4\u8ABC\u5EF3\u6216\u65B0\u589E\u4E00\u822C\u4F7F\u7528\u6A13\u5C64\u3002\u6607\u964D\u6A5F\u51FA\u5165\u53E3\u66AB\u53EA\u8A2D\u65BC\u5C4B\u9802\u5C64\uFF0C\u4E0D\u8A2D\u65BCR2/R3\uFF1B\u5C01\u9589\u623F\u5C4B\u5171\u7528\u6A5F\u80FD\u53CA\u767B\u8A18\u6BD4\u4F8B\u4ECD\u5F85\u5716\u8AAA\u3001\u6E2C\u91CF\u8207\u5206\u914D\u6587\u4EF6\u8986\u6838\u3002" });
 function isRoofEnvelope(x) {
   if (!x || typeof x !== "object") return false;
@@ -2774,7 +3949,7 @@ function renderRoofEnvelope(r) {
   return `<h3>\u5C4B\u7A81\u6295\u5F71\u3001\u9AD8\u5EA6\u3001\u7528\u9014\u8207\u53EF\u767B\u8A18\u5171\u6709\u6AA2\u8A0E</h3><p>\u63A8\u4F30\u5730\u4E0A${r.aboveFloors}\u5C64\u3001\u9AD8\u5EA6${r.buildingHeight.toFixed(2)}m\uFF1B${r.high ? "\u6309\u63A8\u4F30\u9AD8\u5C64\u689D\u4EF6" : "\u63A1\u4E00\u822C\u689D\u4EF6"}\uFF0C\u5C4B\u7A81\u6295\u5F71\u4E0A\u9650${r.rate}%\uFF0C\u672C\u6B21\u6C34\u5E73\u6295\u5F71\u806F\u96C6${r.projection.toFixed(2)}\u33A1\uFF1B\u5C4B\u7A81\u6A13\u677F\u5408\u8A08${r.totalArea.toFixed(2)}\u33A1\u3002\u9AD8\u5EA6${r.totalHeight}m\uFF0F${r.maxHeight}m\u4E0A\u9650\u3002</p><p>${esc(r.source)}</p><table><tr><th>\u6A13\u5C64</th><th>\u6A13\u677F\u33A1</th><th>\u5C64\u9AD8m</th><th>\u898F\u5283\u7528\u9014</th><th>\u623F\u5C4B\u5171\u6709\u63A1\u8A08\u33A1</th></tr>${r.floors.map((f) => `<tr><th>${f.label}</th><td>${f.area.toFixed(2)}</td><td>${f.height}</td><td>${esc(f.use)}</td><td>${f.registered.toFixed(2)}</td></tr>`).join("")}</table><p>\u898F\u5283\u53EF\u767B\u8A18\u5171\u6709${r.registered.toFixed(2)}\u33A1\uFF08\u63A1\u8A08${r.registrationPercent}%\uFF09\uFF1B\u63A1\u8A08\u8207\u514D\u8A08\u5206\u958B\uFF0C\u4F9D\u670D\u52D9\u5C0D\u8C61\u53CA\u5EFA\u7269\u6E2C\u91CF\u3001\u5206\u914D\u6587\u4EF6\u78BA\u8A8D\u3002${esc(r.assumptions)}</p><p>\u6838\u5C0D\uFF1A${r.errors.length ? esc(r.errors.join("\uFF1B")) : "\u672C\u6B21\u4E0A\u9650\u689D\u4EF6\u7B97\u5F0F\u901A\u904E\uFF0C\u4E26\u975E\u5716\u8AAA\u6216\u5EFA\u7167\u6838\u5B9A"}\u3002</p><p><a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0070115&flno=1">\u7B2C1\u689D\u7B2C9\u300110\u6B3E</a> \uFF0F <a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0070115&flno=227">\u7B2C227\u689D</a> \uFF0F <a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0070115&flno=162">\u7B2C162\u689D</a> \uFF0F <a href="https://www.nlma.gov.tw/ch/titlelist/interpcomp/12148">100\u5E74\u51FD\uFF1A9m\u5C4B\u7A81\u6607\u964D\u6A5F\u901A\u9054\u689D\u4EF6</a> \uFF0F <a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0060003&flno=81">\u571F\u5730\u767B\u8A18\u898F\u524781\u689D</a></p>`;
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/quantityAreaAudit.ts
+// ../sanze-release-app/src/lib/planning/quantityAreaAudit.ts
 var BASELINE_VERSION = "planning-area-baseline.v1";
 var saleKeys = ["ordinary", "registeredEquipment", "registeredLobby", "balcony", "registeredRoof", "basementEquipmentSale", "shelterCommon", "parkingHousingCommon"];
 var contextKeys = ["aboveFloors", "sale", "allowed", "basement", "floors", "equipment", "lobby", "roof", "aboveSale", "basementSale", "units", "cars", "motos", "equipmentArea", "bikeArea", "communityArea", "rampTotal", "lossArea", "basementUnassigned"];
@@ -2784,9 +3959,9 @@ function isAreaBaseline(x) {
   return a.format === BASELINE_VERSION && (a.commonRatioReference === void 0 || Number.isFinite(a.commonRatioReference.low) && Number.isFinite(a.commonRatioReference.high) && a.commonRatioReference.low >= 0 && a.commonRatioReference.high <= 100 && a.commonRatioReference.high >= a.commonRatioReference.low && typeof a.commonRatioReference.source === "string") && ["caseId", "label", "source", "sourceSha256", "formulaCommit"].every((k) => typeof a[k] === "string") && /^[a-f0-9]{64}$/.test(a.sourceSha256) && /^[a-f0-9]{40}$/.test(a.formulaCommit) && !!a.values && [...saleKeys, ...contextKeys].every((k) => Number.isFinite(a.values[k]) && a.values[k] >= 0) && a.values.allowed > 0 && Number.isInteger(a.values.floors) && Math.abs(saleKeys.reduce((t, k) => t + a.values[k], 0) - a.values.sale) < 0.04;
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/regulatoryReview.ts
-var REGULATORY_REVIEW_VERSION = "planning-law.2026-10-19.v3";
-var defaultRegulatoryReview = () => ({ version: REGULATORY_REVIEW_VERSION, renewalLimitPercent: "50", tdrLimitPercent: "30", totalBonusLimitPercent: "", tdrBasePoints: "", tdrInternalPoints: "", tdrExternalPoints: "", renewalArea: false, cashTdrPercent: "0", bonusSource: "", bicycleExemption: "counted", bicycleSource: "", motorcycleExemption: "statutory_assumption", communityUse: "loading", spareUse: "counted", ordinaryCommonPercent: "0", ordinaryCommonSource: "" });
+// ../sanze-release-app/src/lib/planning/regulatoryReview.ts
+var REGULATORY_REVIEW_VERSION = "planning-law.2026-10-24.v4";
+var defaultRegulatoryReview = () => ({ version: REGULATORY_REVIEW_VERSION, renewalLimitPercent: "", tdrLimitPercent: "", totalBonusLimitPercent: "", tdrBasePoints: "", tdrInternalPoints: "", tdrExternalPoints: "", renewalArea: false, cashTdrPercent: "0", bonusSource: "", bicycleExemption: "counted", bicycleSource: "", motorcycleExemption: "statutory_assumption", communityUse: "loading", spareUse: "counted", ordinaryCommonPercent: "0", ordinaryCommonSource: "" });
 function isRegulatoryReview(x) {
   if (!x || typeof x !== "object") return false;
   const p = x;
@@ -2794,7 +3969,7 @@ function isRegulatoryReview(x) {
   if (["shelterArea", "shelterEquipment", "shelterSource"].some((k) => p[k] !== void 0 && typeof p[k] !== "string")) return false;
   if (p.siteGeometry && (!p.siteGeometry || typeof p.siteGeometry !== "object" || !["length", "width", "source", "front", "back", "left", "right", "aboveWidth", "basementWidth"].every((k) => typeof p.siteGeometry[k] === "string"))) return false;
   if (p.auditHistory !== void 0 && (!Array.isArray(p.auditHistory) || p.auditHistory.length > 10 || !p.auditHistory.every((h) => h && typeof h.label === "string" && ["sale", "allowed", "basement", "equipmentCounted", "bikeCounted", "spareCounted"].every((k) => typeof h[k] === "number" && Number.isFinite(h[k]) && h[k] >= 0) && h.allowed > 0))) return false;
-  return [REGULATORY_REVIEW_VERSION, "planning-law.2026-10-19.v2"].includes(p.version) && ["renewalLimitPercent", "tdrLimitPercent", "totalBonusLimitPercent", "tdrBasePoints", "tdrInternalPoints", "tdrExternalPoints", "cashTdrPercent", "bonusSource", "bicycleSource", "ordinaryCommonPercent", "ordinaryCommonSource"].every((k) => typeof p[k] === "string") && typeof p.renewalArea === "boolean" && ["counted", "documented"].includes(p.bicycleExemption) && ["statutory_assumption", "counted"].includes(p.motorcycleExemption) && ["loading", "other"].includes(p.communityUse) && ["counted", "parking"].includes(p.spareUse);
+  return [REGULATORY_REVIEW_VERSION, "planning-law.2026-10-19.v3", "planning-law.2026-10-19.v2"].includes(p.version) && ["renewalLimitPercent", "tdrLimitPercent", "totalBonusLimitPercent", "tdrBasePoints", "tdrInternalPoints", "tdrExternalPoints", "cashTdrPercent", "bonusSource", "bicycleSource", "ordinaryCommonPercent", "ordinaryCommonSource"].every((k) => typeof p[k] === "string") && typeof p.renewalArea === "boolean" && ["counted", "documented"].includes(p.bicycleExemption) && ["statutory_assumption", "counted"].includes(p.motorcycleExemption) && ["loading", "other"].includes(p.communityUse) && ["counted", "parking"].includes(p.spareUse);
 }
 function resolveBonusLimits(p, rates, context) {
   const roadReview = reviewSiteRoad(context?.roadConditions, p.bonusAssessment?.date);
@@ -2814,7 +3989,10 @@ function resolveBonusLimits(p, rates, context) {
     }
   }
   const read = (x, label, fallback, max = 1e3) => {
-    if (!x.trim()) return fallback;
+    if (!x.trim()) {
+      errors.push(label + "\u672A\u586B\uFF1B\u4E0D\u5957\u9810\u8A2D\u6BD4\u4F8B");
+      return NaN;
+    }
     const n = Number(x);
     if (!Number.isFinite(n) || n < 0 || n > max) {
       errors.push(label + "\u9808\u586B\u6709\u6548\u975E\u8CA0\u6578");
@@ -2822,14 +4000,12 @@ function resolveBonusLimits(p, rates, context) {
     }
     return n;
   };
-  let renewalLimit = read(p.renewalLimitPercent, "\u90FD\u66F4\u734E\u52F5\u4E0A\u9650", 50), tdrLimit = read(p.tdrLimitPercent, "\u5BB9\u79FB\u4E0A\u9650", 30);
+  let renewalLimit = rates.renewal > 0 ? read(p.renewalLimitPercent, "\u90FD\u66F4\u734E\u52F5\u4E0A\u9650", NaN) : 0, tdrLimit = rates.tdr > 0 ? read(p.tdrLimitPercent, "\u5BB9\u79FB\u4E0A\u9650", NaN) : 0;
   if (renewalLimit > 50 && !p.bonusSource.trim()) {
-    renewalLimit = 50;
-    notes.push("\u8D85\u904E\u4E00\u822C\u90FD\u66F450%\u4E0A\u9650\u7684\u7279\u5225\u8DEF\u5F91\u5C1A\u7121\u4F9D\u64DA\uFF0C\u5148\u4F9D\u4E00\u822C\u4E0A\u9650\u521D\u4F30\uFF1B\u539F\u76EE\u6A19\u4FDD\u7559\u3002");
+    errors.push("\u8D85\u904E\u4E00\u822C\u90FD\u66F450%\u4E0A\u9650\u7684\u7279\u5225\u8DEF\u5F91\u7F3A\u4F9D\u64DA\uFF1B\u672A\u81EA\u52D5\u6539\u621050%\u3002");
   }
   if (tdrLimit > 30 && !p.bonusSource.trim()) {
-    tdrLimit = 30;
-    notes.push("\u8D85\u904E\u4E00\u822C\u5BB9\u79FB30%\u4E0A\u9650\u7684\u9069\u7528\u4F9D\u64DA\u672A\u586B\uFF0C\u5148\u630930%\u521D\u4F30\u3002");
+    errors.push("\u8D85\u904E\u4E00\u822C\u5BB9\u79FB30%\u4E0A\u9650\u7684\u9069\u7528\u4F9D\u64DA\u672A\u586B\uFF1B\u672A\u81EA\u52D5\u6539\u621030%\u3002");
   }
   if (a && assessment) tdrLimit = a.tdrMode === "detail" || a.tdrApplication ? assessment.tdrCap : Math.min(tdrLimit, assessment.tdrCap);
   let points = null;
@@ -2920,7 +4096,7 @@ function reviewBasementVolume(p, v, aboveEquipmentExempt, equipmentCap, context)
   return { shelterOnlyExempt, shelterArea, shelterEquipment, pools: { ...v }, shared, served, parkingCap, carPool, motoPool, bikePool, communityPool, carExempt, mergedEquipment, globalEquipmentExempt, equipmentCounted, parkingCounted, bicycleCounted, motorcycleCounted, communityCounted, spareCounted, counted, exempt, notes, balanced: Math.abs(counted + exempt - v.basement) < 0.02 };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/quantityPlanning.ts
+// ../sanze-release-app/src/lib/planning/quantityPlanning.ts
 var QUANTITY_VERSION = "quantity-reserve.2026-10-19.v1";
 var defaultQuantityReserve = () => ({ version: QUANTITY_VERSION, roofPerFloor: 45, ordinaryCommonPerFloor: 31.5, aboveCorePerFloor: 46.5, aboveEquipmentPerFloor: 12, management: 20, lobbyPerFloor: 24, basementRooms: [24, 48, 64, 64], source: "\u524D\u671F\u7DCA\u6E4A\u91CF\u9AD4\u5047\u8A2D\uFF1A\u5169\u5EA7\u5B89\u5168\u68AF\u54043\xD74.5m\u3001\u5169\u9593\u6392\u7159\u5BA4\u54042\xD73m\u3001\u4E00\u5EA7\u7DCA\u6025\u6607\u964D\u6A5F\u90532.5\xD73m\uFF0C\u517146.5\u33A1\uFF0F\u5C64\uFF1B\u6A5F\u96FB\u7BA1\u905312\u33A1\uFF0F\u5C64\uFF1B\u7BA1\u7406\u7A7A\u959320\u33A1\uFF1B\u68AF\u5EF3\u6DE8\u6DF12m\xD7\u5408\u8A08\u957712m\uFF1D24\u33A1\uFF0F\u5C64\u3002\u5C4B\u7A81\u6BCF\u5C64\u66AB\u7559\u5169\u5EA7\u6A13\u68AF27\u33A1\u3001\u6607\u964D\u6A5F15\u33A1\u53CA\u8A2D\u50993\u33A1\u5408\u8A0845\u33A1\uFF0C\u6309\u5408\u683C\u5C4B\u9802\u7A81\u51FA\u7269\u7528\u9014\u5047\u8A2D\uFF1B\u666E\u901A\u96FB\u68AF\u90537.5\u33A1\u53CA\u8D70\u90532\xD712m\uFF1D24\u33A1\uFF0F\u5C64\uFF0C\u8A08\u5BB9\u6A13\u677F\u5167\u91CD\u5206\u985E\u5171\u6709\uFF0C\u4E0D\u53E6\u52A0\u9762\u7A4D\u3002\u5730\u4E0B\u6BCF\u5C64\u53E6\u7559\u5169\u7D44\u6A13\u68AF\uFF0F\u6392\u7159\u5BA4\uFF0F\u6607\u964D\u6A5F\u517154\u33A1\uFF0C\u8A2D\u5099\u623F24\u300148\u300164\u300164\u33A1\u3002\u5C3A\u5BF8\u542B\u521D\u4F30\u7246\u9AD4\uFF0C\u9700\u4F9D\u9AD8\u5EA6\u3001\u7528\u9014\u3001\u6D88\u9632\u53CA\u8A2D\u5099\u9700\u6C42\u8ABF\u6574\uFF1B\u6CD5\u898F\u672A\u7D71\u4E00\u898F\u5B9A\u4E0A\u8FF0\u623F\u9593\u9762\u7A4D\u3002" });
 function isQuantityReserve(x) {
@@ -2960,31 +4136,12 @@ function calculateQuantityPlanning(i, run) {
   return { ...last, values: null, errors: [...last?.errors ?? [], "\u6A13\u5C64\u8207\u5FC5\u8981\u7A7A\u9593\u9810\u7559\u672A\u6536\u6582\uFF0C\u8ACB\u8ABF\u6574\u6A13\u677F\u5047\u8A2D"] };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/planningAssumptions.ts
+// ../sanze-release-app/src/lib/planning/planningAssumptions.ts
 function discloseMissingPlanningInputs(input) {
-  const defaults = { site: ["1000", "\u57FA\u5730\u9762\u7A4D\u672A\u63D0\u4F9B\uFF0C\u66AB\u4EE51,000\u33A1\u5EFA\u7ACB\u5047\u8A2D\u60C5\u5883\uFF0C\u4E26\u975E\u672C\u6848\u767B\u8A18\u9762\u7A4D"], coverage: ["50", "\u5EFA\u853D\u7387\u672A\u63D0\u4F9B\uFF0C\u66AB\u63A150%\uFF0C\u672A\u78BA\u8A8D\u571F\u7BA1"], far: ["300", "\u57FA\u6E96\u5BB9\u7A4D\u7387\u672A\u63D0\u4F9B\uFF0C\u66AB\u63A1300%\uFF0C\u672A\u78BA\u8A8D\u571F\u7BA1"], coverageUse: ["80", "\u5EFA\u7BC9\u9762\u7A4D\u4F7F\u7528\u7387\u66AB\u63A180%"], volumeUse: ["100", "\u5BB9\u7A4D\u4F7F\u7528\u76EE\u6A19\u66AB\u63A1100%"], equipment: ["0", "\u8A2D\u5099\u5148\u6309\u5177\u540D\u623F\u9593\u9700\u6C42\u914D\u7F6E\uFF0C\u4E0D\u4EE5\u514D\u8A08\u4E0A\u9650\u586B\u6EFF"], lobby: ["0", "\u7F3A\u68AF\u5EF3\u914D\u7F6E\u8CC7\u6599\uFF0C\u9762\u7A4D\u66AB\u4E0D\u589E\u52A0"], balcony: ["0", "\u7F3A\u967D\u53F0\u914D\u7F6E\u8CC7\u6599\uFF0C\u9762\u7A4D\u66AB\u4E0D\u589E\u52A0"], roofRate: ["0", "\u7F3A\u5C4B\u7A81\u914D\u7F6E\u8CC7\u6599\uFF0C\u9762\u7A4D\u66AB\u4E0D\u589E\u52A0"], roofFloors: ["0", "\u7F3A\u5C4B\u7A81\u914D\u7F6E\u8CC7\u6599\uFF0C\u66AB\u4E0D\u53E6\u589E\u5C4B\u7A81\u5C64"], roofHeight: ["3", "\u5C4B\u7A81\u5C64\u9AD8\u66AB\u63A13m"], unitPing: ["30", "\u6BCF\u6236\u5730\u4E0A\u5206\u6524\u9762\u7A4D\u66AB\u63A130\u576A"], excavation: ["60", "\u958B\u6316\u7387\u66AB\u63A160%\uFF0C\u672A\u78BA\u8A8D\u500B\u6848\u4E0A\u9650"], reserve: ["0", "\u8A2D\u5099\u68AF\u9593\u6539\u4F9D\u5177\u540D\u7A7A\u9593\u9810\u7559\uFF0C\u6C92\u6709\u901A\u7528\u6CD5\u5B9A\u6700\u4F4E\u516C\u8A2D\u6BD4\u4F8B"], basementFloors: ["4", "\u7F3A\u5730\u4E0B\u5C64\u6578\uFF0C\u5047\u8A2D\u56FA\u5B9A4\u5C64\u521D\u4F30\uFF1B\u4E0D\u81EA\u52D5\u589E\u52A0"], carPing: ["8", "\u6C7D\u8ECA\u4F4D\u542B\u8ECA\u9053\u66AB\u63A18\u576A\uFF0F\u4F4D\uFF0C\u672A\u7D93\u5E7E\u4F55\u6392\u4F4D"], motoSqm: ["2.75", "\u6A5F\u8ECA\u542B\u901A\u9053\u66AB\u63A12.75\u33A1\uFF0F\u4F4D"], carPerUnit: ["0", "\u4E0D\u53E6\u52A0\u5E02\u5834\u6C7D\u8ECA\u9700\u6C42\uFF0C\u6CD5\u5B9A\u9700\u6C42\u512A\u5148"], motoPerUnit: ["1", "\u6A5F\u8ECA\u66AB\u6309\u6BCF\u62361\u4F4D"], localParkingUnit: ["1", "\u5730\u65B9\u6BCF\u6236\u6C7D\u8ECA\u898F\u5247\u672A\u63D0\u4F9B\uFF0C\u66AB\u63091\u4F4D\u60C5\u5883"], basementSalePercent: ["100", "\u5730\u4E0B\u5177\u540D\u623F\u5C4B\u8A2D\u5099\u68AF\u9593\u6309100%\u623F\u5C4B\u670D\u52D9\u5047\u8A2D\uFF0C\u505C\u8ECA\u53E6\u5217"] };
-  const next = { ...input };
-  const notes = [];
-  for (const [k, [value, note]] of Object.entries(defaults)) {
-    if (typeof input[k] === "string" && !input[k].trim()) {
-      next[k] = value;
-      notes.push("\u660E\u793A\u5047\u8A2D\uFF1A" + note + "\u3002");
-    }
-  }
-  for (const k of ["renewal", "scale", "tdr", "danger", "storePercent", "extraCars"]) if (!input[k]?.trim()) {
-    next[k] = "0";
-    notes.push(`\u660E\u793A\u5047\u8A2D\uFF1A${{ renewal: "\u90FD\u66F4\u734E\u52F5", scale: "\u898F\u6A21\u734E\u52F5", tdr: "\u5BB9\u7A4D\u79FB\u8F49", danger: "\u5371\u8001\u734E\u52F5", storePercent: "\u5E97\u8216\u914D\u7F6E", extraCars: "\u984D\u5916\u6C7D\u8ECA\u4F4D" }[k]}\u672A\u63D0\u4F9B\uFF0C\u66AB\u4E0D\u589E\u52A0\u3002`);
-  }
-  if (typeof input.reserve === "string" && !input.reserve.trim()) {
-    const floors = Math.max(1, Number(next.basementFloors) || 4), site = Number(next.site) || 1e3, excavation = Number(next.excavation) || 60;
-    const namedRooms = 24 + 48 + 64 + 64, coresPerFloor = 2 * (3 * 4.5 + 2 * 3 + 2.5 * 3), sqm2 = namedRooms + coresPerFloor * floors;
-    next.reserve = String(Math.min(90, sqm2 / (site * excavation / 100 * floors) * 100));
-    notes.push(`\u660E\u793A\u5047\u8A2D\uFF1A\u7121\u5730\u754C\u6642\u66AB\u6309\u8A2D\u5099\u623F24\uFF0B48\uFF0B64\uFF0B64\u33A1\u53CA\u6BCF\u5C64\u5169\u7D44\u68AF\u9593\u3001\u6392\u7159\u5BA4\u3001\u6607\u964D\u6A5F\u5171${coresPerFloor}\u33A1\u4F30\u5217${sqm2}\u33A1\uFF0C\u63DB\u7B97\u9810\u7559\u6BD4\u4F8B${Number(next.reserve).toFixed(2)}%\uFF1B\u4E0D\u662F\u6CD5\u5B9A\u6700\u4F4E\u516C\u8A2D\u6BD4\u4F8B\uFF0C\u4E5F\u672A\u9A57\u8B49\u6392\u4F4D\u3002`);
-  }
-  return { input: next, notes };
+  return { input: { ...input }, notes: [] };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/spatialTypes.ts
+// ../sanze-release-app/src/lib/planning/spatialTypes.ts
 var SPATIAL_VERSION = "spatial-planning.2026-10-19.v1";
 function isSpatialInput(v) {
   if (!v || typeof v !== "object") return false;
@@ -2993,7 +4150,7 @@ function isSpatialInput(v) {
   return s.version === SPATIAL_VERSION && ["survey", "assumed"].includes(s.mode) && shape(s.boundary) && Array.isArray(s.parcels) && s.parcels.every((p) => typeof p.id === "string" && shape(p.geometry) && Number.isFinite(p.registeredArea)) && Array.isArray(s.edges) && s.edges.every((e) => e.a?.length === 2 && e.b?.length === 2 && [...e.a, ...e.b, e.aboveSetback, e.belowSetback].every(Number.isFinite) && e.aboveSetback >= 0 && e.belowSetback >= 0) && s.origin?.length === 2 && s.origin.every(Number.isFinite) && Number.isFinite(s.angle) && s.edges.length <= 2e3 && s.parcels.length <= 200 && s.assumptions && (s.assumptions.heightLimit === null || Number.isFinite(s.assumptions.heightLimit) && s.assumptions.heightLimit > 0) && s.assumptions.columnGrid >= 3 && s.assumptions.columnGrid <= 20 && s.assumptions.columnSize <= 2 && s.assumptions.excavationLimit <= 100 && s.assumptions.unitPing >= 10 && s.assumptions.unitPing <= 100 && s.assumptions.basementHeight >= 2 && s.assumptions.basementHeight <= 5 && ["floorHeight", "groundHeight", "basementHeight", "excavationLimit", "columnGrid", "columnSize", "unitPing"].every((k) => Number.isFinite(s.assumptions[k]) && s.assumptions[k] > 0);
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/spatialGeometry.ts
+// ../sanze-release-app/src/lib/planning/spatialGeometry.ts
 var import_polygon_clipping = __toESM(require_polygon_clipping_umd(), 1);
 var polygon = (ring) => ring.length >= 3 ? [[ring]] : [];
 var rectangle = (x, y, w, h) => w > 0 && h > 0 ? polygon([[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]]) : [];
@@ -3037,7 +4194,7 @@ function takeArea(s, target) {
   return intersect(s, rectangle(b.minX - 1, b.minY - 1, lo - b.minX + 1, b.maxY - b.minY + 2));
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/commonAllocationRules.ts
+// ../sanze-release-app/src/lib/planning/commonAllocationRules.ts
 var COMMON_ALLOCATION_VERSION = "common-allocation.2026-10-18.v1";
 var defaultCommonPolicy = () => ({ version: COMMON_ALLOCATION_VERSION, mode: "planning", motorcycle: "housing", bicycle: "housing", community: "housing", ramp: "proportional", source: "" });
 function isCommonPolicy(x) {
@@ -3058,7 +4215,7 @@ function resolveCommonPolicy(p, pools) {
   return { allocation: { motorcycleSqm, bicycleSqm, communitySqm, sharedRampSqm, source: p.source || "App\u901A\u5247\u898F\u5283\u5047\u8A2D\uFF0C\u975E\u6838\u5B9A\u5206\u914D" }, rampRatio, notes, status: p.mode === "planning" ? "planning" : pending || needsDocuments ? "needs_documents" : "document_input" };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/article162.ts
+// ../sanze-release-app/src/lib/planning/article162.ts
 var AREA_REVIEW_VERSION = "article162.2026-10-18.v1";
 function isAreaReview(x) {
   if (!x || typeof x !== "object") return false;
@@ -3100,24 +4257,24 @@ function reviewAboveGround(c) {
     if (f.floorArea > c.footprint + 0.01) errors.push(`${f.label}\u6A13\u677F\u8D85\u51FA\u898F\u5283\u5EFA\u7BC9\u9762\u7A4D\uFF0C\u9808\u8ABF\u6574\u914D\u7F6E`);
     if (f.counted < -1e-6) errors.push(`${f.label}\u514D\u8A08\u9762\u7A4D\u8D85\u51FA\u5BE6\u969B\u9762\u7A4D`);
   }
-  const sum2 = (k) => floors.reduce((t, f) => t + f[k], 0);
-  const counted = sum2("counted");
+  const sum3 = (k) => floors.reduce((t, f) => t + f[k], 0);
+  const counted = sum3("counted");
   if (counted > c.used + 0.02) errors.push("\u9010\u5C64\u8A08\u5BB9\u9762\u7A4D\u8D85\u51FA\u898F\u5283\u4F7F\u7528\u5BB9\u7A4D");
-  return { errors, floors, floorArea: sum2("floorArea"), equipment, lobby: sum2("lobby"), balcony: sum2("balcony"), equipmentExempt: sum2("equipmentExempt"), lobbyExempt: sum2("lobbyExempt"), balconyExempt: sum2("balconyExempt"), counted, countedExtras: sum2("countedExtras"), ordinary: sum2("floorArea") - equipment - sum2("lobby") };
+  return { errors, floors, floorArea: sum3("floorArea"), equipment, lobby: sum3("lobby"), balcony: sum3("balcony"), equipmentExempt: sum3("equipmentExempt"), lobbyExempt: sum3("lobbyExempt"), balconyExempt: sum3("balconyExempt"), counted, countedExtras: sum3("countedExtras"), ordinary: sum3("floorArea") - equipment - sum3("lobby") };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/spatialPlanning.ts
-var sum = (a, key) => a.reduce((t, s) => t + s[key], 0);
+// ../sanze-release-app/src/lib/planning/spatialPlanning.ts
+var sum2 = (a, key) => a.reduce((t, s) => t + s[key], 0);
 var group = (f, use) => f.flatMap((f2) => f2.spaces).filter((s) => use.includes(s.use));
-var sqm = (s) => sum(s, "area");
+var sqm = (s) => sum2(s, "area");
 var isCar = (s) => ["car", "accessible_car"].includes(s.use);
 var equipmentUses = ["stair", "lift", "equipment", "roof_equipment"];
 var EPS = 0.015;
 function envelope(s, below, height = 0) {
   return difference(s.boundary, ...s.edges.map((e) => edgeBand(e.a, e.b, below ? e.belowSetback : Math.max(e.aboveSetback, e.roadWidth === null ? 0 : height / 3.6 - e.roadWidth / 2))));
 }
-function floor(id, plate, elevation, height) {
-  return { id, plate, elevation, height, spaces: [], shelter: [], counted: 0, exempt: 0, houseRegistered: 0, parkingRegistered: 0, notes: [] };
+function floor(id2, plate, elevation, height) {
+  return { id: id2, plate, elevation, height, spaces: [], shelter: [], counted: 0, exempt: 0, houseRegistered: 0, parkingRegistered: 0, notes: [] };
 }
 function add(f, label, use, shape, service = "housing", assumption = "\u5C3A\u5BF8\u8207\u7528\u9014\u70BA\u521D\u6B65\u914D\u7F6E\u5047\u8A2D\uFF1B\u4F9D\u6B63\u5F0F\u5716\u8AAA\u8986\u6838") {
   const geometry = difference(intersect(shape, f.plate), ...f.spaces.map((s) => s.geometry));
@@ -3126,10 +4283,10 @@ function add(f, label, use, shape, service = "housing", assumption = "\u5C3A\u5B
   f.spaces.push({ id: f.id + "-" + f.spaces.length, label, use, geometry, area: a, service, exempt: 0, counted: a, houseRegistered: service === "housing" ? a : 0, parkingRegistered: service === "parking" ? a : 0, legalBasis: "\u5C1A\u672A\u6AA2\u8A0E", assumption });
 }
 function totals(f) {
-  f.counted = sum(f.spaces, "counted");
-  f.exempt = sum(f.spaces, "exempt");
-  f.houseRegistered = sum(f.spaces, "houseRegistered");
-  f.parkingRegistered = sum(f.spaces, "parkingRegistered");
+  f.counted = sum2(f.spaces, "counted");
+  f.exempt = sum2(f.spaces, "exempt");
+  f.houseRegistered = sum2(f.spaces, "houseRegistered");
+  f.parkingRegistered = sum2(f.spaces, "parkingRegistered");
 }
 function free(f) {
   return difference(f.plate, ...f.spaces.map((s) => s.geometry));
@@ -3333,8 +4490,8 @@ function buildSpatialPlanning(i) {
       }
       add(f, "\u5730\u4E0B\u5916\u7246", "structure", difference(f.plate, insetFast(f.plate, 0.3)), "shared");
       for (let xx = x + 0.3 + 7.5; xx < x + length; xx += s.assumptions.columnGrid) for (const yy of [y + 0.5, y + 17.1 - s.assumptions.columnSize]) add(f, "\u7D50\u69CB\u67F1", "structure", rectangle(xx, yy, s.assumptions.columnSize, s.assumptions.columnSize), "shared");
-      const stalls = (use, w, h, rows, wanted, done) => {
-        for (const yy of rows) for (let slot = 0; slot < 1e3; slot++) {
+      const stalls = (use, w, h, rows5, wanted, done) => {
+        for (const yy of rows5) for (let slot = 0; slot < 1e3; slot++) {
           const xx = x + 0.3 + (use === "car" || use === "community" ? Math.floor(slot / 3) * s.assumptions.columnGrid + slot % 3 * w : slot * w);
           if (xx + w > x + length - 0.3) break;
           if (!wanted()) return;
@@ -3471,8 +4628,8 @@ function buildSpatialPlanning(i) {
     check.push({ label: f.id + "\u505C\u8ECA\u8207\u5165\u53E3\u9023\u901A", status: stranded.length ? "conflict" : "pass", detail: stranded.length ? stranded.map((q) => q.label).join("\u3001") + "\u672A\u63A5\u53EF\u9054\u901A\u9053" : "\u6BCF\u683C\u9130\u63A5\u8207\u5761\u9053\u9023\u901A\u7684\u8ECA\u9053\uFF0F\u901A\u9053\uFF1B\u8ECA\u8F1B\u6383\u63A0\u53CA\u9580\u6247\u914D\u7F6E\u4ECD\u9808\u5716\u8AAA\u8986\u6838\u3002" });
   }
   for (const f of floors) {
-    const overlap = sum(f.spaces, "area") - area(union(...f.spaces.map((s2) => s2.geometry))), balance = Math.abs(sum(f.spaces, "area") - area(f.plate));
-    check.push({ label: f.id + "\u9762\u7A4D\u5B88\u6046\u8207\u91CD\u758A", status: overlap > 0.02 || balance > 0.02 ? "conflict" : "pass", detail: `\u6A13\u677F${area(f.plate).toFixed(2)}\u33A1\uFF1B\u5340\u584A${sum(f.spaces, "area").toFixed(2)}\u33A1\uFF1B\u91CD\u758A${overlap.toFixed(4)}\u33A1\uFF1B\u514D\u8A08\uFF0B\u8A08\u5BB9${(f.exempt + f.counted).toFixed(2)}\u33A1\u3002` });
+    const overlap = sum2(f.spaces, "area") - area(union(...f.spaces.map((s2) => s2.geometry))), balance = Math.abs(sum2(f.spaces, "area") - area(f.plate));
+    check.push({ label: f.id + "\u9762\u7A4D\u5B88\u6046\u8207\u91CD\u758A", status: overlap > 0.02 || balance > 0.02 ? "conflict" : "pass", detail: `\u6A13\u677F${area(f.plate).toFixed(2)}\u33A1\uFF1B\u5340\u584A${sum2(f.spaces, "area").toFixed(2)}\u33A1\uFF1B\u91CD\u758A${overlap.toFixed(4)}\u33A1\uFF1B\u514D\u8A08\uFF0B\u8A08\u5BB9${(f.exempt + f.counted).toFixed(2)}\u33A1\u3002` });
     if (!contained(f.plate, f.id.startsWith("B") ? belowEnvelope : s.boundary)) check.push({ label: f.id + "\u8D8A\u754C", status: "conflict", detail: "\u5B58\u5728\u914D\u7F6E\u8D85\u51FA\u53EF\u914D\u7F6E\u5730\u754C\u3002" });
   }
   check.push({ label: "\u5730\u9762\u5165\u53E3\u8207\u4EA4\u901A\u929C\u63A5", status: "assumed", detail: `121\u5DF7\u512A\u5148\uFF1B\u5761\u9053\u8D77\u9EDE(${rampStart.toFixed(1)},${rampY.toFixed(1)})\u9810\u75596m\u5E73\u5730\u7DE9\u885D\u3002\u9053\u8DEF\u5EFA\u7BC9\u7DDA\u3001\u884C\u7A7F\u7DDA\u3001\u51FA\u5165\u53E3\u6DE8\u8DDD\u8207\u8ECA\u8F1B\u6383\u63A0\u9808\u8986\u6838\uFF0C\u4E0D\u5217\u5E7E\u4F55\u5DF2\u901A\u904E\u3002` }, { label: "\u9053\u8DEF\u659C\u7DDA", status: "assumed", detail: "\u4F9D\u7B2C164\u689D\u63A1\u6BCF\u5074\u9AD8\u5EA6/3.6\u2212\u9053\u8DEF\u5BEC/2\u7684\u5747\u52FB\u9670\u5F71\u9810\u7B97\u4FDD\u5B88\u9000\u7E2E\uFF1B\u9053\u8DEF\u6CD5\u5B9A\u5BEC\u5EA6\u53CA\u9053\u8DEF\u5C0D\u5074\u6C38\u4E45\u7A7A\u5730\u672A\u78BA\u8A8D\uFF0C\u4E0D\u63A1\u52A0\u500D\u3002" }, { label: "\u65E5\u7167\u8207\u9AD8\u9435\u9650\u5EFA", status: "assumed", detail: "\u7B2C39-1\u689D\u51AC\u81F3\u9130\u5730\u6709\u6548\u65E5\u7167\u53CA\u9AD8\u9435\u69CB\u9020\uFF0F\u6DF1\u5EA6\u9650\u5236\u672A\u6709\u5B8C\u6574\u9130\u623F\u8207\u96A7\u9053\u8CC7\u6599\uFF1B\u521D\u4F30\u7E7C\u7E8C\uFF0C\u672A\u5BA3\u544A\u5408\u898F\u3002" }, { label: "\u5BB9\u7A4D\u7E3D\u91CF", status: used > target + 0.02 ? "conflict" : "pass", detail: `\u5730\u4E0A\u53CA\u5730\u4E0B\u5408\u8A08${used.toFixed(2)}\u33A1\uFF0F\u76EE\u6A19\u4E0A\u9650${target.toFixed(2)}\u33A1\u3002` });
@@ -3513,18 +4670,18 @@ function connectMotoRoutes(f, aisleY) {
   f.spaces = f.spaces.filter((q) => q.area > 1e-3);
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/spatialResult.ts
+// ../sanze-release-app/src/lib/planning/spatialResult.ts
 function computeSpatialResult(i, aggregate) {
   const template = aggregate({ ...i, spatial: void 0, areaReview: void 0, reserve: "0", equipment: "0", lobby: "0", balcony: "0", extraCars: "0" });
   const detail = buildSpatialPlanning(i), s = detail.spatial;
   if (!template.values || !detail.floorReview) return { ...template, spatial: s, values: null, errors: s.checks.filter((c) => c.status === "conflict").map((c) => c.detail), notes: [...s.warnings] };
-  const floors = s.floors, above = floors.filter((f) => f.id.endsWith("F")), below = floors.filter((f) => f.id.startsWith("B")), roofs = floors.filter((f) => f.id.startsWith("R")), spaces = floors.flatMap((f) => f.spaces), sum2 = (a, key) => a.reduce((t, x) => t + x[key], 0), of = (uses, a = spaces) => a.filter((x) => uses.includes(x.use));
+  const floors = s.floors, above = floors.filter((f) => f.id.endsWith("F")), below = floors.filter((f) => f.id.startsWith("B")), roofs = floors.filter((f) => f.id.startsWith("R")), spaces = floors.flatMap((f) => f.spaces), sum3 = (a, key) => a.reduce((t, x) => t + x[key], 0), of = (uses, a = spaces) => a.filter((x) => uses.includes(x.use));
   const ap = above.flatMap((f) => f.spaces), bp = below.flatMap((f) => f.spaces), rp = roofs.flatMap((f) => f.spaces), fr = detail.floorReview;
-  const eq = of(["stair", "lift", "equipment"]), basement = below.reduce((t, f) => t + area(f.plate), 0), roof = roofs.reduce((t, f) => t + area(f.plate), 0), aboveArea = sum2(ap, "area") + roof, balcony = sum2(of(["balcony"], ap), "area"), sale = sum2(spaces, "houseRegistered"), common = sale - sum2(of(["dwelling", "balcony"], ap), "houseRegistered"), used = floors.reduce((t, f) => t + f.counted, 0), bcount = below.reduce((t, f) => t + f.counted, 0), parkingSalesArea = sum2(bp, "parkingRegistered"), bhouse = sum2(bp, "houseRegistered"), beq = of(["stair", "lift", "equipment"], bp), beqHouse = sum2(beq, "houseRegistered");
+  const eq = of(["stair", "lift", "equipment"]), basement = below.reduce((t, f) => t + area(f.plate), 0), roof = roofs.reduce((t, f) => t + area(f.plate), 0), aboveArea = sum3(ap, "area") + roof, balcony = sum3(of(["balcony"], ap), "area"), sale = sum3(spaces, "houseRegistered"), common = sale - sum3(of(["dwelling", "balcony"], ap), "houseRegistered"), used = floors.reduce((t, f) => t + f.counted, 0), bcount = below.reduce((t, f) => t + f.counted, 0), parkingSalesArea = sum3(bp, "parkingRegistered"), bhouse = sum3(bp, "houseRegistered"), beq = of(["stair", "lift", "equipment"], bp), beqHouse = sum3(beq, "houseRegistered");
   const mergedEquipment = beq.reduce((t, q) => t + (q.exemptionParts?.shelter ?? 0), 0), globalEquipment = beq.reduce((t, q) => t + (q.exemptionParts?.equipment ?? 0), 0);
-  const values = { ...template.values, base: detail.base, bonus: detail.allowed - detail.base, allowed: detail.allowed, renewalApplied: detail.bonus.renewal, tdrApplied: detail.bonus.tdr, scaleApplied: detail.bonus.scale, dangerApplied: detail.bonus.danger, used, aboveCounted: above.reduce((t, f) => t + f.counted, 0), basementCounted: bcount, basementExempt: basement - bcount, parkingCap: s.cars * 40, parkingCounted: sum2(of(["car", "accessible_car", "ramp", "driveway"], bp), "counted"), basementEquipmentMerged: mergedEquipment, basementEquipmentGlobalExempt: globalEquipment, basementEquipmentCounted: sum2(beq, "counted"), bicycleCounted: sum2(of(["bicycle"], bp), "counted"), motorcycleCounted: sum2(of(["motorcycle", "accessible_motorcycle"], bp), "counted"), communityCounted: sum2(of(["community"], bp), "counted"), spareCounted: 0, ordinaryCommon: sum2(of(["corridor", "structure"], ap), "houseRegistered"), sale, salePing: sale * 0.3025, common, commonRatio: sale ? common / sale * 100 : 0, basementCommon: bhouse, basementUnassigned: 0, basementSale: bhouse, basementEquipmentSale: beqHouse, shelterCommon: 0, parkingHousingCommon: bhouse - beqHouse, parkingSalesArea, aboveSale: sum2(ap, "houseRegistered") + sum2(rp, "houseRegistered"), registeredEquipment: sum2(of(["stair", "lift", "equipment"], ap), "houseRegistered"), registeredLobby: sum2(of(["lobby"], ap), "houseRegistered"), registeredRoof: sum2(rp, "houseRegistered"), carArea: sum2(of(["car", "accessible_car", "ramp", "driveway"], bp), "area"), motoArea: sum2(of(["motorcycle", "accessible_motorcycle"], bp), "area"), totalSelected: aboveArea + basement - (i.totalBasis === "floor" ? balcony : 0), countedExtras: fr.countedExtras + bcount, ordinary: sum2(of(["dwelling", "corridor", "structure"], ap), "area"), equipment: sum2(of(["stair", "lift", "equipment"], ap), "area"), equipmentCap: detail.equipmentCap, equipmentExempt: fr.equipmentExempt, lobby: fr.lobby, balcony, lobbyExempt: fr.lobbyExempt, balconyExempt: fr.balconyExempt, footprint: area(above[0]?.plate ?? []), roof, above: aboveArea, aboveWithoutBalcony: aboveArea - balcony, units: s.units, cars: s.cars, motos: s.motos, parkingArea: parkingSalesArea, parkingBasis: sum2(of(["dwelling", "lobby", "corridor", "structure"], ap), "area"), basementPlate: Math.max(...below.map((f) => area(f.plate))), neededFloors: 4, floors: 4, basement, capacity: s.cars, total: aboveArea + basement, totalWithoutBalcony: aboveArea + basement - balcony, equivalentFloors: above.length, unused: Math.max(0, detail.allowed - used), salesCoefficient: sale / detail.allowed };
-  const pv = template.parking?.values, parking = pv && template.parking ? { ...template.parking, legal: s.legalCars, errors: [], notes: s.warnings, values: { ...pv, legal: s.legalCars, marketDemand: 0, requestedExtra: 0, requested: s.legalCars, adoptedExtra: 0, cars: s.cars, availableExtra: 0, remainingExtra: 0, capacity: s.cars, neededFloors: 4, floors: 4, basement, motos: s.motos, bikes: s.bikes, community: s.community, carArea: values.carArea, motoArea: values.motoArea, bikeArea: sum2(of(["bicycle"], bp), "area"), communityArea: sum2(of(["community"], bp), "area"), equipmentArea: sum2(beq, "area"), equipmentPerFloor: sum2(beq, "area") / 4, rampTotal: sum2(of(["ramp"], bp), "area"), lossArea: sum2(of(["structure"], bp), "area"), spareArea: 0, parkingArea: parkingSalesArea, basementCommon: bhouse, legalFormula: `\u9010\u5C64\u7528\u9014\u901A\u5247\u521D\u4F30\uFF1B${s.units}\u6236\uFF0C\u6C7D\u8ECA\u9700\u6C42${s.legalCars}\u4F4D\uFF1B\u4F9D\u5716\u9762\u5BE6\u6392` } } : template.parking;
-  const regulatory = "regulatory" in template && template.regulatory ? { ...template.regulatory, bonus: detail.bonus, volume: { ...template.regulatory.volume, shelterArea: area(below[0]?.shelter ?? []), shelterEquipment: mergedEquipment, pools: { basement, cars: s.cars, carArea: values.carArea, motoArea: values.motoArea, bikeArea: sum2(of(["bicycle"], bp), "area"), communityArea: sum2(of(["community"], bp), "area"), rampTotal: sum2(of(["ramp"], bp), "area"), lossArea: sum2(of(["structure"], bp), "area"), equipmentArea: sum2(beq, "area"), spareArea: 0 }, parkingCap: s.cars * 40, carPool: bp.reduce((t, q) => t + (q.exemptionParts?.carSubject ?? 0), 0), carExempt: bp.reduce((t, q) => t + (q.exemptionParts?.car ?? 0), 0), mergedEquipment, globalEquipmentExempt: globalEquipment, equipmentCounted: values.basementEquipmentCounted, parkingCounted: values.parkingCounted, bicycleCounted: values.bicycleCounted, motorcycleCounted: values.motorcycleCounted, communityCounted: values.communityCounted, spareCounted: 0, counted: bcount, exempt: basement - bcount, notes: s.warnings, balanced: Math.abs(basement - bcount - below.reduce((t, f) => t + f.exempt, 0)) < 0.02 } } : void 0;
+  const values = { ...template.values, base: detail.base, bonus: detail.allowed - detail.base, allowed: detail.allowed, renewalApplied: detail.bonus.renewal, tdrApplied: detail.bonus.tdr, scaleApplied: detail.bonus.scale, dangerApplied: detail.bonus.danger, used, aboveCounted: above.reduce((t, f) => t + f.counted, 0), basementCounted: bcount, basementExempt: basement - bcount, parkingCap: s.cars * 40, parkingCounted: sum3(of(["car", "accessible_car", "ramp", "driveway"], bp), "counted"), basementEquipmentMerged: mergedEquipment, basementEquipmentGlobalExempt: globalEquipment, basementEquipmentCounted: sum3(beq, "counted"), bicycleCounted: sum3(of(["bicycle"], bp), "counted"), motorcycleCounted: sum3(of(["motorcycle", "accessible_motorcycle"], bp), "counted"), communityCounted: sum3(of(["community"], bp), "counted"), spareCounted: 0, ordinaryCommon: sum3(of(["corridor", "structure"], ap), "houseRegistered"), sale, salePing: sale * 0.3025, common, commonRatio: sale ? common / sale * 100 : 0, basementCommon: bhouse, basementUnassigned: 0, basementSale: bhouse, basementEquipmentSale: beqHouse, shelterCommon: 0, parkingHousingCommon: bhouse - beqHouse, parkingSalesArea, aboveSale: sum3(ap, "houseRegistered") + sum3(rp, "houseRegistered"), registeredEquipment: sum3(of(["stair", "lift", "equipment"], ap), "houseRegistered"), registeredLobby: sum3(of(["lobby"], ap), "houseRegistered"), registeredRoof: sum3(rp, "houseRegistered"), carArea: sum3(of(["car", "accessible_car", "ramp", "driveway"], bp), "area"), motoArea: sum3(of(["motorcycle", "accessible_motorcycle"], bp), "area"), totalSelected: aboveArea + basement - (i.totalBasis === "floor" ? balcony : 0), countedExtras: fr.countedExtras + bcount, ordinary: sum3(of(["dwelling", "corridor", "structure"], ap), "area"), equipment: sum3(of(["stair", "lift", "equipment"], ap), "area"), equipmentCap: detail.equipmentCap, equipmentExempt: fr.equipmentExempt, lobby: fr.lobby, balcony, lobbyExempt: fr.lobbyExempt, balconyExempt: fr.balconyExempt, footprint: area(above[0]?.plate ?? []), roof, above: aboveArea, aboveWithoutBalcony: aboveArea - balcony, units: s.units, cars: s.cars, motos: s.motos, parkingArea: parkingSalesArea, parkingBasis: sum3(of(["dwelling", "lobby", "corridor", "structure"], ap), "area"), basementPlate: Math.max(...below.map((f) => area(f.plate))), neededFloors: 4, floors: 4, basement, capacity: s.cars, total: aboveArea + basement, totalWithoutBalcony: aboveArea + basement - balcony, equivalentFloors: above.length, unused: Math.max(0, detail.allowed - used), salesCoefficient: sale / detail.allowed };
+  const pv = template.parking?.values, parking = pv && template.parking ? { ...template.parking, legal: s.legalCars, errors: [], notes: s.warnings, values: { ...pv, legal: s.legalCars, marketDemand: 0, requestedExtra: 0, requested: s.legalCars, adoptedExtra: 0, cars: s.cars, availableExtra: 0, remainingExtra: 0, capacity: s.cars, neededFloors: 4, floors: 4, basement, motos: s.motos, bikes: s.bikes, community: s.community, carArea: values.carArea, motoArea: values.motoArea, bikeArea: sum3(of(["bicycle"], bp), "area"), communityArea: sum3(of(["community"], bp), "area"), equipmentArea: sum3(beq, "area"), equipmentPerFloor: sum3(beq, "area") / 4, rampTotal: sum3(of(["ramp"], bp), "area"), lossArea: sum3(of(["structure"], bp), "area"), spareArea: 0, parkingArea: parkingSalesArea, basementCommon: bhouse, legalFormula: `\u9010\u5C64\u7528\u9014\u901A\u5247\u521D\u4F30\uFF1B${s.units}\u6236\uFF0C\u6C7D\u8ECA\u9700\u6C42${s.legalCars}\u4F4D\uFF1B\u4F9D\u5716\u9762\u5BE6\u6392` } } : template.parking;
+  const regulatory = "regulatory" in template && template.regulatory ? { ...template.regulatory, bonus: detail.bonus, volume: { ...template.regulatory.volume, shelterArea: area(below[0]?.shelter ?? []), shelterEquipment: mergedEquipment, pools: { basement, cars: s.cars, carArea: values.carArea, motoArea: values.motoArea, bikeArea: sum3(of(["bicycle"], bp), "area"), communityArea: sum3(of(["community"], bp), "area"), rampTotal: sum3(of(["ramp"], bp), "area"), lossArea: sum3(of(["structure"], bp), "area"), equipmentArea: sum3(beq, "area"), spareArea: 0 }, parkingCap: s.cars * 40, carPool: bp.reduce((t, q) => t + (q.exemptionParts?.carSubject ?? 0), 0), carExempt: bp.reduce((t, q) => t + (q.exemptionParts?.car ?? 0), 0), mergedEquipment, globalEquipmentExempt: globalEquipment, equipmentCounted: values.basementEquipmentCounted, parkingCounted: values.parkingCounted, bicycleCounted: values.bicycleCounted, motorcycleCounted: values.motorcycleCounted, communityCounted: values.communityCounted, spareCounted: 0, counted: bcount, exempt: basement - bcount, notes: s.warnings, balanced: Math.abs(basement - bcount - below.reduce((t, f) => t + f.exempt, 0)) < 0.02 } } : void 0;
   return { ...template, regulatory, values, legal: s.legalCars, parking, floorReview: fr, spatial: s, errors: [...detail.bonus.errors, ...s.checks.filter((c) => c.status === "conflict").map((c) => c.detail)], notes: [...detail.bonus.notes, ...s.warnings, ...s.checks.filter((c) => c.status === "assumed").map((c) => c.label + "\uFF1A" + c.detail), `App\u4F9D\u9010\u5C64\u5E7E\u4F55\u91CD\u7B97\uFF0C\u5730\u4E0B\u56FA\u5B9A4\u5C64\uFF0C\u672A\u8208\u5EFA\u7684\u5730\u4E0B\u7BC4\u570D${s.unbuiltBasement.toFixed(2)}\u33A1\u4E0D\u5217\u6A13\u677F\u3001\u8A08\u5BB9\u6216\u767B\u8A18\u3002`, `\u92B7\u552E\u4FC2\u6578\uFF1D\u623F\u5C4B\u53EF\u767B\u8A18\u9762\u7A4D${sale.toFixed(2)}\xF7\u5141\u5EFA\u5BB9\u7A4D${detail.allowed.toFixed(2)}\uFF1B\u4E0D\u4EE5\u6B77\u53F2\u4FC2\u6578\u4F5C\u914D\u7F6E\u76EE\u6A19\u3002`] };
 }
 var spatialCache = /* @__PURE__ */ new Map();
@@ -3538,7 +4695,7 @@ function calculateSpatialResult(i, aggregate) {
   return result;
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/legalParking.ts
+// ../sanze-release-app/src/lib/planning/legalParking.ts
 var PARKING_RULE_VERSION = "ntpc-parking.2026-10-17.v2";
 var isTaipeiParking = (district) => /臺北|台北/.test(district);
 var newParkingDesign = (district = "", parcel = "", review = "unknown") => ({ version: PARKING_RULE_VERSION, mode: "general", demandMode: "legal", demandPerUnit: "1", bicycleAccess: "shared_ramp", bicycleLiftArea: "9", district, parcel, plan: "", zone: "", reference: "", confirmed: false, rule: "unresolved", unitRate: "1", areaPerCar: "", freeArea: "0", review, floorHeight: "3.2", loss: "10", rowMode: "double", fillRemaining: false });
@@ -3569,9 +4726,9 @@ function calculateLegalParking(p, c) {
     notes.push("\u90FD\u5BE9\u9069\u7528\u6027\u672A\u9F4A\uFF0C\u5148\u6309\u9069\u7528\u65B0\u5317\u90FD\u5BE9\u9810\u7559\u9700\u6C42\uFF0C\u5C6C\u660E\u793A\u5047\u8A2D\u3002");
   }
   if (c.storePercent > 0 && !(taipei && general)) errors.push("\u4F4F\u5546\u6DF7\u7528\u9808\u5206\u5217\u5404\u7528\u9014\u6CD5\u5B9A\u505C\u8ECA\u6AA2\u8A0E\uFF1B\u672C\u7248\u7D14\u4F4F\u5B85\u6D41\u7A0B\u4E0D\u4EE3\u586B\u6CD5\u5B9A\u6578");
-  const get = (value, label, min = 0, max = 1e8) => {
-    const n = Number(value);
-    if (!value.trim() || !Number.isFinite(n) || n < min || n > max) {
+  const get = (value2, label, min = 0, max = 1e8) => {
+    const n = Number(value2);
+    if (!value2.trim() || !Number.isFinite(n) || n < min || n > max) {
       errors.push(label + "\u7121\u6548");
       return 0;
     }
@@ -3716,7 +4873,7 @@ function calculateLegalParking(p, c) {
   return { version: PARKING_RULE_VERSION, roughEstimate: general, errors, notes, legal, capacityFailure: false, values: { smallSite: void 0, flatCars: cars, mechanicalCars: 0, mechanicalArea: 0, undergroundFlatCars: cars, groundCars: 0, quantityFloors, legal, marketDemand, requestedExtra: c.extra, requested, adoptedExtra, cars, availableExtra, remainingExtra, capacity, neededFloors, floors, basement, motos, bikes, community, accessible, accessibleMotos, motoAccessibleExtra, motoAccessibleWidth, motoAccessibleLength, motoAccessibleAisle, carWidth, carLength, aisle, carModule, motoWidth, motoLength, motoAisle, motoModule, bicycleAccess, bicycleLiftArea, rampDenominator, rampWidth, rampRun, rampArea, rampTotal, equipmentPerFloor, equipmentArea, lossPerFloor, lossArea, netPerFloor, motoArea, bikeArea, communityArea, carArea, parkingArea, basementCommon, spareArea, b1Capacity, otherCapacity, entranceBuffer: cars + community <= 50 ? 4 : 6, legalFormula } };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/planning/autonomousPlanning.ts
+// ../sanze-release-app/src/lib/planning/autonomousPlanning.ts
 var PLANNING_VERSION = "autonomousPlanning.2026-10-17.v1";
 var planningFields = [
   ["site", "\u57FA\u5730\u9762\u7A4D", "\u33A1", "base"],
@@ -3748,9 +4905,25 @@ var planningFields = [
   ["basementSalePercent", "\u5730\u4E0B\u975E\u505C\u8ECA\u7A7A\u9593\u53EF\u767B\u8A18\u5206\u6524\u6BD4\u4F8B", "%", "basement"],
   ["localParkingUnit", "\u5730\u65B9\u898F\u5B9A\u6BCF\u6236\u6C7D\u8ECA\u4F4D\u6578\uFF08\u9078\u5730\u65B9\u898F\u5247\u624D\u4F7F\u7528\uFF09", "\u4F4D\uFF0F\u6236", "parking"]
 ];
-function defaultPlanningInput(r) {
+function planningAssumptionsTemplate(r) {
   const x = Object.fromEntries(Object.entries(r.input).map(([k, v]) => [k, String(v ?? "")]));
   return { basementDemand: defaultBasementDemand(x.district), ...r.input.roadConditions ? { roadConditions: structuredClone(r.input.roadConditions) } : {}, quantityReserve: { ...defaultQuantityReserve(), reservationMode: "legal_envelope", basementReservePercent: 25, roofEnvelope: defaultRoofEnvelope() }, regulatoryReview: defaultRegulatoryReview(), areaReview: { version: AREA_REVIEW_VERSION, commonPolicy: defaultCommonPolicy() }, parkingDesign: newParkingDesign(x.district, x.landIdentifier, Number(x.tdrBonusRatePercent) > 0 ? "yes" : "unknown"), site: x.siteAreaSqm, coverage: x.buildingCoverageRatePercent, far: x.baseFarRatePercent, renewal: x.urbanRenewalBonusRatePercent || "0", scale: x.landUseOrScaleBonusRatePercent || "0", tdr: x.tdrBonusRatePercent || "0", danger: x.dangerousOldBuildingBonusRatePercent || "0", coverageUse: "80", volumeUse: "100", equipment: "0", lobby: "0", balcony: "5", roofRate: "10", roofFloors: "3", roofHeight: "3", unitPing: "30", storePercent: "0", carPerUnit: "1", motoPerUnit: "1", carPing: "8", motoSqm: "2.5", extraCars: "0", excavation: "60", excavationCap: "", reserve: "0", basementFloors: "4", localParkingUnit: "1", basementSalePercent: "100", totalBasis: "floor", stair: "other", lobbyDepth: "assumed", roofType: "ordinary", elevator: "yes", basementMode: "manual", parkingRule: "demand", parkingReference: "", excavationReference: "", note: "\u65B0\u6848\u76F4\u63A5\u63A1\u73FE\u884C\u9010\u5C64\u514D\u8A08\u3001\u6CD5\u898F\u9810\u7559\u8207\u5C4B\u7A81\u4E0A\u9650\u689D\u4EF6\u521D\u4F30\u3002\u5EFA\u7BC9\u9762\u7A4D\u4F7F\u752880%\u300130\u576A\uFF0F\u6236\u53CA\u967D\u53F0\u5360\u5404\u5C64\u6A13\u677F5%\u70BA\u53EF\u8ABF\u898F\u5283\u5047\u8A2D\u3002\u5730\u4E0B\u958B\u6316\u4E0A\u9650\u9808\u4F9D\u57FA\u5730\u9069\u7528\u898F\u5247\u6216\u6587\u4EF6\u78BA\u8A8D\uFF1B\u5C64\u6578\u53CA\u505C\u8ECA\u65B9\u5F0F\u4F9D\u9700\u6C42\u641C\u5C0B\uFF0C\u8A2D\u5099\u68AF\u9593\u6309\u5177\u540D\u6838\u5FC3\u53CA\u623F\u9593\u9810\u7559\uFF1B\u514D\u8A08\u53CA\u767B\u8A18\u4ECD\u4F9D\u7528\u9014\u8207\u984D\u5EA6\u5206\u5225\u6AA2\u8A0E\u3002\u734E\u52F5\u6CBF\u7528\u57FA\u5730\u8F38\u5165\uFF0C\u4E0D\u5F9E\u5EFA\u7BC9\u5E2B\u7D50\u679C\u6216\u65E2\u5B58\u6848\u4EF6\u5012\u586B\u3002" };
+}
+function defaultPlanningInput(r) {
+  const input = planningAssumptionsTemplate(r), known = /* @__PURE__ */ new Set(["site", "coverage", "far", "renewal", "scale", "tdr", "danger"]);
+  for (const [key] of planningFields) if (!known.has(key)) input[key] = "";
+  input.site = String(r.input.siteAreaSqm ?? "");
+  input.coverage = String(r.input.buildingCoverageRatePercent ?? "");
+  input.far = String(r.input.baseFarRatePercent ?? "");
+  input.renewal = String(r.input.urbanRenewalBonusRatePercent ?? "");
+  input.scale = String(r.input.landUseOrScaleBonusRatePercent ?? "");
+  input.tdr = String(r.input.tdrBonusRatePercent ?? "");
+  input.danger = String(r.input.dangerousOldBuildingBonusRatePercent ?? "");
+  input.assessmentMode = "planning";
+  input.regulatoryReview = { ...input.regulatoryReview, renewalLimitPercent: "", tdrLimitPercent: "" };
+  input.quantityReserve = { ...input.quantityReserve, basementReservePercent: void 0 };
+  input.note = "\u898F\u5283\u8A66\u7B97\uFF1A\u6BD4\u4F8B\u8207\u6578\u91CF\u9808\u660E\u78BA\u586B\u5BEB\uFF0C\u7F3A\u503C\u4E0D\u5957\u9810\u8A2D\u3002";
+  return input;
 }
 var enums = { totalBasis: ["floor", "construction"], stair: ["single", "other"], lobbyDepth: ["assumed", "confirmed", "failed"], roofType: ["ordinary", "high"], elevator: ["yes", "no"], basementMode: ["auto", "manual"], parkingRule: ["demand", "article59", "localUnit"] };
 function calculatePlanningPass(i, aboveBudget) {
@@ -3868,11 +5041,33 @@ function calculatePlanningPass(i, aboveBudget) {
   return { errors, notes, legal, parking, aboveGround, floorReview, values: Object.fromEntries(Object.entries(values).map(([k, v]) => [k, round(v)])) };
 }
 function normalizePlanningInput(input, district, parcel) {
-  const disclosed = discloseMissingPlanningInputs(input);
+  if (input.assessmentMode === "document" || input.mixedSite?.enabled) return input;
+  const disclosed = input.commercialIntensity?.enabled ? { input, notes: [] } : discloseMissingPlanningInputs(input);
   input = { ...disclosed.input, ...disclosed.notes.length ? { assumptionNotes: [.../* @__PURE__ */ new Set([...input.assumptionNotes ?? [], ...disclosed.notes])] } : {} };
   return { ...input, areaReview: input.areaReview ?? { version: AREA_REVIEW_VERSION, commonPolicy: defaultCommonPolicy() }, regulatoryReview: input.regulatoryReview ? { ...input.regulatoryReview, version: defaultRegulatoryReview().version } : defaultRegulatoryReview(), parkingDesign: input.parkingDesign ?? newParkingDesign(district?.trim() || "\u65B0\u5317\u5E02", parcel ?? input.parkingReference) };
 }
 function calculatePlanning(input) {
+  if (input.assessmentMode !== void 0 && !["planning", "document"].includes(input.assessmentMode)) return { values: null, notes: [], errors: ["\u8A55\u4F30\u6A21\u5F0F\u7121\u6548"] };
+  if (input.assessmentMode === "document") {
+    const documentReview = calculateDocumentCase(input.documentCase);
+    return { values: null, documentReview, notes: [], errors: ["\u4F9D\u6587\u4EF6\u8986\u6838\u7D50\u679C\u53E6\u5217\uFF1B\u4E0D\u80FD\u81EA\u52D5\u7576\u4F5C\u53EF\u552E\u6216\u8CA1\u52D9\u63A1\u7528\u4F86\u6E90\u3002", ...documentReview.issues, ...documentReview.gaps] };
+  }
+  if (input.mixedSite !== void 0 && !isMixedSite(input.mixedSite)) return { values: null, notes: [], errors: ["\u6DF7\u5408\u5206\u5340\u683C\u5F0F\u7121\u6548\uFF0C\u672A\u5957\u7528\u4F4F\u5B85\u9810\u8A2D\u503C\u3002"] };
+  if (input.mixedSite?.enabled) return { values: null, notes: [], errors: ["\u6DF7\u5408\u5206\u5340\u63A1\u7368\u7ACB\u8A55\u4F30\uFF0C\u4E0D\u5957\u7528\u55AE\u4E00\u4F4F\u5B85\u516C\u5F0F\u6216\u9001\u5165\u65E2\u6709\u8CA1\u52D9\u6A21\u578B\u3002"] };
+  if (input.commercialIntensity !== void 0 && !isCommercialIntensity(input.commercialIntensity)) return { values: null, notes: [], errors: ["\u5546\u696D\u5206\u5340\u683C\u5F0F\u7121\u6548\uFF0C\u672A\u5957\u7528\u4F4F\u5B85\u9810\u8A2D\u503C\u3002"] };
+  if (input.commercialIntensity?.enabled) {
+    const review = calculateCommercialIntensity(input.commercialIntensity, input.site, input.coverage, true);
+    if (input.commercialIntensity.designMode === "residential" && (input.storePercent.trim() === "" || Number(input.storePercent) !== 0)) review.errors.push("\u7D14\u4F4F\u5B85\u8A2D\u8A08\u9808\u78BA\u8A8D\u975E\u4F4F\u5B85\u6BD4\u4F8B\u70BA0\uFF1B\u5982\u898F\u5283\u5E97\u8216\u6216\u8FA6\u516C\uFF0C\u8ACB\u6539\u9078\u4F4F\u5546\u6DF7\u5408\u4E26\u5206\u5217\u7528\u9014\u3002");
+    const district = input.parkingDesign?.district?.replace("\u53F0\u5317", "\u81FA\u5317");
+    if (!district || !district.includes(input.commercialIntensity.city)) review.errors.push("\u5546\u696D\u5340\u6240\u5728\u5730\u8207\u505C\u8ECA\u898F\u5247\u6240\u5728\u5730\u9808\u4E00\u81F4\uFF0C\u8ACB\u6838\u5C0D\u5169\u8655\u8A2D\u5B9A\u3002");
+    if (review.errors.length || review.effectiveFar === null) return { values: null, notes: review.notes, errors: review.errors, commercialReview: review };
+    const result = calculatePlanning({ ...input, commercialIntensity: { ...input.commercialIntensity, enabled: false }, far: String(review.effectiveFar) });
+    return { ...result, commercialReview: review, notes: [`\u5546\u696D\u5206\u5340\u57FA\u6E96\u5BB9\u7A4D\u7531\u9069\u7528\u7BC4\u570D\u8A08\u7B97\u70BA${review.base}\u33A1\uFF0C\u672A\u63A1\u539F\u5BB9\u7A4D\u7387\u6B04\u4F4D\u3002`, ...review.notes, ...result.notes] };
+  }
+  const required = planningFields.filter(([k]) => !["equipment", "lobby", "roofRate", "excavationCap", "carPerUnit", "carPing", "motoSqm", "localParkingUnit"].includes(k) && !(k === "basementFloors" && input.basementMode === "auto") && !(input.basementDemand?.enabled && ["excavation", "basementFloors"].includes(k)));
+  const missing = required.filter(([k]) => !input[k]?.trim()).map(([, label]) => label + "\u672A\u586B\uFF1B\u4E0D\u5957\u9810\u8A2D\u503C");
+  if (input.quantityReserve?.reservationMode === "legal_envelope" && input.quantityReserve.basementEquipmentMode !== "named" && !Number.isFinite(input.quantityReserve.basementReservePercent)) missing.push("\u5730\u4E0B\u9810\u7559\u6BD4\u4F8B\u672A\u586B\uFF1B\u4E0D\u595725%");
+  if (missing.length) return { values: null, notes: [], errors: missing };
   const disclosed = discloseMissingPlanningInputs(input), i = normalizePlanningInput(disclosed.input);
   if (i.basementDemand?.enabled) {
     if (!isBasementDemand(i.basementDemand)) return { ...calculateAggregatePlanning({ ...i, basementDemand: void 0 }), values: null, errors: ["\u5730\u4E0B\u9700\u6C42\u6AA2\u8A0E\u8CC7\u6599\u7121\u6548"] };
@@ -3893,7 +5088,7 @@ function calculateAggregatePlanning(input) {
     const volume2 = v2 && pv ? reviewBasementVolume(p, { ...pv }, v2.equipmentExempt, v2.equipmentCap, { footprint: v2.footprint, equipmentPerFloor: pv.equipmentPerFloor, plate: v2.basementPlate, shelterOnly: pv.quantityFloors?.reduce((a, f) => a + f.shelterOnly, 0) }) : null;
     return { result, volume: volume2, total: (v2?.used ?? Infinity) + (volume2?.counted ?? 0) };
   };
-  if (!first.values && (!first.parking || !first.aboveGround) || bonus.errors.length) return { ...first, errors: [...first.errors, ...bonus.errors], notes: [...first.notes, ...bonus.notes] };
+  if (!first.values && (!first.parking || !first.aboveGround) || bonus.errors.length) return { ...first, values: null, errors: [...first.errors, ...bonus.errors], notes: [...first.notes, ...bonus.notes] };
   if (!first.values && !(i.parkingDesign?.fullVolumeSearch && first.parking?.capacityFailure)) return { ...first, errors: [.../* @__PURE__ */ new Set([...first.errors, ...bonus.errors])], notes: [...first.notes, ...bonus.notes] };
   let chosen = evaluate(target);
   if (!i.areaReview?.floors && (!chosen.result.values || chosen.total > target + 1e-4 || chosen.result.errors.length)) {
@@ -3939,16 +5134,34 @@ function calculateAggregatePlanning(input) {
   return { ...z, errors: [...new Set(errors)], notes: [...new Set(notes)], values, regulatory: { version: p.version, bonus, volume, status: "planning" } };
 }
 export {
+  INDUSTRIAL_VERSION,
   PLANNING_VERSION,
+  calculateCommercialIntensity,
+  calculateDocumentCase,
+  calculateIndustrial,
+  calculateMixedSite,
   calculatePlanning,
+  calculateProgramReview,
   defaultBasementDemand,
   defaultPlanningInput,
   defaultRegulatoryReview,
   defaultSmallSiteParking,
+  documentCaseSummary,
+  industrialReport,
+  isCommercialIntensity,
+  isDocumentCase,
+  isIndustrial,
+  isMixedSite,
   landAreaRatios,
+  mixedSummary,
+  newCommercialIntensity,
+  newDocumentCase,
+  newIndustrial,
+  newMixedSite,
   newParkingDesign,
   newSiteRoadConditions,
   normalizePlanningInput,
+  planningAssumptionsTemplate,
   planningFields,
   renderRoofEnvelope
 };

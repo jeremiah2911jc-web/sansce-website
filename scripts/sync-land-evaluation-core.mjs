@@ -9,7 +9,12 @@ const {build}=createRequire(resolve(app,'package.json'))('esbuild');
 const {transformSync}=createRequire(resolve(root,'package.json'))('@babel/core');
 const dir=resolve(root,'src/land-evaluation/generated');
 await mkdir(dir,{recursive:true});
-const core=`export {calculatePlanning,defaultPlanningInput,normalizePlanningInput,planningFields,PLANNING_VERSION} from '${app}/src/lib/planning/autonomousPlanning.ts';
+const core=`export {newIndustrial,isIndustrial,calculateIndustrial,industrialReport,INDUSTRIAL_VERSION} from '${app}/src/lib/industrial/model.ts';
+export {newDocumentCase,isDocumentCase,calculateDocumentCase,documentCaseSummary} from '${app}/src/lib/mixed-zone/documentCase.ts';
+export {calculateProgramReview} from '${app}/src/lib/mixed-zone/programReview.ts';
+export {newCommercialIntensity,isCommercialIntensity,calculateCommercialIntensity} from '${app}/src/lib/mixed-zone/commercialIntensity.ts';
+export {newMixedSite,isMixedSite,calculateMixedSite,mixedSummary} from '${app}/src/lib/mixed-zone/model.ts';
+export {calculatePlanning,planningAssumptionsTemplate,defaultPlanningInput,normalizePlanningInput,planningFields,PLANNING_VERSION} from '${app}/src/lib/planning/autonomousPlanning.ts';
 export {defaultSmallSiteParking} from '${app}/src/lib/planning/smallSiteParking.ts';
 export {defaultBasementDemand} from '${app}/src/lib/planning/basementDemand.ts';
 export {newParkingDesign} from '${app}/src/lib/planning/legalParking.ts';
@@ -17,7 +22,11 @@ export {newSiteRoadConditions} from '${app}/src/lib/site/siteRoadConditions.ts';
 export {defaultRegulatoryReview} from '${app}/src/lib/planning/regulatoryReview.ts';
 export {renderRoofEnvelope} from '${app}/src/lib/planning/roofEnvelope.ts';
 export {landAreaRatios} from '${app}/src/lib/planning/landAreaRatios.ts';`;
-const ui=['BonusAssessmentPanel','LegalParkingPanel','AreaReviewPanel','RegulatoryReviewPanel','SiteRoadConditionsPanel'].map(n=>`export {${n}} from '${app}/src/components/efficiency/${n}.tsx';`).join('\n');
+const ui=['BonusAssessmentPanel','LegalParkingPanel','AreaReviewPanel','RegulatoryReviewPanel','SiteRoadConditionsPanel'].map(n=>`export {${n}} from '${app}/src/components/efficiency/${n}.tsx';`).join('\n')+`\nexport {AssessmentMode,DocumentCasePanel} from '${app}/src/components/mixed-zone/DocumentCasePanel.tsx';
+export {ProgramReviewPanel} from '${app}/src/components/mixed-zone/ProgramReviewPanel.tsx';
+export {MixedZonePanel} from '${app}/src/components/mixed-zone/MixedZonePanel.tsx';
+export {CommercialIntensityPanel} from '${app}/src/components/mixed-zone/CommercialIntensityPanel.tsx';`;
+const industrialUi=`\nexport {IndustrialPanel} from '${app}/src/components/industrial/IndustrialPanel.tsx';`;
 const land=`export {newLandAssessment,newLandFact,landRegimes,intendedUses,buildingForms,factStatuses,evidenceKinds,landFactIssues,landAssessmentIssues,landAssessmentSummary} from '${app}/src/cases/landAssessment.ts';
 export {evaluateLand} from '${app}/src/cases/land-rules/engine.ts';
 export {newLegalInputs,applicantFields,answers,validDate} from '${app}/src/cases/land-rules/types.ts';
@@ -27,7 +36,7 @@ export {dossierById,ROUTE_VERSION} from '${app}/src/cases/land-routes/catalog.ts
 export {localProfile,localRulesFor,LOCAL_VERSION} from '${app}/src/cases/land-local/catalog.ts';
 export {newLayout,newGroup,newHouse,newFloor,calculateLayout,layoutBasis,referenceConditions,LAYOUT_VERSION,layoutSources,snapshotLayout} from '${app}/src/cases/land-layout/model.ts';`;
 const sources=new Map();
-for(const [name,contents]of [['core',core],['panels',ui],['land',land]]){
+for(const [name,contents]of [['core',core],['panels',ui+industrialUi],['land',land]]){
  const output=resolve(dir,name+'.mjs');
  const publicUi={name:'public-only-ui-copy',setup(build){build.onLoad({filter:/\/components\/efficiency\/.*Panel\.tsx$/},async({path})=>{
   let text=await readFile(path,'utf8');
@@ -76,6 +85,9 @@ for(const [name,contents]of [['core',core],['panels',ui],['land',land]]){
   sources.set(path,{path:relative(app,path),sha256:createHash('sha256').update(bytes).digest('hex')});
  }
 }
+const mixedCss=await readFile(resolve(app,'src/components/mixed-zone/mixed-zone.css'));
+await writeFile(resolve(dir,'mixed-zone.css'),mixedCss);
+sources.set('mixed-zone.css',{path:'src/components/mixed-zone/mixed-zone.css',sha256:createHash('sha256').update(mixedCss).digest('hex')});
 const {execFileSync}=await import('node:child_process');
 const manifest={sourceCommit:execFileSync('git',['rev-parse','HEAD'],{cwd:app,encoding:'utf8'}).trim(),scope:'land identity, laws, routes, layout and efficiency only; no financial UI or case persistence',source:'三策案件版',sourceRoot:app,generatedAt:new Date().toISOString(),method:'esbuild directly bundles original App exports; website has no separate calculation fork; App source is authoritative',sources:[...sources.values()].sort((a,b)=>a.path.localeCompare(b.path))};
 await writeFile(resolve(dir,'source-manifest.json'),JSON.stringify(manifest,null,2)+'\n');

@@ -23,9 +23,9 @@ export const comparisonMetrics=[
  {label:'地下反計容積',unit:'㎡',value:s=>s.result.values.basementCounted},
  {label:'未使用容積',unit:'㎡',value:s=>s.result.values.unused}
 ];
-export function baseConditionsMatch(a,b){return JSON.stringify(encodeValue([a.district,...['site','coverage','far','roadConditions'].map(k=>a.input[k])]))===JSON.stringify(encodeValue([b.district,...['site','coverage','far','roadConditions'].map(k=>b.input[k])]));}
+export function baseConditionsMatch(a,b){return JSON.stringify(encodeValue([a.district,...['site','coverage','far','commercialIntensity','mixedSite','roadConditions'].map(k=>a.input[k])]))===JSON.stringify(encodeValue([b.district,...['site','coverage','far','commercialIntensity','mixedSite','roadConditions'].map(k=>b.input[k])]));}
 const fields=[['site','基地面積','㎡'],['coverage','法定建蔽率','%'],['far','基準容積率','%'],['renewal','都更目標','%'],['tdr','容移目標','%'],['danger','危老目標','%'],['scale','規模獎勵目標','%'],['coverageUse','建築面積使用','%'],['volumeUse','容積使用','%'],['unitPing','每戶地上分攤','坪／戶'],['balcony','陽台比例','%'],['roofFloors','屋突層數','層'],['roofHeight','屋突每層高度','m'],['storePercent','店鋪配置比例','%'],['motoPerUnit','機車規劃需求','位／戶'],['extraCars','額外汽車位','位'],['excavation','固定開挖率','%'],['excavationCap','個案開挖率上限','%'],['basementFloors','固定地下層數','層'],['basementSalePercent','地下設備梯間登記分攤','%']];
-const groups={roadConditions:'道路條件與查證',parkingDesign:'停車方式與個案配置',basementDemand:'地下需求搜尋條件',quantityReserve:'量體與必要空間預留',areaReview:'逐層面積及登記',regulatoryReview:'獎勵、容移及法規設定'};
+const groups={commercialIntensity:'商業分區強度與用途',mixedSite:'混合分區條件',roadConditions:'道路條件與查證',parkingDesign:'停車方式與個案配置',basementDemand:'地下需求搜尋條件',quantityReserve:'量體與必要空間預留',areaReview:'逐層面積及登記',regulatoryReview:'獎勵、容移及法規設定'};
 const inputText=(v,unit='')=>v===''||v===null||v===undefined?'未填／待確認':String(v)+(unit?' '+unit:'');
 export function scenarioDifferences(base,other){
  const rows=[];if(base.district!==other.district)rows.push(['評估地區',base.district,other.district]);

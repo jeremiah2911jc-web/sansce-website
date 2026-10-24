@@ -1,13 +1,13 @@
 {
-  "sourceCommit": "8ff0bc1983be61961ea5a4d7b6c4888021bef1b3",
+  "sourceCommit": "3d76958396aa0901980c806bc75ee7c9f891777e",
   "scope": "land identity, laws, routes, layout and efficiency only; no financial UI or case persistence",
   "source": "三策案件版",
-  "sourceRoot": "/Users/jeremiah/src/sanze-cases-desktop",
-  "generatedAt": "2026-10-21T08:59:51.324Z",
+  "sourceRoot": "/Users/jeremiah/Documents/Codex/2026-10-24/sanze-release-app",
+  "generatedAt": "2026-10-24T06:51:58.676Z",
   "method": "esbuild directly bundles original App exports; website has no separate calculation fork; App source is authoritative",
   "sources": [
     {
-      "path": "node_modules/polygon-clipping/dist/polygon-clipping.umd.js",
+      "path": "../../../../src/sanze-cases-desktop/node_modules/polygon-clipping/dist/polygon-clipping.umd.js",
       "sha256": "de2bdc061b61d537f7d12f6519f46e35113f0f246b6a06293a08b615454946cf"
     },
     {
@@ -28,7 +28,7 @@
     },
     {
       "path": "src/cases/land-routes/model.ts",
-      "sha256": "16c38639f0ba23552e2fa0f989bfae52eec8997d46f86112b680b83682de4a10"
+      "sha256": "0af9cce6c352101f6191c6dd54c6e0820aa57ae76bd97d82b574b09d7c988ea7"
     },
     {
       "path": "src/cases/land-rules/catalog.ts",
@@ -60,7 +60,7 @@
     },
     {
       "path": "src/components/efficiency/BonusAssessmentPanel.tsx",
-      "sha256": "4acaa538e2f8b8bc56d6793a9ebcc66bc6d0bf060308c8f8f32c3803f3478760"
+      "sha256": "f70ddf4f524bf8cb181bb1a2b25ea6e670472814d99b7761b52da4060f75a9e0"
     },
     {
       "path": "src/components/efficiency/CommonAllocationPolicyPanel.tsx",
@@ -83,12 +83,84 @@
       "sha256": "91694535efb5e592551287a891215211ef20655ac17c6d64a541136446d595fc"
     },
     {
+      "path": "src/components/industrial/DevelopmentPanel.tsx",
+      "sha256": "4dad23d23719cac77ea3e4737743fa4e4e6c84c56eb4407054b86ca6ba33cd2d"
+    },
+    {
+      "path": "src/components/industrial/IndustrialPanel.tsx",
+      "sha256": "5d7b7c5402027e27f19a2c19ff86baa39314e5b232efad81c7aff117e24976c6"
+    },
+    {
+      "path": "src/components/mixed-zone/CommercialIntensityPanel.tsx",
+      "sha256": "a7d0daef5a0f26ceea008cf3670d1e8053052c54a731a849b64e4e7ecd596660"
+    },
+    {
+      "path": "src/components/mixed-zone/DocumentCasePanel.tsx",
+      "sha256": "f6905f3927f0f21db2b933719bcab3b598ede70936d2b768967d6c2a39cf4eb3"
+    },
+    {
+      "path": "src/components/mixed-zone/LandBasisPanel.tsx",
+      "sha256": "33f2130e0f9e38bee37979f232c7d14fa3f654824ebd33866cd62fd779a79f7c"
+    },
+    {
+      "path": "src/components/mixed-zone/mixed-zone.css",
+      "sha256": "25d123aef5a7597f4042c41bfc9305598fd59d9bf0c80ee3093fa807a8391d3c"
+    },
+    {
+      "path": "src/components/mixed-zone/mixed-zone.css",
+      "sha256": "25d123aef5a7597f4042c41bfc9305598fd59d9bf0c80ee3093fa807a8391d3c"
+    },
+    {
+      "path": "src/components/mixed-zone/MixedZonePanel.tsx",
+      "sha256": "fa8cd3839b14bab57e53cef5ac349b49638d8b5cf1a21c3c8176752d57557e1b"
+    },
+    {
+      "path": "src/components/mixed-zone/ProgramReviewPanel.tsx",
+      "sha256": "094da09b0ac3b6cb2ebe343e5a241d494ba987a1af83640e02e9a21938c7bec4"
+    },
+    {
+      "path": "src/lib/industrial/development.ts",
+      "sha256": "8c0abbce5deea8bf79baf00f085494f45b8285e2d54b0c4189b3fa67df31290d"
+    },
+    {
+      "path": "src/lib/industrial/model.ts",
+      "sha256": "7e577adec8c6ce34370fa7a108f9c90e02c00981470a2eb335f0909a64755d8e"
+    },
+    {
+      "path": "src/lib/industrial/planGuidance.ts",
+      "sha256": "2d3efeabdcad24c9791e4d874f4895e69ec139bac45ec6cc11b10a948c74face"
+    },
+    {
+      "path": "src/lib/mixed-zone/commercialIntensity.ts",
+      "sha256": "c75bf8a5eb443dd19b12ce21251f7e6e4e0f3555e4194c12ff8c44bc900994fa"
+    },
+    {
+      "path": "src/lib/mixed-zone/documentCase.ts",
+      "sha256": "b26da7db0e250bbf4ad7f630102fe0dc4c7a13549ab268397778304913b82c2f"
+    },
+    {
+      "path": "src/lib/mixed-zone/landBasis.ts",
+      "sha256": "7afc0d087e8bd6880eeee3be6a39d71115bbab67bdb9774c9ecc33553885e4e7"
+    },
+    {
+      "path": "src/lib/mixed-zone/model.ts",
+      "sha256": "3315583fdad8fe96dbc7c433796b777d3312e6a33d41acee9a99cf7297658fc6"
+    },
+    {
+      "path": "src/lib/mixed-zone/ntpcCross.ts",
+      "sha256": "fcd87160dc26f7b2f8872cdb5ae44a231c732b50b5fd93bd72ff27d7ce774ca5"
+    },
+    {
+      "path": "src/lib/mixed-zone/programReview.ts",
+      "sha256": "22a83d224d1e7a2a71139e1b94d4ad321ea76871214cf43a58c2e49e86c80987"
+    },
+    {
       "path": "src/lib/planning/article162.ts",
       "sha256": "48dbab5845c4e61f77fe5ea998c31c098a7123ca780fa72596e404b8d621eb23"
     },
     {
       "path": "src/lib/planning/autonomousPlanning.ts",
-      "sha256": "157bcf2d699d80464bb496a23625379373652e29766d2ed715e3c912fab13c95"
+      "sha256": "dfb3571670985c7b809309dcda01dc96e359c9800146b58ac531692e71c5d123"
     },
     {
       "path": "src/lib/planning/basementDemand.ts",
@@ -96,7 +168,7 @@
     },
     {
       "path": "src/lib/planning/bonusAssessment.ts",
-      "sha256": "ca964a77fbb020018e7fe24bf4aaf0d0639afc6dbc52e74e6f0a8be3b47c62d0"
+      "sha256": "2d07b49ff6406b4a62a64abab838e20688810e4cd7176ddafad4547c5321afaa"
     },
     {
       "path": "src/lib/planning/commonAllocationRules.ts",
@@ -120,7 +192,7 @@
     },
     {
       "path": "src/lib/planning/planningAssumptions.ts",
-      "sha256": "4258055262cb1483eb4d9ed8af70c014ba2f96613a8710b93a837743dab6ce91"
+      "sha256": "6535d69401d338a697697e724eedc06072ba264913343e164033fa063ba4a2d0"
     },
     {
       "path": "src/lib/planning/quantityAreaAudit.ts",
@@ -132,7 +204,7 @@
     },
     {
       "path": "src/lib/planning/regulatoryReview.ts",
-      "sha256": "b7b8024f2601d1cc86f159571b1598f50fc2eadea85ce36358bab960c077856f"
+      "sha256": "43673687fd2a5dae889e4d692d08a45d78b6c921b255ed6cfb02f8acd788d130"
     },
     {
       "path": "src/lib/planning/roofEnvelope.ts",
@@ -164,7 +236,7 @@
     },
     {
       "path": "src/lib/planning/tdrApplication.ts",
-      "sha256": "6e7f2fe6ffbb36ee0147ef8413386fba39362090233dc76ea91d92e41be4304f"
+      "sha256": "69aef73928fd0faa17a301f0d993dee9c0eba0d096d561e3ead339ae3b4fd12f"
     },
     {
       "path": "src/lib/site/siteRoadConditions.ts",
