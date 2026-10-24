@@ -1,4 +1,5 @@
 import {publicText} from '../src/land-evaluation/public-copy.mjs';
+import {adaptBasementPanel} from './public-basement-panel.mjs';
 import {createRequire} from 'node:module';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {resolve,relative,dirname} from 'node:path';
@@ -40,6 +41,7 @@ for(const [name,contents]of [['core',core],['panels',ui+industrialUi],['land',la
  const output=resolve(dir,name+'.mjs');
  const publicUi={name:'public-only-ui-copy',setup(build){build.onLoad({filter:/\/components\/efficiency\/.*Panel\.tsx$/},async({path})=>{
   let text=await readFile(path,'utf8');
+  if(path.endsWith('/BasementDemandPanel.tsx'))text=adaptBasementPanel(text);
   text=text.replaceAll('計畫路寬、實際開闢寬度與基地面寬分別保存','計畫路寬、實際開闢寬度與基地面寬分別填寫').replaceAll('阻擋採用','阻擋計算').replaceAll('以下只保存目標不影響計算','以下僅供本次操作，不影響快速值').replaceAll('此路徑未採用，資料保留','此路徑未採用，本次不加總').replaceAll('模式為','取值方式為');
   if(path.endsWith('/LegalParkingPanel.tsx'))text=text.replace(/ <div className="legal-parking-counts"[\s\S]*?<\/div>\)\}<\/div>/, ` {v&&<><section className="le-parking-overview" aria-label="停車配置初估"><div className="le-parking-total"><span>規劃汽車位</span><strong>{v.cars}<small>位</small></strong></div><div className="le-parking-capacity"><p>{general?'通則法定需求':'法定需求'} <b>{z?.legal}</b> 位，{v.smallSite?'開挖範圍潛在容量':'地下室估算容量'} <b>{v.capacity}</b> 位。</p><div className="le-parking-capacity-track" role="img" aria-label={\`規劃\${v.cars}位，容量\${v.capacity}位\`}><span style={{width:Math.min(100,v.capacity>0?v.cars/v.capacity*100:0)+'%'}}/></div><p>{v.smallSite?\`尚可規劃\${v.remainingExtra}位，增設須重新計算樓板與容積。\`:v.cars>v.capacity?'目前規劃超出估算容量，請調整配置。':\`本次配置後，估算尚餘\${v.remainingExtra}位。\`}</p></div></section><details className="le-parking-extras"><summary>增設車位明細</summary><dl><div><dt>指定增設</dt><dd>{input.extraCars||'0'} 位</dd></div><div><dt>本次採用增設</dt><dd>{v.adoptedExtra} 位</dd></div></dl></details></>}`).replace('先確認法定停車依據及規劃條件，再計算容量與地下層數。','填入基地條件後，這裡會顯示車位需求與地下室容量。');
   if(path.endsWith('/BonusAssessmentPanel.tsx'))text=text.replace(/ <p><button className="secondary-btn"[\s\S]*?快速採都更50%＋容移30%<\/button><\/p>/,'').replace(/(<TdrApplicationPanel[^>]+\/>)/,'<details className="le-advanced"><summary>容移取得條件與資格檢核</summary>$1</details>').replace('所選重建路徑與容移由同一計算核心重算坪效；一般都更上限50%不代表已取得50%。','一般都更上限50%不代表已取得50%。');
@@ -76,7 +78,7 @@ for(const [name,contents]of [['core',core],['panels',ui+industrialUi],['land',la
   }}}]}).code;
   return {contents:text,loader:'tsx'};
  });}};
- const result=await build({stdin:{contents,resolveDir:app,loader:'tsx'},outfile:output,bundle:true,format:'esm',platform:'browser',target:'es2020',jsx:'automatic',external:['react','react/jsx-runtime','/src/land-evaluation/PublicSelect.jsx','/src/land-evaluation/PublicFields.jsx','/src/land-evaluation/public-copy.mjs'],plugins:name==='panels'?[publicUi]:[],metafile:true,treeShaking:true,minify:false,legalComments:'none'});
+ const result=await build({stdin:{contents,resolveDir:app,loader:'tsx'},outfile:output,bundle:true,format:'esm',platform:'browser',target:'es2020',jsx:'automatic',external:['react','react/jsx-runtime','/src/land-evaluation/PublicSelect.jsx','/src/land-evaluation/PublicFields.jsx','/src/land-evaluation/RuleReference.jsx','/src/land-evaluation/public-copy.mjs'],plugins:name==='panels'?[publicUi]:[],metafile:true,treeShaking:true,minify:false,legalComments:'none'});
  const bundled=await readFile(output,'utf8');
  if(/localStorage|sessionStorage|indexedDB|@tauri|fetch\(/.test(bundled))throw Error(name+' contains persistence, desktop or network calls');
  for(const file of Object.keys(result.metafile.inputs)){

@@ -96,11 +96,11 @@
   "/consulting": {
     "/images/redesign/consultation.jpg|": {
       "id": "RA-entry",
-      "src": "/images/reaudit-20261021/entry.webp",
-      "small": "/images/reaudit-20261021/entry-960.webp",
+      "src": "/images/consulting-hero-20261024/site-discussion.webp",
+      "small": "/images/consulting-hero-20261024/site-discussion-960.webp",
       "width": 1536,
       "height": 1024,
-      "alt": "住戶開啟老公寓入口大門",
+      "alt": "顧問與屋主在住宅外查看建物並討論基地資料",
       "role": "content",
       "position": "50% 50%"
     },

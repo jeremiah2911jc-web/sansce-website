@@ -24,9 +24,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// ../../../../src/sanze-cases-desktop/node_modules/polygon-clipping/dist/polygon-clipping.umd.js
+// ../../../../../src/sanze-cases-desktop/node_modules/polygon-clipping/dist/polygon-clipping.umd.js
 var require_polygon_clipping_umd = __commonJS({
-  "../../../../src/sanze-cases-desktop/node_modules/polygon-clipping/dist/polygon-clipping.umd.js"(exports, module) {
+  "../../../../../src/sanze-cases-desktop/node_modules/polygon-clipping/dist/polygon-clipping.umd.js"(exports, module) {
     (function(global, factory) {
       typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, global.polygonClipping = factory());
     })(exports, (function() {
@@ -2089,17 +2089,17 @@ var require_polygon_clipping_umd = __commonJS({
   }
 });
 
-// ../sanze-release-app/src/components/efficiency/BonusAssessmentPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/efficiency/BonusAssessmentPanel.tsx
 import { FieldLabel as FieldLabel2, PublicNumber as PublicNumber2 } from "/src/land-evaluation/PublicFields.jsx";
 import { PublicSelect as PublicSelect2 } from "/src/land-evaluation/PublicSelect.jsx";
 import { publicText as publicText2 } from "/src/land-evaluation/public-copy.mjs";
 
-// ../sanze-release-app/src/components/efficiency/TdrApplicationPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/efficiency/TdrApplicationPanel.tsx
 import { FieldLabel, PublicNumber } from "/src/land-evaluation/PublicFields.jsx";
 import { PublicSelect } from "/src/land-evaluation/PublicSelect.jsx";
 import { publicText } from "/src/land-evaluation/public-copy.mjs";
 
-// ../sanze-release-app/src/lib/site/siteRoadConditions.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/site/siteRoadConditions.ts
 var newSiteRoadConditions = () => ({ version: "site-road.v1", roadName: "", plannedWidth: "", openedWidth: "", frontage: "", connected: "unknown", status: "unknown", source: "", checkedAt: "" });
 function reviewSiteRoad(r, referenceDate = (/* @__PURE__ */ new Date()).toLocaleDateString("sv-SE", { timeZone: "Asia/Taipei" })) {
   const errors = [], notes = [];
@@ -2117,7 +2117,7 @@ function applySiteRoad(t, r) {
   return { ...t, roadWidth: r.plannedWidth, roadFrontage: r.frontage, roadOpened: r.connected === "no" || r.openedWidth.trim() && Number(r.openedWidth) < 8 ? "no" : r.openedWidth.trim() && r.connected === "yes" ? "yes" : "unknown" };
 }
 
-// ../sanze-release-app/src/lib/planning/tdrApplication.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/tdrApplication.ts
 var TDR_APPLICATION_VERSION = "tdr-application.2026-10-19.v1";
 var inferTdrCity = (district) => district.includes("\u65B0\u5317") ? "ntpc" : /臺北|台北/.test(district) ? "taipei" : "other";
 var newTdrApplication = (city) => ({ version: TDR_APPLICATION_VERSION, city, method: "unselected", cashPercent: "", quantityBasis: "target", taipeiCap: "general30", taipeiRequested: "30", receiverUnitValue: "", senderParcels: [], cashSqm: "", valuationUnitPrice: "", valuationStatus: "assumed", valuationDate: "", valuationSource: "", appraisalFee: "", otherFee: "", paidAmount: "", stage: "planning", receiverEligibility: "unknown", methodEligibility: "unknown", roadWidth: "", roadOpened: "unknown", roadFrontage: "", specialRoadApproved: false, taipeiLocation: "unknown", source: "" });
@@ -2297,7 +2297,7 @@ function renderTdrApplication(t, r, financials = true) {
   return `<h3>\u5BB9\u79FB\u5730\u5340\u53CA\u53D6\u5F97\u65B9\u5F0F</h3><p>\u6CD5\u898F\u5730\u5340${r.city === "ntpc" ? "\u65B0\u5317\u5E02" : r.city === "taipei" ? "\u81FA\u5317\u5E02" : "\u5176\u4ED6"}\uFF0C\u65B9\u5F0F${esc(r.method)}\uFF0C\u91CF\u6E90${t.quantityBasis === "target" ? "\u898F\u5283\u76EE\u6A19" : "\u9001\u51FA\u5730\u53CA\u4EE3\u91D1\u6578\u91CF"}\u3002\u4EE3\u91D1${r.cashPercent}%\uFF1B\u672C\u6B21\u63A1\u8A08${r.appliedSqm.toFixed(2)}\u33A1\uFF08${r.appliedPercent.toFixed(4)}%\uFF09\u3002</p><p>\u9001\u51FA\u5730\u4F9B\u7D66${r.donorSqm.toFixed(2)}\u33A1\u3001\u4EE3\u91D1\u7533\u8ACB${r.cashSupplied === null ? "\u672A\u586B" : r.cashSupplied.toFixed(2)}\u33A1\uFF1B\u672C\u6B21\u914D\u7F6E\u9001\u51FA\u5730${r.actualLand.toFixed(2)}\u33A1\u3001\u4EE3\u91D1${r.actualCash.toFixed(2)}\u33A1\u3002\u672A\u9078\u65B9\u5F0F\u4E0D\u4EE3\u8868\u5DF2\u53D6\u5F97\uFF0C\u4F86\u6E90\u8207\u6838\u51C6\u5206\u958B\u3002</p><table><tr><th>\u9001\u51FA\u5730</th><th>\u7A2E\u985E</th><th>\u63DB\u5165\u91CF\u33A1</th><th>\u67E5\u6838</th></tr>${r.senders.map((p) => `<tr><td>${esc(p.parcel)}</td><td>${esc(p.kind)}</td><td>${p.volume.toFixed(2)}</td><td>${esc(p.issues.join("\uFF1B"))}</td></tr>`).join("")}</table>${financials ? `<p>\u4EE3\u91D1${r.cashCost === null ? "\u672A\u4F30" : r.cashCost.toFixed(0) + "\u5143"}\uFF1B\u9001\u51FA\u5730\u53D6\u5F97\u6210\u672C${r.landCost === null ? "\u672A\u4F30" : r.landCost.toFixed(0) + "\u5143"}\uFF1B\u4F30\u50F9\u53CA\u5176\u4ED6\u898F\u8CBB${r.fees.toFixed(0)}\u5143\uFF1B\u53D6\u5F97\u6210\u672C\u5408\u8A08${r.totalCost === null ? "\u672A\u4F30\u5B8C\u6574" : r.totalCost.toFixed(0) + "\u5143"}\u3002\u4EE3\u91D1\u4F30\u50F9\u72C0\u614B${esc(r.valuationStatus)}\uFF0C\u4F86\u6E90${esc(t.valuationSource || "\u672A\u586B")}\u3002\u6210\u672C\u4E0D\u81EA\u52D5\u5012\u586B\u81F3\u5176\u4ED6\u6A21\u7D44\uFF0C\u907F\u514D\u91CD\u8907\u5217\u5E33\u3002</p>` : ""}${[...r.errors, ...r.notes, ...r.gaps].map((n) => `<p>${esc(n)}</p>`).join("")}<p><a href="${tdrLaws[r.city === "taipei" ? "taipei" : "ntpc"]}">\u5730\u65B9\u5BB9\u79FB\u898F\u5247</a> \uFF0F <a href="${tdrLaws[r.city === "taipei" ? "taipeiProcedure" : "ntpcProcedure"]}">\u7533\u8ACB\u7A0B\u5E8F</a> \uFF0F <a href="${tdrLaws.central}">\u4E2D\u592E\u7B2C9\u30019-1\u689D</a></p>`;
 }
 
-// ../sanze-release-app/src/components/efficiency/TdrApplicationPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/efficiency/TdrApplicationPanel.tsx
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 function TdrApplicationPanel({
   assessment,
@@ -2630,7 +2630,7 @@ function TdrApplicationPanel({
   ] });
 }
 
-// ../sanze-release-app/src/lib/planning/permittedAward.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/permittedAward.ts
 function isPermittedAward(x) {
   if (!x || typeof x !== "object") return false;
   const a = x;
@@ -2649,7 +2649,7 @@ function reviewPermittedAward(a, route, base, referenceDate = (/* @__PURE__ */ n
   return { errors, percent: errors.length ? 0 : amount / base * 100 };
 }
 
-// ../sanze-release-app/src/lib/planning/bonusAssessment.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/bonusAssessment.ts
 var BONUS_VERSION = "bonus-assessment.2026-10-19.v1";
 var newBonusAssessment = (danger2 = false, date = "") => ({ version: BONUS_VERSION, route: danger2 ? "danger" : "renewal", renewalMode: "quick", tdrMode: "quick", dangerMode: "quick", date, entries: {}, renewalQualification: "unknown", tdrQualification: "unknown", dangerQualification: "unknown", source: "", deduction: "0", tdrProfile: "general", dangerOriginal: "", dangerEligibleSite: "", dangerAdjacentSite: "" });
 var central = "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0070027";
@@ -2815,7 +2815,7 @@ function assessBonuses(a, c, cash, updateArea) {
   return { rows: rows5, notes, errors, renewalRaw, localRaw, localApplied, renewal, tdrBase: b, tdrInternal: internal, tdrExternalRaw: externalRaw, tdrExternal: external, tdrFactor: factor, tdrRaw, tdrCap, tdr: Math.min(tdrCap, tdrRaw), dangerCoreFirst: coreFirst, dangerCoreLater: coreLater, dangerCoreCap: coreCap, dangerExtra: extra, danger: a.date > "2027-05-31" ? 0 : dangerTotal };
 }
 
-// ../sanze-release-app/src/lib/planning/regulatoryReview.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/regulatoryReview.ts
 var REGULATORY_REVIEW_VERSION = "planning-law.2026-10-24.v4";
 var defaultRegulatoryReview = () => ({ version: REGULATORY_REVIEW_VERSION, renewalLimitPercent: "", tdrLimitPercent: "", totalBonusLimitPercent: "", tdrBasePoints: "", tdrInternalPoints: "", tdrExternalPoints: "", renewalArea: false, cashTdrPercent: "0", bonusSource: "", bicycleExemption: "counted", bicycleSource: "", motorcycleExemption: "statutory_assumption", communityUse: "loading", spareUse: "counted", ordinaryCommonPercent: "0", ordinaryCommonSource: "" });
 function isRegulatoryReview(x) {
@@ -2952,7 +2952,7 @@ function reviewBasementVolume(p, v, aboveEquipmentExempt, equipmentCap, context)
   return { shelterOnlyExempt, shelterArea, shelterEquipment, pools: { ...v }, shared, served, parkingCap, carPool, motoPool, bikePool, communityPool, carExempt, mergedEquipment, globalEquipmentExempt, equipmentCounted, parkingCounted, bicycleCounted, motorcycleCounted, communityCounted, spareCounted, counted, exempt, notes, balanced: Math.abs(counted + exempt - v.basement) < 0.02 };
 }
 
-// ../sanze-release-app/src/components/efficiency/BonusAssessmentPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/efficiency/BonusAssessmentPanel.tsx
 import { Fragment as Fragment2, jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
 function BonusAssessmentPanel({
   input,
@@ -3337,12 +3337,12 @@ function BonusAssessmentPanel({
   ] });
 }
 
-// ../sanze-release-app/src/components/efficiency/LegalParkingPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/efficiency/LegalParkingPanel.tsx
 import { FieldLabel as FieldLabel4, PublicNumber as PublicNumber4 } from "/src/land-evaluation/PublicFields.jsx";
 import { PublicSelect as PublicSelect4 } from "/src/land-evaluation/PublicSelect.jsx";
 import { publicText as publicText3 } from "/src/land-evaluation/public-copy.mjs";
 
-// ../sanze-release-app/src/lib/planning/escapeStairs.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/escapeStairs.ts
 function reviewEscapeStairs(i) {
   const aboveTwo = i.aboveFloors >= 8 || i.abovePlate > 240;
   const basementTwo = i.basementPlates.some((a) => a >= 200);
@@ -3359,7 +3359,7 @@ function reviewEscapeStairs(i) {
   };
 }
 
-// ../sanze-release-app/src/lib/planning/roofEnvelope.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/roofEnvelope.ts
 function isRoofEnvelope(x) {
   if (!x || typeof x !== "object") return false;
   const r = x;
@@ -3377,7 +3377,7 @@ function reviewRoofEnvelope(r, c) {
   return { errors, high, highByFloors, highByHeight, rate, projectionLimit, projection, totalArea, totalHeight, maxHeight, registered: totalArea * c.registrationPercent / 100, registrationPercent: c.registrationPercent, floors, buildingHeight: c.buildingHeight, aboveFloors: c.aboveFloors, source: r.source, assumptions: "\u672C\u6B21\u6309\u4E0A\u4E0B\u5C0D\u4F4D\u7684\u540C\u6295\u5F71\u6A13\u677F\u521D\u4F30\uFF0C\u6C34\u5E73\u6295\u5F71\u806F\u96C6\u4E0D\u4E58\u5C64\u6578\uFF1B\u7E3D\u6A13\u677F\u624D\u4F9D\u5C4B\u7A81\u5C64\u6578\u52A0\u7E3D\u300215%\uFF0F12.5%\u662F\u6295\u5F71\u4E0A\u9650\uFF0C\u4E0D\u662F\u5BE6\u969B\u9700\u6C42\u3002\u672A\u5C0725\u33A1\u5C0F\u57FA\u5730\u4F8B\u5916\u3001\u9732\u81FA\u3001\u5E73\u53F0\u3001\u958B\u653E\u69CB\u67B6\u6216\u6C34\u7BB1\u4E0A\u65B9\u7A7A\u9593\u53E6\u52A0\u53EF\u767B\u8A18\u6A13\u677F\uFF1B\u5408\u683C\u5C4B\u7A81\u5167\u8A2D\u5099\u4E0D\u91CD\u8907\u5217\u5165\u5730\u4E0A\u6A5F\u96FB15%\u6C60\u3002" };
 }
 
-// ../sanze-release-app/src/lib/planning/quantityAreaAudit.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/quantityAreaAudit.ts
 var BASELINE_VERSION = "planning-area-baseline.v1";
 var saleKeys = ["ordinary", "registeredEquipment", "registeredLobby", "balcony", "registeredRoof", "basementEquipmentSale", "shelterCommon", "parkingHousingCommon"];
 var contextKeys = ["aboveFloors", "sale", "allowed", "basement", "floors", "equipment", "lobby", "roof", "aboveSale", "basementSale", "units", "cars", "motos", "equipmentArea", "bikeArea", "communityArea", "rampTotal", "lossArea", "basementUnassigned"];
@@ -3387,7 +3387,7 @@ function isAreaBaseline(x) {
   return a.format === BASELINE_VERSION && (a.commonRatioReference === void 0 || Number.isFinite(a.commonRatioReference.low) && Number.isFinite(a.commonRatioReference.high) && a.commonRatioReference.low >= 0 && a.commonRatioReference.high <= 100 && a.commonRatioReference.high >= a.commonRatioReference.low && typeof a.commonRatioReference.source === "string") && ["caseId", "label", "source", "sourceSha256", "formulaCommit"].every((k) => typeof a[k] === "string") && /^[a-f0-9]{64}$/.test(a.sourceSha256) && /^[a-f0-9]{40}$/.test(a.formulaCommit) && !!a.values && [...saleKeys, ...contextKeys].every((k) => Number.isFinite(a.values[k]) && a.values[k] >= 0) && a.values.allowed > 0 && Number.isInteger(a.values.floors) && Math.abs(saleKeys.reduce((t, k) => t + a.values[k], 0) - a.values.sale) < 0.04;
 }
 
-// ../sanze-release-app/src/lib/planning/quantityPlanning.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/quantityPlanning.ts
 var QUANTITY_VERSION = "quantity-reserve.2026-10-19.v1";
 function isQuantityReserve(x) {
   if (!x || typeof x !== "object") return false;
@@ -3426,11 +3426,12 @@ function calculateQuantityPlanning(i, run) {
   return { ...last, values: null, errors: [...last?.errors ?? [], "\u6A13\u5C64\u8207\u5FC5\u8981\u7A7A\u9593\u9810\u7559\u672A\u6536\u6582\uFF0C\u8ACB\u8ABF\u6574\u6A13\u677F\u5047\u8A2D"] };
 }
 
-// ../sanze-release-app/src/components/efficiency/BasementDemandPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/efficiency/BasementDemandPanel.tsx
 import { FieldLabel as FieldLabel3, PublicNumber as PublicNumber3 } from "/src/land-evaluation/PublicFields.jsx";
 import { PublicSelect as PublicSelect3 } from "/src/land-evaluation/PublicSelect.jsx";
+import { RuleReference } from "/src/land-evaluation/RuleReference.jsx";
 
-// ../sanze-release-app/src/lib/planning/smallSiteParking.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/smallSiteParking.ts
 var SMALL_SITE_VERSION = "small-site.2026-10-19.v1";
 var defaultGroundAccessibility = () => ({ available: true, routeWidth: 1.5, routeLength: 4, otherArea: 54 });
 var defaultSmallSiteParking = () => ({ version: SMALL_SITE_VERSION, groundAccessibility: defaultGroundAccessibility(), mechanicalType: "stacked", warehouseAisleWidth: 3, warehouseTransferArea: 20, warehouseEquipmentArea: 12, access: "ramp", mechanical: false, allocation: "b1", groundCars: 0, targetCars: 0, groundArea: 0, liftCount: 1, shaftWidth: 3.5, shaftLength: 5.7, waitingWidth: 6, waitingDepth: 6, landingArea: 20, twoWheelLiftArea: 9, mechanicalSpaces: 2, mechanicalWidth: 2.5, mechanicalLength: 5.5, mechanicalClearHeight: 1.8, mechanicalHeight: 4, overhead: 0.3, pit: 0.6, targetMechanical: 0, localReview: "unknown", reviewSource: "", tdrPoints: "" });
@@ -3612,7 +3613,7 @@ function allocateSmallSite(s, c) {
   return { errors, notes, values, capacityFailure: false };
 }
 
-// ../sanze-release-app/src/lib/planning/basementDemand.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/basementDemand.ts
 var BASEMENT_DEMAND_VERSION = "basement-demand.2026-10-19.v1";
 var defaultBasementDemand = (district = "") => ({ version: BASEMENT_DEMAND_VERSION, enabled: true, mechanicalType: "stacked", rule: /新北/.test(district) ? "ntpc_general" : /臺北|台北/.test(district) ? "taipei_general" : "documented", source: "", maxFloors: "30", allowAlternatives: true });
 var isBasementDemand = (x) => !!x && typeof x === "object" && x.version === BASEMENT_DEMAND_VERSION && typeof x.enabled === "boolean" && (x.mechanicalType === void 0 || ["stacked", "warehouse"].includes(x.mechanicalType)) && ["documented", "ntpc_general", "taipei_general", "nangang_general", "nangang_rebuild"].includes(x.rule) && (x.stricterCap === void 0 || typeof x.stricterCap === "string") && (x.stricterSource === void 0 || typeof x.stricterSource === "string") && (x.taipeiPlanUnspecified === void 0 || typeof x.taipeiPlanUnspecified === "boolean") && (x.taipeiZone === void 0 || ["res12", "res34", "commercial", "industrial", "protected", "public", "other"].includes(x.taipeiZone)) && ["source", "maxFloors"].every((k) => typeof x[k] === "string") && typeof x.allowAlternatives === "boolean" && (x.warehouse === void 0 || ["aisleWidth", "transferArea", "equipmentArea", "levels", "equipmentHeight"].every((k) => Number.isFinite(x.warehouse[k]) && x.warehouse[k] >= 0));
@@ -3699,7 +3700,7 @@ function calculateDemandBasement(i, run) {
   return { ...selected.result, basementDemandReview: review, notes: [...limit.notes, `\u5730\u4E0B\u9700\u6C42\u6AA2\u8A0E\uFF1A\u958B\u6316\u4E0A\u9650${limit.cap}%\uFF08${(Number(i.site) * limit.cap / 100).toFixed(2)}\u33A1\uFF09\uFF1B\u4F9D\u5FC5\u8981\u7A7A\u9593\u9010\u5C64\u52A0\u7E3D\uFF0C\u6700\u5927\u5BE6\u7528\u6A13\u677F${actualMaxPlate.toFixed(2)}\u33A1\uFF08${actualExcavationPercent.toFixed(2)}%\uFF09\uFF0C\u63A1${selected.name}\u3001\u5730\u4E0B${selected.result.values.floors}\u5C64\u3002`, ...trials.map((t) => `${t.mode}\uFF1A${t.floors === null ? "\u672C\u641C\u5C0B\u7BC4\u570D\u672A\u901A\u904E" : `\u81F3\u5C11\u5730\u4E0B${t.floors}\u5C64\u3001\u6C7D\u8ECA${t.cars}\u4F4D\u3001\u6A5F\u68B0${t.mechanical}\u4F4D`}\u3002`), "\u9078\u64C7\u9806\u5E8F\uFF1A\u5148\u6BD4\u8F03\u5761\u9053\u5E73\u9762\uFF0C\u6309\u5B8C\u6574\u9700\u6C42\u9078\u5730\u4E0B\u5C64\u6578\u8F03\u5C11\u8005\uFF1B\u540C\u5C64\u6578\u512A\u5148\u5C11\u6A5F\u68B0\u3001\u518D\u512A\u5148\u5761\u9053\u3002\u672A\u4F7F\u7528\u5EFA\u7167\u539F\u8ECA\u4F4D\u6216\u5730\u4E0B\u5C64\u6578\u4F5C\u76EE\u6A19\uFF1B\u7121\u5761\u9053\u65B9\u6848\u50C5\u4F8B\u5916\u7559\u5FC5\u8981\u5730\u9762\u7121\u969C\u7919\u8ECA\u4F4D\uFF0C\u5305\u542B\u65BC\u7E3D\u9700\u6C42\uFF1B\u4E0D\u589E\u52A0\u4E00\u822C\u5730\u9762\u505C\u8ECA\u3002", "\u672A\u53D6\u5F97\u5730\u8CEA\u3001\u65BD\u5DE5\u53CA\u5BE6\u969B\u5E73\u9762\u8CC7\u6599\uFF1B\u672C\u7D50\u679C\u70BA\u9762\u7A4D\u914D\u7F6E\u5019\u9078\uFF0C\u641C\u5C0B\u4E0A\u9650\u4E0D\u662F\u5DE5\u7A0B\u53EF\u884C\u6DF1\u5EA6\uFF0C\u5347\u964D\u6A5F\u53CA\u6A5F\u68B0\u8A2D\u5099\u5C64\u9AD8\u8207\u7121\u969C\u7919\u5BA2\u68AF\u901A\u8DEF\u4ECD\u9808\u5716\u8AAA\u8986\u6838\u3002", ...selected.result.notes] };
 }
 
-// ../sanze-release-app/src/components/efficiency/BasementDemandPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/efficiency/BasementDemandPanel.tsx
 import { Fragment as Fragment3, jsx as jsx3, jsxs as jsxs3 } from "react/jsx-runtime";
 var f = (n) => n.toLocaleString("zh-TW", {
   maximumFractionDigits: 2
@@ -3726,10 +3727,12 @@ function BasementDemandPanel({
     levels: 2,
     equipmentHeight: 4
   };
-  const limit = d.enabled ? resolveExcavationLimit({
+  const hasBase = [input.site, input.coverage].every((v) => String(v ?? "").trim() !== "" && Number.isFinite(Number(v)) && Number(v) > 0) && Number(input.coverage) <= 100;
+  const limit = d.enabled && hasBase ? resolveExcavationLimit({
     ...input,
     basementDemand: d
   }) : null;
+  const showLimit = Boolean(hasBase && limit && !limit.errors.length && Number.isFinite(limit.cap));
   return /* @__PURE__ */ jsxs3("section", { className: "area-review-panel basement-demand-panel", "aria-label": "\u5730\u4E0B\u9700\u6C42\u6AA2\u8A0E", children: [
     /* @__PURE__ */ jsx3("h3", { children: "\u4F9D\u57FA\u5730\u8207\u505C\u8ECA\u9700\u6C42\u6AA2\u8A0E\u5730\u4E0B\u5BA4" }),
     /* @__PURE__ */ jsxs3("div", { className: "planning-field-grid", children: [
@@ -3832,30 +3835,21 @@ function BasementDemandPanel({
       ] })
     ] }),
     d.enabled && /* @__PURE__ */ jsxs3(Fragment3, { children: [
-      d.rule === "taipei_general" ? /* @__PURE__ */ jsxs3(Fragment3, { children: [
+      d.rule === "taipei_general" ? /* @__PURE__ */ jsx3(Fragment3, { children: /* @__PURE__ */ jsxs3("div", { className: "planning-field-grid", children: [
+        /* @__PURE__ */ jsxs3("label", { children: [
+          /* @__PURE__ */ jsx3(FieldLabel3, { children: "\u6CD5\u898F\u958B\u6316\u7387\u4E0A\u9650%" }),
+          /* @__PURE__ */ jsx3(PublicNumber3, { "aria-label": "\u6CD5\u898F\u958B\u6316\u7387\u4E0A\u9650%", type: "number", readOnly: true, value: showLimit ? limit.cap : "" })
+        ] }),
+        /* @__PURE__ */ jsx3(RuleReference, { source: hasBase ? TAIPEI_EXCAVATION_SOURCE : void 0 })
+      ] }) }) : d.rule === "ntpc_general" ? /* @__PURE__ */ jsxs3(Fragment3, { children: [
         /* @__PURE__ */ jsxs3("div", { className: "planning-field-grid", children: [
           /* @__PURE__ */ jsxs3("label", { children: [
             /* @__PURE__ */ jsx3(FieldLabel3, { children: "\u6CD5\u898F\u958B\u6316\u7387\u4E0A\u9650%" }),
-            /* @__PURE__ */ jsx3(PublicNumber3, { "aria-label": "\u6CD5\u898F\u958B\u6316\u7387\u4E0A\u9650%", type: "number", readOnly: true, value: d.taipeiZone && d.taipeiPlanUnspecified && Number.isFinite(limit?.cap) ? limit.cap : "" })
+            /* @__PURE__ */ jsx3(PublicNumber3, { "aria-label": "\u6CD5\u898F\u958B\u6316\u7387\u4E0A\u9650%", type: "number", readOnly: true, value: showLimit ? Number(limit.cap.toFixed(2)) : "" })
           ] }),
-          /* @__PURE__ */ jsxs3("label", { children: [
-            /* @__PURE__ */ jsx3(FieldLabel3, { children: "\u6CD5\u898F\u4F86\u6E90" }),
-            /* @__PURE__ */ jsx3("textarea", { "aria-label": "\u6CD5\u898F\u4F86\u6E90", readOnly: true, value: TAIPEI_EXCAVATION_SOURCE.split("\uFF1Ahttps")[0] })
-          ] })
+          /* @__PURE__ */ jsx3(RuleReference, { source: hasBase ? NTPC_EXCAVATION_SOURCE : void 0 })
         ] }),
-        /* @__PURE__ */ jsx3("p", { children: /* @__PURE__ */ jsx3("a", { href: TAIPEI_EXCAVATION_URL, target: "_blank", rel: "noreferrer", children: "\u81FA\u5317\u5E02\u90FD\u5BE9\u958B\u6316\u53C3\u8003\u898F\u5B9A" }) })
-      ] }) : d.rule === "ntpc_general" ? /* @__PURE__ */ jsxs3(Fragment3, { children: [
-        /* @__PURE__ */ jsxs3("div", { className: "planning-field-grid", children: [
-          /* @__PURE__ */ jsxs3("label", { children: [
-            /* @__PURE__ */ jsx3(FieldLabel3, { children: "\u6CD5\u898F\u958B\u6316\u7387\u4E0A\u9650%" }),
-            /* @__PURE__ */ jsx3(PublicNumber3, { "aria-label": "\u6CD5\u898F\u958B\u6316\u7387\u4E0A\u9650%", type: "number", readOnly: true, value: Number.isFinite(limit?.cap) ? Number(limit.cap.toFixed(2)) : "" })
-          ] }),
-          /* @__PURE__ */ jsxs3("label", { children: [
-            /* @__PURE__ */ jsx3(FieldLabel3, { children: "\u6CD5\u898F\u4F86\u6E90" }),
-            /* @__PURE__ */ jsx3("textarea", { "aria-label": "\u6CD5\u898F\u4F86\u6E90", readOnly: true, value: NTPC_EXCAVATION_SOURCE })
-          ] })
-        ] }),
-        /* @__PURE__ */ jsx3("p", { children: "\u4F9D\u57FA\u5730\u9762\u7A4D\u8207\u5EFA\u853D\u7387\u81EA\u52D5\u52A0\u6B0A\uFF1A\u524D500\u33A1\u52A020\u500B\u767E\u5206\u9EDE\uFF0C\u5176\u9918\u52A010\u500B\u767E\u5206\u9EDE\u3002\u65B0\u5E02\u93AE\u3001\u6377\u904B\u958B\u767C\u53CA\u6838\u51C6\u4F8B\u5916\uFF0C\u8ACB\u9078\u64C7\u500B\u6848\u898F\u5B9A\u3002" }),
+        hasBase && /* @__PURE__ */ jsx3("p", { children: "\u65B0\u5E02\u93AE\u3001\u6377\u904B\u958B\u767C\u53CA\u6838\u51C6\u4F8B\u5916\uFF0C\u8ACB\u9078\u64C7\u500B\u6848\u898F\u5B9A\u3002" }),
         /* @__PURE__ */ jsxs3("details", { children: [
           /* @__PURE__ */ jsx3("summary", { children: "\u500B\u6848\u90FD\u5E02\u8A08\u756B\u8F03\u56B4\u683C\u898F\u5B9A" }),
           /* @__PURE__ */ jsxs3("div", { className: "planning-field-grid", children: [
@@ -3888,9 +3882,11 @@ function BasementDemandPanel({
           }) })
         ] })
       ] }) : /* @__PURE__ */ jsxs3("p", { children: [
-        "\u672C\u6B21\u958B\u6316\u7387\u4E0A\u9650",
-        f(limit?.cap ?? 0),
-        "%\u3002",
+        showLimit && /* @__PURE__ */ jsxs3(Fragment3, { children: [
+          "\u672C\u6B21\u958B\u6316\u7387\u4E0A\u9650",
+          f(limit.cap),
+          "%\u3002"
+        ] }),
         d.rule === "nangang_general" ? "\u9069\u7528\u5357\u6E2F\u4E00\u822C\u91CD\u5EFA\u689D\u4EF6\uFF1B\u90FD\u66F4\u3001\u5371\u8001\u8CC7\u683C\u53E6\u6838\u3002" : "\u4F9D\u6240\u9078\u91CD\u5EFA\u8CC7\u683C\u3001\u5206\u5340\u8207\u57FA\u5730\u898F\u6A21\u6AA2\u8A0E\u3002",
         "\u500B\u5225\u90FD\u5E02\u8A08\u756B\u512A\u5148\uFF0C\u5C71\u5761\u5730\u6216\u653E\u5BEC\u6838\u51C6\u53E6\u6838\u3002",
         /* @__PURE__ */ jsx3("a", { href: "https://laws.gov.taipei/law/File/0000336021", children: "\u5357\u6E2F\u958B\u6316\u898F\u5247" }),
@@ -3998,10 +3994,10 @@ function BasementDemandPanel({
   ] });
 }
 
-// ../sanze-release-app/src/components/efficiency/LegalParkingPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/efficiency/LegalParkingPanel.tsx
 import { useEffect, useState } from "react";
 
-// ../sanze-release-app/src/lib/mixed-zone/documentCase.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/mixed-zone/documentCase.ts
 var DOCUMENT_CASE_VERSION = "document-case.2026-10-24.v1";
 var documentTopics = { land: "\u571F\u5730\u7BC4\u570D\u3001\u516C\u8A2D\u6392\u9664\u53CA\u63A1\u8A08\u4F9D\u64DA", original: "\u539F\u5BB9\u7A4D\u9069\u7528\u571F\u5730\u8207\u7C3D\u8B49", awards: "\u734E\u52F5\u8CC7\u683C\u3001\u5206\u9805\u6BCD\u6578\u53CA\u4E0A\u9650", transfer: "\u5BB9\u79FB\u4F86\u6E90\u3001\u63A5\u53D7\u57FA\u5730\u8207\u8A31\u53EF", use: "\u7528\u9014\u8A31\u53EF\u3001\u4F4F\u5B85\u57FA\u6E96\u9650\u5236\u8207\u5171\u7528\u7A7A\u9593", layout: "\u8DE8\u5340\u914D\u7F6E\u3001\u9053\u8DEF\u3001\u9000\u7E2E\u3001\u9AD8\u5EA6\u8207\u505C\u8ECA" };
 var newDocumentEvidence = () => ({ source: "", date: "", status: "unknown", finding: "" });
@@ -4143,7 +4139,7 @@ function documentCaseSummary(m) {
   return { title: m.name || "\u4F9D\u6587\u4EF6\u8986\u6838", kind: "\u4F9D\u6587\u4EF6\u8986\u6838\uFF08\u975E\u6838\u51C6\u6B0A\u5229\uFF09", status: { conflict: "\u8CC7\u6599\u885D\u7A81", incomplete: "\u8CC7\u6599\u6216\u8986\u6838\u672A\u9F4A", reconciled: "\u6587\u4EF6\u6578\u91CF\u76F8\u7B26\uFF08\u975E\u4E3B\u7BA1\u6A5F\u95DC\u6838\u51C6\uFF09" }[r.status], createdAt: (/* @__PURE__ */ new Date()).toISOString(), ruleVersion: DOCUMENT_CASE_VERSION, reviewedAt: m.assessmentDate || "\u672A\u586B", metrics: [["\u6CD5\u5B9A\u57FA\u6E96\u5BB9\u7A4D", r.values.base, "\u33A1"], ["\u539F\u5BB9\u7A4D\u66FF\u4EE3\u5F8C", r.values.adopted, "\u33A1"], ["\u6587\u4EF6\u734E\u52F5", r.values.award, "\u33A1"], ["\u6587\u4EF6\u5BB9\u79FB", r.values.transfer, "\u33A1"], ["\u7D44\u6210\u7E3D\u91CF", r.values.total, "\u33A1"], ["\u9010\u5C64\u5408\u8A08", r.values.design, "\u33A1"]], conditions: [["\u6A21\u5F0F", "\u4F9D\u6587\u4EF6\u8986\u6838\uFF1B\u4E0D\u4F7F\u7528\u898F\u5283\u5047\u8A2D"], ["\u6587\u4EF6\u7248\u672C", m.edition], ["\u7528\u9014", enums2[m.designMode]]], charts: [], inputs, issues: [...r.issues, ...r.gaps], assumptions: ["\u8F38\u5165\u6309\u672C\u6848\u65B9\u6848\u4FDD\u5B58\uFF1B\u6539\u503C\u5F8C\u91CD\u65B0\u8A08\u7B97\u3002", "\u4F86\u6E90\u8207\u8CC7\u683C\u7531\u8986\u6838\u4EBA\u4F9D\u539F\u4EF6\u5224\u65B7\uFF1B\u6578\u91CF\u76F8\u7B26\u4E0D\u7B49\u65BC\u5EFA\u7167\u6216\u5BB9\u79FB\u6838\u51C6\u3002", "\u672A\u5F62\u6210\u53EF\u552E\uFF0F\u6210\u672C\uFF0F\u878D\u8CC7\u4F86\u6E90\uFF1B\u4E0D\u5F97\u7531\u6587\u4EF6\u8A08\u5BB9\u91CF\u63A8\u5B9A\u53EF\u552E\u9762\u7A4D\u3002"], sources: [m.source, ...Object.values(m.reviews).map((e) => e.source)].filter(Boolean) };
 }
 
-// ../sanze-release-app/src/lib/mixed-zone/commercialIntensity.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/mixed-zone/commercialIntensity.ts
 var COMMERCIAL_VERSION = "commercial-intensity.2026-10-24.v1";
 var newCommercialIntensity = () => ({ version: COMMERCIAL_VERSION, enabled: true, designMode: "unknown", city: "unknown", mode: "unknown", commercialClass: "unknown", planSource: "", checkedAt: "", residentialUse: "unknown", useSource: "", boundarySource: "", bands: [], documentFar: "", documentCoverage: "", documentSource: "", ntpcHousing: { mode: "unknown", far: "", source: "" } });
 var newRoadBand = () => ({ id: crypto.randomUUID(), area: "", kind: "unknown", width: "", frontage: "", source: "" });
@@ -4239,7 +4235,7 @@ function reviewNtpcHousing(x, site) {
   return { errors, cap };
 }
 
-// ../sanze-release-app/src/lib/mixed-zone/landBasis.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/mixed-zone/landBasis.ts
 var basisLabels = { site: "\u5EFA\u7BC9\u57FA\u5730\u63A1\u8A08\u9762\u7A4D", far: "\u57FA\u6E96\u5BB9\u7A4D\u8A08\u7B97\u571F\u5730\u9762\u7A4D", coverage: "\u5EFA\u853D\u7387\u8A08\u7B97\u571F\u5730\u9762\u7A4D", openCredit: "\u5BE6\u969B\u53EF\u8A8D\u5217\u6CD5\u5B9A\u7A7A\u5730\u9762\u7A4D" };
 var newLandBasis = () => ({ procedures: [], renewal: "unknown", role: "unknown", site: { status: "unknown", area: "", source: "" }, far: { status: "unknown", area: "", source: "" }, coverage: { status: "unknown", area: "", source: "" }, openCredit: { status: "unknown", area: "", source: "" }, tdr: { status: "unknown", area: "", receivingZone: "", source: "" } });
 var validDate2 = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s) && Number.isFinite(Date.parse(s)) && new Date(s).toISOString().slice(0, 10) === s;
@@ -4325,7 +4321,7 @@ function calculateLandBasis(x, landArea, assessmentDate) {
   return { values, issues };
 }
 
-// ../sanze-release-app/src/lib/mixed-zone/ntpcCross.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/mixed-zone/ntpcCross.ts
 var newNtpcCross = () => ({ nature: "unknown", partition: "unknown", entrances: "unknown", source: "", transfers: [] });
 function isNtpcCross(x) {
   if (!x || typeof x !== "object") return false;
@@ -4370,7 +4366,7 @@ function reviewNtpcCross(x, zones, crossesBuilding) {
   return issues;
 }
 
-// ../sanze-release-app/src/lib/mixed-zone/model.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/mixed-zone/model.ts
 var MIXED_VERSION = "mixed-zone.2026-10-24.v2";
 var reviewTopics = [
   ["boundary", "\u4E00\u5B97\u57FA\u5730\u3001\u5206\u5340\u8B49\u660E\u53CA\u754C\u7DDA", "\u5EFA\u6280\u7B2C1\u689D\u4E00\u5B97\u571F\u5730\u5B9A\u7FA9\u3001\u5730\u7C4D\u53CA\u5206\u5340\u5957\u7E6A\uFF1B\u4E0D\u80FD\u56E0\u540C\u6848\u5C31\u8996\u70BA\u540C\u4E00\u57FA\u5730\u3002"],
@@ -4742,12 +4738,12 @@ function calculateMixedSite(raw) {
   return out(issues.some((i) => i.kind === "conflict") ? "conflict" : issues.some((i) => i.kind === "missing") ? "incomplete" : issues.length ? "conditional" : "checked");
 }
 
-// ../sanze-release-app/src/lib/planning/planningAssumptions.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/planningAssumptions.ts
 function discloseMissingPlanningInputs(input) {
   return { input: { ...input }, notes: [] };
 }
 
-// ../sanze-release-app/src/lib/planning/spatialTypes.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/spatialTypes.ts
 var SPATIAL_VERSION = "spatial-planning.2026-10-19.v1";
 function isSpatialInput(v) {
   if (!v || typeof v !== "object") return false;
@@ -4756,7 +4752,7 @@ function isSpatialInput(v) {
   return s.version === SPATIAL_VERSION && ["survey", "assumed"].includes(s.mode) && shape(s.boundary) && Array.isArray(s.parcels) && s.parcels.every((p) => typeof p.id === "string" && shape(p.geometry) && Number.isFinite(p.registeredArea)) && Array.isArray(s.edges) && s.edges.every((e) => e.a?.length === 2 && e.b?.length === 2 && [...e.a, ...e.b, e.aboveSetback, e.belowSetback].every(Number.isFinite) && e.aboveSetback >= 0 && e.belowSetback >= 0) && s.origin?.length === 2 && s.origin.every(Number.isFinite) && Number.isFinite(s.angle) && s.edges.length <= 2e3 && s.parcels.length <= 200 && s.assumptions && (s.assumptions.heightLimit === null || Number.isFinite(s.assumptions.heightLimit) && s.assumptions.heightLimit > 0) && s.assumptions.columnGrid >= 3 && s.assumptions.columnGrid <= 20 && s.assumptions.columnSize <= 2 && s.assumptions.excavationLimit <= 100 && s.assumptions.unitPing >= 10 && s.assumptions.unitPing <= 100 && s.assumptions.basementHeight >= 2 && s.assumptions.basementHeight <= 5 && ["floorHeight", "groundHeight", "basementHeight", "excavationLimit", "columnGrid", "columnSize", "unitPing"].every((k) => Number.isFinite(s.assumptions[k]) && s.assumptions[k] > 0);
 }
 
-// ../sanze-release-app/src/lib/planning/spatialGeometry.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/spatialGeometry.ts
 var import_polygon_clipping = __toESM(require_polygon_clipping_umd(), 1);
 var polygon = (ring) => ring.length >= 3 ? [[ring]] : [];
 var rectangle = (x, y, w, h) => w > 0 && h > 0 ? polygon([[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]]) : [];
@@ -4800,7 +4796,7 @@ function takeArea(s, target) {
   return intersect(s, rectangle(b.minX - 1, b.minY - 1, lo - b.minX + 1, b.maxY - b.minY + 2));
 }
 
-// ../sanze-release-app/src/lib/planning/commonAllocationRules.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/commonAllocationRules.ts
 var COMMON_ALLOCATION_VERSION = "common-allocation.2026-10-18.v1";
 var defaultCommonPolicy = () => ({ version: COMMON_ALLOCATION_VERSION, mode: "planning", motorcycle: "housing", bicycle: "housing", community: "housing", ramp: "proportional", source: "" });
 function isCommonPolicy(x) {
@@ -4828,7 +4824,7 @@ function resolveCommonPolicy(p, pools) {
   return { allocation: { motorcycleSqm, bicycleSqm, communitySqm, sharedRampSqm, source: p.source || "App\u901A\u5247\u898F\u5283\u5047\u8A2D\uFF0C\u975E\u6838\u5B9A\u5206\u914D" }, rampRatio, notes, status: p.mode === "planning" ? "planning" : pending || needsDocuments ? "needs_documents" : "document_input" };
 }
 
-// ../sanze-release-app/src/lib/planning/article162.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/article162.ts
 var AREA_REVIEW_VERSION = "article162.2026-10-18.v1";
 function isAreaReview(x) {
   if (!x || typeof x !== "object") return false;
@@ -4876,7 +4872,7 @@ function reviewAboveGround(c) {
   return { errors, floors, floorArea: sum3("floorArea"), equipment, lobby: sum3("lobby"), balcony: sum3("balcony"), equipmentExempt: sum3("equipmentExempt"), lobbyExempt: sum3("lobbyExempt"), balconyExempt: sum3("balconyExempt"), counted, countedExtras: sum3("countedExtras"), ordinary: sum3("floorArea") - equipment - sum3("lobby") };
 }
 
-// ../sanze-release-app/src/lib/planning/spatialPlanning.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/spatialPlanning.ts
 var sum2 = (a, key) => a.reduce((t, s) => t + s[key], 0);
 var group = (f8, use) => f8.flatMap((f9) => f9.spaces).filter((s) => use.includes(s.use));
 var sqm = (s) => sum2(s, "area");
@@ -5283,7 +5279,7 @@ function connectMotoRoutes(f8, aisleY) {
   f8.spaces = f8.spaces.filter((q) => q.area > 1e-3);
 }
 
-// ../sanze-release-app/src/lib/planning/spatialResult.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/spatialResult.ts
 function computeSpatialResult(i, aggregate) {
   const template = aggregate({ ...i, spatial: void 0, areaReview: void 0, reserve: "0", equipment: "0", lobby: "0", balcony: "0", extraCars: "0" });
   const detail = buildSpatialPlanning(i), s = detail.spatial;
@@ -5308,7 +5304,7 @@ function calculateSpatialResult(i, aggregate) {
   return result;
 }
 
-// ../sanze-release-app/src/lib/planning/legalParking.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/legalParking.ts
 var PARKING_RULE_VERSION = "ntpc-parking.2026-10-17.v2";
 var isTaipeiParking = (district) => /臺北|台北/.test(district);
 var parkingSources = [
@@ -5500,7 +5496,7 @@ function calculateLegalParking(p, c) {
   return { version: PARKING_RULE_VERSION, roughEstimate: general, errors, notes, legal, capacityFailure: false, values: { smallSite: void 0, flatCars: cars, mechanicalCars: 0, mechanicalArea: 0, undergroundFlatCars: cars, groundCars: 0, quantityFloors, legal, marketDemand, requestedExtra: c.extra, requested, adoptedExtra, cars, availableExtra, remainingExtra, capacity, neededFloors, floors, basement, motos, bikes, community, accessible, accessibleMotos, motoAccessibleExtra, motoAccessibleWidth, motoAccessibleLength, motoAccessibleAisle, carWidth, carLength, aisle, carModule, motoWidth, motoLength, motoAisle, motoModule, bicycleAccess, bicycleLiftArea, rampDenominator, rampWidth, rampRun, rampArea, rampTotal, equipmentPerFloor, equipmentArea, lossPerFloor, lossArea, netPerFloor, motoArea, bikeArea, communityArea, carArea, parkingArea, basementCommon, spareArea, b1Capacity, otherCapacity, entranceBuffer: cars + community <= 50 ? 4 : 6, legalFormula } };
 }
 
-// ../sanze-release-app/src/lib/planning/autonomousPlanning.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/planning/autonomousPlanning.ts
 var planningFields = [
   ["site", "\u57FA\u5730\u9762\u7A4D", "\u33A1", "base"],
   ["coverage", "\u6CD5\u5B9A\u5EFA\u853D\u7387", "%", "base"],
@@ -5740,7 +5736,7 @@ function calculateAggregatePlanning(input) {
   return { ...z, errors: [...new Set(errors)], notes: [...new Set(notes)], values, regulatory: { version: p.version, bonus, volume, status: "planning" } };
 }
 
-// ../sanze-release-app/src/components/efficiency/LegalParkingPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/efficiency/LegalParkingPanel.tsx
 import { Fragment as Fragment4, jsx as jsx4, jsxs as jsxs4 } from "react/jsx-runtime";
 var f2 = (n) => n.toLocaleString("zh-TW", {
   maximumFractionDigits: 2
@@ -6354,10 +6350,10 @@ function LegalParkingPanel({
   ] });
 }
 
-// ../sanze-release-app/src/components/efficiency/AreaReviewPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/efficiency/AreaReviewPanel.tsx
 import { FieldLabel as FieldLabel6, PublicNumber as PublicNumber6 } from "/src/land-evaluation/PublicFields.jsx";
 
-// ../sanze-release-app/src/components/efficiency/CommonAllocationPolicyPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/efficiency/CommonAllocationPolicyPanel.tsx
 import { FieldLabel as FieldLabel5 } from "/src/land-evaluation/PublicFields.jsx";
 import { PublicSelect as PublicSelect5 } from "/src/land-evaluation/PublicSelect.jsx";
 import { Fragment as Fragment5, jsx as jsx5, jsxs as jsxs5 } from "react/jsx-runtime";
@@ -6467,7 +6463,7 @@ function CommonAllocationPolicyPanel({
   ] });
 }
 
-// ../sanze-release-app/src/components/efficiency/AreaReviewPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/efficiency/AreaReviewPanel.tsx
 import { Fragment as Fragment6, jsx as jsx6, jsxs as jsxs6 } from "react/jsx-runtime";
 var f4 = (x) => x.toLocaleString("zh-TW", {
   maximumFractionDigits: 2
@@ -6727,11 +6723,11 @@ function AreaReviewPanel({
   ] });
 }
 
-// ../sanze-release-app/src/components/efficiency/RegulatoryReviewPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/efficiency/RegulatoryReviewPanel.tsx
 import { FieldLabel as FieldLabel7, PublicNumber as PublicNumber7 } from "/src/land-evaluation/PublicFields.jsx";
 import { PublicSelect as PublicSelect6 } from "/src/land-evaluation/PublicSelect.jsx";
 
-// ../sanze-release-app/src/components/efficiency/BasementAudit.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/efficiency/BasementAudit.tsx
 import { jsx as jsx7, jsxs as jsxs7 } from "react/jsx-runtime";
 var f5 = (n) => n.toLocaleString("zh-TW", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 var law = "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0070115&flno=";
@@ -6919,7 +6915,7 @@ function BasementAudit({ input, result, edit }) {
   ] });
 }
 
-// ../sanze-release-app/src/components/efficiency/RegulatoryReviewPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/efficiency/RegulatoryReviewPanel.tsx
 import { jsx as jsx8, jsxs as jsxs8 } from "react/jsx-runtime";
 var f6 = (n) => n.toLocaleString("zh-TW", {
   maximumFractionDigits: 2
@@ -7084,7 +7080,7 @@ function RegulatoryReviewPanel({
   ] });
 }
 
-// ../sanze-release-app/src/components/efficiency/SiteRoadConditionsPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/efficiency/SiteRoadConditionsPanel.tsx
 import { FieldLabel as FieldLabel8, PublicNumber as PublicNumber8 } from "/src/land-evaluation/PublicFields.jsx";
 import { PublicSelect as PublicSelect7 } from "/src/land-evaluation/PublicSelect.jsx";
 import { jsx as jsx9, jsxs as jsxs9 } from "react/jsx-runtime";
@@ -7159,7 +7155,7 @@ function SiteRoadConditionsPanel({
   ] });
 }
 
-// ../sanze-release-app/src/components/mixed-zone/DocumentCasePanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/mixed-zone/DocumentCasePanel.tsx
 import { useState as useState2 } from "react";
 import { Fragment as Fragment7, jsx as jsx10, jsxs as jsxs10 } from "react/jsx-runtime";
 var useLabels = { unknown: "\u5C1A\u672A\u78BA\u8A8D", residential: "\u4F4F\u5B85", retail: "\u5E97\u8216", office: "\u8FA6\u516C", shared: "\u5171\u7528\uFF0F\u6DF7\u5408\u672A\u5206\u5217", other: "\u5176\u4ED6" };
@@ -7384,10 +7380,10 @@ function DocumentCasePanel({ value: m, onChange, onReport }) {
   ] });
 }
 
-// ../sanze-release-app/src/components/mixed-zone/ProgramReviewPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/mixed-zone/ProgramReviewPanel.tsx
 import { useState as useState3 } from "react";
 
-// ../sanze-release-app/src/lib/mixed-zone/programReview.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/mixed-zone/programReview.ts
 function calculateProgramReview(m) {
   const issues = [];
   const read = (v, label) => {
@@ -7448,7 +7444,7 @@ function calculateProgramReview(m) {
   return { groups, base, adopted, cap, award, allRateAward, tdr: tdr2, total, declared, formulaWithoutOriginalCap, formulaWithOriginalCap, design, floors, uses: uses2, units, unitTotal: sum3(Object.values(units)), issues, legallyAdoptable: false };
 }
 
-// ../sanze-release-app/src/components/mixed-zone/ProgramReviewPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/mixed-zone/ProgramReviewPanel.tsx
 import { jsx as jsx11, jsxs as jsxs11 } from "react/jsx-runtime";
 var format = (n) => n === null ? "\u8CC7\u6599\u672A\u9F4A" : n.toLocaleString("zh-TW", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 var uses = { residential: "\u4F4F\u5B85\u6A13\u5C64", retail: "\u5E97\u8216\u6A13\u5C64", office: "\u8FA6\u516C\u6A13\u5C64\uFF08\u542B\u6240\u5C6C\u516C\u5171\u7A7A\u9593\uFF09", shared: "\u6DF7\u5408\u7528\u9014\uFF0F\u516C\u5171\u7A7A\u9593\u672A\u5206\u5217" };
@@ -7582,7 +7578,7 @@ function ProgramReviewPanel({ value: m, onChange }) {
   ] });
 }
 
-// ../sanze-release-app/src/components/mixed-zone/LandBasisPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/mixed-zone/LandBasisPanel.tsx
 import { jsx as jsx12, jsxs as jsxs12 } from "react/jsx-runtime";
 function LandBasisPanel({ value: value2, onChange, zones }) {
   const v = value2 ?? newLandBasis();
@@ -7711,7 +7707,7 @@ function LandBasisPanel({ value: value2, onChange, zones }) {
   ] });
 }
 
-// ../sanze-release-app/src/components/mixed-zone/CommercialIntensityPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/mixed-zone/CommercialIntensityPanel.tsx
 import { Fragment as Fragment8, jsx as jsx13, jsxs as jsxs13 } from "react/jsx-runtime";
 function CommercialIntensityPanel({ value: value2, onChange, site, coverage, requireResidential = true }) {
   const x = value2, edit = (p) => onChange({ ...x, ...p }), r = calculateCommercialIntensity(x, site, coverage, requireResidential);
@@ -7831,7 +7827,7 @@ function CommercialIntensityPanel({ value: value2, onChange, site, coverage, req
   ] });
 }
 
-// ../sanze-release-app/src/components/mixed-zone/MixedZonePanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/mixed-zone/MixedZonePanel.tsx
 import { useState as useState4 } from "react";
 import { Fragment as Fragment9, jsx as jsx14, jsxs as jsxs14 } from "react/jsx-runtime";
 var f7 = (n) => n === null ? "\u5F85\u88DC\u8CC7\u6599" : n.toLocaleString("zh-TW", { maximumFractionDigits: 2 });
@@ -8281,7 +8277,7 @@ function MixedZonePanel({ value: m, onChange, onReport }) {
   ] });
 }
 
-// ../sanze-release-app/src/lib/industrial/planGuidance.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/industrial/planGuidance.ts
 var industrialPlanGuidance = [
   { name: "\u81FA\u5317\u5167\u6E56\u79D1\u6280\u5712\u5340\uFF1A111.9.22\u516C\u544A\u571F\u5730\u4F7F\u7528\u898F\u5B9A", url: "https://doed.gov.taipei/News.aspx?n=279244FF387F4F7E&sms=993B92A906D84475", detail: "\u5B98\u65B9\u73FE\u884C\u5C08\u5340\u63D0\u4F9B11130721321\u865F\u516C\u544A\u7248\u3002\u9644\u8868\u4EE5\u5141\u8A31\u3001\u9644\u689D\u4EF6\u3001\u6B21\u6838\u5FC3\u56DE\u994B\u53CA\u7981\u6B62\u5206\u5217\uFF0C\u4E0D\u80FD\u628A\u4E00\u822C\u8FA6\u516C\u4E00\u5F8B\u7576\u5DE5\u5EE0\u9644\u5C6C\u8FA6\u516C\uFF1B\u98F2\u98DF\u53CA\u9910\u98F2\u9644\u689D\u4EF6\u9650\u7B2C\u4E00\u3001\u4E8C\u5C64\u3002\u9808\u6838\u5C0D\u79D1\u6280\u5DE5\u696D\u5340A\uFF0FB\u53CA\u5BE6\u969B\u71DF\u696D\u9805\u76EE\u3002110\u5E74\u5408\u4F75\u516C\u958B\u5C55\u89BD\u7A3F\u4E0D\u662F\u63A1\u7528\u7248\u672C\u3002" },
   { name: "\u81FA\u5317\u5927\u5167\u6E56\u6B21\u6838\u5FC3\u7522\u696D\uFF1A111\u5E74\u5148\u884C\u516C\u544A\u56DE\u994B\u898F\u5B9A", url: "https://doed.gov.taipei/News.aspx?n=279244FF387F4F7E&sms=993B92A906D84475", detail: "\u8207\u5167\u79D1\u571F\u5730\u4F7F\u7528\u898F\u5B9A\u5206\u958B\u767C\u5E03\u3002\u56DE\u994B\u4E00\u6B21\u7E73\u7D0D\uFF1B\u63A1\u7528\u5BE6\u969B\u6B21\u6838\u5FC3\u8A08\u5BB9\u9762\u7A4D\uFF0C\u6216\u4E0D\u542B\u967D\u53F0\u53CA\u96E8\u906E\u7684\u767B\u8A18\u9762\u7A4D\u64C7\u4E00\uFF1B\u7E3D\u8A08\u5BB9\u5206\u6BCD\u4ECD\u4F9D\u4F7F\u7528\u57F7\u7167\u3002\u7121\u5EFA\u7269\u5EA7\u843D\u514D\u6B64\u56DE\u994B\uFF0C\u4E0D\u4EE3\u8868\u514D\u7528\u9014\u8A31\u53EF\u3002\u4E0D\u540C\u5206\u5340\u53C3\u7167\u4F4D\u7F6E\u53CA\u7576\u5E74\u5EA6\u5730\u50F9\u9808\u9010\u6848\u53D6\u5F97\u3002" },
@@ -8289,7 +8285,7 @@ var industrialPlanGuidance = [
   { name: "\u65B0\u5317\u7ACB\u9AD4\u5316\uFF1A\u81EA\u7528\u3001\u975E\u81EA\u7528\u8207\u7279\u6B8A\u4F8B\u5916", url: "https://www.economic.ntpc.gov.tw/Custom/\u65B0\u5317\u5E02\u5DE5\u696D\u5340\u7ACB\u9AD4\u5316\u65B9\u6848", detail: "115\u5E744\u6708\u65B9\u6848\u7B2C7\u300111\u81F314\u9801\uFF1A\u81EA\u7528\u4EE3\u91D1\u3001\u975E\u81EA\u7528\u6350\u8D08\uFF0F\u4EE3\u91D1\u3001\u4FDD\u8B49\u91D1\u5206\u958B\uFF1B\u6350\u8D08\u514D\u8A08\u5BB9\u9808\u4E3B\u7BA1\u6A5F\u95DC\u6838\u51C6\u53CA\u63A5\u7BA1\u540C\u610F\u3002\u516C\u6709\u5730\u56DE\u994B\u63A1\u4E00\u6B21\u7E73\u7D0D\u3002\u5B8C\u6210\u4F7F\u7528\u524D\u6B0A\u5229\u7FA9\u52D9\u3001\u5B8C\u6210\u5F8C\u4E94\u5E74\u5167\u6216\u56DE\u994B\u672A\u7E73\u5B8C\u7684\u589E\u91CF\u7522\u6B0A\u5747\u6709\u9650\u5236\uFF0C\u7279\u51C6\u8F49\u8B93\u9700\u540C\u610F\u53CA\u7E7C\u53D7\u3002\u7279\u6B8A\u8B8A\u66F4\u734E\u52F5\u6539\u7E73\u56DE\u994B\u9808\u4E3B\u7BA1\u6A5F\u95DC\u540C\u610F\uFF0C\u9808\u4F9D\u6838\u51C6\u5167\u5BB9\u8A8D\u5217\u3002" }
 ];
 
-// ../sanze-release-app/src/lib/industrial/development.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/industrial/development.ts
 var allocationFields = { exempt: "\u514D\u8A08\u5BB9\u5BE6\u9AD4\u6A13\u5730\u677F\u33A1", rent: "\u51FA\u79DF\u5C08\u7528\u5BE6\u9AD4\u9762\u7A4D\u33A1", self: "\u81EA\u7528\u5C08\u7528\u5BE6\u9AD4\u9762\u7A4D\u33A1", donated: "\u6350\u8D08\u5BE6\u9AD4\u9762\u7A4D\u33A1", common: "\u5171\u7528\u5BE6\u9AD4\u9762\u7A4D\u33A1", vacant: "\u672A\u914D\u7F6E\u5BE6\u9AD4\u9762\u7A4D\u33A1", registered: "\u6587\u4EF6\u767B\u8A18\u9762\u7A4D\u33A1" };
 var constraintKinds = { coverage: "\u5EFA\u853D\uFF0F\u5EFA\u7BC9\u9762\u7A4D", excavation: "\u958B\u6316", height: "\u9AD8\u5EA6", yard: "\u9000\u7E2E\u8207\u9662\u843D", parking: "\u6C7D\u6A5F\u8ECA\u53CA\u81EA\u884C\u8ECA\u505C\u8ECA", loading: "\u88DD\u5378\u4F4D\u8207\u8ECA\u9053", fire: "\u6D88\u9632\u8207\u670D\u52D9\u6838\u5FC3", quota: "\u5DE5\u696D\u4F7F\u7528\u7E3D\u91CF", permission: "\u7528\u9014\u8207\u884C\u696D\u8A31\u53EF" };
 var proof = () => ({ source: "", date: "", finding: "", state: "unknown" });
@@ -8357,7 +8353,7 @@ function calculateDevelopment(d, floors, mode, date) {
   return { ready: issues.length === 0, issues, totals: issues.length ? null : totals2 };
 }
 
-// ../sanze-release-app/src/components/industrial/DevelopmentPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/industrial/DevelopmentPanel.tsx
 import { jsx as jsx15, jsxs as jsxs15 } from "react/jsx-runtime";
 function Input({ label, value: value2, onChange, type = "text" }) {
   return /* @__PURE__ */ jsxs15("label", { className: "mz-field", children: [
@@ -8461,10 +8457,10 @@ function DevelopmentPanel({ model: m, onChange }) {
   ] });
 }
 
-// ../sanze-release-app/src/components/industrial/IndustrialPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/industrial/IndustrialPanel.tsx
 import { useState as useState5 } from "react";
 
-// ../sanze-release-app/src/lib/industrial/model.ts
+// ../../../2026-10-24/sanze-release-app/src/lib/industrial/model.ts
 var INDUSTRIAL_CALCULATION_VERSION = "industrial.rules.2026-10-24.v2";
 var INDUSTRIAL_VERSION = "industrial.2026-10-24.v1";
 var sources = [
@@ -8759,7 +8755,7 @@ function calculateIndustrial(raw) {
 }
 var quantityLabels = { site: "\u6263\u9664\u5F8C\u57FA\u5730\u9762\u7A4D", base: "\u57FA\u6E96\u5BB9\u7A4D", originalIncrease: "\u539F\u5BB9\u7A4D\u66FF\u4EE3\u589E\u52A0\u91CF", awards: "\u6263\u9664\u91CD\u8907\u5F8C\u734E\u52F5", tdr: "\u5BB9\u7A4D\u79FB\u8F49", total: "\u8F38\u5165\u5206\u9805\u5408\u8A08\uFF08\u975E\u6838\u51C6\u984D\u5EA6\uFF09", design: "\u9010\u5C64\u914D\u7F6E\u8A08\u5BB9\u9762\u7A4D" };
 
-// ../sanze-release-app/src/components/industrial/IndustrialPanel.tsx
+// ../../../2026-10-24/sanze-release-app/src/components/industrial/IndustrialPanel.tsx
 import { Fragment as Fragment10, jsx as jsx16, jsxs as jsxs16 } from "react/jsx-runtime";
 function IndustrialPanel({ value: m, onChange, onReport }) {
   const [snapshot, setSnapshot] = useState5(null), signature = JSON.stringify(m), r = snapshot?.signature === signature ? snapshot.result : null;
