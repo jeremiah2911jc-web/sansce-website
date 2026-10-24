@@ -2762,7 +2762,7 @@ function calculateLandBasis(x, landArea, assessmentDate) {
   const issues = [];
   const values = { site: null, far: null, coverage: null, openCredit: null };
   if (!x || !isLandBasis(x)) {
-    issues.push({ message: "\u8ACB\u5EFA\u7ACB\u66F4\u65B0\u7BC4\u570D\u3001\u5EFA\u7BC9\u57FA\u5730\u3001\u5BB9\u7A4D\u3001\u5EFA\u853D\u53CA\u6CD5\u5B9A\u7A7A\u5730\u7684\u5206\u9805\u4F9D\u64DA\uFF1B\u820A\u8A08\u5165\u9078\u9805\u4E0D\u81EA\u52D5\u8F49\u63DB", kind: "missing" });
+    issues.push({ message: "\u8ACB\u5EFA\u7ACB\u66F4\u65B0\u7BC4\u570D\u3001\u5EFA\u7BC9\u57FA\u5730\u3001\u5BB9\u7A4D\u3001\u5EFA\u853D\u53CA\u6CD5\u5B9A\u7A7A\u5730\u7684\u5206\u9805\u4F9D\u64DA", kind: "missing" });
     return { values, issues };
   }
   if (x.renewal === "unknown") issues.push({ message: "\u662F\u5426\u4F4D\u65BC\u672C\u6B21\u66F4\u65B0\uFF0F\u8A55\u4F30\u7BC4\u570D\u5C1A\u672A\u78BA\u8A8D", kind: "missing" });
@@ -2825,7 +2825,7 @@ function calculateLandBasis(x, landArea, assessmentDate) {
       for (const k of requested) values[k] = null;
     }
   }
-  if (x.tdr.status === "unknown") issues.push({ message: "\u516C\u5171\u8A2D\u65BD\u5BB9\u7A4D\u79FB\u8F49\u8655\u7406\u65B9\u5F0F\u5C1A\u672A\u78BA\u8A8D\uFF1B\u4E0D\u81EA\u52D5\u4EE5\u4F4F\u5B85\u5BB9\u7A4D\u7387\u63DB\u7B97", kind: "missing" });
+  if (x.tdr.status === "unknown") issues.push({ message: "\u516C\u5171\u8A2D\u65BD\u5BB9\u7A4D\u79FB\u8F49\u8655\u7406\u65B9\u5F0F\u5C1A\u672A\u78BA\u8A8D", kind: "missing" });
   if (x.tdr.status !== "unknown" && !x.tdr.source.trim()) issues.push({ message: "\u5BB9\u7A4D\u79FB\u8F49\u8655\u7406\u9808\u6709\u6587\u4EF6\u4F9D\u64DA", kind: "missing" });
   if (x.tdr.status === "proposed") issues.push({ message: "\u64EC\u7533\u8ACB\u7684\u516C\u5171\u8A2D\u65BD\u5BB9\u7A4D\u79FB\u8F49\u672A\u5217\u5165\u5DF2\u6838\u51C6\u958B\u767C\u91CF", kind: "review" });
   return { values, issues };
@@ -2928,7 +2928,7 @@ function calculateMixedSite(raw) {
   const totals2 = { renewal: null, farArea: null, coverageArea: null, openCredit: null, tdr: null, area: null, included: null, excluded: null, base: null, footprint: null, openSpace: null, award: null, allowed: null, obligation: null, afterObligation: null, counted: null, cars: null };
   const out = (status) => ({ version: MIXED_VERSION, issues, zones, parking, totals: totals2, status, notes: [
     "\u984D\u5EA6\u4F86\u6E90\u8207\u5BE6\u969B\u914D\u7F6E\u5206\u958B\uFF1A\u4F9D\u5404\u5206\u5340\u8A08\u7B97\u5BB9\u7A4D\u53CA\u61C9\u7559\u7A7A\u5730\uFF1B\u7B26\u5408\u7B2C29\u3001165\u689D\u53CA\u5730\u65B9\u571F\u7BA1\u8005\u5F97\u6574\u9AD4\u914D\u7F6E\uFF0C\u4E0D\u628A\u5206\u5340\u754C\u7DDA\u7576\u6210\u4E00\u5F8B\u4E0D\u5F97\u8DE8\u8D8A\u7684\u5EFA\u7BC9\u754C\u7DDA\u3002\u7528\u9014\u4ECD\u4F9D\u5BE6\u969B\u5EA7\u843D\u5206\u5340\u6AA2\u6838\u3002",
-    "\u734E\u52F5\u8207\u5BB9\u79FB\u63A1\u9010\u9805\u4F86\u6E90\u53CA\u6307\u5B9A\u6BCD\u6578\uFF1B\u7CFB\u7D71\u4E0D\u81EA\u52D5\u63A8\u5B9A\u53D6\u5F97\u8CC7\u683C\u3001\u4E0A\u9650\u6216\u5404\u9805\u53EF\u758A\u52A0\u3002\u91CD\u8907\u9805\u76EE\u53CA\u540C\u4E00\u56DE\u994B\u4E0D\u5F97\u91CD\u8907\u5217\u5165\u3002",
+    "\u734E\u52F5\u8207\u5BB9\u79FB\u63A1\u9010\u9805\u4F86\u6E90\u53CA\u6307\u5B9A\u6BCD\u6578\uFF1B\u53D6\u5F97\u8CC7\u683C\u3001\u4E0A\u9650\u53CA\u4F75\u7528\u689D\u4EF6\u9808\u4F9D\u9069\u7528\u6CD5\u898F\u6838\u5C0D\u3002\u91CD\u8907\u9805\u76EE\u53CA\u540C\u4E00\u56DE\u994B\u4E0D\u5F97\u91CD\u8907\u5217\u5165\u3002",
     "\u516C\u76CA\u6350\u8D08\uFF0F\u56DE\u994B\u50C5\u5217\u5BB9\u7A4D\u9762\u7A4D\u8CA0\u64D4\uFF0C\u4E0D\u628A\u6263\u5F8C\u5BB9\u7A4D\u7576\u6210\u767B\u8A18\u6216\u53EF\u552E\u9762\u7A4D\uFF1B\u53E6\u6709\u571F\u5730\u3001\u91D1\u984D\u3001\u7BA1\u7406\u7DAD\u8B77\u7B49\u7FA9\u52D9\u4ECD\u9808\u6838\u5C0D\u3002",
     "\u672C\u6A21\u7D44\u8A08\u7B97\u5206\u5340\u958B\u767C\u91CF\u3001\u914D\u7F6E\u7E3D\u91CF\u6838\u5C0D\u53CA\u5206\u5E62\u7528\u9014\u505C\u8ECA\u3002\u5730\u7C4D\u5E7E\u4F55\u3001\u8DE8\u5340\u914D\u7F6E\u3001\u65E5\u7167\u3001\u9000\u7E2E\u3001\u6D88\u9632\u3001\u5730\u4E0B\u958B\u6316\u3001\u514D\u8A08\u767B\u8A18\u8207\u53EF\u552E\u576A\u6548\u9808\u53E6\u4F9D\u5716\u8AAA\u5B8C\u6210\u6AA2\u8A0E\uFF1B\u4E0D\u5957\u7528\u55AE\u4E00\u5206\u5340\u6A21\u578B\u88DC\u503C\u3002",
     "\u81FA\u5317\u5E02\u7B2C86-1\u689D\u81EA\u52D5\u8A08\u7B97\u652F\u63F4\u7B2C\u4E8C\u7D44\u4F4F\u5B85\u3001\u7B2C17\uFF0F19\uFF0F20\u7D44\u975E\u767E\u8CA8\u96F6\u552E\u3001\u7B2C28\uFF0F29\u7D44\u8FA6\u516C\u4E4B\u975E\u516C\u6709\u5EFA\u7BC9\uFF0C\u6309\u540C\u5E62\u5206\u985E\u7D2F\u52A0\u5F8C\u9032\u4F4D\uFF1B\u5176\u4ED6\u7D44\u5225\u53CA\u500B\u6848\u505C\u8ECA\u53E6\u6838\u3002",
@@ -3990,7 +3990,7 @@ function resolveBonusLimits(p, rates, context) {
   }
   const read = (x, label, fallback, max = 1e3) => {
     if (!x.trim()) {
-      errors.push(label + "\u672A\u586B\uFF1B\u4E0D\u5957\u9810\u8A2D\u6BD4\u4F8B");
+      errors.push(label + "\u672A\u586B");
       return NaN;
     }
     const n = Number(x);
@@ -4922,7 +4922,7 @@ function defaultPlanningInput(r) {
   input.assessmentMode = "planning";
   input.regulatoryReview = { ...input.regulatoryReview, renewalLimitPercent: "", tdrLimitPercent: "" };
   input.quantityReserve = { ...input.quantityReserve, basementReservePercent: void 0 };
-  input.note = "\u898F\u5283\u8A66\u7B97\uFF1A\u6BD4\u4F8B\u8207\u6578\u91CF\u9808\u660E\u78BA\u586B\u5BEB\uFF0C\u7F3A\u503C\u4E0D\u5957\u9810\u8A2D\u3002";
+  input.note = "\u898F\u5283\u8A66\u7B97";
   return input;
 }
 var enums = { totalBasis: ["floor", "construction"], stair: ["single", "other"], lobbyDepth: ["assumed", "confirmed", "failed"], roofType: ["ordinary", "high"], elevator: ["yes", "no"], basementMode: ["auto", "manual"], parkingRule: ["demand", "article59", "localUnit"] };
@@ -5065,8 +5065,8 @@ function calculatePlanning(input) {
     return { ...result, commercialReview: review, notes: [`\u5546\u696D\u5206\u5340\u57FA\u6E96\u5BB9\u7A4D\u7531\u9069\u7528\u7BC4\u570D\u8A08\u7B97\u70BA${review.base}\u33A1\uFF0C\u672A\u63A1\u539F\u5BB9\u7A4D\u7387\u6B04\u4F4D\u3002`, ...review.notes, ...result.notes] };
   }
   const required = planningFields.filter(([k]) => !["equipment", "lobby", "roofRate", "excavationCap", "carPerUnit", "carPing", "motoSqm", "localParkingUnit"].includes(k) && !(k === "basementFloors" && input.basementMode === "auto") && !(input.basementDemand?.enabled && ["excavation", "basementFloors"].includes(k)));
-  const missing = required.filter(([k]) => !input[k]?.trim()).map(([, label]) => label + "\u672A\u586B\uFF1B\u4E0D\u5957\u9810\u8A2D\u503C");
-  if (input.quantityReserve?.reservationMode === "legal_envelope" && input.quantityReserve.basementEquipmentMode !== "named" && !Number.isFinite(input.quantityReserve.basementReservePercent)) missing.push("\u5730\u4E0B\u9810\u7559\u6BD4\u4F8B\u672A\u586B\uFF1B\u4E0D\u595725%");
+  const missing = required.filter(([k]) => !input[k]?.trim()).map(([, label]) => label + "\u672A\u586B");
+  if (input.quantityReserve?.reservationMode === "legal_envelope" && input.quantityReserve.basementEquipmentMode !== "named" && !Number.isFinite(input.quantityReserve.basementReservePercent)) missing.push("\u5730\u4E0B\u9810\u7559\u6BD4\u4F8B\u672A\u586B");
   if (missing.length) return { values: null, notes: [], errors: missing };
   const disclosed = discloseMissingPlanningInputs(input), i = normalizePlanningInput(disclosed.input);
   if (i.basementDemand?.enabled) {
