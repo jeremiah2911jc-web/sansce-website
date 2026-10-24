@@ -1,0 +1,197 @@
+[
+  {
+    "file": "src/components/efficiency/AutonomousPlanningPanel.tsx",
+    "before": "切換保留原始輸入。",
+    "after": "移除"
+  },
+  {
+    "file": "src/components/efficiency/AutonomousPlanningPanel.tsx",
+    "before": "輸入隨本案方案保存；歷史採用結果不自動變更。",
+    "after": "移除"
+  },
+  {
+    "file": "src/components/industrial/DevelopmentPanel.tsx",
+    "before": "逐層計容完成後，另列出租、自用、捐贈與共用實體面積。未建立時不能承接 App 財務。",
+    "after": "依樓層列出出租、自用、捐贈與共用面積。"
+  },
+  {
+    "file": "src/components/industrial/DevelopmentPanel.tsx",
+    "before": "以下為已查明的規定及版本，不代表基地必然位於其範圍，也不會代填比例。其他計畫仍須依該案公告書圖與後續變更核對。",
+    "after": "請依基地位置核對適用計畫及修正公告。"
+  },
+  {
+    "file": "src/components/industrial/DevelopmentPanel.tsx",
+    "before": "各種限制分項填設計值、文件限制、單位與範圍。個別計畫或例外不能刪掉一般規定的檢查；有不適用項目也須填理由。此處檢查文件數量，不代替圖說審查，也不以填完代表核准。",
+    "after": "分項填寫設計值、法規限制及適用範圍；特殊規定與不適用項目須附依據。"
+  },
+  {
+    "file": "src/components/industrial/IndustrialPanel.tsx",
+    "before": "切換模式保留輸入，重新檢查證據狀態。",
+    "after": "移除"
+  },
+  {
+    "file": "src/components/industrial/IndustrialPanel.tsx",
+    "before": "規劃值須由規劃方明填並說明假設；不會升格為核准數字。",
+    "after": "依規劃條件比較開發方案。"
+  },
+  {
+    "file": "src/components/industrial/IndustrialPanel.tsx",
+    "before": "逐項填入同一版本文件值。規劃假設不能通過文件覆核。",
+    "after": "依同一版本的案件文件核對。"
+  },
+  {
+    "file": "src/components/industrial/IndustrialPanel.tsx",
+    "before": "資料已變更，舊結果失效，請重新計算。",
+    "after": "請重新計算。"
+  },
+  {
+    "file": "src/components/industrial/IndustrialPanel.tsx",
+    "before": "這些數字不會自動填入。",
+    "after": "移除"
+  },
+  {
+    "file": "src/components/mixed-zone/MixedZonePanel.tsx",
+    "before": "可計算的分項先列出；合計不完整時顯示待補資料。數字不是核准或可售面積。",
+    "after": "分項開發量與停車需求。"
+  },
+  {
+    "file": "src/components/mixed-zone/MixedZonePanel.tsx",
+    "before": "此子模組與住宅通則試算獨立。分區開發量及停車需求可先計算；不得把總容積直接當可售坪數送入成本、售價或融資。",
+    "after": "總容積與可售面積不同，後續須依配置及登記條件核算。"
+  },
+  {
+    "file": "src/components/mixed-zone/MixedZonePanel.tsx",
+    "before": "此處保留文件與個案判斷，不以勾選取代審查。條件變更後，原核對紀錄會標示待重新確認；未完成仍可看分項計算，不表示可以申請建照。",
+    "after": "請列明各項法規的適用依據與檢討結果。"
+  },
+  {
+    "file": "src/components/mixed-zone/ProgramReviewPanel.tsx",
+    "before": "以下是文件已能辨識的計容樓層合計，不代表專有面積。未分列部分不強制分攤；不能據此宣稱新北住宅使用容積限制已通過。",
+    "after": "以下為文件可辨識的計容樓層合計；專有面積及住宅使用容積限制另依文件核對。"
+  },
+  {
+    "file": "src/components/mixed-zone/DocumentCasePanel.tsx",
+    "before": "切換保留各模式輸入，結果須重算。",
+    "after": "移除"
+  },
+  {
+    "file": "src/components/mixed-zone/DocumentCasePanel.tsx",
+    "before": "此資料隨目前案件／方案保存。數量相符與法規資格分開判斷。",
+    "after": "核對文件數量及法規適用條件。"
+  },
+  {
+    "file": "src/components/mixed-zone/DocumentCasePanel.tsx",
+    "before": "資料已變更，舊結果失效，請重新計算。",
+    "after": "請重新計算。"
+  },
+  {
+    "file": "src/components/mixed-zone/DocumentCasePanel.tsx",
+    "before": "這是文件數量與人工覆核紀錄，並非主管機關核准；未自動轉入成本或可售計算。",
+    "after": "文件數量及適用條件核對結果。"
+  },
+  {
+    "file": "src/cases/industrial/FinancePanel.tsx",
+    "before": "採用完整工業資料版本；來源有修改即須重新採用。每期為一個月，從第0月開始。租金以出租專用實體面積計；稅費、租金單位與收款率明填。",
+    "after": "每期為一個月，從第0月開始。租金依出租面積、單價與收款率計算。"
+  },
+  {
+    "file": "src/cases/workflow/DocumentWorkflow.tsx",
+    "before": "本案獨立保存原容積、獎勵、容移與用途資料；可在尚未建立坪效紀錄時使用。成果與報告階段讀取相同資料，恢復後重新計算。",
+    "after": "核對原容積、獎勵、容移與用途配置。"
+  },
+  {
+    "file": "src/cases/land-readjustment/ReadjustmentWorkbench.jsx",
+    "before": "全區口徑",
+    "after": "全區基準"
+  },
+  {
+    "file": "src/cases/land-readjustment/ReadjustmentWorkbench.jsx",
+    "before": "逐項記錄本案適用、例外或不適用依據；有計畫文件不等於個人已符合全部條件。",
+    "after": "逐項記錄本案適用、例外或不適用依據。"
+  },
+  {
+    "file": "src/cases/land-readjustment/ReadjustmentWorkbench.jsx",
+    "before": "共用土地來自「土地用途與變更」。逐筆填寫納入面積、持分及查證依據，再加總本方案權利範圍。",
+    "after": "逐筆填寫納入面積、持分及查證依據。"
+  },
+  {
+    "file": "src/cases/land-readjustment/StatutoryFields.jsx",
+    "before": "查算值不自動採用，側面尺度與分配幾何須分別核對。",
+    "after": "側面尺度與分配幾何須分別核對。"
+  },
+  {
+    "file": "src/land-evaluation/OfficialSources.jsx",
+    "before": "只切換查詢入口，不更改土地或評估地區。",
+    "after": "移除"
+  },
+  {
+    "file": "src/land-evaluation/JudgementPanel.jsx",
+    "before": "土地條件已變更，請重新初核後再引用判讀。",
+    "after": "請重新檢核土地條件。"
+  },
+  {
+    "file": "src/land-evaluation/ReadjustmentWorkbench.jsx",
+    "before": "全區口徑",
+    "after": "全區基準"
+  },
+  {
+    "file": "src/land-evaluation/ReadjustmentWorkbench.jsx",
+    "before": "逐項記錄本案適用、例外或不適用依據；有計畫文件不等於個人已符合全部條件。",
+    "after": "逐項記錄本案適用、例外或不適用依據。"
+  },
+  {
+    "file": "src/land-evaluation/ReadjustmentWorkbench.jsx",
+    "before": "共用土地來自「土地用途與變更」。逐筆填寫納入面積、持分及查證依據，再加總本方案權利範圍。",
+    "after": "逐筆填寫納入面積、持分及查證依據。"
+  },
+  {
+    "file": "src/land-evaluation/LandEvaluation.jsx",
+    "before": "切換保留兩組原始輸入。",
+    "after": "移除"
+  },
+  {
+    "file": "src/land-evaluation/LandEvaluation.jsx",
+    "before": "土地用途、透天與重劃共用土地資料；集合住宅與工業開發各自保存條件。",
+    "after": "移除"
+  },
+  {
+    "file": "src/land-evaluation/LandEvaluation.jsx",
+    "before": "原始輸入隨本機方案暫存，並納入頁首評估檔下載／匯入；恢復後須重新計算。",
+    "after": "移除"
+  },
+  {
+    "file": "src/land-evaluation/LandEvaluation.jsx",
+    "before": "此方案可透過頁首暫存及評估檔保存。結果須於本次操作重新計算。",
+    "after": "移除"
+  },
+  {
+    "file": "src/land-evaluation/LandEvaluation.jsx",
+    "before": "舊結果已收起，避免截圖引用不同條件。",
+    "after": "移除"
+  },
+  {
+    "file": "src/land-evaluation/LocalDraft.jsx",
+    "before": "規則已變更，請重新計算與核對。",
+    "after": "移除"
+  },
+  {
+    "file": "src/land-evaluation/CaseFileControls.jsx",
+    "before": "載入會替換四個模組目前的輸入與方案。本檔只保留輸入及填報依據，計算成果與確認紀錄不載入；地號、土地清冊及文件仍由你核對。",
+    "after": "載入後將替換目前的評估資料與方案。"
+  },
+  {
+    "file": "src/land-evaluation/CaseFileControls.jsx",
+    "before": "已建立案件檔下載；請保留檔案，之後可重新匯入。",
+    "after": "案件檔已下載。"
+  },
+  {
+    "file": "src/land-evaluation/LandWorkbench.jsx",
+    "before": "完成土地範圍及住宅配置後顯示面積與坪效；資料及查證條件齊備且通過核心檢核，才能確認結果。",
+    "after": "請先完成土地範圍及住宅配置。"
+  },
+  {
+    "file": "src/land-evaluation/StatutoryFields.jsx",
+    "before": "查算值不自動採用，側面尺度與分配幾何須分別核對。",
+    "after": "側面尺度與分配幾何須分別核對。"
+  }
+]

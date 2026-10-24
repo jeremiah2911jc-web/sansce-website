@@ -1,9 +1,9 @@
 {
-  "sourceCommit": "882e0e925af269126f0bf88ac258ce7c46bd7d2d",
+  "sourceCommit": "c4f821536422209304602a343908960b6fd69d8d",
   "scope": "land identity, laws, routes, layout and efficiency only; no financial UI or case persistence",
   "source": "三策案件版",
   "sourceRoot": "/Users/jeremiah/Documents/Codex/2026-10-24/sanze-release-app",
-  "generatedAt": "2026-10-24T06:54:28.503Z",
+  "generatedAt": "2026-10-24T07:06:13.273Z",
   "method": "esbuild directly bundles original App exports; website has no separate calculation fork; App source is authoritative",
   "sources": [
     {
@@ -28,7 +28,7 @@
     },
     {
       "path": "src/cases/land-routes/model.ts",
-      "sha256": "0af9cce6c352101f6191c6dd54c6e0820aa57ae76bd97d82b574b09d7c988ea7"
+      "sha256": "d30433ad87ae246012c096e1fa29ff2cbf07fb0ad458900eb1f16ccfe1007f47"
     },
     {
       "path": "src/cases/land-rules/catalog.ts",
@@ -36,7 +36,7 @@
     },
     {
       "path": "src/cases/land-rules/engine.ts",
-      "sha256": "6af7220805c0838dcf0d606f27c8ab2a9d470f48b3c78f49735632ba9d207067"
+      "sha256": "1ef15b1cb7c7396f3f42da3aa5f0538cdc0251425e7b4b7853af8ea6b6ae4618"
     },
     {
       "path": "src/cases/land-rules/types.ts",
@@ -60,7 +60,7 @@
     },
     {
       "path": "src/components/efficiency/BonusAssessmentPanel.tsx",
-      "sha256": "2f4749b2282edd114532fd675ba04fefc336c6d2e722284a181eb07cf2b5dca0"
+      "sha256": "b81007d5bda187d47c3fc33da299af484d994e6e3a5d621044f3d8113ea313e8"
     },
     {
       "path": "src/components/efficiency/CommonAllocationPolicyPanel.tsx",
@@ -76,7 +76,7 @@
     },
     {
       "path": "src/components/efficiency/SiteRoadConditionsPanel.tsx",
-      "sha256": "cd3b131d13ffb8195e2e61e91b2f5e9f5781b66f7cf8458b985495d7e419eeb0"
+      "sha256": "17a0b722aa424cd1d3011322a0a9315d0066f81a55de7f947039cff51fad2415"
     },
     {
       "path": "src/components/efficiency/TdrApplicationPanel.tsx",
@@ -84,11 +84,11 @@
     },
     {
       "path": "src/components/industrial/DevelopmentPanel.tsx",
-      "sha256": "4dad23d23719cac77ea3e4737743fa4e4e6c84c56eb4407054b86ca6ba33cd2d"
+      "sha256": "28b6fd5a16a1e5dadca68f0298a9a309ebf013e97c27329ffb32877b25e0f4d5"
     },
     {
       "path": "src/components/industrial/IndustrialPanel.tsx",
-      "sha256": "5d7b7c5402027e27f19a2c19ff86baa39314e5b232efad81c7aff117e24976c6"
+      "sha256": "be3361d4affafc84455d1eaba3bd226a75a793ba1c94828cfe51364d5abe07c9"
     },
     {
       "path": "src/components/mixed-zone/CommercialIntensityPanel.tsx",
@@ -96,7 +96,7 @@
     },
     {
       "path": "src/components/mixed-zone/DocumentCasePanel.tsx",
-      "sha256": "f6905f3927f0f21db2b933719bcab3b598ede70936d2b768967d6c2a39cf4eb3"
+      "sha256": "10f546bf8a77ac778054e3f98e9f8aa1eae4d15fd7e91a09448b4918950206c0"
     },
     {
       "path": "src/components/mixed-zone/LandBasisPanel.tsx",
@@ -112,11 +112,11 @@
     },
     {
       "path": "src/components/mixed-zone/MixedZonePanel.tsx",
-      "sha256": "fa8cd3839b14bab57e53cef5ac349b49638d8b5cf1a21c3c8176752d57557e1b"
+      "sha256": "1178edcb5a62619942a4fcf31bd2bed99717c19a13f9c17a8ca25dfecc4031ff"
     },
     {
       "path": "src/components/mixed-zone/ProgramReviewPanel.tsx",
-      "sha256": "094da09b0ac3b6cb2ebe343e5a241d494ba987a1af83640e02e9a21938c7bec4"
+      "sha256": "2ae2b11d297e2026431d8ed3fce8d3d59e524ef34407232dcee3dffc4ee65e50"
     },
     {
       "path": "src/lib/industrial/development.ts",
@@ -128,7 +128,7 @@
     },
     {
       "path": "src/lib/industrial/planGuidance.ts",
-      "sha256": "2d3efeabdcad24c9791e4d874f4895e69ec139bac45ec6cc11b10a948c74face"
+      "sha256": "5a04613719673efc871a17ee6179b6479817695671b42e3af7458fd008ea47b6"
     },
     {
       "path": "src/lib/mixed-zone/commercialIntensity.ts",
@@ -140,11 +140,11 @@
     },
     {
       "path": "src/lib/mixed-zone/landBasis.ts",
-      "sha256": "7afc0d087e8bd6880eeee3be6a39d71115bbab67bdb9774c9ecc33553885e4e7"
+      "sha256": "76538dc8b7f26e84201945d56772580dad800d0716b2b9fd7f5f680323831c7e"
     },
     {
       "path": "src/lib/mixed-zone/model.ts",
-      "sha256": "3315583fdad8fe96dbc7c433796b777d3312e6a33d41acee9a99cf7297658fc6"
+      "sha256": "eefe85df1789165d1c518dc6bb9b76cb6741761e024be39f86d95988191e2507"
     },
     {
       "path": "src/lib/mixed-zone/ntpcCross.ts",
@@ -160,7 +160,7 @@
     },
     {
       "path": "src/lib/planning/autonomousPlanning.ts",
-      "sha256": "dfb3571670985c7b809309dcda01dc96e359c9800146b58ac531692e71c5d123"
+      "sha256": "8bf6729d93137cdd4e7f91d99eeed788e79aceee36744b0e5295a3e3aee88e33"
     },
     {
       "path": "src/lib/planning/basementDemand.ts",
@@ -204,7 +204,7 @@
     },
     {
       "path": "src/lib/planning/regulatoryReview.ts",
-      "sha256": "43673687fd2a5dae889e4d692d08a45d78b6c921b255ed6cfb02f8acd788d130"
+      "sha256": "0e5a2f9e339e4939527a8f5fd25f5253c2e5315104c4fb9a8f5a6088b742fd32"
     },
     {
       "path": "src/lib/planning/roofEnvelope.ts",
