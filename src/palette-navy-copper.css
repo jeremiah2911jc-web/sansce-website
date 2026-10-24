@@ -28,3 +28,6 @@ html,#root,.interior-page,.home-page{background-color:#f6f3ec}
 
 /* Photo preview: retain contrast on the report entry panel. */
 .reports-login .reports-intro{background:#243d4a}
+
+/* The mobile consultation section shares the surrounding page background. */
+@media(max-width:760px){.sx-home-contact{background:transparent}}

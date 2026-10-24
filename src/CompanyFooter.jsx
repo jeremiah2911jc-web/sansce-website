@@ -18,7 +18,6 @@ export default function CompanyFooter(){return <footer id="company-footer" class
   <FooterLinks className="company-footer-resources" title="認識與資源" items={resources}/>
   <section className="company-footer-contact" aria-labelledby="footer-contact-heading"><h3 id="footer-contact-heading">聯絡三策</h3>
    <dl><div><dt>電話／手機</dt><dd className="company-footer-phones"><a className="company-footer-phone" href="tel:0222508202">0222508202</a><span aria-hidden="true">／</span><a className="company-footer-phone" href="tel:0916711323">0916711323</a></dd></div><div><dt>Email</dt><dd><a href="mailto:sanze.consulting@gmail.com">sanze.consulting@gmail.com</a></dd></div><div><dt>LINE</dt><dd><a href="https://lin.ee/w8xSeSz" target="_blank" rel="noopener noreferrer">@160rlvqj</a></dd></div><div className="company-footer-address"><dt>通訊地址</dt><dd>新北市中和區中山路二段 332 巷 13 號 12 樓</dd></div></dl>
-   <a className="company-footer-booking" href="/contact">預約案件諮詢</a>
   </section>
  </div>
  <div className="wrap company-footer-end"><div className="company-footer-belief"><ScriptureStatement kind="service"/></div>
