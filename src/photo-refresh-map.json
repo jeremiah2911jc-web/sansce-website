@@ -2,11 +2,11 @@
   "/about": {
     "/images/editorial/community-meeting.webp|": {
       "id": "P001",
-      "src": "/images/refresh-20261020/p001.jpg",
-      "small": "/images/refresh-20261020/p001-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "顧問與專業同事在辦公室核對基地資料",
+      "src": "/images/audit-fixes-20261023/p001.webp",
+      "small": "/images/audit-fixes-20261023/p001-small.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "顧問與短髮女同事在辦公室核對基地圖面",
       "role": "content",
       "position": "50% 45%"
     },
@@ -74,11 +74,11 @@
     },
     "/images/editorial/community-meeting.webp|": {
       "id": "P008",
-      "src": "/images/refresh-20261020/p008.jpg",
-      "small": "/images/refresh-20261020/p008-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "顧問與住戶討論案件資料與待辦事項",
+      "src": "/images/audit-fixes-20261023/p008.webp",
+      "small": "/images/audit-fixes-20261023/p008-small.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "顧問與戴眼鏡的屋主在圖板旁核對文件",
       "role": "content",
       "position": "50% 45%"
     },
@@ -126,11 +126,11 @@
     },
     "/images/editorial/contract-review.webp|": {
       "id": "P013",
-      "src": "/images/refresh-20261020/p013.jpg",
-      "small": "/images/refresh-20261020/p013-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "顧問與住戶核對基地評估與重建規劃",
+      "src": "/images/audit-fixes-20261023/p013.webp",
+      "small": "/images/audit-fixes-20261023/p013-small.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "顧問與屋主並肩檢視重建文件",
       "role": "content",
       "position": "50% 45%"
     },
@@ -170,23 +170,25 @@
   "/": {
     "/images/editorial/family-floor-plan.webp|": {
       "id": "P017",
-      "src": "/images/refresh-20261020/p017.jpg",
-      "small": "/images/refresh-20261020/p017-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "家人在住家中討論新屋格局與生活需求",
+      "src": "/images/audit-fixes-20261023/p017.webp",
+      "small": "/images/audit-fixes-20261023/p017-small.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "祖母、母親與孩子在家中確認居住空間",
       "role": "content",
-      "position": "67% 45%"
+      "position": "100% 45%",
+      "mobile": "/images/audit-fixes-20261023/p017-mobile.webp"
     },
     "/images/editorial/community-meeting.webp|": {
       "id": "P018",
-      "src": "/images/refresh-20261020/p018.jpg",
-      "small": "/images/refresh-20261020/p018-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "顧問與住戶討論基地與社區重建",
+      "src": "/images/audit-fixes-20261023/p018.webp",
+      "small": "/images/audit-fixes-20261023/p018-small.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "顧問與兩位住戶在圖板前討論基地資料",
       "role": "content",
-      "position": "67% 45%"
+      "position": "100% 45%",
+      "mobile": "/images/audit-fixes-20261023/p018-mobile.webp"
     },
     "/images/editorial/urban-blocks.webp|": {
       "id": "refinement-home-observation",
@@ -395,6 +397,16 @@
       "alt": "送件後整理保存的案件卷宗與基地圖說",
       "role": "dynamic-content",
       "position": "50% 45%"
+    },
+    "/images/audit-fixes-20261023/family-floor-plan.webp|article-card": {
+      "id": "P074",
+      "src": "/images/audit-20261023/p074.webp",
+      "small": "/images/audit-20261023/p074-960.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "家人在住家中討論新屋格局與生活需求",
+      "role": "article-card",
+      "position": "50% 45%"
     }
   },
   "/insights/building-permit-extension": {
@@ -454,11 +466,11 @@
     },
     "/images/insights/public-renewal-neighborhood-1536.webp|": {
       "id": "P029",
-      "src": "/images/refresh-20261020/p029.jpg",
-      "small": "/images/refresh-20261020/p029-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "老公寓街區與周邊住宅環境",
+      "src": "/images/audit-fixes-20261023/p029.webp",
+      "small": "/images/audit-fixes-20261023/p029-small.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "顧問與屋主在公寓入口討論現場情況",
       "role": "article-card",
       "position": "50% 45%"
     },
@@ -484,11 +496,11 @@
     },
     "/images/insights/ground-floor-shop-1536.webp|": {
       "id": "P032",
-      "src": "/images/refresh-20261020/p032.jpg",
-      "small": "/images/refresh-20261020/p032-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "老公寓一樓店面與行人通行空間",
+      "src": "/images/audit-fixes-20261023/p032.webp",
+      "small": "/images/audit-fixes-20261023/p032-small.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "顧問與店家在櫃檯旁核對更新資料",
       "role": "article-card",
       "position": "50% 45%"
     },
@@ -503,21 +515,21 @@
     },
     "/images/editorial/urban-blocks.webp|": {
       "id": "P034",
-      "src": "/images/refresh-20261020/p034.jpg",
-      "small": "/images/refresh-20261020/p034-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "臺灣新舊住宅與街區環境",
+      "src": "/images/audit-fixes-20261023/p034.webp",
+      "small": "/images/audit-fixes-20261023/p034-small.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "顧問與短髮屋主在屋頂檢視周邊環境",
       "role": "article-card",
       "position": "50% 45%"
     },
     "/images/editorial/family-floor-plan.webp|": {
       "id": "P035",
-      "src": "/images/refresh-20261020/p035.jpg",
-      "small": "/images/refresh-20261020/p035-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "家人在住家中討論新屋格局與生活需求",
+      "src": "/images/audit-fixes-20261023/p035.webp",
+      "small": "/images/audit-fixes-20261023/p035-small.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "祖母、父親與女兒在廚房中核對住宅平面圖",
       "role": "article-card",
       "position": "50% 45%"
     },
@@ -543,11 +555,11 @@
     },
     "/images/redesign/document-review.jpg|": {
       "id": "P038",
-      "src": "/images/refresh-20261020/p038.jpg",
-      "small": "/images/refresh-20261020/p038-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "整理完成的基地圖說與案件資料",
+      "src": "/images/audit-fixes-20261023/p038.webp",
+      "small": "/images/audit-fixes-20261023/p038-small.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "顧問與屋主在家中檢視書面資料",
       "role": "article-card",
       "position": "50% 45%"
     },
@@ -578,6 +590,26 @@
       "height": 941,
       "alt": "地主權益與重建問題的工作情境",
       "role": "closing",
+      "position": "50% 45%"
+    },
+    "/images/audit-fixes-20261023/rights-hero.webp|": {
+      "id": "rights-list",
+      "src": "/images/audit-fixes-20261023/rights-list.webp",
+      "small": "/images/audit-fixes-20261023/rights-list-small.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "母女在家中核對家庭預算與計算機",
+      "role": "list",
+      "position": "50% 45%"
+    },
+    "/images/audit-fixes-20261023/family-floor-plan.webp|": {
+      "id": "P035",
+      "src": "/images/audit-fixes-20261023/p035.webp",
+      "small": "/images/audit-fixes-20261023/p035-small.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "祖母、父親與女兒在廚房中核對住宅平面圖",
+      "role": "article-card",
       "position": "50% 45%"
     }
   },
@@ -630,11 +662,11 @@
   "/insights/renewal-distribution": {
     "/images/editorial/family-floor-plan.webp|": {
       "id": "P045",
-      "src": "/images/refresh-20261020/p045.jpg",
-      "small": "/images/refresh-20261020/p045-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "家人在住家中討論新屋格局與生活需求",
+      "src": "/images/audit-fixes-20261023/p045.webp",
+      "small": "/images/audit-fixes-20261023/p045-small.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "父母與孩子在家中討論住宅平面圖",
       "role": "content",
       "position": "50% 45%"
     },
@@ -686,11 +718,11 @@
   "/insights/urban-renewal-far-300": {
     "/images/redesign/site-inspection-v2.jpg|": {
       "id": "P050",
-      "src": "/images/refresh-20261020/p050.jpg",
-      "small": "/images/refresh-20261020/p050-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "顧問與住戶討論基地條件與可建量體",
+      "src": "/images/audit-fixes-20261023/p050.webp",
+      "small": "/images/audit-fixes-20261023/p050-small.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "顧問與屋主在街道旁觀察建物",
       "role": "content",
       "position": "50% 45%"
     },
@@ -732,11 +764,11 @@
   "/insights/urban-renewal-selection-disputes": {
     "/images/insights/selection-discussion-1536.webp|": {
       "id": "P054",
-      "src": "/images/refresh-20261020/p054.jpg",
-      "small": "/images/refresh-20261020/p054-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "顧問與住戶討論選屋條件與住戶意見",
+      "src": "/images/audit-fixes-20261023/p054.webp",
+      "small": "/images/audit-fixes-20261023/p054-small.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "顧問與兩位住戶在桌前討論圖面及文件",
       "role": "content",
       "position": "50% 45%"
     },

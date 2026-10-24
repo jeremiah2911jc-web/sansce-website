@@ -75,8 +75,8 @@ export const rightsShortfallArticle = {
   ],
   "visual": {
     "hero": {
-      "small": "/images/insights/rights-shortfall/hero-small.webp",
-      "large": "/images/insights/rights-shortfall/hero.webp"
+      "small": "/images/audit-fixes-20261023/rights-hero-small.webp",
+      "large": "/images/audit-fixes-20261023/rights-hero.webp"
     },
     "alt": "屋主在家中與顧問討論選屋資料及所需補款",
     "compactTitle": true,
@@ -136,8 +136,8 @@ export const rightsShortfallArticle = {
         "caption": "不同戶型的總價，會影響屋主需要補多少錢。"
       },
       {
-        "src": "/images/insights/rights-shortfall/family.webp",
-        "small": "/images/insights/rights-shortfall/family-small.webp",
+        "src": "/images/audit-fixes-20261023/rights-family.webp",
+        "small": "/images/audit-fixes-20261023/rights-family-small.webp",
         "alt": "父親與女兒在家中核算家庭預算與居住安排",
         "width": 1536,
         "height": 1024,
