@@ -1,9 +1,9 @@
 {
-  "sourceCommit": "8e3463cb401257c3af2e1e4c8d1527a28ab608b6",
+  "sourceCommit": "f17dff888280110bf95dcd8df8020424112494f6",
   "scope": "land identity, laws, routes, layout and efficiency only; no financial UI or case persistence",
   "source": "三策案件版",
   "sourceRoot": "/Users/jeremiah/Documents/Codex/2026-10-24/sanze-release-app",
-  "generatedAt": "2026-10-24T07:33:31.253Z",
+  "generatedAt": "2026-10-24T07:36:51.584Z",
   "method": "esbuild directly bundles original App exports; website has no separate calculation fork; App source is authoritative",
   "sources": [
     {
