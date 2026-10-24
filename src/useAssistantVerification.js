@@ -5,6 +5,7 @@ export function useAssistantVerification(open){
  const [ready,setReady]=useState(false),[error,setError]=useState(''),[attempt,setAttempt]=useState(0);
  useEffect(()=>{
   if(!open)return;
+  token.current='';setReady(false);setError('');
   let disposed=false;const timer=setTimeout(()=>{if(!disposed&&!token.current)failed();},25000);
   const failed=()=>{if(!disposed){token.current='';setReady(false);setError('安全驗證暫時無法完成，請重試。');}};
   const render=()=>{
