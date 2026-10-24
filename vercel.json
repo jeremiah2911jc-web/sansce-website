@@ -37,6 +37,10 @@
       "dest": "/api/contact?route=site-traffic"
     },
     {
+      "src": "/api/assistant-pricing-status",
+      "dest": "/api/contact?route=assistant-pricing-status"
+    },
+    {
       "src": "/api/website-assistant",
       "dest": "/api/contact?route=website-assistant"
     },
