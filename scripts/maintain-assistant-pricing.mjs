@@ -19,6 +19,10 @@ export function matchesDeployment(actual,expected,now=Date.now()){
 }
 async function review(){
  const before=current();
+ mkdirSync(output,{recursive:true});
+ const initial={checkedAt:new Date().toISOString(),phase:'checking_official_sources',validUntil:before.validUntil,daysRemaining:Math.floor((Date.parse(before.validUntil)-Date.now())/86400000)};
+ writeFileSync(new URL('review.json',output),JSON.stringify(initial,null,2)+'\n');
+ console.info(JSON.stringify(initial));
  const result=reviewSnapshot(before,await fetchOfficialDocs(),{force:process.env.FORCE_REVIEW==='true'});
  if(result.changed)writeFileSync(snapshotPath,JSON.stringify(result.pricing,null,2)+'\n');
  const deployed=await status();
