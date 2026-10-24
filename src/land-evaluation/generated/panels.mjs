@@ -2357,7 +2357,7 @@ function TdrApplicationPanel({
   });
   return /* @__PURE__ */ jsxs("section", { className: "area-review-panel", "aria-label": "\u5BB9\u79FB\u5730\u5340\u8207\u53D6\u5F97\u65B9\u5F0F", children: [
     /* @__PURE__ */ jsx("h4", { children: "\u5BB9\u79FB\u5730\u5340\u8207\u53D6\u5F97\u65B9\u5F0F" }),
-    /* @__PURE__ */ jsx("p", { children: "\u4F9D\u6848\u4EF6\u6240\u5728\u5730\u5E36\u5165\uFF1B\u65B0\u5317\u8207\u81FA\u5317\u5404\u81EA\u4FDD\u7559\u65B9\u5F0F\u8207\u6578\u64DA\uFF0C\u5207\u63DB\u4E0D\u6DF7\u7528\u3002\u6B64\u8655\u662F\u4E00\u822C\u90FD\u5E02\u8A08\u756B\u5BB9\u79FB\uFF1B\u7368\u7ACB\u6587\u8CC7\u5BB9\u79FB\u3001\u7279\u5225\u90FD\u5E02\u8A08\u756B\u53CA\u820A\u6848\u904E\u6E21\u898F\u5B9A\u9808\u53E6\u6838\u3002" }),
+    /* @__PURE__ */ jsx("p", { children: "\u4E00\u822C\u90FD\u5E02\u8A08\u756B\u5BB9\u79FB\u9069\u7528\u672C\u9805\u6AA2\u6838\uFF1B\u7368\u7ACB\u6587\u8CC7\u5BB9\u79FB\u3001\u7279\u5225\u90FD\u5E02\u8A08\u756B\u53CA\u820A\u6848\u904E\u6E21\u898F\u5B9A\u9808\u53E6\u6838\u3002" }),
     /* @__PURE__ */ jsxs("div", { className: "planning-field-grid", children: [
       /* @__PURE__ */ jsxs("label", { children: [
         /* @__PURE__ */ jsx(FieldLabel, { children: "\u5BB9\u79FB\u6CD5\u898F\u5730\u5340" }),
@@ -2439,7 +2439,7 @@ function TdrApplicationPanel({
         t.roadWidth || "\u672A\u586B",
         "m\uFF1B\u540C\u8DEF\u6BB5\u57FA\u5730\u9762\u5BEC\uFF1A",
         t.roadFrontage || "\u672A\u586B",
-        "m\u3002\u8DEF\u5BEC\u61C9\u65BC\u57FA\u5730\u8207\u689D\u4EF6\u8F38\u5165\u78BA\u8A8D\uFF1B\u6B64\u8655\u8B80\u53D6\u540C\u4E00\u4F86\u6E90\u3002"
+        "m\u3002\u8DEF\u5BEC\u8ACB\u65BC\u57FA\u5730\u8207\u689D\u4EF6\u586B\u5BEB\u3002"
       ] }),
       /* @__PURE__ */ jsxs("details", { children: [
         /* @__PURE__ */ jsx("summary", { children: "\u63A5\u53D7\u57FA\u5730\u53CA\u7533\u8ACB\u8CC7\u683C" }),
@@ -2651,7 +2651,7 @@ function reviewPermittedAward(a, route, base, referenceDate = (/* @__PURE__ */ n
 
 // ../sanze-release-app/src/lib/planning/bonusAssessment.ts
 var BONUS_VERSION = "bonus-assessment.2026-10-19.v1";
-var newBonusAssessment = (danger2 = false, date = (/* @__PURE__ */ new Date()).toLocaleDateString("sv-SE", { timeZone: "Asia/Taipei" })) => ({ version: BONUS_VERSION, route: danger2 ? "danger" : "renewal", renewalMode: "quick", tdrMode: "quick", dangerMode: "quick", date, entries: {}, renewalQualification: "unknown", tdrQualification: "unknown", dangerQualification: "unknown", source: "", deduction: "0", tdrProfile: "general", dangerOriginal: "", dangerEligibleSite: "", dangerAdjacentSite: "" });
+var newBonusAssessment = (danger2 = false, date = "") => ({ version: BONUS_VERSION, route: danger2 ? "danger" : "renewal", renewalMode: "quick", tdrMode: "quick", dangerMode: "quick", date, entries: {}, renewalQualification: "unknown", tdrQualification: "unknown", dangerQualification: "unknown", source: "", deduction: "0", tdrProfile: "general", dangerOriginal: "", dangerEligibleSite: "", dangerAdjacentSite: "" });
 var central = "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0070027";
 var local = "https://web.law.ntpc.gov.tw/Scripts/FLAWDAT0202.aspx?fcode=C0150143";
 var tdr = "https://web.law.ntpc.gov.tw/Download.ashx?pfid=0000327775";
@@ -2716,7 +2716,7 @@ var bonusItems = [
 function isBonusAssessment(x) {
   if (!x || typeof x !== "object") return false;
   const a = x;
-  return (a.awardBasis === void 0 || ["target", "permitted"].includes(a.awardBasis)) && (a.permittedAward === void 0 || isPermittedAward(a.permittedAward)) && (a.tdrApplication === void 0 || isTdrApplication(a.tdrApplication)) && (a.tdrApplications === void 0 || a.tdrApplications && typeof a.tdrApplications === "object" && !Array.isArray(a.tdrApplications) && Object.entries(a.tdrApplications).every(([k, v]) => ["ntpc", "taipei", "other"].includes(k) && isTdrApplication(v) && v.city === k)) && (a.distinctSpaces === void 0 || typeof a.distinctSpaces === "boolean") && a.version === BONUS_VERSION && ["renewal", "danger", "none"].includes(a.route) && ["renewalMode", "tdrMode", "dangerMode"].every((k) => ["quick", "detail"].includes(a[k])) && ["date", "source", "deduction", "dangerOriginal", "dangerEligibleSite", "dangerAdjacentSite"].every((k) => typeof a[k] === "string") && /^\d{4}-\d{2}-\d{2}$/.test(a.date) && ["general", "forty", "hillside", "narrow", "special50"].includes(a.tdrProfile) && ["renewalQualification", "tdrQualification", "dangerQualification"].every((k) => ["unknown", "yes", "no"].includes(a[k])) && !!a.entries && typeof a.entries === "object" && !Array.isArray(a.entries) && Object.entries(a.entries).every(([id2, e]) => bonusItems.some((d) => d.id === id2) && e && typeof e.choice === "string" && (e.choice === "" || bonusItems.find((d) => d.id === id2).options.some((o) => o[0] === e.choice)) && ["amount", "amount2", "amount3", "share", "source"].every((k) => e[k] === void 0 || typeof e[k] === "string") && (e.status === void 0 || ["assumed", "verified", "excluded"].includes(e.status)));
+  return (a.awardBasis === void 0 || ["target", "permitted"].includes(a.awardBasis)) && (a.permittedAward === void 0 || isPermittedAward(a.permittedAward)) && (a.tdrApplication === void 0 || isTdrApplication(a.tdrApplication)) && (a.tdrApplications === void 0 || a.tdrApplications && typeof a.tdrApplications === "object" && !Array.isArray(a.tdrApplications) && Object.entries(a.tdrApplications).every(([k, v]) => ["ntpc", "taipei", "other"].includes(k) && isTdrApplication(v) && v.city === k)) && (a.distinctSpaces === void 0 || typeof a.distinctSpaces === "boolean") && a.version === BONUS_VERSION && ["renewal", "danger", "none"].includes(a.route) && ["renewalMode", "tdrMode", "dangerMode"].every((k) => ["quick", "detail"].includes(a[k])) && ["date", "source", "deduction", "dangerOriginal", "dangerEligibleSite", "dangerAdjacentSite"].every((k) => typeof a[k] === "string") && (a.date === "" || /^\d{4}-\d{2}-\d{2}$/.test(a.date)) && ["general", "forty", "hillside", "narrow", "special50"].includes(a.tdrProfile) && ["renewalQualification", "tdrQualification", "dangerQualification"].every((k) => ["unknown", "yes", "no"].includes(a[k])) && !!a.entries && typeof a.entries === "object" && !Array.isArray(a.entries) && Object.entries(a.entries).every(([id2, e]) => bonusItems.some((d) => d.id === id2) && e && typeof e.choice === "string" && (e.choice === "" || bonusItems.find((d) => d.id === id2).options.some((o) => o[0] === e.choice)) && ["amount", "amount2", "amount3", "share", "source"].every((k) => e[k] === void 0 || typeof e[k] === "string") && (e.status === void 0 || ["assumed", "verified", "excluded"].includes(e.status)));
 }
 function assessBonuses(a, c, cash, updateArea) {
   const errors = [], notes = [], base = c.site * c.far / 100;
@@ -2726,6 +2726,7 @@ function assessBonuses(a, c, cash, updateArea) {
   const renewalActive = a.route === "renewal" && a.renewalMode === "detail" && a.renewalQualification !== "no", dangerActive = a.route === "danger" && a.dangerMode === "detail" && a.dangerQualification !== "no", tdrActive = a.tdrMode === "detail" && a.tdrQualification !== "no" && !(city === "ntpc" && a.tdrProfile === "special50");
   let validate = dangerActive;
   const selected = (id2) => !!a.entries[id2]?.choice && a.entries[id2]?.status !== "excluded";
+  if (!a.date && (a.route === "danger" || renewalActive && bonusItems.some((d) => d.formula === "time" && selected(d.id)))) errors.push("\u8ACB\u586B\u5BEB\u9810\u8A08\u5831\u6838\uFF0F\u7533\u8ACB\u65E5\u671F\u3002");
   const num = (x, label, fallback = 0) => {
     if (!x?.trim()) return fallback;
     const n = Number(x);
@@ -3171,7 +3172,7 @@ function BonusAssessmentPanel({
       /* @__PURE__ */ jsx2(PublicNumber2, { "aria-label": label, type: "number", min: "0", step: "any", disabled: m !== "quick" || !active || permitted && key !== "tdr", value: input[key], onChange: (e) => change({}, {
         [key]: e.target.value
       }) }),
-      /* @__PURE__ */ jsx2("small", { children: permitted && key !== "tdr" ? "\u4F9D\u6838\u51C6\u6587\u4EF6\u9762\u7A4D\u63A1\u8A08\uFF0C\u5FEB\u901F\u503C\u4FDD\u7559" : !active ? "\u6B64\u8DEF\u5F91\u672A\u63A1\u7528\uFF0C\u672C\u6B21\u4E0D\u52A0\u7E3D" : m === "detail" ? "\u76EE\u524D\u7531\u7D30\u9805\u52A0\u7E3D\uFF1B\u5FEB\u901F\u503C\u4FDD\u7559" : "\u898F\u5283\u76EE\u6A19\uFF08\u8CC7\u683C\u5F85\u67E5\u8B49\uFF09" })
+      /* @__PURE__ */ jsx2("small", { children: permitted && key !== "tdr" ? "\u4F9D\u6838\u51C6\u6587\u4EF6\u9762\u7A4D\u63A1\u8A08" : !active ? "\u672A\u63A1\u7528" : m === "detail" ? "\u4F9D\u7D30\u9805\u8A55\u5B9A" : "\u898F\u5283\u76EE\u6A19\uFF08\u8CC7\u683C\u5F85\u67E5\u8B49\uFF09" })
     ] }, key)) }),
     summaryIncomplete ? /* @__PURE__ */ jsx2("p", { role: "status", children: "\u8ACB\u88DC\u9F4A\u734E\u52F5\u8207\u5BB9\u79FB\u8CC7\u6599\u3002" }) : /* @__PURE__ */ jsxs2("p", { children: [
       /* @__PURE__ */ jsxs2("strong", { children: [
@@ -8266,7 +8267,7 @@ function MixedZonePanel({ value: m, onChange, onReport }) {
       })
     ] }),
     /* @__PURE__ */ jsxs14("div", { className: "mz-actions", children: [
-      /* @__PURE__ */ jsx14("span", { children: stale ? "\u689D\u4EF6\u5DF2\u8B8A\u66F4\uFF0C\u820A\u7D50\u679C\u5DF2\u6536\u8D77\u3002" : "\u672A\u586B\u8CC7\u6599\u4FDD\u7559\u672A\u77E5\uFF0C\u4E0D\u63A1\u5E73\u5747\u5BB9\u7A4D\u7387\u6216\u4F4F\u5B85\u9810\u8A2D\u503C\u3002" }),
+      /* @__PURE__ */ jsx14("span", { children: stale ? "\u8ACB\u91CD\u65B0\u8A08\u7B97\u3002" : "" }),
       /* @__PURE__ */ jsx14("button", { type: "button", className: "mz-primary", onClick: calculate, children: stale ? "\u91CD\u65B0\u8A08\u7B97\u5206\u5340\u8A55\u4F30" : "\u8A08\u7B97\u5206\u5340\u8A55\u4F30" }),
       result && onReport && /* @__PURE__ */ jsx14("button", { type: "button", onClick: () => onReport(m, result), children: "\u6AA2\u8996\u5206\u5340\u8A55\u4F30\u6458\u8981" })
     ] }),
