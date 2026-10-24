@@ -8,7 +8,7 @@ import {newReadjustmentPlan,evaluateReadjustment,documentItems} from '../src/lan
 import {landJudgement,readjustmentJudgement} from '../src/land-evaluation/judgement.mjs';
 import {readjustmentFindingTarget,landFindingTarget} from '../src/land-evaluation/field-location.mjs';
 import {officialQueries,nationalQueries,planDirectory} from '../src/land-evaluation/official-sources.mjs';
-import {encodeValue,decodeValue,persistDraft,DRAFT_KEY} from '../src/land-evaluation/local-draft.mjs';
+import {encodeValue,decodeValue,persistDraft,archiveDraft,DRAFT_KEY} from '../src/land-evaluation/local-draft.mjs';
 let count=0;const test=(name,fn)=>{try{fn();count++;}catch(e){console.error(name);throw e;}};
 const land={...newLandAssessment('synthetic-case'),legalInputs:newLegalInputs(),routePlans:[],entry:'nonurban',intendedUse:'housing',buildingForm:'single',parcels:[{...newLandFact('nonurban'),city:'新北市',district:'合成測試區',section:'合成測試段',landNumber:'測試A',areaSqm:'300',zone:'一般農業區',designation:'農牧用地'}, {...newLandFact('unknown'),city:'臺北市',landNumber:'測試B'}]};
 land.routePlans.push(newRoutePlan(land,land.parcels[0].id,'conversion-yi'));
@@ -42,5 +42,11 @@ for(const item of items){const p=item.input,r=evaluateReadjustment(p,land),j=rea
 test('readjustment missing registration goes to original land field',()=>assert.deepEqual(readjustmentFindingTarget({id:land.parcels[0].id+'-area'},items[0].input,land,[]),{module:'land',parcelId:land.parcels[0].id,label:'登記面積（㎡）'}));
 test('missing authority points to authority when plan name exists',()=>assert.equal(readjustmentFindingTarget({id:'plan-name'},{...items[0].input,planName:'合成計畫'},land,[]).label,'辦理單位／主管機關'));
 test('official links never embed any input or unsupported city in URL',()=>{for(const city of ['','新北市','臺北市','花蓮縣','?parcel=private']){const rows=officialQueries(city);assert.equal(rows.length,4);for(const q of rows){const url=new URL(q.url);assert.equal(url.protocol,'https:');assert.equal(url.search,'');assert(!q.url.includes('private'));}}assert.equal(officialQueries('花蓮縣').at(-1).url,planDirectory.url);});
+test('new assessment preserves old draft and rejects conflict or failed backup',()=>{
+ const m=new Map([[DRAFT_KEY,'original']]);const storage={getItem:k=>m.get(k)??null,setItem:(k,v)=>m.set(k,v),removeItem:k=>m.delete(k)};
+ archiveDraft(storage,'original','one');assert.equal(storage.getItem(DRAFT_KEY),null);assert.equal(storage.getItem(DRAFT_KEY+':archive:one'),'original');
+ storage.setItem(DRAFT_KEY,'changed');assert.throws(()=>archiveDraft(storage,'stale','two'));assert.equal(storage.getItem(DRAFT_KEY),'changed');
+ assert.throws(()=>archiveDraft({...storage,setItem(){throw Error('full');}},'changed','three'));assert.equal(storage.getItem(DRAFT_KEY),'changed');
+});
 console.log(`PASS ${count} phase4 checks: full case roundtrip, six tracks, malformed files, rule template ownership, unknowns, destinations and input-free official links.`);
 if(process.argv.includes('--fixtures')){writeFileSync('/tmp/sanze-phase4-full.sanze.json',raw);writeFileSync('/tmp/sanze-phase4-bad.json',mutate(d=>d['collective.input'].roadConditions=null));}

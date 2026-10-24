@@ -3097,7 +3097,7 @@ function BonusAssessmentPanel({
   ] });
   return /* @__PURE__ */ jsxs2("section", { className: "area-review-panel", "aria-label": "\u734E\u52F5\u8207\u5BB9\u79FB\u8A55\u5B9A", children: [
     /* @__PURE__ */ jsx2("h3", { children: "\u734E\u52F5\u8207\u5BB9\u79FB\uFF1A\u5FEB\u901F\u4F30\u7B97\uFF0F\u7D30\u9805\u8A55\u5B9A" }),
-    /* @__PURE__ */ jsx2("p", { children: "\u5FEB\u901F\u767E\u5206\u6BD4\u8207\u7D30\u9805\u9078\u64C7\u5404\u81EA\u4FDD\u7559\uFF1B\u6BCF\u4E00\u985E\u53EA\u63A1\u6240\u9078\u65B9\u5F0F\uFF0C\u4E0D\u5C07\u5169\u7A2E\u7D50\u679C\u76F8\u52A0\u3002\u9078\u689D\u4EF6\u5373\u4EE5\u8A72\u689D\u4EF6\u70BA\u898F\u5283\u76EE\u6A19\uFF0C\u5C1A\u7F3A\u6587\u4EF6\u4ECD\u53EF\u7B97\uFF1B\u5DF2\u77E5\u4E0D\u7B26\u5408\u7684\u689D\u4EF6\u4E0D\u53D6\u5206\u3002" }),
+    /* @__PURE__ */ jsx2("p", { children: "\u586B\u5165\u76EE\u6A19\u6BD4\u4F8B\uFF0C\u6216\u4F9D\u734E\u52F5\u689D\u4EF6\u9010\u9805\u8A55\u5B9A\u3002" }),
     /* @__PURE__ */ jsxs2("div", { className: "planning-field-grid", children: [
       /* @__PURE__ */ jsxs2("label", { children: [
         /* @__PURE__ */ jsx2(FieldLabel2, { children: "\u91CD\u5EFA\u734E\u52F5\u8DEF\u5F91" }),
@@ -7098,8 +7098,8 @@ function SiteRoadConditionsPanel({
     status: p.status ?? (r.status === "confirmed" ? "assumed" : r.status)
   });
   return /* @__PURE__ */ jsxs9("section", { className: "workflow-panel site-road-panel", "aria-label": "\u57FA\u5730\u9053\u8DEF\u689D\u4EF6", children: [
-    /* @__PURE__ */ jsx9("h3", { children: "\u57FA\u5730\u9053\u8DEF\u689D\u4EF6\uFF08\u5FC5\u9808\u8F38\u5165\u4E26\u78BA\u8A8D\uFF09" }),
-    /* @__PURE__ */ jsx9("p", { children: "\u8A08\u756B\u8DEF\u5BEC\u3001\u5BE6\u969B\u958B\u95E2\u5BEC\u5EA6\u8207\u57FA\u5730\u9762\u5BEC\u5206\u5225\u586B\u5BEB\u3002\u5DF2\u78BA\u8A8D\u4E0D\u7B26\u7533\u8ACB\u9580\u6ABB\u6642\uFF0C\u6703\u63D0\u793A\u8ABF\u6574\u689D\u4EF6\uFF1B\u672A\u78BA\u8A8D\u53EF\u6309\u660E\u793A\u5047\u8A2D\u521D\u4F30\u3002\u591A\u9762\u81E8\u8DEF\u8ACB\u6307\u5B9A\u672C\u6B21\u6AA2\u8A0E\u9053\u8DEF\uFF0C\u4E0D\u628A\u4E0D\u540C\u9053\u8DEF\u7684\u8DEF\u5BEC\u8207\u9762\u5BEC\u6DF7\u7528\u3002" }),
+    /* @__PURE__ */ jsx9("h3", { children: "\u57FA\u5730\u9053\u8DEF\u689D\u4EF6" }),
+    /* @__PURE__ */ jsx9("p", { children: "\u8ACB\u4EE5\u540C\u4E00\u8DEF\u6BB5\u586B\u5BEB\u8A08\u756B\u8DEF\u5BEC\u3001\u5BE6\u969B\u958B\u95E2\u5BEC\u5EA6\u53CA\u57FA\u5730\u9762\u5BEC\u3002" }),
     /* @__PURE__ */ jsxs9("fieldset", { disabled: readOnly, children: [
       /* @__PURE__ */ jsxs9("div", { className: "site-road-fields", children: [
         /* @__PURE__ */ jsxs9("label", { children: [
@@ -7132,8 +7132,8 @@ function SiteRoadConditionsPanel({
             status: e.target.value
           }), children: [
             /* @__PURE__ */ jsx9("option", { value: "unknown", children: "\u5F85\u8F38\u5165\u78BA\u8A8D" }),
-            /* @__PURE__ */ jsx9("option", { value: "assumed", children: "\u660E\u793A\u66AB\u63A1\u503C\uFF0C\u7E7C\u7E8C\u521D\u4F30" }),
-            /* @__PURE__ */ jsx9("option", { value: "confirmed", children: "\u5DF2\u67E5\u8B49\u78BA\u8A8D\uFF0C\u4F9D\u9580\u6ABB\u963B\u64CB" })
+            /* @__PURE__ */ jsx9("option", { value: "assumed", children: "\u898F\u5283\u66AB\u63A1\u503C" }),
+            /* @__PURE__ */ jsx9("option", { value: "confirmed", children: "\u5DF2\u67E5\u8B49\u78BA\u8A8D" })
           ] })
         ] }),
         /* @__PURE__ */ jsxs9("label", { children: [
@@ -7152,7 +7152,7 @@ function SiteRoadConditionsPanel({
         }) })
       ] })
     ] }),
-    readOnly && /* @__PURE__ */ jsx9("p", { children: "\u9023\u52D5\u672C\u6848\u300C\u57FA\u5730\u8207\u689D\u4EF6\u300D\uFF0C\u8ACB\u56DE\u8A72\u9801\u4FEE\u6539\uFF1B\u8B8A\u66F4\u5F8C\u9808\u91CD\u65B0\u78BA\u8A8D\u3002" }),
+    readOnly && /* @__PURE__ */ jsx9("p", { children: "\u8ACB\u81F3\u300C\u57FA\u5730\u8207\u689D\u4EF6\u300D\u4FEE\u6539\u9053\u8DEF\u8CC7\u6599\u3002" }),
     check.errors.map((x) => /* @__PURE__ */ jsx9("p", { role: "alert", children: x }, x)),
     check.notes.map((x) => /* @__PURE__ */ jsx9("p", { children: x }, x))
   ] });

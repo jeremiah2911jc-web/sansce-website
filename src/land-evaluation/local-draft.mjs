@@ -62,3 +62,10 @@ export function persistDraft(storage,previousRaw,data,hasContent,rules,revision)
  if(!hasContent){storage.removeItem(DRAFT_KEY);return {raw:null,savedAt:''};}
  const raw=serializeDraft(data,rules,revision);storage.setItem(DRAFT_KEY,raw);return {raw,savedAt:JSON.parse(raw).savedAt};
 }
+
+// Preserve the previous input before creating an empty assessment.
+export function archiveDraft(storage,previousRaw,id){
+ if(storage.getItem(DRAFT_KEY)!==previousRaw)throw Error('另一分頁已更新評估。');
+ if(previousRaw!==null)storage.setItem(DRAFT_KEY+':archive:'+id,previousRaw);
+ storage.removeItem(DRAFT_KEY);
+}

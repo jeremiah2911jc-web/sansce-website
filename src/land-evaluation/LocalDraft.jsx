@@ -1,7 +1,7 @@
 import {CaseFileControls} from './CaseFileControls.jsx';
 import {validateCaseData} from './case-file.mjs';
 import {Component,createContext,useCallback,useContext,useEffect,useRef,useState} from 'react';
-import {DRAFT_KEY,parseDraft,persistDraft,comparable,contentKey} from './local-draft.mjs';
+import {DRAFT_KEY,archiveDraft,parseDraft,persistDraft,comparable,contentKey} from './local-draft.mjs';
 import manifest from './generated/source-manifest.json';
 import readjustmentManifest from './generated/readjustment-manifest.json';
 const RULES=JSON.stringify([manifest.sources.map(x=>x.sha256),readjustmentManifest.sources.map(x=>x.sha256)]);
@@ -13,8 +13,10 @@ class DraftBoundary extends Component{
 }
 export function LocalDraftProvider({children}){
  const [initial]=useState(()=>{try{const text=localStorage.getItem(DRAFT_KEY);return text?{saved:parseDraft(text),raw:text}:{saved:null,raw:null};}catch{return {saved:null,raw:null,error:'無法讀取本機暫存；資料可能損壞或瀏覽器未開放儲存。'};}});
+ const [archives]=useState(()=>{try{return Object.keys(localStorage).filter(k=>k.startsWith(DRAFT_KEY+':archive:')).map(key=>{try{return {key,...parseDraft(localStorage.getItem(key))};}catch{return null;}}).filter(Boolean).sort((a,b)=>b.savedAt.localeCompare(a.savedAt));}catch{return [];}});
+ const [started,setStarted]=useState(!initial.saved&&!archives.length);
  const [needsRecovery,setNeedsRecovery]=useState(Boolean(initial.error)),[status,setStatus]=useState(initial.error?'error':initial.saved?'restored':'idle'),[error,setError]=useState(initial.error||''),[savedAt,setSavedAt]=useState(initial.saved?.savedAt||''),[generation,setGeneration]=useState(0),[restored,setRestored]=useState(Boolean(initial.saved)),[versionChanged,setVersionChanged]=useState(Boolean(initial.saved&&initial.saved.rules!==RULES));
- const data=useRef(initial.saved?.data||{}),changed=useRef(new Set()),touched=useRef(new Set()),timer=useRef(null),paused=useRef(Boolean(initial.error)),lastRaw=useRef(initial.raw),dirty=useRef(false),conflict=useRef(false);
+ const data=useRef({}),changed=useRef(new Set()),touched=useRef(new Set()),timer=useRef(null),paused=useRef(Boolean(initial.error)),lastRaw=useRef(initial.raw),dirty=useRef(false),conflict=useRef(false);
  const flush=useCallback(()=>{
   clearTimeout(timer.current);if(paused.current||!dirty.current)return;
   try{const saved=persistDraft(localStorage,lastRaw.current,data.current,[...changed.current].some(contentKey),RULES,crypto.randomUUID());lastRaw.current=saved.raw;dirty.current=false;setSavedAt(saved.savedAt);setStatus(saved.raw?'saved':'idle');setError('');
@@ -30,12 +32,13 @@ export function LocalDraftProvider({children}){
   clearTimeout(timer.current);data.current=next;changed.current.clear();touched.current.clear();dirty.current=false;paused.current=false;conflict.current=false;lastRaw.current=saved.raw;
   setNeedsRecovery(false);setSavedAt(saved.savedAt);setError('');setStatus('imported');setRestored(true);setVersionChanged(file.rules!==RULES);setGeneration(x=>x+1);document.body.classList.remove('le-focus-result');
  }
- function fresh(){clearTimeout(timer.current);try{localStorage.removeItem(DRAFT_KEY);}catch{setError('無法刪除本機暫存；尚未建立新評估。');return;}data.current={};changed.current.clear();touched.current.clear();dirty.current=false;paused.current=false;lastRaw.current=null;setNeedsRecovery(false);setSavedAt('');setError('');setStatus('idle');setRestored(false);setGeneration(x=>x+1);}
+ function fresh(){clearTimeout(timer.current);try{archiveDraft(localStorage,lastRaw.current,crypto.randomUUID());}catch{setError('舊評估尚未保存，無法建立新評估。請重新開啟頁面再試。');return;}data.current={};changed.current.clear();touched.current.clear();dirty.current=false;paused.current=false;lastRaw.current=null;setNeedsRecovery(false);setSavedAt('');setError('');setStatus('idle');setRestored(false);setStarted(true);setGeneration(x=>x+1);}
  function removeSaved(){clearTimeout(timer.current);try{localStorage.removeItem(DRAFT_KEY);lastRaw.current=null;dirty.current=false;setSavedAt('');setStatus('idle');setError('');}catch{setStatus('error');setError('無法刪除本機暫存，原資料仍保留。');}}
  function keepThis(){try{lastRaw.current=localStorage.getItem(DRAFT_KEY);paused.current=false;conflict.current=false;dirty.current=true;flush();}catch{setError('無法存取本機暫存。');}}
  useEffect(()=>{const hide=()=>{if(document.visibilityState==='hidden')flush();};const storage=e=>{if(e.key!==DRAFT_KEY||e.newValue===lastRaw.current)return;paused.current=true;conflict.current=true;setStatus('conflict');setError('另一個分頁已更新暫存。本頁輸入保留，請選擇要繼續哪一份。');};window.addEventListener('pagehide',flush);document.addEventListener('visibilitychange',hide);window.addEventListener('storage',storage);return()=>{flush();window.removeEventListener('pagehide',flush);document.removeEventListener('visibilitychange',hide);window.removeEventListener('storage',storage);};},[flush]);
+ function openSaved(raw){try{const saved=parseDraft(raw);if(raw!==lastRaw.current){archiveDraft(localStorage,lastRaw.current,crypto.randomUUID());lastRaw.current=null;}data.current=saved.data;setRestored(true);setStarted(true);setError('');}catch{setError('無法開啟此評估。');}}
  const context={rules:RULES,importCase,data,register,touch,clearScope,needsRecovery,status,error,savedAt,restored,versionChanged,fresh,removeSaved,flush,keepThis,reload:()=>location.reload()};
- return <DraftContext.Provider value={context}><DraftBoundary key={generation} pause={()=>{paused.current=true;}} restart={fresh}>{children}</DraftBoundary></DraftContext.Provider>;
+ return <DraftContext.Provider value={context}><DraftBoundary key={generation} pause={()=>{paused.current=true;}} restart={fresh}>{!started?<main id="main" className="draft-controls draft-start" aria-label="選擇評估"><h1>土地開發評估</h1><button type="button" onClick={fresh}>新增評估</button>{initial.saved&&<button type="button" onClick={()=>openSaved(initial.raw)}>開啟上次評估</button>}{archives.length>0&&<details><summary>其他已保存評估</summary>{archives.map(a=><button key={a.key} type="button" onClick={()=>openSaved(localStorage.getItem(a.key))}>{a.data['collective.name']||'評估'} · {new Date(a.savedAt).toLocaleString('zh-TW')}</button>)}</details>}{error&&<p role="alert">{error}</p>}</main>:children}</DraftBoundary></DraftContext.Provider>;
 }
 export const useDraft=()=>useContext(DraftContext);
 export function useDraftState(key,initial){

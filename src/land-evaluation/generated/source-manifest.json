@@ -1,9 +1,9 @@
 {
-  "sourceCommit": "3d905f8409f5a80f4ac9c9e15efddc843214cf03",
+  "sourceCommit": "c4f821536422209304602a343908960b6fd69d8d",
   "scope": "land identity, laws, routes, layout and efficiency only; no financial UI or case persistence",
   "source": "三策案件版",
   "sourceRoot": "/Users/jeremiah/Documents/Codex/2026-10-24/sanze-release-app",
-  "generatedAt": "2026-10-24T07:04:31.419Z",
+  "generatedAt": "2026-10-24T07:06:13.273Z",
   "method": "esbuild directly bundles original App exports; website has no separate calculation fork; App source is authoritative",
   "sources": [
     {
@@ -60,7 +60,7 @@
     },
     {
       "path": "src/components/efficiency/BonusAssessmentPanel.tsx",
-      "sha256": "b0a8d2e834a43641af5b611f82f815bec6857ea2118f4c5cf0d0a1d25edafdc4"
+      "sha256": "b81007d5bda187d47c3fc33da299af484d994e6e3a5d621044f3d8113ea313e8"
     },
     {
       "path": "src/components/efficiency/CommonAllocationPolicyPanel.tsx",
@@ -76,7 +76,7 @@
     },
     {
       "path": "src/components/efficiency/SiteRoadConditionsPanel.tsx",
-      "sha256": "cd3b131d13ffb8195e2e61e91b2f5e9f5781b66f7cf8458b985495d7e419eeb0"
+      "sha256": "17a0b722aa424cd1d3011322a0a9315d0066f81a55de7f947039cff51fad2415"
     },
     {
       "path": "src/components/efficiency/TdrApplicationPanel.tsx",
