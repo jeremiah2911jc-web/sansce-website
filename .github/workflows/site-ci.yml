@@ -27,6 +27,7 @@ jobs:
       - run: npm run verify:contact
       - run: npm run verify:assistant-guard
       - run: npm run verify:assistant-sql
+      - run: node --test tests/website-ai-price-maintenance.test.mjs
       - run: node scripts/verify-website-recording.mjs
       - run: node scripts/verify-assistant-knowledge.mjs
       - run: node scripts/verify-landowner-guidance.mjs

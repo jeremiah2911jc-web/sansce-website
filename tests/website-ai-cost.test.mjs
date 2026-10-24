@@ -59,14 +59,14 @@ test('cache writes use their total lifetime rates once and malformed breakdown f
 });
 
 test('reviewed production snapshot bounds both model passes, long context and cache writes',()=>{
- const p=JSON.parse(readFileSync(new URL('../docs/website-assistant/pricing-20261024.json',import.meta.url)));
+ const p=JSON.parse(readFileSync(new URL('./fixtures/website-ai-pricing.json',import.meta.url)));
  assert.equal(reservationCost(p),1063000);
  const data={id:'resp_long',model:p.model,service_tier:'default',usage:{input_tokens:300000,input_tokens_details:{cached_tokens:100000,cache_write_tokens:100000,cache_write_tokens_details:{ttl_30m_tokens:100000,ttl_12h_tokens:0}},output_tokens:2000},output:[{type:'web_search_call',action:{type:'search'}}]};
  assert.equal(responseCost(data,p).amount,58500);
 });
 
 test('production legacy cache-write aggregate uses the pinned 30m lifetime',()=>{
- const p=JSON.parse(readFileSync(new URL('../docs/website-assistant/pricing-20261024.json',import.meta.url)));
+ const p=JSON.parse(readFileSync(new URL('./fixtures/website-ai-pricing.json',import.meta.url)));
  const data={id:'resp_legacy',model:p.model,service_tier:'default',usage:{input_tokens:12656,input_tokens_details:{cache_write_tokens:12653,cached_tokens:0},output_tokens:84},output:[]};
  assert.equal(responseCost(data,p).amount,1624);
  assert.equal(responseCost(data,p).usage.cache_write_30m_tokens,12653);

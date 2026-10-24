@@ -16,6 +16,8 @@
 
 ## 正式來源與自動部署
 
+- 2026-10-24使用者授權網站助理價格由雲端排程查核、更新及上架。僅`docs/website-assistant/pricing.json`可由`.github/workflows/assistant-pricing.yml`在官方來源交叉核對、完整相關測試與公開建置通過後自動提交main並觸發正式部署；保持既有模型、USD3上限與防濫用措施。部署需核對正式快照SHA256及有效期限。其他原始碼修改沿用既有審查流程。
+
 - GitHub `jeremiah2911jc-web/sansce-website` 的 `main` 是正式站原始碼來源。網站變更須提交到此儲存庫並合併，避免僅從未同步的本機資料夾發布。
 - 不得將暫停用的 `vercel.paused.json` 複製成正式設定。`npm run build` 必須通過公開路由、SEO 與資產檢查；成功建置後才可部署。
 - 案件報告原文與附件不得加入公開 Git。它們保存於 `sealed/reports.v1.bin` 加密封裝，正式建置透過部署專用的 `REPORT_SOURCE_ENCRYPTION_KEY` 還原；既有報告密碼及權限不變。

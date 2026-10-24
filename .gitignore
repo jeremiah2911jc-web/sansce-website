@@ -21,3 +21,5 @@ docs/report-portal/
 /node_modules
 
 supabase/.temp/
+
+.pricing-maintenance/

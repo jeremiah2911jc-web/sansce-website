@@ -1,3 +1,4 @@
+import assistantPricingStatus from './_website-ai-status.js';
 import {recordContactSuccess} from './_contact-tracking.js';
 import reportsHandler from './_reports.js';
 import siteTraffic from './_site-traffic.js';
@@ -87,6 +88,7 @@ export default function handler(req,res) {
  const url=new URL(req.url || '/', 'https://www.sanzepm.com.tw');
  if(url.pathname==='/api/reports'||url.searchParams.get('route')==='reports'||req.query?.route==='reports')return reportsHandler(req,res);
  if(url.pathname==='/api/site-traffic'||url.searchParams.get('route')==='site-traffic'||req.query?.route==='site-traffic')return siteTraffic(req,res);
+ if(url.pathname==='/api/assistant-pricing-status'||url.searchParams.get('route')==='assistant-pricing-status'||req.query?.route==='assistant-pricing-status')return assistantPricingStatus(req,res);
  if(url.pathname==='/api/website-assistant'||url.searchParams.get('route')==='website-assistant'||req.query?.route==='website-assistant')return webAssistant(req,res);
  if(url.pathname==='/api/line-timeout'||url.searchParams.get('route')==='line-timeout'||req.query?.route==='line-timeout')return lineTimeout(req,res);
  return (url.pathname === '/api/line-webhook' || url.searchParams.get('route') === 'line' || req.query?.route === 'line') ? lineWebhook(req,res) : contactHandler(req,res);

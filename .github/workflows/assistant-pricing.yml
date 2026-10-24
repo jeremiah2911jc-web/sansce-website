@@ -1,0 +1,96 @@
+name: Maintain assistant pricing in the cloud
+
+on:
+  schedule:
+    # Daily at 09:30 Asia/Taipei. Renew with a 14-day buffer.
+    - cron: '30 1 * * *'
+  workflow_dispatch:
+    inputs:
+      force_review:
+        description: 'Review official rates and exercise the full renewal/deployment flow'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: assistant-pricing-maintenance
+  cancel-in-progress: false
+
+jobs:
+  maintain:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Fetch and cross-check official pricing
+        id: review
+        env:
+          FORCE_REVIEW: ${{ inputs.force_review || false }}
+        run: node scripts/maintain-assistant-pricing.mjs review
+      - name: Validate the candidate before publishing
+        if: steps.review.outputs.deploy_needed == 'true'
+        env:
+          SANZE_PUBLIC_PREVIEW: '1'
+        run: |
+          npm run verify:assistant-guard
+          npm run verify:assistant-sql
+          node --test tests/website-ai-price-maintenance.test.mjs tests/landowner-calculation.test.mjs tests/land-development.test.mjs tests/line-ai.test.mjs tests/line-timeout.test.mjs tests/line-webhook.test.mjs tests/private-report-bundle.test.mjs
+          npm run verify:contact
+          node scripts/verify-website-recording.mjs
+          node scripts/verify-assistant-knowledge.mjs
+          node scripts/verify-landowner-guidance.mjs
+          node scripts/verify-website-assistant.mjs
+          node scripts/verify-pageview-tracker.mjs
+          npm run verify:evaluation-copy
+          npm run build
+      - name: Commit only the verified pricing snapshot
+        if: steps.review.outputs.changed == 'true'
+        run: |
+          test "$(git diff --name-only)" = "docs/website-assistant/pricing.json"
+          git fetch origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/website-assistant/pricing.json
+          git commit -m "chore: refresh verified assistant pricing"
+          git push origin HEAD:main
+      - name: Request the production build
+        if: steps.review.outputs.deploy_needed == 'true'
+        env:
+          WEBSITE_AI_PRICING_DEPLOY_HOOK: ${{ secrets.WEBSITE_AI_PRICING_DEPLOY_HOOK }}
+        run: node scripts/maintain-assistant-pricing.mjs publish
+      - name: Verify the exact snapshot served by production
+        if: steps.review.outputs.deploy_needed == 'true'
+        run: node scripts/maintain-assistant-pricing.mjs verify
+      - name: Check production on days without a change
+        if: steps.review.outputs.deploy_needed != 'true'
+        run: node scripts/maintain-assistant-pricing.mjs audit
+      - name: Retain review and production evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: assistant-pricing-review
+          path: .pricing-maintenance/
+          if-no-files-found: ignore
+          retention-days: 90
+      - name: Write the run result
+        if: always()
+        env:
+          RESULT: ${{ job.status }}
+        run: |
+          echo "Assistant pricing maintenance: $RESULT" >> "$GITHUB_STEP_SUMMARY"
+          echo "Official-source checks, candidate validation and production snapshot proof are retained in the run artifacts." >> "$GITHUB_STEP_SUMMARY"
+          if [ "$RESULT" != "success" ]; then
+            echo "::error::Cloud pricing maintenance failed. The previous snapshot remains in place; investigate before its expiry."
+          fi

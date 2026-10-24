@@ -1,7 +1,10 @@
 // Pricing is server-owned and must match the deployed model and standard service tier.
 // Use a reviewed snapshot, never rates or usage supplied in the visitor's request.
+import {readFileSync} from 'node:fs';
 export function readPricing(env,now=Date.now()){
- const p=JSON.parse(env.WEBSITE_AI_PRICING_JSON||'null');
+ const p=env.WEBSITE_AI_PRICING_SOURCE==='bundled'
+  ? JSON.parse(readFileSync(new URL('../docs/website-assistant/pricing.json',import.meta.url),'utf8'))
+  : JSON.parse(env.WEBSITE_AI_PRICING_JSON||'null');
  if(!p||p.model!==(env.WEB_AI_MODEL||env.LINE_AI_MODEL)||typeof p.version!=='string'||!p.version||!Array.isArray(p.responseModels)||!p.responseModels.length||p.responseModels.some(m=>typeof m!=='string'||!m)||!Number.isFinite(Date.parse(p.validUntil))||Date.parse(p.validUntil)<=now)throw Error('pricing_unavailable');
  for(const key of ['inputPerMillion','cachedInputPerMillion','outputPerMillion','searchCall','contextWindow'])if(!Number.isSafeInteger(p[key])||p[key]<0)throw Error('pricing_invalid');
  if(p.inputPerMillion<=0||p.outputPerMillion<=0||p.contextWindow<4000||p.contextWindow>2000000||p.cachedInputPerMillion>p.inputPerMillion)throw Error('pricing_invalid');
