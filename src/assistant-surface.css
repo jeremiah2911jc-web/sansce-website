@@ -50,3 +50,7 @@
  .website-assistant[data-compact=true] .assistant-form{padding:8px 14px 10px;gap:5px 8px}
  .website-assistant[data-compact=true] .assistant-form textarea{min-height:56px}
 }
+
+.website-assistant .assistant-verification{flex-shrink:0;padding:0 16px;color:#506252;font-size:12px;line-height:1.5;overflow:hidden}
+.website-assistant .assistant-verification p{margin:4px 0}
+.website-assistant .assistant-verification button{font:inherit;color:#214f3c;background:none;border:0;text-decoration:underline;padding:4px}

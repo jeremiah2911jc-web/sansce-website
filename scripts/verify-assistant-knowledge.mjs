@@ -1,3 +1,4 @@
+import {admittedGuard,testConversation} from '../tests/helpers/website-ai.mjs';
 import assert from 'node:assert/strict';
 import { retrieveProfessionalKnowledge as retrieve, formatAssistantOutput } from '../api/_assistant-knowledge.js';
 import { makeWebAssistantHandler } from '../api/_web-assistant.js';
@@ -41,12 +42,12 @@ const result=formatAssistantOutput({output:[{content:[{type:'output_text',text:'
 assert.ok(!result.includes(''));assert.ok(!result.includes('evil'));assert.equal(result.match(/https:/g).length,1);assert.match(result,/\[法規 1 \]\(https:/);
 assert.equal(formatAssistantOutput({output:[{content:[{type:'output_text',text:'',annotations:[{type:'url_citation',url:'https://law.moj.gov.tw/',title:'來源'}]}]}]}),'');
 let requests=[];
-const handler=makeWebAssistantHandler({env:{OPENAI_API_KEY:'test',WEB_AI_MODEL:'test'},log:()=>{},fetchImpl:async(_,o)=>{requests.push(JSON.parse(o.body));return{ok:true,json:async()=>({output:[{content:[{type:'output_text',text:'回答'}]}]})}}});
-async function call(message,history=[]){const res={setHeader(){},end(){}};await handler({method:'POST',headers:{origin:'https://www.sanzepm.com.tw','content-type':'application/json'},body:{message,history,path:'/programs'}},res);assert.equal(res.statusCode,200);return requests.at(-1);}
+const handler=makeWebAssistantHandler({guardImpl:admittedGuard,env:{OPENAI_API_KEY:'test',WEB_AI_MODEL:'test'},log:()=>{},fetchImpl:async(_,o)=>{requests.push(JSON.parse(o.body));return{ok:true,json:async()=>({output:[{content:[{type:'output_text',text:'回答'}]}]})}}});
+async function call(message,history=[]){const res={setHeader(){},end(){}};await handler({method:'POST',headers:{origin:'https://www.sanzepm.com.tw','content-type':'application/json'},body:{conversationId:testConversation,message,history,path:'/programs'}},res);assert.equal(res.statusCode,200);return requests.at(-1);}
 const professional=await call('新北都市更新最小基地面積');
 assert.match(professional.instructions,/115年1月9日/);assert.ok(!professional.instructions.includes('575 專案'));
 assert.equal(professional.tools[0].type,'web_search');assert.ok(professional.tools[0].filters.allowed_domains.includes('law.moj.gov.tw'));
 const latest=await call('危老現在申請期限有沒有延長？');assert.equal(latest.tool_choice,'required');
 const company=await call('三策的電話？');assert.equal(company.tools,undefined);
-assert.equal(professional.store,false);assert.equal(professional.max_output_tokens,undefined);
+assert.equal(professional.store,false);assert.equal(professional.max_output_tokens,2000);
 console.log('PASS: yesterday multi-turn intent, city/mode changes, strict consent, area exceptions, freshness, official search, safe citations and existing privacy settings.');
