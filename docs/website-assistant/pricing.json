@@ -3,28 +3,42 @@
   "responseModels": [
     "gpt-6-luna"
   ],
-  "version": "openai-standard-2026-10-24",
-  "validUntil": "2026-11-23T00:00:00+08:00",
   "inputPerMillion": 100000,
+  "outputPerMillion": 500000,
   "cachedInputPerMillion": 10000,
   "cacheWritePerMillion": 125000,
   "cacheWrite12hPerMillion": 250000,
-  "outputPerMillion": 500000,
   "searchCall": 10000,
   "contextWindow": 1050000,
   "longContext": {
     "threshold": 272000,
     "inputPerMillion": 200000,
+    "outputPerMillion": 750000,
     "cachedInputPerMillion": 20000,
     "cacheWritePerMillion": 250000,
-    "cacheWrite12hPerMillion": 500000,
-    "outputPerMillion": 750000
+    "cacheWrite12hPerMillion": 500000
   },
+  "cacheWriteDefaultTtl": "30m",
+  "version": "openai-standard-2026-10-24T10:27:01.432Z",
+  "reviewedAt": "2026-10-24T10:27:01.432Z",
+  "validUntil": "2026-11-23T10:27:01.432Z",
   "sources": [
-    "https://developers.openai.com/api/docs/models/gpt-6-luna",
-    "https://developers.openai.com/api/docs/pricing",
-    "https://developers.openai.com/api/docs/guides/prompt-caching",
-    "https://developers.openai.com/api/docs/guides/tools-web-search"
+    "https://developers.openai.com/api/docs/pricing.md",
+    "https://developers.openai.com/api/docs/models/gpt-6-luna.md",
+    "https://developers.openai.com/api/docs/guides/prompt-caching.md"
   ],
-  "cacheWriteDefaultTtl": "30m"
+  "sourceEvidence": [
+    {
+      "url": "https://developers.openai.com/api/docs/pricing.md",
+      "sha256": "606acc6693f882253e203e30da2fbfd23f28b02540a98f26fce93c5cdc04e9dd"
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/models/gpt-6-luna.md",
+      "sha256": "2e4861582095740f5ea84b14bb18fa476a49c426b397b779b964bc144397b451"
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/guides/prompt-caching.md",
+      "sha256": "5ef36de765cb4e16fdab153e13799d9f22b46ee1ff0d602375442c4cae2cc379"
+    }
+  ]
 }
