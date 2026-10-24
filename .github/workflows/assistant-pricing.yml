@@ -43,6 +43,8 @@ jobs:
         env:
           SANZE_PUBLIC_PREVIEW: '1'
         run: |
+          npm run verify:evaluation-copy
+          npm run build
           npm run verify:assistant-guard
           npm run verify:assistant-sql
           node --test tests/website-ai-price-maintenance.test.mjs tests/landowner-calculation.test.mjs tests/land-development.test.mjs tests/line-ai.test.mjs tests/line-timeout.test.mjs tests/line-webhook.test.mjs tests/private-report-bundle.test.mjs
@@ -52,8 +54,6 @@ jobs:
           node scripts/verify-landowner-guidance.mjs
           node scripts/verify-website-assistant.mjs
           node scripts/verify-pageview-tracker.mjs
-          npm run verify:evaluation-copy
-          npm run build
       - name: Commit only the verified pricing snapshot
         if: steps.review.outputs.changed == 'true'
         run: |
