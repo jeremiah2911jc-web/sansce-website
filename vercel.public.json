@@ -84,7 +84,7 @@
       "dest": "/$1"
     },
     {
-      "src": "/(checkup|consulting|process|insights|about|contact|programs|landowner-comparison|land-evaluation)/?",
+      "src": "/(checkup|consulting|process|insights|about|contact|programs|landowner-comparison|land-evaluation|privacy|website-use)/?",
       "dest": "/$1/index.html"
     },
     {
