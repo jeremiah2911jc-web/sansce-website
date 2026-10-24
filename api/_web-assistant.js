@@ -63,7 +63,7 @@ export function makeWebAssistantHandler({env=process.env,fetchImpl=fetch,log=con
    if(db){const {error}=await db.from('sanze_website_conversations').update({answer,answered_at:new Date().toISOString(),usage:data.usage||null,status:'ok'}).eq('request_id',id);if(error)throw Error('storage');}
    log(JSON.stringify({event:'website_ai_usage',request_id:id,model,usage:data.usage||null,status:'ok',knowledge_version:professional.version,knowledge_cards:professional.cards.map(c=>c.id),web_search_calls:(data.output||[]).filter(o=>o.type==='web_search_call').length}));
    return reply(200,{answer});
-  }catch(error){if(db){try{await db.from('sanze_website_conversations').update({status:'failed'}).eq('request_id',id);}catch{}}log(JSON.stringify({event:'website_ai_usage',request_id:id,model,status:'failed',reason:error.name==='TimeoutError'?'timeout':/^provider_\d+$/.test(error.message)?error.message:'unavailable'}));return reply(503,{message:'助理暫時無法回覆，請稍後重試，或來電02-2250-8202與三策聯絡。'});}
+  }catch(error){if(db){try{await db.from('sanze_website_conversations').update({status:'failed'}).eq('request_id',id);}catch{}}log(JSON.stringify({event:'website_ai_usage',request_id:id,model,status:'failed',reason:error.name==='TimeoutError'?'timeout':/^(provider_\d+|start_storage|settlement_storage|usage_unavailable|usage_invalid|tool_usage_unknown|pricing_unavailable|cost_envelope_exceeded|empty)$/.test(error.message)?error.message:'unavailable'}));return reply(503,{message:'助理暫時無法回覆，請稍後重試，或來電02-2250-8202與三策聯絡。'});}
   }finally{await admission.release?.();}
  };
 }
