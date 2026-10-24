@@ -1,0 +1,73 @@
+/* Compact company information: desktop around one third of the first preview. */
+footer.company-footer{padding-top:10px;margin-top:12px}
+.company-footer .company-footer-main{grid-template-columns:1.3fr .8fr .8fr 1.6fr;gap:24px;padding-bottom:8px}
+.company-footer-brand{gap:9px}
+.company-footer-brand img{width:36px;height:36px;padding:3px;border-radius:4px}
+.company-footer .company-footer-brand h2{font-size:16px;line-height:1.4}
+.company-footer .company-footer-english{font-size:10px;line-height:1.4;margin:3px 0 4px}
+.company-footer .company-footer-motto{font-size:14px;line-height:1.5;margin:0 0 3px}
+.company-footer .company-footer-tax{font-size:11px;line-height:1.5;margin:0}
+.company-footer h3{font-size:13px;line-height:18px;margin:0 0 4px}
+.company-footer nav li a{min-height:20px;line-height:20px;font-size:13px}
+.company-footer-toggle{display:none}
+.company-footer-contact{position:relative}
+.company-footer-contact dl{grid-template-columns:1fr;gap:0;margin:0}
+.company-footer-contact dl>div{grid-template-columns:68px minmax(0,1fr);gap:6px}
+.company-footer-contact dl>div:nth-child(n+3){grid-column:1/-1;grid-template-columns:68px minmax(0,1fr);gap:6px}
+.company-footer-contact dt{font-size:11px;line-height:20px}
+.company-footer-contact dd,.company-footer-contact dd a{font-size:13px;line-height:20px}
+.company-footer-contact dd .company-footer-phone{font-size:14px;line-height:20px;font-weight:600}
+.company-footer .company-footer-booking{position:absolute;right:0;top:0;font-size:12px;line-height:18px;padding:0;border-bottom:0}
+.company-footer .company-footer-end{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid #4c626b;padding-top:5px;padding-bottom:8px;padding-right:170px}
+.company-footer .company-footer-belief{padding:0;border:0;min-width:0}
+.company-footer .scripture-quote{gap:0 10px}
+.company-footer .scripture-quote p,.company-footer .scripture-quote .scripture-phrase,.company-footer .scripture-quote .scripture-verse-line{font-size:11px!important;line-height:1.6!important}
+.company-footer .scripture-quote cite{font-size:10px}
+.company-footer .company-footer-legal{border:0;gap:6px;padding:0;flex-direction:column;align-items:flex-end;flex:none}
+.company-footer-legal small{font-size:10px;line-height:14px}
+.company-footer-legal nav{gap:12px;order:-1}
+.company-footer-legal nav a{font-size:11px;line-height:14px}
+.company-footer .company-footer-legal nav{padding:0;margin:0}
+.company-footer .company-footer-legal nav a{padding:0;min-height:18px}
+.company-footer nav li{line-height:20px}
+@media(min-width:761px) and (max-width:1100px){.company-footer .company-footer-main{grid-template-columns:1fr .75fr .85fr 1.5fr;gap:14px}.company-footer .company-footer-brand h2{font-size:14px}.company-footer-brand img{width:30px;height:30px}.company-footer .company-footer-end{padding-right:150px}.company-footer-contact dl>div{grid-template-columns:68px minmax(0,1fr);gap:6px}}
+@media(max-width:760px){
+ footer.company-footer{padding-top:14px;margin-top:10px}
+ .company-footer .company-footer-main{grid-template-columns:1fr 1fr;gap:10px 20px;padding-bottom:8px}
+ .company-footer .company-footer-brand h2{font-size:15px;line-height:1.5;letter-spacing:0}
+ .company-footer-brand h2 span{display:inline}
+ .company-footer-brand img{width:32px;height:32px}
+ .company-footer .company-footer-english{font-size:10px;line-height:1.4;margin:3px 0}
+ .company-footer-english br{display:none}
+ .company-footer .company-footer-motto{display:inline-block;font-size:12px;line-height:18px;margin:0 10px 0 0}
+ .company-footer .company-footer-tax{display:inline-block;font-size:10px;line-height:18px}
+ .company-footer-tax span{margin-left:5px}
+ .company-footer-contact{border:0;padding-top:4px}
+ .company-footer h3{font-size:13px;line-height:18px;margin-bottom:3px}
+ .company-footer-contact dl{grid-template-columns:1fr;gap:0}
+ .company-footer-contact dl>div{grid-template-columns:68px minmax(0,1fr);gap:6px}
+ .company-footer-contact dl>div:nth-child(n+3){grid-template-columns:68px minmax(0,1fr);gap:6px}
+ .company-footer-contact dd,.company-footer-contact dd a{font-size:13px;line-height:20px}
+ .company-footer-contact dd .company-footer-phone{font-size:14px}
+ .company-footer .company-footer-booking{font-size:12px;line-height:18px}
+ .company-footer .company-footer-services h3,.company-footer .company-footer-resources h3{display:none}
+ .company-footer .company-footer-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:44px;margin:0;padding:0;border:0;border-block:1px solid #4c626b;background:none;color:#fff;font-size:13px;font-weight:600;text-align:left}
+ .company-footer .company-footer-services ul,.company-footer .company-footer-resources ul{display:none}
+ .company-footer .company-footer-services ul.is-open,.company-footer .company-footer-resources ul.is-open{display:grid;padding-top:3px}
+ .company-footer nav li a{min-height:44px;font-size:13px;line-height:1.5}
+ .company-footer .company-footer-end{display:block;padding:8px 0 14px;border-top:0}
+ .company-footer .company-footer-belief{padding:0 0 7px}
+ .company-footer .scripture-quote{gap:0 8px}
+ .company-footer .company-footer-legal{padding:0;align-items:flex-start;gap:3px}
+ .company-footer-legal nav{gap:18px;order:-1}
+ .company-footer-legal nav a{font-size:11px;min-height:30px;line-height:18px}
+ .company-footer .company-footer-legal nav a{min-height:30px}
+ .company-footer-legal small{font-size:10px;line-height:16px}
+}
+
+/* Keep every contact label and value on the same two alignment guides. */
+.company-footer .company-footer-contact dl>div{grid-column:1/-1;grid-template-columns:68px minmax(0,1fr);column-gap:6px;align-items:baseline}
+.company-footer .company-footer-contact dd,.company-footer .company-footer-contact dd a{font-family:inherit;font-size:13px;font-weight:400;letter-spacing:normal;line-height:20px}
+
+.company-footer .company-footer-phones{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 3px}
+.company-footer .company-footer-phones a{white-space:nowrap;font-weight:600}
