@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {newIndustrial,newDocumentCase,newMixedSite} from '../src/land-evaluation/generated/core.mjs';
 import {writeFileSync} from 'node:fs';
 import {serializeCase,parseCase,caseCounts,caseFilename,CASE_VERSION,MAX_CASE_BYTES} from '../src/land-evaluation/case-file.mjs';
 import {createInput,evaluate} from '../src/land-evaluation/model.mjs';
@@ -47,6 +48,12 @@ test('new assessment preserves old draft and rejects conflict or failed backup',
  archiveDraft(storage,'original','one');assert.equal(storage.getItem(DRAFT_KEY),null);assert.equal(storage.getItem(DRAFT_KEY+':archive:one'),'original');
  storage.setItem(DRAFT_KEY,'changed');assert.throws(()=>archiveDraft(storage,'stale','two'));assert.equal(storage.getItem(DRAFT_KEY),'changed');
  assert.throws(()=>archiveDraft({...storage,setItem(){throw Error('full');}},'changed','three'));assert.equal(storage.getItem(DRAFT_KEY),'changed');
+});
+test('all evaluation entry positions export and import without previous case input',()=>{
+ for(const section of ['land','layout','collective','readjustment','industrial']){const input={'nav.section':section,'nav.view':'tool','industrial.input':newIndustrial(),'collective.input':createInput()};const result=parseCase(serializeCase(input,'test')).data;assert.equal(result['nav.section'],section);assert.equal(result['industrial.input'].name,'');assert.equal(result['collective.input'].site,'');}
+ assert.equal(newLegalInputs().applicationDate,'');assert.equal(createInput().regulatoryReview.bonusAssessment?.date??'','');
+ assert.equal(newMixedSite().declaredArea,'');assert.equal(newDocumentCase().declaredTotal,'');
+ const a=newIndustrial(),b=newIndustrial();a.name='test-only';a.parcels.push({});assert.equal(b.name,'');assert.equal(b.parcels.length,0);
 });
 console.log(`PASS ${count} phase4 checks: full case roundtrip, six tracks, malformed files, rule template ownership, unknowns, destinations and input-free official links.`);
 if(process.argv.includes('--fixtures')){writeFileSync('/tmp/sanze-phase4-full.sanze.json',raw);writeFileSync('/tmp/sanze-phase4-bad.json',mutate(d=>d['collective.input'].roadConditions=null));}

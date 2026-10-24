@@ -1,9 +1,9 @@
 {
-  "sourceCommit": "c4f821536422209304602a343908960b6fd69d8d",
+  "sourceCommit": "8e3463cb401257c3af2e1e4c8d1527a28ab608b6",
   "scope": "land identity, laws, routes, layout and efficiency only; no financial UI or case persistence",
   "source": "三策案件版",
   "sourceRoot": "/Users/jeremiah/Documents/Codex/2026-10-24/sanze-release-app",
-  "generatedAt": "2026-10-24T07:06:13.273Z",
+  "generatedAt": "2026-10-24T07:33:31.253Z",
   "method": "esbuild directly bundles original App exports; website has no separate calculation fork; App source is authoritative",
   "sources": [
     {
@@ -40,7 +40,7 @@
     },
     {
       "path": "src/cases/land-rules/types.ts",
-      "sha256": "95c91054806945b9e223687b4a888d28cdfdc8c3c99c20fe9e3f980461a2d211"
+      "sha256": "b788ef1f64e4fbed3d6d965c2ad39e40e56de41f6f9c66cec732262e51c87b6a"
     },
     {
       "path": "src/cases/landAssessment.ts",
@@ -60,7 +60,7 @@
     },
     {
       "path": "src/components/efficiency/BonusAssessmentPanel.tsx",
-      "sha256": "b81007d5bda187d47c3fc33da299af484d994e6e3a5d621044f3d8113ea313e8"
+      "sha256": "804149150874ee45f231e7ffd084039ec760f08018d4cad14ae7bd9de77b6f73"
     },
     {
       "path": "src/components/efficiency/CommonAllocationPolicyPanel.tsx",
@@ -80,7 +80,7 @@
     },
     {
       "path": "src/components/efficiency/TdrApplicationPanel.tsx",
-      "sha256": "91694535efb5e592551287a891215211ef20655ac17c6d64a541136446d595fc"
+      "sha256": "92ec2e596403662f7092ccb69e113f2fb5ddd5fec2bbf963d291801adec11008"
     },
     {
       "path": "src/components/industrial/DevelopmentPanel.tsx",
@@ -112,7 +112,7 @@
     },
     {
       "path": "src/components/mixed-zone/MixedZonePanel.tsx",
-      "sha256": "1178edcb5a62619942a4fcf31bd2bed99717c19a13f9c17a8ca25dfecc4031ff"
+      "sha256": "cf5cb4437bf28b0959cef3493bed95087ef38e364c2446f90bca74dbfadd54db"
     },
     {
       "path": "src/components/mixed-zone/ProgramReviewPanel.tsx",
@@ -168,7 +168,7 @@
     },
     {
       "path": "src/lib/planning/bonusAssessment.ts",
-      "sha256": "2d07b49ff6406b4a62a64abab838e20688810e4cd7176ddafad4547c5321afaa"
+      "sha256": "d469d2287d85c92c8ebeeacba71ea4aa867e6c793d06ac42df042a435364fb08"
     },
     {
       "path": "src/lib/planning/commonAllocationRules.ts",
