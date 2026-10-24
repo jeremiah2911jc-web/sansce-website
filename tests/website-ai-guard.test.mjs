@@ -55,7 +55,7 @@ test('denied guard cannot create transcripts or call provider and supplies retry
 test('provider caps are server owned and leases release on success, provider and recording failures',async()=>{
  for(const failure of ['none','provider','recording']){
   let releases=0,calls=0;
-  const handler=makeWebAssistantHandler({env:{OPENAI_API_KEY:'test',WEB_AI_MODEL:'test',WEBSITE_CHAT_RECORDING:failure==='recording'?'true':'false'},guardImpl:async()=>({...await admittedGuard(),release:async()=>releases++}),dbFactory:()=>null,log:()=>{},fetchImpl:async(_,options)=>{calls++;const p=JSON.parse(options.body);assert.equal(p.max_output_tokens,2000);assert.equal(p.max_tool_calls,1);if(failure==='provider')throw Error('provider');return {ok:true,json:async()=>({output:[{content:[{type:'output_text',text:'回答'}]}]})};}});
+  const handler=makeWebAssistantHandler({env:{OPENAI_API_KEY:'test',WEB_AI_MODEL:'test',WEBSITE_CHAT_RECORDING:failure==='recording'?'true':'false'},guardImpl:async()=>({...await admittedGuard(),release:async()=>releases++}),dbFactory:()=>null,log:()=>{},fetchImpl:async(_,options)=>{calls++;const p=JSON.parse(options.body);assert.equal(p.max_output_tokens,2000);assert.deepEqual(p.prompt_cache_options,{mode:'implicit',ttl:'30m'});assert.equal(p.max_tool_calls,1);if(failure==='provider')throw Error('provider');return {ok:true,json:async()=>({output:[{content:[{type:'output_text',text:'回答'}]}]})};}});
   assert.equal((await invoke(handler,{...body,max_output_tokens:999999,max_tool_calls:99})).status,failure==='none'?200:503);assert.equal(releases,1);assert.equal(calls,failure==='recording'?0:1);
  }
 });

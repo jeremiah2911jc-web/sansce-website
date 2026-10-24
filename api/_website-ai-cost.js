@@ -29,7 +29,8 @@ export function responseCost(data,p){
  const u=data.usage,input=u.input_tokens,output=u.output_tokens,cached=u.input_tokens_details?.cached_tokens??0;
  for(const n of [input,output,cached])if(!Number.isSafeInteger(n)||n<0)throw Error('usage_invalid');
  const details=u.input_tokens_details||{},writes=details.cache_write_tokens??0;
- const writes30=details.cache_write_tokens_details?.ttl_30m_tokens??0,writes12=details.cache_write_tokens_details?.ttl_12h_tokens??0;
+ // Older Responses payloads omit the lifetime breakdown; only a pinned server TTL permits fallback.
+ const writes30=details.cache_write_tokens_details?.ttl_30m_tokens??(details.cache_write_tokens_details===undefined&&p.cacheWriteDefaultTtl==='30m'?writes:0),writes12=details.cache_write_tokens_details?.ttl_12h_tokens??0;
  for(const n of [writes,writes30,writes12])if(!Number.isSafeInteger(n)||n<0)throw Error('usage_invalid');
  if(cached+writes>input||writes30+writes12!==writes)throw Error('usage_invalid');
  if(writes&&(!p.cacheWritePerMillion||!p.cacheWrite12hPerMillion))throw Error('pricing_unavailable');
