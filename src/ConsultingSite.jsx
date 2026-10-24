@@ -114,29 +114,51 @@ function Contact() {
   const [verified, setVerified] = useState(false);
   const [verificationAttempt, setVerificationAttempt] = useState(0);
   useEffect(() => {
-    let disposed = false;
+    let disposed = false, activeSize = null, watchdog, generation = 0;
     const sitekey = import.meta.env.VITE_TURNSTILE_SITE_KEY;
     const errorMessage = '驗證暫時無法完成，請重試，或來電與我們聯絡。';
+    const clearWatchdog = () => clearTimeout(watchdog);
+    function failed() {
+      clearWatchdog();
+      if (!disposed) {token.current = '';setVerified(false);setVerificationError(errorMessage);}
+      return true;
+    }
     function render() {
-      if (disposed || !challenge.current || widget.current !== null) return;
-      if (!sitekey) {setVerificationError(errorMessage);return;}
-      widget.current = window.turnstile.render(challenge.current, { sitekey, action: 'contact', theme: 'light', size: 'flexible', appearance: 'interaction-only',
-        callback: (value) => {token.current = value;setVerified(true);setVerificationError('');},
-        'expired-callback': () => {token.current = '';setVerified(false);},
-        'error-callback': () => {token.current = '';setVerified(false);setVerificationError(errorMessage);},
-        'timeout-callback': () => {token.current = '';setVerified(false);setVerificationError(errorMessage);} });
+      if (disposed || !challenge.current || !window.turnstile) return;
+      // Flexible Turnstile has a 300px minimum. Use the provider's compact
+      // variant when the actual form column is narrower; never crop a challenge.
+      const size = challenge.current.getBoundingClientRect().width < 300 ? 'compact' : 'flexible';
+      if (widget.current !== null && activeSize === size) return;
+      if (!sitekey) {failed();return;}
+      try {
+        const current = ++generation;
+        const isCurrent = () => !disposed && current === generation;
+        if (widget.current !== null) {window.turnstile.remove(widget.current);widget.current = null;}
+        token.current = '';setVerified(false);setVerificationError('');activeSize = size;
+        clearWatchdog();watchdog = setTimeout(failed, 120000);
+        widget.current = window.turnstile.render(challenge.current, { sitekey, action: 'contact', theme: 'light', size, appearance: 'interaction-only',
+          callback: (value) => {if (isCurrent()) {clearWatchdog();token.current = value;setVerified(true);setVerificationError('');}},
+          'expired-callback': () => {if (isCurrent()) {token.current = '';setVerified(false);clearWatchdog();watchdog = setTimeout(failed, 120000);}},
+          'error-callback': () => isCurrent() ? failed() : true,
+          'timeout-callback': () => isCurrent() ? failed() : true });
+      } catch {failed();}
     }
     let script = document.querySelector('script[data-contact-verification]');
-    if (window.turnstile) render();else
-    {
+    if (window.turnstile) render();else {
       if (!script) {script = document.createElement('script');script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';script.async = true;script.defer = true;script.dataset.contactVerification = 'true';document.head.appendChild(script);}
-      script.addEventListener('load', render);
-      script.addEventListener('error', failed);
+      script.addEventListener('load', render);script.addEventListener('error', failed);
+      watchdog = setTimeout(failed, 20000);
     }
-    function failed() {if (!disposed) setVerificationError(errorMessage);}
-    return () => {disposed = true;script?.removeEventListener('load', render);script?.removeEventListener('error', failed);if (widget.current !== null && window.turnstile) {window.turnstile.remove(widget.current);widget.current = null;}};
+    const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(render) : null;
+    if (challenge.current) observer?.observe(challenge.current);
+    return () => {disposed = true;clearWatchdog();observer?.disconnect();script?.removeEventListener('load', render);script?.removeEventListener('error', failed);if (widget.current !== null && window.turnstile) {try {window.turnstile.remove(widget.current);} catch {} finally {widget.current = null;}}};
   }, [verificationAttempt]);
-  function retryVerification() {token.current = '';setVerified(false);setVerificationError('');if (widget.current !== null && window.turnstile) window.turnstile.reset(widget.current);else {document.querySelector('script[data-contact-verification]')?.remove();setVerificationAttempt((n) => n + 1);}}
+  function retryVerification() {
+    token.current = '';setVerified(false);setVerificationError('');setStatus('');
+    // Recreate through the same lifecycle, including the timeout and current size.
+    if (!window.turnstile) document.querySelector('script[data-contact-verification]')?.remove();
+    setVerificationAttempt((n) => n + 1);
+  }
   const requestId = useRef('');
   const inFlight = useRef(false);
   const initial = new URLSearchParams(typeof location === 'undefined' ? '' : location.search).get('stage');
