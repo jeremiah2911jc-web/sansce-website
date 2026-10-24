@@ -204,3 +204,6 @@
 .interior-page .le-use-notice p{margin:0;font-size:10px;line-height:1.8;color:var(--sx-ink,#263d4b);text-align:left;text-wrap:wrap;overflow-wrap:break-word}
 .interior-page .le-use-notice p+p{margin-top:8px}
 @media(max-width:1320px){.interior-page .le-use-notice{margin-left:36px;margin-right:60px}}
+.land-evaluation .le-rule-reference{display:flex;flex-direction:column;gap:8px;grid-row:span 3;min-width:0}
+.land-evaluation .le-rule-reference>span{font-weight:600;min-height:24px}
+.land-evaluation .le-rule-reference>p{margin:0;line-height:1.7;overflow-wrap:anywhere}
