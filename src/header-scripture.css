@@ -1,0 +1,29 @@
+.sx-header-scripture{display:none}
+
+@media(max-width:760px){
+  html{scroll-padding-top:88px}
+  .sx-header.sx-header,.sx-header.sx-header.is-scrolled{display:grid;grid-template-columns:118px minmax(0,1fr) 44px;gap:8px;height:auto;min-height:80px;padding:10px 16px}
+  .sx-header .sx-brand{display:grid;grid-template-columns:34px 1fr;column-gap:8px;row-gap:4px;align-items:center;min-width:0}
+  .sx-header .sx-brand>img{width:34px;height:34px}
+  .sx-header .sx-brand>span{display:contents}
+  .sx-header .sx-brand .sx-wordmark{width:54px;height:30px}
+  .sx-header .sx-brand small{grid-column:1/-1;font-size:11px;line-height:1.4;letter-spacing:0;margin:0;white-space:nowrap}
+  .sx-header .sx-header-actions{margin:0;gap:0}
+  .sx-header .sx-menu-trigger{flex-direction:column;justify-content:center;gap:3px;width:44px;min-height:44px;padding:0;font-size:11px;line-height:1.4}
+  .sx-header .sx-menu-trigger svg{width:23px;height:23px}
+  .sx-header .sx-header-scripture{display:block;min-width:0;margin:0;padding:0;border:0;color:#745824;font-family:var(--sx-font);font-size:11px;line-height:1.7;font-weight:400;letter-spacing:0;text-align:left;white-space:nowrap;overflow:hidden}
+  .sx-header-scripture .sx-scripture-window{display:block;width:100%;padding-block:5px;overflow:hidden;mask-image:linear-gradient(to right,transparent,#000 6px,#000 calc(100% - 6px),transparent)}
+  .sx-header-scripture .sx-scripture-track{display:flex;width:max-content;white-space:nowrap;will-change:transform}
+  .sx-header-scripture .sx-scripture-copy{display:block;flex:none;padding-right:28px}
+  .sx-header-scripture cite{display:inline;margin:0;font-size:11px;line-height:inherit;font-style:normal;color:inherit}
+  .sx-header-scripture .sx-scripture-separator{display:inline-block;width:2em;height:1px;background:currentColor;vertical-align:middle;margin-inline:2px 3px}
+  .sx-about-motto #scripture-home{display:none}
+}
+@media(max-width:345px){
+  .sx-header.sx-header,.sx-header.sx-header.is-scrolled{grid-template-columns:110px minmax(0,1fr) 44px;padding-inline:12px;gap:6px}
+}
+@media(prefers-reduced-motion:reduce){
+  .sx-header-scripture .sx-scripture-window{overflow-x:auto;mask-image:none;scrollbar-width:thin}
+  .sx-header-scripture .sx-scripture-track{transform:none!important;will-change:auto}
+  .sx-header-scripture .sx-scripture-copy+.sx-scripture-copy{display:none}
+}
