@@ -1,9 +1,11 @@
+import {knowYourLandArticle} from './know-your-land-article.js';
 import {landTrustCompletionArticle} from './land-trust-completion-article.js';
 import {publicRenewal5099Article} from './public-renewal-5099-article.js';
 import {approvedNotStartedArticle} from './approved-not-started-article.js';
 import {rightsShortfallArticle} from './rights-shortfall-article.js';
 // Listing, metadata, sitemap and assistant knowledge share these article records.
 export const insightArticles = [
+knowYourLandArticle,
 landTrustCompletionArticle,
 publicRenewal5099Article,
 approvedNotStartedArticle,
