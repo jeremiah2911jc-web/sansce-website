@@ -81,8 +81,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: assistant-pricing-review
-          path: .pricing-maintenance/
-          if-no-files-found: ignore
+          path: |
+            .pricing-maintenance/review.json
+            .pricing-maintenance/production.json
+          include-hidden-files: true
+          if-no-files-found: error
           retention-days: 90
       - name: Write the run result
         if: always()
