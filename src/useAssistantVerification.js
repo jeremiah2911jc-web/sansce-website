@@ -23,9 +23,8 @@ export function useAssistantVerification(open){
   }
   return()=>{disposed=true;clearTimeout(timer);script?.removeEventListener('load',render);script?.removeEventListener('error',failed);if(widget.current!==null&&window.turnstile)window.turnstile.remove(widget.current);widget.current=null;token.current='';setReady(false);};
  },[open,attempt]);
- function reset(){token.current='';setReady(false);if(widget.current!==null&&window.turnstile)window.turnstile.reset(widget.current);}
- function retry(){setError('');if(window.turnstile&&widget.current!==null)reset();else{
-  document.querySelector('script[src^="https://challenges.cloudflare.com/turnstile/v0/api.js"]')?.remove();setAttempt(n=>n+1);
- }}
+ // Each consumed token gets a fresh widget and timeout; never reuse a completed challenge.
+ function reset(){token.current='';setReady(false);setError('');setAttempt(n=>n+1);}
+ function retry(){if(!window.turnstile)document.querySelector('script[src^="https://challenges.cloudflare.com/turnstile/v0/api.js"]')?.remove();reset();}
  return {container,token,ready,error,reset,retry};
 }
