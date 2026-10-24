@@ -1,3 +1,4 @@
+import {admittedGuard,testConversation} from '../tests/helpers/website-ai.mjs';
 import assert from 'node:assert/strict';
 import {makeWebAssistantHandler} from '../api/_web-assistant.js';
 const rows=[],updates=[],logs=[];
@@ -22,9 +23,9 @@ const db = {
   };
  }
 };
-const handler=makeWebAssistantHandler({env:{OPENAI_API_KEY:'test',LINE_AI_MODEL:'test',WEBSITE_CHAT_RECORDING:'true'},dbFactory:()=>db,log:s=>logs.push(JSON.parse(s)),fetchImpl:async()=>{providerCalls++;return {ok:!providerError,status:503,json:async()=>({output:[{content:[{type:'output_text',text:'測試回覆'}]}],usage:{input_tokens:1,output_tokens:2}})}}});
+const handler=makeWebAssistantHandler({guardImpl:admittedGuard,env:{OPENAI_API_KEY:'test',LINE_AI_MODEL:'test',WEBSITE_CHAT_RECORDING:'true'},dbFactory:()=>db,log:s=>logs.push(JSON.parse(s)),fetchImpl:async()=>{providerCalls++;return {ok:!providerError,status:503,json:async()=>({output:[{content:[{type:'output_text',text:'測試回覆'}]}],usage:{input_tokens:1,output_tokens:2}})}}});
 const conversationId='0ec68a9f-5b54-4d28-a546-2822cba51b9e';
-async function call(extra={}){let result;const res={setHeader(){},end(s){result={status:this.statusCode,...JSON.parse(s)}}};await handler({method:'POST',headers:{origin:'https://www.sanzepm.com.tw','content-type':'application/json'},body:{message:'測試問題',history:[],path:'/consulting',conversationId,...extra}},res);return result;}
+async function call(extra={}){let result;const res={setHeader(){},end(s){result={status:this.statusCode,...JSON.parse(s)}}};await handler({method:'POST',headers:{origin:'https://www.sanzepm.com.tw','content-type':'application/json'},body:{conversationId:testConversation,message:'測試問題',history:[],path:'/consulting',conversationId,...extra}},res);return result;}
 assert.equal((await call()).status,200);assert.equal(rows[0].question,'測試問題');assert.equal(rows[0].conversation_id,conversationId);assert.equal(rows[0].status,'pending');assert.equal(updates[0].row.answer,'測試回覆');assert.equal(updates[0].row.status,'ok');assert.equal(updates[0].id,rows[0].request_id);assert.ok(updates[0].row.answered_at);
 await call({message:'第二題',history:[{role:'user',content:'測試問題'},{role:'assistant',content:'測試回覆'}]});assert.equal(rows[1].conversation_id,conversationId);assert.notEqual(rows[0].request_id,rows[1].request_id);assert.equal(rows[1].question,'第二題');assert.ok(!('history' in rows[1]));
 const visitorId='b7f8bdeb-f4df-4e85-9d78-3a670433878a';

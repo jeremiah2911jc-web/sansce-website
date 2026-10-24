@@ -21,7 +21,9 @@
     "sync:readjustment-core": "node scripts/sync-readjustment-core.mjs",
     "verify:evaluation-phase3": "node scripts/verify-evaluation-phase3.mjs",
     "verify:evaluation-phase4": "node scripts/verify-evaluation-phase4.mjs",
-    "verify:evaluation-copy": "node scripts/verify-evaluation-copy.mjs src/land-evaluation"
+    "verify:evaluation-copy": "node scripts/verify-evaluation-copy.mjs src/land-evaluation",
+    "verify:assistant-guard": "node --test tests/website-ai-cost.test.mjs tests/website-ai-guard.test.mjs",
+    "verify:assistant-sql": "node scripts/verify-website-ai-sql.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",
@@ -30,6 +32,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.5.11",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",

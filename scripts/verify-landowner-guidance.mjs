@@ -1,3 +1,4 @@
+import {admittedGuard,testConversation} from '../tests/helpers/website-ai.mjs';
 import assert from 'node:assert/strict';
 import {landownerGuidance} from '../api/_landowner-guidance.js';
 import {makeWebAssistantHandler} from '../api/_web-assistant.js';
@@ -6,8 +7,8 @@ const guide=landownerGuidance('這格怎麼填',[],'/landowner-comparison');
 for(const term of ['6.05坪','都更申請的獎勵值','危老申請的獎勵值','64.8～68.85','71.28～75.74','權利價值比例','不能讀取','三個','全歸建商','沒有資料','不叫訪客改走總容積率模式'])assert.ok(guide.includes(term),term);
 assert.ok(landownerGuidance('然後呢',[{role:'user',content:'請帶我填寫地主試算頁'}],'/contact'));
 let providerRequest;
-const handler=makeWebAssistantHandler({env:{OPENAI_API_KEY:'test',WEB_AI_MODEL:'test'},fetchImpl:async(url,options)=>{providerRequest=JSON.parse(options.body);return{ok:true,json:async()=>({output:[{content:[{type:'output_text',text:'土地坪數填6.05。'}]}]})}},log:()=>{}});
+const handler=makeWebAssistantHandler({guardImpl:admittedGuard,env:{OPENAI_API_KEY:'test',WEB_AI_MODEL:'test'},fetchImpl:async(url,options)=>{providerRequest=JSON.parse(options.body);return{ok:true,json:async()=>({output:[{content:[{type:'output_text',text:'土地坪數填6.05。'}]}]})}},log:()=>{}});
 let payload;const res={setHeader(){},end(v){payload=JSON.parse(v)}};
-await handler({method:'POST',headers:{origin:'https://www.sanzepm.com.tw','content-type':'application/json'},body:{message:'400平方公尺持分1/20要填多少',history:[],path:'/landowner-comparison'}},res);
+await handler({method:'POST',headers:{origin:'https://www.sanzepm.com.tw','content-type':'application/json'},body:{conversationId:testConversation,message:'400平方公尺持分1/20要填多少',history:[],path:'/landowner-comparison'}},res);
 assert.equal(res.statusCode,200);assert.match(providerRequest.instructions,/土地面積|土地平方公尺/);assert.match(providerRequest.instructions,/6.05坪/);assert.equal(providerRequest.input.at(-1).content,'400平方公尺持分1/20要填多少');assert.equal(payload.answer,'土地坪數填6.05。');
 console.log('PASS: calculator guidance selected by route and conversation, shared-formula examples, provider instruction integration.');
