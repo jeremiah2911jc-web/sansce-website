@@ -1,7 +1,10 @@
 import { useEffect, useRef } from 'react';
 import './header-scripture.css';
 
-const verse = '就是行為正直、做事公義、心裡說實話的人。';
+const scriptures = [
+  { text: '就是行為正直、做事公義、心裡說實話的人。', reference: '詩篇 15:2' },
+  { text: '詭詐的天平為耶和華所憎惡；公平的法碼為他所喜悅。', reference: '箴言 11:1' },
+];
 
 export default function HeaderScripture() {
   const quote = useRef(null);
@@ -67,7 +70,7 @@ export default function HeaderScripture() {
     };
   }, []);
 
-  return <blockquote ref={quote} className="sx-header-scripture" aria-label={verse + ' 詩篇十五篇二節'}>
-    <span className="sx-scripture-window" tabIndex={0} role="region" aria-label="經文，可暫停閱讀或左右捲動"><span className="sx-scripture-track" aria-hidden="true">{[0, 1].map(copy => <span className="sx-scripture-copy" key={copy}>{verse}<cite><span className="sx-scripture-separator" />詩篇 15:2</cite></span>)}</span></span>
+  return <blockquote ref={quote} className="sx-header-scripture" aria-label={scriptures.map(({ text, reference }) => text + ' ' + reference).join('；')}>
+    <span className="sx-scripture-window" tabIndex={0} role="region" aria-label="經文輪播，可暫停閱讀或左右捲動"><span className="sx-scripture-track" aria-hidden="true">{[0, 1].map(copy => <span className="sx-scripture-copy" key={copy}>{scriptures.map(({ text, reference }) => <span className="sx-scripture-entry" key={reference}>{text}<cite><span className="sx-scripture-separator" />{reference}</cite></span>)}</span>)}</span></span>
   </blockquote>;
 }

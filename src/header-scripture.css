@@ -14,7 +14,8 @@
   .sx-header .sx-header-scripture{display:block;min-width:0;margin:0;padding:0;border:0;color:#745824;font-family:var(--sx-font);font-size:11px;line-height:1.7;font-weight:400;letter-spacing:0;text-align:left;white-space:nowrap;overflow:hidden}
   .sx-header-scripture .sx-scripture-window{display:block;box-sizing:border-box;width:100%;padding:5px 6px;overflow:hidden;mask-image:linear-gradient(to right,transparent,#000 4px,#000 calc(100% - 4px),transparent)}
   .sx-header-scripture .sx-scripture-track{display:flex;width:max-content;white-space:nowrap;will-change:transform}
-  .sx-header-scripture .sx-scripture-copy{display:block;flex:none;padding-right:28px}
+  .sx-header-scripture .sx-scripture-copy{display:flex;flex:none}
+  .sx-header-scripture .sx-scripture-entry{display:block;flex:none;padding-right:28px}
   .sx-header-scripture cite{display:inline;margin:0;font-size:11px;line-height:inherit;font-style:normal;color:inherit}
   .sx-header-scripture .sx-scripture-separator{display:inline-block;width:2em;height:1px;background:currentColor;vertical-align:middle;margin-inline:2px 3px}
   .sx-about-motto #scripture-home{display:none}
