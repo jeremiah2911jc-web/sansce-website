@@ -10,7 +10,7 @@
 
 ## 結算
 
-價格單位為 microUSD；1,000,000 microUSD = USD 1。正式價格快照見 pricing-20261024.json，依 OpenAI 官方 Standard 價格、長上下文、快取讀取及 30m／12h 寫入分別計費；推理 tokens 已包含於 output_tokens，不重複相加。只為 search action 加搜尋工具費。回傳模型與 service_tier 必須符合快照。
+價格單位為 microUSD；1,000,000 microUSD = USD 1。正式價格快照見 pricing-20261024.json，依 OpenAI 官方 Standard 價格、長上下文、快取讀取及 30m／12h 寫入分別計費；推理 tokens 已包含於 output_tokens，不重複相加。只為 search action 加搜尋工具費。回傳模型與 service_tier 必須符合快照。伺服器固定 implicit／30m 快取；舊回傳若只有 cache_write_tokens 總量，可按已固定的 30m 寫入費結算。有期限明細時仍逐項計算並核對總和。
 
 目前依完整模型上下文、最多兩輪模型計算、最大 4,000 輸出與一次搜尋，保守預留 USD 1.063；回覆後按實際 usage 結算並立即釋回餘額。因此不是每題收取 USD 3，也不是每天只能提問一次。價格快照到期或缺失、資料庫或驗證故障時暫停付費呼叫。
 

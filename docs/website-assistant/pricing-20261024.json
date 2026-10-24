@@ -25,5 +25,6 @@
     "https://developers.openai.com/api/docs/pricing",
     "https://developers.openai.com/api/docs/guides/prompt-caching",
     "https://developers.openai.com/api/docs/guides/tools-web-search"
-  ]
+  ],
+  "cacheWriteDefaultTtl": "30m"
 }
