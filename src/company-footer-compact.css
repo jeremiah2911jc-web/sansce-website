@@ -17,7 +17,6 @@ footer.company-footer{padding-top:10px;margin-top:12px}
 .company-footer-contact dt{font-size:11px;line-height:20px}
 .company-footer-contact dd,.company-footer-contact dd a{font-size:13px;line-height:20px}
 .company-footer-contact dd .company-footer-phone{font-size:14px;line-height:20px;font-weight:600}
-.company-footer .company-footer-booking{position:absolute;right:0;top:0;font-size:12px;line-height:18px;padding:0;border-bottom:0}
 .company-footer .company-footer-end{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid #4c626b;padding-top:5px;padding-bottom:8px;padding-right:170px}
 .company-footer .company-footer-belief{padding:0;border:0;min-width:0}
 .company-footer .scripture-quote{gap:0 10px}
@@ -49,8 +48,7 @@ footer.company-footer{padding-top:10px;margin-top:12px}
  .company-footer-contact dl>div:nth-child(n+3){grid-template-columns:68px minmax(0,1fr);gap:6px}
  .company-footer-contact dd,.company-footer-contact dd a{font-size:13px;line-height:20px}
  .company-footer-contact dd .company-footer-phone{font-size:14px}
- .company-footer .company-footer-booking{font-size:12px;line-height:18px}
- .company-footer .company-footer-services h3,.company-footer .company-footer-resources h3{display:none}
+  .company-footer .company-footer-services h3,.company-footer .company-footer-resources h3{display:none}
  .company-footer .company-footer-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:44px;margin:0;padding:0;border:0;border-block:1px solid #4c626b;background:none;color:#fff;font-size:13px;font-weight:600;text-align:left}
  .company-footer .company-footer-services ul,.company-footer .company-footer-resources ul{display:none}
  .company-footer .company-footer-services ul.is-open,.company-footer .company-footer-resources ul.is-open{display:grid;padding-top:3px}
