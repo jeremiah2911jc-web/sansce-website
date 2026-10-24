@@ -2176,7 +2176,7 @@ function summarizePlan(p, a) {
     else if (!e || !["yes", "not_applicable"].includes(e.value) || !proof(e, a)) missing.push("\u5730\u65B9\uFF1A" + r.title + "\uFF08\u9069\u7528\u689D\u4EF6\uFF0F\u66F8\u4EF6\u5F85\u8986\u6838\uFF09");
   }
   const candidate = evaluateLand(a).parcels.find((x) => x.parcelId === p.parcelId)?.routes.find((x) => x.id === p.routeId);
-  if (stale) missing.push("\u571F\u5730\u3001\u7528\u9014\u3001\u9069\u7528\u8F38\u5165\u6216\u898F\u5247\u5DF2\u8B8A\u66F4\uFF1B\u8ACB\u5EFA\u7ACB\u65B0\u65B9\u6848\u4FDD\u7559\u539F\u7D00\u9304");
+  if (stale) missing.push("\u571F\u5730\u689D\u4EF6\u8207\u6B64\u65B9\u6848\u4E0D\u540C\uFF0C\u8ACB\u5EFA\u7ACB\u65B0\u65B9\u6848");
   if (!candidate) missing.push("\u76EE\u524D\u6C92\u6709\u540C\u4E00\u5019\u9078\u9014\u5F91");
   if (candidate?.status === "blocked") blockers.push(candidate.reason);
   const base = evaluateLand(a).parcels.find((x) => x.parcelId === p.parcelId);

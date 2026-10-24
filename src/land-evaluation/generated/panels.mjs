@@ -7166,10 +7166,7 @@ function AssessmentMode({ value: value2, onChange }) {
   return /* @__PURE__ */ jsxs10("nav", { className: "mz-mode-switch", "aria-label": "\u8A55\u4F30\u6A21\u5F0F", children: [
     /* @__PURE__ */ jsx10("button", { type: "button", "aria-pressed": value2 !== "document", onClick: () => onChange("planning"), children: "\u898F\u5283\u8A66\u7B97" }),
     /* @__PURE__ */ jsx10("button", { type: "button", "aria-pressed": value2 === "document", onClick: () => onChange("document"), children: "\u4F9D\u6587\u4EF6\u8986\u6838" }),
-    /* @__PURE__ */ jsxs10("p", { children: [
-      value2 === "document" ? "\u4F9D\u6848\u4EF6\u6587\u4EF6\u6838\u5C0D\u6578\u91CF\u3001\u7528\u9014\u53CA\u9069\u7528\u689D\u4EF6\u3002" : "\u4F9D\u898F\u5283\u689D\u4EF6\u6BD4\u8F03\u958B\u767C\u65B9\u6848\u3002",
-      "\u5207\u63DB\u4FDD\u7559\u5404\u6A21\u5F0F\u8F38\u5165\uFF0C\u7D50\u679C\u9808\u91CD\u7B97\u3002"
-    ] })
+    /* @__PURE__ */ jsx10("p", { children: value2 === "document" ? "\u4F9D\u6848\u4EF6\u6587\u4EF6\u6838\u5C0D\u6578\u91CF\u3001\u7528\u9014\u53CA\u9069\u7528\u689D\u4EF6\u3002" : "\u4F9D\u898F\u5283\u689D\u4EF6\u6BD4\u8F03\u958B\u767C\u65B9\u6848\u3002" })
   ] });
 }
 function DocumentCasePanel({ value: m, onChange, onReport }) {
@@ -7194,7 +7191,7 @@ function DocumentCasePanel({ value: m, onChange, onReport }) {
   const fmt = (v) => v === null ? "\u8CC7\u6599\u672A\u9F4A" : v.toLocaleString("zh-TW", { maximumFractionDigits: 2 });
   return /* @__PURE__ */ jsxs10("section", { className: "mixed-zone program-review", "aria-label": "\u6848\u4EF6\u6587\u4EF6\u8986\u6838", children: [
     /* @__PURE__ */ jsx10("h2", { children: "\u539F\u5BB9\u7A4D\u3001\u734E\u52F5\u3001\u5BB9\u79FB\u8207\u7528\u9014\u914D\u7F6E" }),
-    /* @__PURE__ */ jsx10("p", { children: "\u6B64\u8CC7\u6599\u96A8\u76EE\u524D\u6848\u4EF6\uFF0F\u65B9\u6848\u4FDD\u5B58\u3002\u6578\u91CF\u76F8\u7B26\u8207\u6CD5\u898F\u8CC7\u683C\u5206\u958B\u5224\u65B7\u3002" }),
+    /* @__PURE__ */ jsx10("p", { children: "\u6838\u5C0D\u6587\u4EF6\u6578\u91CF\u53CA\u6CD5\u898F\u9069\u7528\u689D\u4EF6\u3002" }),
     /* @__PURE__ */ jsxs10("div", { className: "mz-fields", children: [
       field("\u8986\u6838\u6848\u4EF6\u540D\u7A31", m.name, (v) => onChange({ ...m, name: v })),
       field("\u6587\u4EF6\u7248\u672C\uFF0F\u6587\u865F", m.edition, (v) => onChange({ ...m, edition: v })),
@@ -7336,7 +7333,7 @@ function DocumentCasePanel({ value: m, onChange, onReport }) {
     ] }),
     /* @__PURE__ */ jsxs10("div", { className: "mz-actions", children: [
       /* @__PURE__ */ jsx10("button", { className: "mz-primary", onClick: () => setSnapshot({ signature, result: calculateDocumentCase(m) }), children: "\u8A08\u7B97\u6587\u4EF6\u8986\u6838\u7D50\u679C" }),
-      snapshot && !r && /* @__PURE__ */ jsx10("span", { role: "status", children: "\u8CC7\u6599\u5DF2\u8B8A\u66F4\uFF0C\u820A\u7D50\u679C\u5931\u6548\uFF0C\u8ACB\u91CD\u65B0\u8A08\u7B97\u3002" })
+      snapshot && !r && /* @__PURE__ */ jsx10("span", { role: "status", children: "\u8ACB\u91CD\u65B0\u8A08\u7B97\u3002" })
     ] }),
     r && /* @__PURE__ */ jsxs10("section", { className: "mz-results", "aria-label": "\u6587\u4EF6\u8986\u6838\u7D50\u679C", children: [
       /* @__PURE__ */ jsx10("h3", { children: documentCaseSummary(m).status }),
@@ -7380,7 +7377,7 @@ function DocumentCasePanel({ value: m, onChange, onReport }) {
         f8.use === "residential" ? `\uFF1B\u4F4F\u5B85\u57FA\u6E96\u90E8\u5206 ${fmt(f8.residentialBase)}\u33A1` : ""
       ] }, i)),
       /* @__PURE__ */ jsx10("ul", { children: [...r.issues, ...r.gaps].map((x, i) => /* @__PURE__ */ jsx10("li", { children: x }, i)) }),
-      /* @__PURE__ */ jsx10("p", { children: "\u9019\u662F\u6587\u4EF6\u6578\u91CF\u8207\u4EBA\u5DE5\u8986\u6838\u7D00\u9304\uFF0C\u4E26\u975E\u4E3B\u7BA1\u6A5F\u95DC\u6838\u51C6\uFF1B\u672A\u81EA\u52D5\u8F49\u5165\u6210\u672C\u6216\u53EF\u552E\u8A08\u7B97\u3002" }),
+      /* @__PURE__ */ jsx10("p", { children: "\u6587\u4EF6\u6578\u91CF\u53CA\u9069\u7528\u689D\u4EF6\u6838\u5C0D\u7D50\u679C\u3002" }),
       onReport && /* @__PURE__ */ jsx10("button", { onClick: () => onReport(m), children: "\u7522\u751F\u672C\u6B21\u6587\u4EF6\u8986\u6838\u5831\u544A" })
     ] })
   ] });
@@ -7519,7 +7516,7 @@ function ProgramReviewPanel({ value: m, onChange }) {
         ] }, g.id)) })
       ] }) }),
       /* @__PURE__ */ jsx11("h4", { children: "\u7528\u9014\u914D\u7F6E\u5206\u9805" }),
-      /* @__PURE__ */ jsx11("p", { children: "\u4EE5\u4E0B\u662F\u6587\u4EF6\u5DF2\u80FD\u8FA8\u8B58\u7684\u8A08\u5BB9\u6A13\u5C64\u5408\u8A08\uFF0C\u4E0D\u4EE3\u8868\u5C08\u6709\u9762\u7A4D\u3002\u672A\u5206\u5217\u90E8\u5206\u4E0D\u5F37\u5236\u5206\u6524\uFF1B\u4E0D\u80FD\u64DA\u6B64\u5BA3\u7A31\u65B0\u5317\u4F4F\u5B85\u4F7F\u7528\u5BB9\u7A4D\u9650\u5236\u5DF2\u901A\u904E\u3002" }),
+      /* @__PURE__ */ jsx11("p", { children: "\u4EE5\u4E0B\u70BA\u6587\u4EF6\u53EF\u8FA8\u8B58\u7684\u8A08\u5BB9\u6A13\u5C64\u5408\u8A08\uFF1B\u5C08\u6709\u9762\u7A4D\u53CA\u4F4F\u5B85\u4F7F\u7528\u5BB9\u7A4D\u9650\u5236\u53E6\u4F9D\u6587\u4EF6\u6838\u5C0D\u3002" }),
       /* @__PURE__ */ jsx11("dl", { className: "mz-totals", children: Object.entries(r.uses).map(([key, n]) => /* @__PURE__ */ jsxs11("div", { children: [
         /* @__PURE__ */ jsx11("dt", { children: uses[key] }),
         /* @__PURE__ */ jsxs11("dd", { children: [
@@ -7869,7 +7866,7 @@ function MixedZoneResult({ result: r }) {
       /* @__PURE__ */ jsx14("h3", { children: "\u5206\u5340\u8A55\u4F30\u7D50\u679C" }),
       /* @__PURE__ */ jsx14("strong", { className: "mz-state mz-" + r.status, children: { incomplete: "\u8CC7\u6599\u5C1A\u7F3A", conflict: "\u689D\u4EF6\u885D\u7A81", conditional: "\u9644\u689D\u4EF6\u8A55\u4F30", checked: "\u8F38\u5165\u76E4\u67E5\u5B8C\u6210\uFF08\u975E\u5EFA\u7167\u5BE9\u67E5\uFF09" }[r.status] })
     ] }),
-    /* @__PURE__ */ jsx14("p", { children: "\u53EF\u8A08\u7B97\u7684\u5206\u9805\u5148\u5217\u51FA\uFF1B\u5408\u8A08\u4E0D\u5B8C\u6574\u6642\u986F\u793A\u5F85\u88DC\u8CC7\u6599\u3002\u6578\u5B57\u4E0D\u662F\u6838\u51C6\u6216\u53EF\u552E\u9762\u7A4D\u3002" }),
+    /* @__PURE__ */ jsx14("p", { children: "\u5206\u9805\u958B\u767C\u91CF\u8207\u505C\u8ECA\u9700\u6C42\u3002" }),
     /* @__PURE__ */ jsx14("dl", { className: "mz-totals", children: [["\u5DF2\u5206\u5217\u571F\u5730\u7E3D\u9762\u7A4D", "area"], ["\u7BC4\u570D\u5167\u571F\u5730\u9762\u7A4D", "renewal"], ["\u5BB9\u7A4D\u8A08\u7B97\u571F\u5730\u9762\u7A4D", "farArea"], ["\u5EFA\u853D\u8A08\u7B97\u571F\u5730\u9762\u7A4D", "coverageArea"], ["\u5BE6\u969B\u8A8D\u5217\u6CD5\u5B9A\u7A7A\u5730", "openCredit"], ["\u5DF2\u6838\u51C6\u516C\u8A2D\u5BB9\u7A4D\u79FB\u8F49", "tdr"], ["\u7D0D\u5165\u5EFA\u7BC9\u57FA\u5730", "included"], ["\u57FA\u6E96\u5BB9\u7A4D\u5408\u8A08", "base"], ["\u734E\u52F5\u53CA\u5BB9\u79FB\u5408\u8A08", "award"], ["\u5BB9\u7A4D\u984D\u5EA6\u5408\u8A08", "allowed"], ["\u56DE\u994B\u5BB9\u7A4D", "obligation"], ["\u6263\u56DE\u994B\u5F8C\u5BB9\u7A4D", "afterObligation"], ["\u5206\u5340\u5EFA\u7BC9\u9762\u7A4D\u984D\u5EA6\u5408\u8A08", "footprint"]].map(([label, k]) => /* @__PURE__ */ jsxs14("div", { children: [
       /* @__PURE__ */ jsx14("dt", { children: label }),
       /* @__PURE__ */ jsxs14("dd", { children: [
@@ -8252,7 +8249,7 @@ function MixedZonePanel({ value: m, onChange, onReport }) {
     ] }),
     /* @__PURE__ */ jsxs14("details", { className: "mz-design", children: [
       /* @__PURE__ */ jsx14("summary", { children: "\u96D9\u5317\u6CD5\u898F\u9069\u7528\u6838\u5C0D\u7D00\u9304" }),
-      /* @__PURE__ */ jsx14("p", { children: "\u6B64\u8655\u4FDD\u7559\u6587\u4EF6\u8207\u500B\u6848\u5224\u65B7\uFF0C\u4E0D\u4EE5\u52FE\u9078\u53D6\u4EE3\u5BE9\u67E5\u3002\u689D\u4EF6\u8B8A\u66F4\u5F8C\uFF0C\u539F\u6838\u5C0D\u7D00\u9304\u6703\u6A19\u793A\u5F85\u91CD\u65B0\u78BA\u8A8D\uFF1B\u672A\u5B8C\u6210\u4ECD\u53EF\u770B\u5206\u9805\u8A08\u7B97\uFF0C\u4E0D\u8868\u793A\u53EF\u4EE5\u7533\u8ACB\u5EFA\u7167\u3002" }),
+      /* @__PURE__ */ jsx14("p", { children: "\u8ACB\u5217\u660E\u5404\u9805\u6CD5\u898F\u7684\u9069\u7528\u4F9D\u64DA\u8207\u6AA2\u8A0E\u7D50\u679C\u3002" }),
       reviewTopics.map(([id2, title, hint]) => {
         const r = m.reviews?.find((r2) => r2.id === id2) ?? { id: id2, state: "unknown", finding: "", evidence: blankEvidence(), basis: "" };
         const update = (patch) => edit({ reviews: [...(m.reviews ?? []).filter((x) => x.id !== id2), { ...r, ...patch }] });
@@ -8278,7 +8275,7 @@ function MixedZonePanel({ value: m, onChange, onReport }) {
       /* @__PURE__ */ jsx14("summary", { children: "\u6CD5\u898F\u4F86\u6E90\u8207\u652F\u63F4\u7BC4\u570D" }),
       /* @__PURE__ */ jsx14("p", { children: "\u6CD5\u898F\u67E5\u6838\uFF1A2026-10-24\u3002\u5730\u65B9\u571F\u7BA1\u3001\u500B\u6848\u6838\u5B9A\u53CA\u904E\u6E21\u898F\u5B9A\u6309\u5404\u7BC4\u570D\u586B\u5BEB\uFF1B\u4EE5\u4E0B\u4F86\u6E90\u4E0D\u4EE3\u66FF\u500B\u6848\u9069\u7528\u8986\u6838\u3002\u65B0\u53171080894762\u539F\u51FD\u3001\u9644\u8868\u53CA\u5169\u5F35\u9644\u5716\u5DF2\u6838\u5C0D\uFF1B\u622A\u81F32026-10-24\u516C\u958B\u4F86\u6E90\u672A\u67E5\u5F97\u5F8C\u7E8C\u4FEE\u6B63\u6216\u505C\u6B62\u9069\u7528\u6587\u4EF6\u3002\u500B\u6848\u4ECD\u9808\u4F9D\u7528\u9014\u8207\u5716\u8AAA\u6AA2\u6838\u3002" }),
       /* @__PURE__ */ jsx14("ul", { children: mixedSources.map((s) => /* @__PURE__ */ jsx14("li", { children: /* @__PURE__ */ jsx14("a", { href: s.url, target: "_blank", rel: "noreferrer", children: s.title }) }, s.url)) }),
-      /* @__PURE__ */ jsx14("p", { children: "\u6B64\u5B50\u6A21\u7D44\u8207\u4F4F\u5B85\u901A\u5247\u8A66\u7B97\u7368\u7ACB\u3002\u5206\u5340\u958B\u767C\u91CF\u53CA\u505C\u8ECA\u9700\u6C42\u53EF\u5148\u8A08\u7B97\uFF1B\u4E0D\u5F97\u628A\u7E3D\u5BB9\u7A4D\u76F4\u63A5\u7576\u53EF\u552E\u576A\u6578\u9001\u5165\u6210\u672C\u3001\u552E\u50F9\u6216\u878D\u8CC7\u3002" })
+      /* @__PURE__ */ jsx14("p", { children: "\u7E3D\u5BB9\u7A4D\u8207\u53EF\u552E\u9762\u7A4D\u4E0D\u540C\uFF0C\u5F8C\u7E8C\u9808\u4F9D\u914D\u7F6E\u53CA\u767B\u8A18\u689D\u4EF6\u6838\u7B97\u3002" })
     ] })
   ] });
 }
@@ -8388,7 +8385,7 @@ function DevelopmentPanel({ model: m, onChange }) {
   const d = m.development;
   if (!d) return /* @__PURE__ */ jsxs15("section", { children: [
     /* @__PURE__ */ jsx15("h3", { children: "\u5DE5\u696D\u5C08\u5C6C\u914D\u7F6E" }),
-    /* @__PURE__ */ jsx15("p", { children: "\u9010\u5C64\u8A08\u5BB9\u5B8C\u6210\u5F8C\uFF0C\u53E6\u5217\u51FA\u79DF\u3001\u81EA\u7528\u3001\u6350\u8D08\u8207\u5171\u7528\u5BE6\u9AD4\u9762\u7A4D\u3002\u672A\u5EFA\u7ACB\u6642\u4E0D\u80FD\u627F\u63A5 App \u8CA1\u52D9\u3002" }),
+    /* @__PURE__ */ jsx15("p", { children: "\u4F9D\u6A13\u5C64\u5217\u51FA\u51FA\u79DF\u3001\u81EA\u7528\u3001\u6350\u8D08\u8207\u5171\u7528\u9762\u7A4D\u3002" }),
     /* @__PURE__ */ jsx15("button", { onClick: () => onChange({ ...m, development: newDevelopment() }), children: "\u5EFA\u7ACB\u5DE5\u696D\u5C08\u5C6C\u914D\u7F6E" })
   ] });
   const edit = (p) => onChange({ ...m, development: { ...d, ...p } });
@@ -8396,7 +8393,7 @@ function DevelopmentPanel({ model: m, onChange }) {
     /* @__PURE__ */ jsx15("h3", { children: "\u5DE5\u696D\u5C08\u5C6C\u914D\u7F6E\u8207\u500B\u5225\u8A08\u756B" }),
     /* @__PURE__ */ jsxs15("details", { children: [
       /* @__PURE__ */ jsx15("summary", { children: "\u5DF2\u67E5\u660E\u7684\u500B\u5225\u8A08\u756B\u8207\u4F8B\u5916" }),
-      /* @__PURE__ */ jsx15("p", { children: "\u4EE5\u4E0B\u70BA\u5DF2\u67E5\u660E\u7684\u898F\u5B9A\u53CA\u7248\u672C\uFF0C\u4E0D\u4EE3\u8868\u57FA\u5730\u5FC5\u7136\u4F4D\u65BC\u5176\u7BC4\u570D\uFF0C\u4E5F\u4E0D\u6703\u4EE3\u586B\u6BD4\u4F8B\u3002\u5176\u4ED6\u8A08\u756B\u4ECD\u9808\u4F9D\u8A72\u6848\u516C\u544A\u66F8\u5716\u8207\u5F8C\u7E8C\u8B8A\u66F4\u6838\u5C0D\u3002" }),
+      /* @__PURE__ */ jsx15("p", { children: "\u8ACB\u4F9D\u57FA\u5730\u4F4D\u7F6E\u6838\u5C0D\u9069\u7528\u8A08\u756B\u53CA\u4FEE\u6B63\u516C\u544A\u3002" }),
       industrialPlanGuidance.map((g) => /* @__PURE__ */ jsxs15("section", { children: [
         /* @__PURE__ */ jsx15("h4", { children: /* @__PURE__ */ jsx15("a", { href: g.url, target: "_blank", rel: "noreferrer", children: g.name }) }),
         /* @__PURE__ */ jsx15("p", { children: g.detail })
@@ -8431,7 +8428,7 @@ function DevelopmentPanel({ model: m, onChange }) {
     /* @__PURE__ */ jsx15("button", { onClick: () => edit({ allocations: [...d.allocations, newAllocation2()] }), children: "\u65B0\u589E\u5BE6\u9AD4\u9762\u7A4D\u914D\u7F6E" }),
     /* @__PURE__ */ jsxs15("details", { children: [
       /* @__PURE__ */ jsx15("summary", { children: "\u5EFA\u7BC9\u3001\u505C\u8ECA\u3001\u88DD\u5378\u3001\u6D88\u9632\u53CA\u7528\u9014\u9650\u5236" }),
-      /* @__PURE__ */ jsx15("p", { children: "\u5404\u7A2E\u9650\u5236\u5206\u9805\u586B\u8A2D\u8A08\u503C\u3001\u6587\u4EF6\u9650\u5236\u3001\u55AE\u4F4D\u8207\u7BC4\u570D\u3002\u500B\u5225\u8A08\u756B\u6216\u4F8B\u5916\u4E0D\u80FD\u522A\u6389\u4E00\u822C\u898F\u5B9A\u7684\u6AA2\u67E5\uFF1B\u6709\u4E0D\u9069\u7528\u9805\u76EE\u4E5F\u9808\u586B\u7406\u7531\u3002\u6B64\u8655\u6AA2\u67E5\u6587\u4EF6\u6578\u91CF\uFF0C\u4E0D\u4EE3\u66FF\u5716\u8AAA\u5BE9\u67E5\uFF0C\u4E5F\u4E0D\u4EE5\u586B\u5B8C\u4EE3\u8868\u6838\u51C6\u3002" }),
+      /* @__PURE__ */ jsx15("p", { children: "\u5206\u9805\u586B\u5BEB\u8A2D\u8A08\u503C\u3001\u6CD5\u898F\u9650\u5236\u53CA\u9069\u7528\u7BC4\u570D\uFF1B\u7279\u6B8A\u898F\u5B9A\u8207\u4E0D\u9069\u7528\u9805\u76EE\u9808\u9644\u4F9D\u64DA\u3002" }),
       d.constraints.map((c, i) => {
         const change = (p) => edit({ constraints: d.constraints.map((x) => x.id === c.id ? { ...c, ...p } : x) });
         return /* @__PURE__ */ jsxs15("fieldset", { children: [
@@ -8795,10 +8792,7 @@ function IndustrialPanel({ value: m, onChange, onReport }) {
       select("\u5DE5\u696D\u57FA\u5730\u57CE\u5E02", m.city, { unknown: "\u5C1A\u672A\u9078\u5B9A", taipei: "\u81FA\u5317\u5E02", ntpc: "\u65B0\u5317\u5E02" }, (city) => edit({ city })),
       select("\u571F\u5730\u5236\u5EA6", m.regime, { unknown: "\u5C1A\u672A\u78BA\u8A8D", urban: "\u90FD\u5E02\u8A08\u756B\u5DE5\u696D\u5340", nonurban: "\u975E\u90FD\u5E02\u571F\u5730\u5206\u5340\u8207\u7DE8\u5B9A", park: "\u5712\u5340\uFF0F\u7279\u5225\u8A08\u756B" }, (regime) => edit({ regime }))
     ] }),
-    /* @__PURE__ */ jsxs16("p", { children: [
-      m.mode === "planning" ? "\u898F\u5283\u503C\u9808\u7531\u898F\u5283\u65B9\u660E\u586B\u4E26\u8AAA\u660E\u5047\u8A2D\uFF1B\u4E0D\u6703\u5347\u683C\u70BA\u6838\u51C6\u6578\u5B57\u3002" : "\u9010\u9805\u586B\u5165\u540C\u4E00\u7248\u672C\u6587\u4EF6\u503C\u3002\u898F\u5283\u5047\u8A2D\u4E0D\u80FD\u901A\u904E\u6587\u4EF6\u8986\u6838\u3002",
-      "\u5207\u63DB\u6A21\u5F0F\u4FDD\u7559\u8F38\u5165\uFF0C\u91CD\u65B0\u6AA2\u67E5\u8B49\u64DA\u72C0\u614B\u3002"
-    ] }),
+    /* @__PURE__ */ jsx16("p", { children: m.mode === "planning" ? "\u4F9D\u898F\u5283\u689D\u4EF6\u6BD4\u8F03\u958B\u767C\u65B9\u6848\u3002" : "\u4F9D\u540C\u4E00\u7248\u672C\u7684\u6848\u4EF6\u6587\u4EF6\u6838\u5C0D\u3002" }),
     /* @__PURE__ */ jsxs16("details", { open: true, children: [
       /* @__PURE__ */ jsx16("summary", { children: "1. \u571F\u5730\u5206\u9805\u8207\u63A1\u8A08\u7BC4\u570D" }),
       /* @__PURE__ */ jsx16("p", { children: "\u7E3D\u9762\u7A4D\u8207\u6392\u9664\u9762\u7A4D\u5206\u586B\u3002\u66F4\u65B0\u7BC4\u570D\u3001\u5EFA\u7BC9\u57FA\u5730\u3001\u5BB9\u7A4D\u63A1\u8A08\u7BC4\u570D\u4E0D\u80FD\u6DF7\u70BA\u4E00\u8AC7\u3002\u516C\u8A2D\u3001\u9053\u8DEF\u3001\u5EE2\u5DF7\u4F9D\u8B8A\u66F4\u53CA\u6838\u5B9A\u6587\u4EF6\u6C7A\u5B9A\u63A1\u8A08\uFF0C\u4E0D\u4E00\u5F8B\u7D0D\u5165\u6216\u522A\u9664\u3002" }),
@@ -8921,13 +8915,13 @@ function IndustrialPanel({ value: m, onChange, onReport }) {
     ] }),
     /* @__PURE__ */ jsxs16("details", { children: [
       /* @__PURE__ */ jsx16("summary", { children: "\u5DF2\u6838\u5C0D\u7684\u6CD5\u898F\u53CA\u7248\u672C" }),
-      /* @__PURE__ */ jsx16("p", { children: "\u6838\u5C0D\u65E5\u671F\uFF1A2026-10-24\u3002\u81FA\u5317\u7B2C\u4E8C\u7A2E\uFF0F\u7B2C\u4E09\u7A2E\u5DE5\u696D\u5340\u4E00\u822C\u5EFA\u853D\u8207\u5BB9\u7A4D\u70BA45%\uFF0F200%\u300155%\uFF0F300%\uFF1B\u653E\u5BEC\u5EFA\u853D\u8207\u500B\u5225\u8A08\u756B\u9808\u53E6\u6838\u5C0D\uFF0C\u9019\u4E9B\u6578\u5B57\u4E0D\u6703\u81EA\u52D5\u586B\u5165\u3002\u65B0\u5317\u4F9D\u65BD\u884C\u7D30\u5247\u53CA\u500B\u5225\u8A08\u756B\u3002\u81FA\u5317\u672A\u4EE5\u65B0\u5317\u7ACB\u9AD4\u5316\u65B9\u6848\u4F5C\u70BA\u901A\u7528\u4F9D\u64DA\u3002" }),
+      /* @__PURE__ */ jsx16("p", { children: "\u6838\u5C0D\u65E5\u671F\uFF1A2026-10-24\u3002\u81FA\u5317\u7B2C\u4E8C\u7A2E\uFF0F\u7B2C\u4E09\u7A2E\u5DE5\u696D\u5340\u4E00\u822C\u5EFA\u853D\u8207\u5BB9\u7A4D\u70BA45%\uFF0F200%\u300155%\uFF0F300%\uFF1B\u653E\u5BEC\u5EFA\u853D\u8207\u500B\u5225\u8A08\u756B\u9808\u53E6\u6838\u5C0D\uFF0C\u65B0\u5317\u4F9D\u65BD\u884C\u7D30\u5247\u53CA\u500B\u5225\u8A08\u756B\u3002\u81FA\u5317\u672A\u4EE5\u65B0\u5317\u7ACB\u9AD4\u5316\u65B9\u6848\u4F5C\u70BA\u901A\u7528\u4F9D\u64DA\u3002" }),
       sources.map(([n, u]) => /* @__PURE__ */ jsx16("p", { children: /* @__PURE__ */ jsx16("a", { href: u, target: "_blank", rel: "noreferrer", children: n }) }, u))
     ] }),
     /* @__PURE__ */ jsx16(DevelopmentPanel, { model: m, onChange }),
     /* @__PURE__ */ jsxs16("div", { className: "mz-actions", children: [
       /* @__PURE__ */ jsx16("button", { className: "mz-primary", onClick: () => setSnapshot({ signature, result: calculateIndustrial(m) }), children: "\u8A08\u7B97\u5DE5\u696D\u8A55\u4F30\u7D50\u679C" }),
-      snapshot && !r && /* @__PURE__ */ jsx16("p", { role: "status", children: "\u8CC7\u6599\u5DF2\u8B8A\u66F4\uFF0C\u820A\u7D50\u679C\u5931\u6548\uFF0C\u8ACB\u91CD\u65B0\u8A08\u7B97\u3002" })
+      snapshot && !r && /* @__PURE__ */ jsx16("p", { role: "status", children: "\u8ACB\u91CD\u65B0\u8A08\u7B97\u3002" })
     ] }),
     r && /* @__PURE__ */ jsxs16("section", { className: "mz-results", "aria-label": "\u5DE5\u696D\u8A55\u4F30\u7D50\u679C", children: [
       /* @__PURE__ */ jsx16("h3", { children: r.status }),
@@ -8935,9 +8929,7 @@ function IndustrialPanel({ value: m, onChange, onReport }) {
       /* @__PURE__ */ jsxs16("p", { children: [
         m.mode === "planning" ? "\u898F\u5283\u8A66\u7B97" : "\u4F9D\u6587\u4EF6\u8986\u6838",
         " \xB7 ",
-        m.edition || "\u7248\u672C\u672A\u586B",
-        " \xB7 \u6CD5\u898F\u7248\u672C ",
-        r.version
+        m.edition || "\u7248\u672C\u672A\u586B"
       ] }),
       /* @__PURE__ */ jsx16("dl", { className: "mz-totals", children: Object.entries(r.quantities).map(([k, v]) => /* @__PURE__ */ jsxs16("div", { children: [
         /* @__PURE__ */ jsx16("dt", { children: quantityLabels[k] }),

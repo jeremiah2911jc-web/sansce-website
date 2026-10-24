@@ -1,9 +1,9 @@
 {
-  "sourceCommit": "4f842fbb10b3350e6f8a3e334de929a9fc182a28",
+  "sourceCommit": "3d905f8409f5a80f4ac9c9e15efddc843214cf03",
   "scope": "land identity, laws, routes, layout and efficiency only; no financial UI or case persistence",
   "source": "三策案件版",
   "sourceRoot": "/Users/jeremiah/Documents/Codex/2026-10-24/sanze-release-app",
-  "generatedAt": "2026-10-24T07:00:04.401Z",
+  "generatedAt": "2026-10-24T07:04:31.419Z",
   "method": "esbuild directly bundles original App exports; website has no separate calculation fork; App source is authoritative",
   "sources": [
     {
@@ -28,7 +28,7 @@
     },
     {
       "path": "src/cases/land-routes/model.ts",
-      "sha256": "0af9cce6c352101f6191c6dd54c6e0820aa57ae76bd97d82b574b09d7c988ea7"
+      "sha256": "d30433ad87ae246012c096e1fa29ff2cbf07fb0ad458900eb1f16ccfe1007f47"
     },
     {
       "path": "src/cases/land-rules/catalog.ts",
@@ -84,11 +84,11 @@
     },
     {
       "path": "src/components/industrial/DevelopmentPanel.tsx",
-      "sha256": "e266e6e0f91d11f596cf602b3e85b0d452833b76c4b26a691f26a52181da1af6"
+      "sha256": "28b6fd5a16a1e5dadca68f0298a9a309ebf013e97c27329ffb32877b25e0f4d5"
     },
     {
       "path": "src/components/industrial/IndustrialPanel.tsx",
-      "sha256": "0ccd15c76ae375f28a306c5d176c790d610fe7b961f050080ce60a13934600df"
+      "sha256": "be3361d4affafc84455d1eaba3bd226a75a793ba1c94828cfe51364d5abe07c9"
     },
     {
       "path": "src/components/mixed-zone/CommercialIntensityPanel.tsx",
@@ -96,7 +96,7 @@
     },
     {
       "path": "src/components/mixed-zone/DocumentCasePanel.tsx",
-      "sha256": "2ffbca62fecab1673ab0ba07e1bdc64b3852860a41358f4ad3154483cdf370ad"
+      "sha256": "10f546bf8a77ac778054e3f98e9f8aa1eae4d15fd7e91a09448b4918950206c0"
     },
     {
       "path": "src/components/mixed-zone/LandBasisPanel.tsx",
@@ -112,11 +112,11 @@
     },
     {
       "path": "src/components/mixed-zone/MixedZonePanel.tsx",
-      "sha256": "5dd07d405e89fb4871d66aae400c26656d368476c665b955918bf6b9070a827f"
+      "sha256": "1178edcb5a62619942a4fcf31bd2bed99717c19a13f9c17a8ca25dfecc4031ff"
     },
     {
       "path": "src/components/mixed-zone/ProgramReviewPanel.tsx",
-      "sha256": "094da09b0ac3b6cb2ebe343e5a241d494ba987a1af83640e02e9a21938c7bec4"
+      "sha256": "2ae2b11d297e2026431d8ed3fce8d3d59e524ef34407232dcee3dffc4ee65e50"
     },
     {
       "path": "src/lib/industrial/development.ts",

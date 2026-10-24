@@ -49,7 +49,7 @@ export function useDraftState(key,initial){
 export function DraftControls(){
  const d=useDraft(),[remove,setRemove]=useState(false);
  if(d.needsRecovery)return <section className="draft-controls" role="alert"><div><strong>本機暫存暫時無法讀取</strong><p>{d.error}原暫存尚未覆寫，你仍可查看評估工具。</p></div><div><button type="button" onClick={d.reload}>重新讀取暫存</button><button type="button" onClick={d.fresh}>建立新評估</button></div><CaseFileControls/></section>;
- const statusText=d.status==='imported'?'案件已載入，請重新計算':d.status==='restored'?'已恢復輸入，請重新檢核':d.status==='conflict'?'暫存有其他分頁版本':d.status==='error'?'本機暫存未完成':'';
- const detail=d.error||(d.versionChanged?'規則已變更，請重新計算與核對。':'');
+ const statusText=d.status==='imported'?'案件已載入':d.status==='conflict'?'另一分頁有不同資料':d.status==='error'?'資料尚未儲存':'';
+ const detail=d.error;
  return <section className="draft-controls draft-toolbar" aria-label="案件操作">{(statusText||detail)&&<div role="status">{statusText&&<strong>{statusText}</strong>}{detail&&<span>{detail}</span>}</div>}{d.status==='conflict'?<div><button type="button" onClick={d.reload}>載入另一分頁的暫存</button><button type="button" onClick={d.keepThis}>改存本頁輸入</button></div>:<div>{d.status==='error'&&<button type="button" onClick={d.keepThis}>重試暫存</button>}{d.savedAt&&<button type="button" onClick={()=>setRemove(true)}>刪除本機暫存</button>}</div>}<CaseFileControls/>{remove&&<div className="draft-remove" role="alertdialog" aria-label="刪除本機暫存"><p>刪除此瀏覽器的暫存，畫面輸入仍保留；再次修改後會重新暫存。</p><button type="button" onClick={()=>{d.removeSaved();setRemove(false);}}>確認刪除暫存</button><button type="button" onClick={()=>setRemove(false)}>取消</button></div>}</section>;
 }
