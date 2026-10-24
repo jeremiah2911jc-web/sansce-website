@@ -1,0 +1,32 @@
+import assert from 'node:assert/strict';
+import {fuzhongProgram} from '../qa/public-cases/fuzhong-program.mjs';
+import {readFile} from 'node:fs/promises';
+import {createRequire} from 'node:module';
+import {exampleInput,evaluate} from '../src/land-evaluation/model.mjs';
+import * as web from '../src/land-evaluation/generated/core.mjs';
+import {serializeDraft,parseDraft} from '../src/land-evaluation/local-draft.mjs';
+const manifest=JSON.parse(await readFile(new URL('../src/land-evaluation/generated/source-manifest.json',import.meta.url)));
+const {build}=createRequire(manifest.sourceRoot+'/package.json')('esbuild');
+const out=await build({stdin:{contents:`export * from './src/lib/planning/autonomousPlanning.ts';export * from './src/lib/planning/planningAdoption.ts';export * from './src/lib/mixed-zone/model.ts';export * from './src/lib/mixed-zone/landBasis.ts';export * from './src/lib/mixed-zone/programReview.ts';export * from './src/lib/mixed-zone/documentCase.ts';`,resolveDir:manifest.sourceRoot},write:false,bundle:true,platform:'node',format:'esm'});
+const app=await import('data:text/javascript;base64,'+Buffer.from(out.outputFiles[0].text).toString('base64'));
+const x=exampleInput();Object.assign(x,{site:'1000',coverage:'50',far:'999',renewal:'0',tdr:'0',scale:'0',danger:'0',storePercent:'0'});x.commercialIntensity={...web.newCommercialIntensity(),designMode:'residential',city:'臺北市',mode:'taipei25',commercialClass:'3',planSource:'合成測試計畫，非實案',checkedAt:'2026-10-24',residentialUse:'allowed',useSource:'合成用途依據',boundarySource:'合成分段圖',bands:[{id:'A',kind:'road',area:'600',width:'10',frontage:'10',source:'合成圖A'},{id:'B',kind:'residual',area:'400',width:'',frontage:'',source:'合成圖B'}]};x.parkingDesign=web.newParkingDesign('臺北市','', 'no');
+const frozen=JSON.stringify(x);const w=web.calculatePlanning(x),a=app.calculatePlanning(x);assert.deepEqual(w,a);assert.equal(w.commercialReview.base,4200);assert.equal(w.commercialReview.effectiveFar,420);assert.equal(JSON.stringify(x),frozen);assert.equal(app.normalizePlanningInput({...x,far:''}).far,'');
+const bad=structuredClone(x);bad.commercialIntensity.bands[0].frontage='4.99';assert.equal(evaluate(bad).values,null);assert.equal(app.calculatePlanning(bad).values,null);
+const n=structuredClone(x);n.parkingDesign=web.newParkingDesign('新北市','','no');Object.assign(n.commercialIntensity,{city:'新北市',mode:'document',documentFar:'560',documentCoverage:'65',documentSource:'合成土管',ntpcHousing:{mode:'standard',far:'300',source:'合成第17條依據'}});assert.equal(app.calculatePlanning(n).commercialReview.base,3000);assert.deepEqual(web.calculatePlanning(n),app.calculatePlanning(n));n.storePercent='10';assert.equal(app.calculatePlanning(n).values,null);n.storePercent='0';
+const m=web.newMixedSite('2026-10-24');n.mixedSite=m;assert.equal(app.calculatePlanning(n).values,null);assert.deepEqual(web.calculateMixedSite(m),app.calculateMixedSite(m));
+m.layout={...m.layout,municipality:'新北市'};m.ntpcCross={nature:'different',partition:'no',entrances:'no',source:'合成圖說',transfers:[]};m.zones.push({...m.zones[0],id:'second'});for(const z of m.zones){z.inclusion='included';z.landBasis={...app.newLandBasis(),site:{status:'count',area:'',source:'合成'}};z.ntpcUse='residential';}m.buildings=[{id:'b',name:'合成幢',reviewedCars:'',mode:'article59',exemption:'second',publicBuilding:'no',evidence:{state:'scenario',source:'合成',date:'2026-10-24'}}];m.allocations=m.zones.map(z=>({id:z.id,zoneId:z.id,building:'b',use:'residential',counted:'0',footprint:'0',height:'0',parkingArea:'0',units:'0',permission:'allowed',evidence:{state:'scenario',source:'合成',date:'2026-10-24'}}));for(const mode of ['residential','mixed']){m.designMode=mode;assert.deepEqual(web.calculateMixedSite(m),app.calculateMixedSite(m));assert(web.calculateMixedSite(m).issues.some(i=>i.scope==='新北1080894762'&&i.kind==='conflict'));}m.ntpcCross.nature='same';assert.deepEqual(web.calculateMixedSite(m),app.calculateMixedSite(m));
+const original={'collective.input':n};const parsed=parseDraft(serializeDraft(original,'test','1'));assert.deepEqual(parsed.data['collective.input'],n);const invalid=structuredClone(original);invalid['collective.input'].commercialIntensity.ntpcHousing.mode='invalid';assert.throws(()=>parseDraft(serializeDraft(invalid,'test','1')));
+console.log('PASS: Taipei/New Taipei single and mixed App/web parity, raw-input preservation, missing-rule blocking, residential cap, stale/invalid import and draft round-trip. Synthetic fixtures only.');
+
+assert.deepEqual(web.calculateProgramReview(fuzhongProgram),app.calculateProgramReview(fuzhongProgram));console.log('PASS: public Fuzhong full program App/web parity.');
+
+const document=web.newDocumentCase();
+const docInput={...x,assessmentMode:'document',documentCase:document};
+assert.deepEqual(web.calculateDocumentCase(document),app.calculateDocumentCase(document));
+assert.deepEqual(web.calculatePlanning(docInput),app.calculatePlanning(docInput));
+assert.equal(web.calculatePlanning(docInput).values,null);
+const docDraft={'collective.input':docInput};
+assert.deepEqual(parseDraft(serializeDraft(docDraft,'test','1')).data,docDraft);
+const badDoc=structuredClone(docDraft);badDoc['collective.input'].documentCase.version='unknown';
+assert.throws(()=>parseDraft(serializeDraft(badDoc,'test','1')));
+console.log('PASS: document workflow App/web parity, missing values, document import/export and unsupported version rejection.');

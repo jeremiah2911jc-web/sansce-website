@@ -1,4 +1,4 @@
-// ../../../../../../src/sanze-cases-desktop/src/cases/land-local/registry.json
+// ../sanze-release-app/src/cases/land-local/registry.json
 var registry_default = [
   {
     city: "\u81FA\u5317\u5E02",
@@ -1897,7 +1897,7 @@ var registry_default = [
   }
 ];
 
-// ../../../../../../src/sanze-cases-desktop/src/cases/land-local/catalog.ts
+// ../sanze-release-app/src/cases/land-local/catalog.ts
 var normalizeCity = (s) => s.trim().replace(/^台/, "\u81FA");
 var LOCAL_VERSION = "land-local.2026-10-21.1";
 var localProfiles = registry_default;
@@ -1907,7 +1907,7 @@ function makeLocalContext(city, regime, routeId) {
   return { version: LOCAL_VERSION, city: normalizeCity(city), regime, routeId, profile: structuredClone(localProfile(city) ?? null) };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/cases/land-rules/catalog.ts
+// ../sanze-release-app/src/cases/land-rules/catalog.ts
 var RULE_VERSION = "land-law.2026-10-21.4";
 var REVIEWED_AT = "2026-10-21";
 var moj = (code) => `https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=${code}`;
@@ -1939,7 +1939,7 @@ var localCatalog = cities.map(([city, host]) => ({ city, url: localProfile(city)
 ] }));
 var normalizeCity2 = (s) => s.trim().replace(/^台/, "\u81FA");
 
-// ../../../../../../src/sanze-cases-desktop/src/cases/land-rules/types.ts
+// ../sanze-release-app/src/cases/land-rules/types.ts
 var answers = { unknown: "\u5F85\u67E5", yes: "\u662F", no: "\u5426" };
 var applicantFields = { farmer: "\u7D93\u5730\u65B9\u8A8D\u5B9A\u5177\u8FB2\u6C11\u8CC7\u683C", adult: "\u5DF2\u6210\u5E74", sameCounty: "\u6236\u7C4D\u8207\u571F\u5730\u5728\u540C\u4E00\u7E23\u5E02", landTwoYears: "\u53D6\u5F97\u571F\u5730\u5DF2\u6EFF\u4E8C\u5E74", registrationTwoYears: "\u6236\u7C4D\u767B\u8A18\u5DF2\u6EFF\u4E8C\u5E74", noFarmhouse: "\u7121\u81EA\u7528\u8FB2\u820D\uFF08\u542B\u5DF2\u53D6\u5F97\u57F7\u7167\uFF09", owner: "\u70BA\u571F\u5730\u6240\u6709\u6B0A\u4EBA", farmUse: "\u78BA\u4F9B\u8FB2\u696D\u4F7F\u7528", notUsed: "\u672A\u66FE\u63D0\u4F9B\u8208\u5EFA\u8FB2\u820D", noRecentPermit: "\u4E94\u5E74\u5167\u7121\u8FB2\u820D\u5EFA\u7167\u7533\u8ACB\u7D00\u9304" };
 function newLegalInputs() {
@@ -1953,7 +1953,7 @@ function legalInputIssues(v) {
   return issues;
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/cases/land-rules/engine.ts
+// ../sanze-release-app/src/cases/land-rules/engine.ts
 var nonurbanZones = ["\u7279\u5B9A\u8FB2\u696D\u5340", "\u4E00\u822C\u8FB2\u696D\u5340", "\u5DE5\u696D\u5340", "\u9109\u6751\u5340", "\u68EE\u6797\u5340", "\u5C71\u5761\u5730\u4FDD\u80B2\u5340", "\u98A8\u666F\u5340", "\u6CB3\u5DDD\u5340", "\u7279\u5B9A\u5C08\u7528\u5340"];
 var trim = (s) => s.trim();
 var knownDesignation = (s) => ["\u7532\u7A2E\u5EFA\u7BC9\u7528\u5730", "\u4E59\u7A2E\u5EFA\u7BC9\u7528\u5730", "\u4E19\u7A2E\u5EFA\u7BC9\u7528\u5730", "\u4E01\u7A2E\u5EFA\u7BC9\u7528\u5730", "\u8FB2\u7267\u7528\u5730"].includes(trim(s));
@@ -2060,7 +2060,7 @@ function addParameters(p, r) {
   } else r.parameters.push("\u5730\u65B9\u5EFA\u7BC9\u91CF\u9AD4\u898F\u5247\u5C1A\u672A\u7DE8\u78BC\uFF0C\u9069\u7528\u984D\u5EA6\u5F85\u5730\u65B9\u898F\u5B9A\u53CA\u500B\u6848\u6B63\u5F0F\u6587\u4EF6\u8986\u6838\u3002");
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/cases/land-routes/catalog.ts
+// ../sanze-release-app/src/cases/land-routes/catalog.ts
 var ROUTE_VERSION = "land-routes.2026-10-21.2";
 var item = (id, label, detail, sources = ["nonurban"]) => ({ id, label, detail, sources });
 var step = (id, label, detail, after, authority, sources = ["nonurban"]) => ({ ...item(id, label, detail, sources), after, authority });
@@ -2118,7 +2118,7 @@ for (const d of dossiers) if (!["conversion-yi", "conversion-ding", "building-ex
 }
 var dossierById = (id) => dossiers.find((d) => d.id === id);
 
-// ../../../../../../src/sanze-cases-desktop/src/cases/land-routes/model.ts
+// ../sanze-release-app/src/cases/land-routes/model.ts
 var reviewValues = { unknown: "\u5F85\u67E5", yes: "\u5DF2\u6838\u5C0D\u7B26\u5408", no: "\u76EE\u524D\u4E0D\u7B26" };
 var documentValues = { missing: "\u672A\u5099", preparing: "\u6E96\u5099\u4E2D", received: "\u5DF2\u53D6\u5F97", exempt: "\u4E3B\u5F35\u514D\u9644" };
 var progressValues = { pending: "\u672A\u958B\u59CB", submitted: "\u5DF2\u9001\u4EF6", correction: "\u88DC\u6B63\u4E2D", complete: "\u5DF2\u53D6\u5F97\u7D50\u679C" };
@@ -2219,11 +2219,11 @@ function summarizePlan(p, a) {
     const n = f.id === "development-review" ? central.amount : numeric(e.amount);
     if (n === null || !e.costKey.trim()) {
       unknownKinds.add(f.kind);
-      missing.push(f.label + "\uFF1A\u91D1\u984D\uFF0F\u5C0D\u5E33\u4EE3\u78BC\u5F85\u88DC");
+      missing.push(f.label + "\uFF1A\u91D1\u984D\uFF0F\u76E4\u67E5\u4EE3\u78BC\u5F85\u88DC");
       continue;
     }
     if (keys.has(e.costKey.trim())) {
-      conflicts.push("\u8CBB\u7528\u5C0D\u5E33\u4EE3\u78BC\u91CD\u8907\uFF1A" + e.costKey);
+      conflicts.push("\u8CBB\u7528\u76E4\u67E5\u4EE3\u78BC\u91CD\u8907\uFF1A" + e.costKey);
       unknownKinds.add(f.kind);
       continue;
     }
@@ -2235,7 +2235,7 @@ function summarizePlan(p, a) {
   return { status: stale ? "\u4F86\u6E90\u5DF2\u8B8A\u66F4" : blockers.length ? "\u76EE\u524D\u689D\u4EF6\u4E0D\u7B26" : conflicts.length ? "\u7D00\u9304\u5F85\u6838\u5C0D" : missing.length ? "\u689D\u4EF6\uFF0F\u6587\u4EF6\u672A\u9F4A" : completed.size === p.template.steps.length ? "\u586B\u5831\u7A0B\u5E8F\u5B8C\u6210\uFF0C\u6838\u51C6\u6548\u529B\u4F9D\u539F\u6587\u4EF6" : "\u6240\u5217\u8CC7\u6599\u5DF2\u6838\u5C0D\uFF0C\u5C1A\u5F85\u7533\u8ACB\u7A0B\u5E8F", stale, missing: [...new Set(missing)], blockers, conflicts, expenses: stale || localChanged || unknownKinds.has("expense") || conflicts.length ? null : knownExpenses, knownExpenses, deposits: stale || localChanged || unknownKinds.has("deposit") || conflicts.length ? null : knownDeposits, knownDeposits, inKind: stale || localChanged || unknownKinds.has("in_kind") || conflicts.length ? null : knownInKind, knownInKind, centralFee: stale ? null : central.amount };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/cases/landAssessment.ts
+// ../sanze-release-app/src/cases/landAssessment.ts
 var LAND_ASSESSMENT_VERSION = "landAssessment.v1";
 var landRegimes = { unknown: "\u5C1A\u672A\u78BA\u8A8D", urban: "\u90FD\u5E02\u8A08\u756B\u5167", nonurban: "\u975E\u90FD\u5E02\u571F\u5730", special: "\u570B\u5BB6\u516C\u5712\u7B49\u7279\u6B8A\u7BA1\u5236" };
 var factStatuses = { pending: "\u5F85\u78BA\u8A8D", assumed: "\u898F\u5283\u5047\u8A2D", verified: "\u8CC7\u6599\u5DF2\u67E5\u8B49", conflict: "\u8CC7\u6599\u6709\u885D\u7A81" };
@@ -2297,7 +2297,7 @@ function landAssessmentSummary(a) {
   };
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/lib/stableFingerprint.ts
+// ../sanze-release-app/src/lib/stableFingerprint.ts
 function stableSerialize(value) {
   if (value === null) return "null";
   if (value === void 0) return '"__undefined__"';
@@ -2320,7 +2320,7 @@ function calculateStableFingerprint(value) {
   return `fnv1a32:${(hash >>> 0).toString(16).padStart(8, "0")}`;
 }
 
-// ../../../../../../src/sanze-cases-desktop/src/cases/land-layout/model.ts
+// ../sanze-release-app/src/cases/land-layout/model.ts
 var LAYOUT_VERSION = "land-layout.2026-10-21.1";
 var layoutSources = [{ title: "\u975E\u90FD\u5E02\u571F\u5730\u4F7F\u7528\u7BA1\u5236\u898F\u5247\u7B2C9\u689D", url: "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0060013&flno=9" }, { title: "\u5EFA\u7BC9\u6280\u8853\u898F\u5247\u7B2C162\u689D\uFF1A\u5206\u9805\u514D\u8A08\u689D\u4EF6", url: "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0070115&flno=162" }, { title: "\u5EFA\u7BC9\u6280\u8853\u898F\u5247\u7B2C59\u689D\uFF1A\u505C\u8ECA\u9069\u7528\u4F9D\u64DA", url: "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0070115&flno=59" }, { title: "\u5B9C\u862D\u7E23\u975E\u90FD\u5E02\u571F\u5730\u7BA1\u5236\u516C\u544A\u76EE\u9304", url: "https://eadept.e-land.gov.tw/News.aspx?n=15686&sms=15490" }];
 function layoutContext(a) {
