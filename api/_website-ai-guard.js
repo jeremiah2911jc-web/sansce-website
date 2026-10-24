@@ -41,7 +41,9 @@ export function makeWebsiteAiGuard({env=process.env,fetchImpl=fetch,dbFactory=cr
      if(error)throw Error('start_storage');
     },
     async settle(response){
-     const actual=responseCost(response,pricing);
+     let actual;
+     try{actual=responseCost(response,pricing);}
+     catch(error){log(JSON.stringify({event:'website_ai_usage_unsettled',request_id:requestId,response_id:typeof response?.id==='string'?response.id.slice(0,120):null,model:typeof response?.model==='string'?response.model.slice(0,100):null,service_tier:typeof response?.service_tier==='string'?response.service_tier.slice(0,30):null,usage:response?.usage,reason:error.message}));throw error;}
      try{await finish('settled',actual.amount,actual.usage,actual.responseId);}
      catch(error){log(JSON.stringify({event:'website_ai_settlement_pending',request_id:requestId,response_id:actual.responseId,cost_microusd:actual.amount,usage:actual.usage,pricing_version:pricing.version}));throw error;}
      if(actual.amount>reserve)throw Error('cost_envelope_exceeded');
