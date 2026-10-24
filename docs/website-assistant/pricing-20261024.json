@@ -1,0 +1,29 @@
+{
+  "model": "gpt-6-luna",
+  "responseModels": [
+    "gpt-6-luna"
+  ],
+  "version": "openai-standard-2026-10-24",
+  "validUntil": "2026-11-23T00:00:00+08:00",
+  "inputPerMillion": 100000,
+  "cachedInputPerMillion": 10000,
+  "cacheWritePerMillion": 125000,
+  "cacheWrite12hPerMillion": 250000,
+  "outputPerMillion": 500000,
+  "searchCall": 10000,
+  "contextWindow": 1050000,
+  "longContext": {
+    "threshold": 272000,
+    "inputPerMillion": 200000,
+    "cachedInputPerMillion": 20000,
+    "cacheWritePerMillion": 250000,
+    "cacheWrite12hPerMillion": 500000,
+    "outputPerMillion": 750000
+  },
+  "sources": [
+    "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "https://developers.openai.com/api/docs/pricing",
+    "https://developers.openai.com/api/docs/guides/prompt-caching",
+    "https://developers.openai.com/api/docs/guides/tools-web-search"
+  ]
+}
