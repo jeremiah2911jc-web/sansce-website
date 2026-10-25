@@ -1,0 +1,36 @@
+{
+  "approvedBy": "user designation in this conversation",
+  "date": "2026-10-25",
+  "canonical": "approved-team.png",
+  "roles": {
+    "1": "long-haired male",
+    "2": "long-haired female",
+    "3": "short-haired male",
+    "4": "short-haired female"
+  },
+  "allowedWorkingPairs": [
+    [
+      1,
+      2
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      3,
+      2
+    ],
+    [
+      3,
+      4
+    ]
+  ],
+  "files": {
+    "01-long-haired-male.png": "ac8e536cd647813256345f75f9051da8ddb600c03721717a0e8819be698beb0f",
+    "02-long-haired-female.png": "fbdf700bfa9436f1ec0903da20af3ef43460c63e2869035386fd63c156c8c429",
+    "03-short-haired-male.png": "24279bddaccb512c10dd9760873922db53d109a4fddd651081d12846d2879998",
+    "04-short-haired-female.png": "80c4c1962b1d3b7fab310dd66cc2f58c517792361d0761230ca0ff468b867ed2",
+    "approved-team.png": "be461d0cc3a2f7e6e9da07c65c686d42608e1612b3d5a80913b6b1c6d153db6f"
+  }
+}

@@ -1,0 +1,4 @@
+/* Group portraits need a frame that keeps every face visible at each column width. */
+.sx-home .home-about-photo img[data-photo-id="home-team-portrait"]{height:auto!important;aspect-ratio:6/5;object-position:50% 45%!important}
+@media(max-width:760px){.sx-home .home-about-photo img[data-photo-id="home-team-portrait"]{aspect-ratio:4/3}}
+@media(max-width:760px){.sx-hero-scene img[data-photo-id="home-consultation-natural"]{object-position:50% 45%!important}}
