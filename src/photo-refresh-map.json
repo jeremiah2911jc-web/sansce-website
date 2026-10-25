@@ -170,14 +170,14 @@
   "/": {
     "/images/editorial/family-floor-plan.webp|": {
       "id": "P017",
-      "src": "/images/audit-fixes-20261023/p017.webp",
-      "small": "/images/audit-fixes-20261023/p017-small.webp",
+      "src": "/images/photo-scenes-20261025/family-discussion.webp",
+      "small": "/images/photo-scenes-20261025/family-discussion-960.webp",
       "width": 1536,
       "height": 1024,
-      "alt": "祖母、母親與孩子在家中確認居住空間",
+      "alt": "祖母與母親在家中討論住宅圖面，孩子坐在一旁拿著書",
       "role": "content",
       "position": "100% 45%",
-      "mobile": "/images/audit-fixes-20261023/p017-mobile.webp"
+      "mobile": "/images/photo-scenes-20261025/family-discussion-mobile.webp"
     },
     "/images/editorial/community-meeting.webp|": {
       "id": "P018",

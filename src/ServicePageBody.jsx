@@ -3,7 +3,7 @@ import {photoProps} from './photo-refresh.js';
 
 function Copy({body}) {return body.split('\n\n').map((text,i)=><Readable as="p" key={i}>{text}</Readable>);}
 function Section({page,index,className=''}) {const [title,body]=page.sections[index];return <section id={`section-${index+1}`} className={'service-copy-section '+className}><Readable as="h2">{title}</Readable><Copy body={body}/></section>;}
-function Photo({name,alt,caption}){return <figure className="service-evidence-photo"><img loading="lazy" {...photoProps({src:`/images/reaudit-20261021/${name}.webp`,srcSet:`/images/reaudit-20261021/${name}-960.webp 960w, /images/reaudit-20261021/${name}.webp 1536w`,sizes:'(max-width:760px) 100vw, 50vw',width:1536,height:1024,alt})}/><figcaption>{caption}</figcaption></figure>;}
+function Photo({name,alt,caption,directory='reaudit-20261021'}){return <figure className="service-evidence-photo"><img loading="lazy" {...photoProps({src:`/images/${directory}/${name}.webp`,srcSet:`/images/${directory}/${name}-960.webp 960w, /images/${directory}/${name}.webp 1536w`,sizes:'(max-width:760px) 100vw, 50vw',width:1536,height:1024,alt})}/><figcaption>{caption}</figcaption></figure>;}
 const menus={
  'urban-renewal':[[0,'委託與成果'],[3,'基地及程序'],[4,'各階段工作'],[11,'諮詢資料']],
  'dangerous-old-rebuilding':[[2,'資格與產權'],[3,'全體同意'],[4,'規劃與出資'],[6,'準備資料']],
@@ -23,7 +23,7 @@ export default function ServicePageBody({page}) {
  </div>;
  if(type==='dangerous-old-rebuilding')return <div className="service-edition eligibility-edition">
   <div className="eligibility-record"><Section page={page} index={2}/><Section page={page} index={3}/></div>
-  <div className="eligibility-visit"><Photo name="doorway-measure-v2" alt="現場人員以捲尺核對住宅門框內側的淨寬" caption="現況尺寸可供規劃參考；危老資格仍依建物、產權與安全評估文件核對。"/><div><Section page={page} index={0}/><Section page={page} index={1}/></div></div>
+  <div className="eligibility-visit"><Photo name="eligibility-records" directory="photo-scenes-20261025" alt="顧問與屋主在窗邊討論建物照片與圖面" caption="比對建物現況照片與圖面，確認資格初評需補齊的資料。"/><div><Section page={page} index={0}/><Section page={page} index={1}/></div></div>
   <Section page={page} index={4}/><Section page={page} index={5}/><Section page={page} index={6} className="eligibility-preparation"/>
  </div>;
  if(type==='joint-construction')return <div className="service-edition contract-edition">

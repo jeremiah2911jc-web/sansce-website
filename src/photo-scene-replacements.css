@@ -1,0 +1,3 @@
+/* The family hero needs its own mobile composition, with all three faces in frame. */
+.hero-family-phrase{white-space:nowrap}
+@media(max-width:760px){.sx-hero-scene img[data-photo-id="P017"]{object-position:50% 45%!important}}
