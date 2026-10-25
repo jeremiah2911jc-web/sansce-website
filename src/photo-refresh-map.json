@@ -191,13 +191,13 @@
       "mobile": "/images/audit-fixes-20261023/p018-mobile.webp"
     },
     "/images/editorial/urban-blocks.webp|": {
-      "id": "refinement-home-observation",
-      "src": "/images/refinement-20261021/home-observation.webp",
-      "small": "/images/refinement-20261021/home-observation-960.webp",
+      "id": "home-team-portrait",
+      "src": "/images/home-team-20261025/team.webp",
+      "small": "/images/home-team-20261025/team-960.webp",
       "width": 1536,
       "height": 1024,
-      "alt": "屋主在老公寓核對窗邊牆面與居住現況",
-      "position": "50% 50%"
+      "alt": "兩男兩女專業團隊於辦公空間的企業形象構圖",
+      "position": "50% 45%"
     },
     "/images/editorial/older-apartment-stair.webp|": {
       "id": "refinement-base-survey",
@@ -407,6 +407,16 @@
       "alt": "家人在住家中討論新屋格局與生活需求",
       "role": "article-card",
       "position": "50% 45%"
+    },
+    "/images/redesign/home-consultation-20261020.jpg|": {
+      "id": "home-consultation-natural",
+      "src": "/images/home-team-20261025/consultation.webp",
+      "small": "/images/home-team-20261025/consultation-960.webp",
+      "mobile": "/images/home-team-20261025/consultation-mobile.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "男女顧問共同討論建物照片與圖面",
+      "position": "100% 45%"
     }
   },
   "/insights/building-permit-extension": {
