@@ -48,6 +48,7 @@ import './design-refinement.css';
 import './reaudit-refinement.css';
 import './home-topic-composition.css';
 import './photo-scene-replacements.css';
+import './assistant-launcher-compact.css';
 
 const lineUrl = 'https://lin.ee/w8xSeSz';
 function LineContact() {return <div className="line-contact"><div><Readable as="h3">LINE 官方帳號</Readable><Readable as="p">加入三策 LINE，直接與我們聯絡。</Readable><a className="line-add" href={lineUrl} target="_blank" rel="noopener noreferrer">加入 LINE </a><small>ID：@160rlvqj</small></div></div>;}
