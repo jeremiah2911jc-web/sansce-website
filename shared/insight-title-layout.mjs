@@ -1,6 +1,7 @@
 // Review every phrase boundary when adding or renaming an article.
 // These groups affect headings only; prose must stay in natural text flow.
 export const insightTitlePhrases = {
+ '都更整合，別把地主的審慎當成障礙':['都更整合，','別把地主的審慎','當成障礙'],
  '都更資訊失真，名嘴與媒體都該負責':['都更資訊失真，','名嘴與媒體','都該負責'],
  '認識自己的土地':['認識','自己的土地'],
  '土地信託給銀行，房子就保證完工嗎？':['土地信託給銀行，','房子就保證完工嗎？'],
