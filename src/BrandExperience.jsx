@@ -42,7 +42,7 @@ export function DesignMotion() {
 }
 const heroSlides = [
 { tag: '都市更新・危老重建・合建顧問', title: <>以信實立本，<br />以專業成事。</>, text: '地主整合、更新會輔導、案件健檢與全案管理。三策依委託協調專業工作，記錄處理情形，持續追蹤案件進度。', image: 'home-consultation-20261020', width: 1672, height: 941, srcSet: '/images/redesign/home-consultation-20261020-960.jpg 960w, /images/redesign/home-consultation-20261020.jpg 1672w', alt: '顧問在住戶家中說明重建圖面與規劃', label: '三策的服務', href: '/consulting', name: '基地與社區' },
-{ tag: '地主分配與合作條件', title: <>地主分回的面積，<br />依每份提案分別計算。</>, text: '分配比例、容積與車位約定不同，分回的內容也不同。輸入各案條件，試算地主取得的建坪與差額。', image: 'family-floor-plan', alt: '家人檢視格局圖與目前居住空間', label: '試算兩份提案', href: '/landowner-comparison', name: '合作與分配' },
+{ tag: '地主分配與合作條件', title: <>地主分回的面積，<br />依每份提案<span className="hero-family-phrase">分別計算。</span></>, text: '分配比例、容積與車位約定不同，分回的內容也不同。輸入各案條件，試算地主取得的建坪與差額。', image: 'family-floor-plan', alt: '家人檢視格局圖與目前居住空間', label: '試算兩份提案', href: '/landowner-comparison', name: '合作與分配' },
 { tag: '案件健檢與全案管理', title: <>案件健檢，<br />檢視進度與推動困難。</>, text: '從最近的審查通知、會議紀錄與委託內容，核對目前進度、待辦工作和負責窗口。', image: 'community-meeting', alt: '住戶討論基地資料與後續工作', label: '了解案件健檢', href: '/checkup', name: '推動與分工' }];
 
 const services = [
