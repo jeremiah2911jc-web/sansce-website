@@ -3,6 +3,7 @@ import {serializeDraft,parseDraft,encodeValue,decodeValue,comparable,MAX_DRAFT_S
 import {collectiveDelivery,landDelivery,layoutDelivery,readjustmentDelivery,displayNumber,displayRuleVersion} from '../src/land-evaluation/delivery-model.mjs';
 import {publicText} from '../src/land-evaluation/public-copy.mjs';
 import {createInput,exampleInput,evaluate} from '../src/land-evaluation/model.mjs';
+import {defaultBasementDemand} from '../src/land-evaluation/generated/core.mjs';
 import {newLandAssessment,newLandFact,newLegalInputs,evaluateLand,newLayout,newHouse,newFloor,calculateLayout} from '../src/land-evaluation/generated/land.mjs';
 import {newReadjustmentPlan,evaluateReadjustment} from '../src/land-evaluation/generated/readjustment.mjs';
 import {layoutPresentation} from '../src/land-evaluation/layout-presentation.mjs';
@@ -27,7 +28,14 @@ test('read blocked by browser permissions cannot overwrite',()=>{assert.throws((
 test('another tab wins until user explicitly resolves conflict',()=>{assert.throws(()=>persistDraft(storage,'older-version',source,true,'r','r'),e=>e.code==='DRAFT_CONFLICT');assert.equal(memory.get(DRAFT_KEY),serialized);});
 test('clearing all input removes old draft instead of restoring old data',()=>{assert.deepEqual(persistDraft(storage,serialized,{},false,'r','r'),{raw:null,savedAt:''});assert.equal(storage.getItem(DRAFT_KEY),null);});
 test('size failure never replaces previous draft',()=>{memory.set(DRAFT_KEY,serialized);assert.throws(()=>persistDraft(storage,serialized,{'collective.name':'x'.repeat(MAX_DRAFT_SIZE)},true,'r','r'));assert.equal(storage.getItem(DRAFT_KEY),serialized);});
-for(const i of [exampleInput(),{...createInput(),site:'1800',coverage:'50',far:'300'}]){
+// Merge the current input schema into the historical planning example. Explicit
+// regression limits keep these mapping checks independent of missing approvals.
+function summaryFixture(){
+ const merge=(base,value)=>value&&typeof value==='object'&&!Array.isArray(value)?Object.fromEntries([...new Set([...Object.keys(base||{}),...Object.keys(value)])].map(key=>[key,key in value?merge(base?.[key],value[key]):base[key]])):value;
+ const i=merge(createInput(),exampleInput());Object.assign(i.regulatoryReview,{renewalLimitPercent:'50',tdrLimitPercent:'30'});i.basementDemand={...defaultBasementDemand('新北市'),enabled:false};return i;
+}
+test('incomplete planning input has no printable summary',()=>{const i={...createInput(),site:'1800',coverage:'50',far:'300'};assert.equal(collectiveDelivery({input:i,result:evaluate(i)}),null);});
+for(const i of [summaryFixture(),{...summaryFixture(),site:'1800',coverage:'50',far:'300'}]){
  const r=evaluate(i),before=structuredClone(r),s=collectiveDelivery({input:i,result:r,name:'合成驗收',district:'新北市',calculatedAt:'2026-10-23T00:00:00Z'});
  test('collective output mapped without recalculation or mutation',()=>{assert.equal(s.metrics[0][1],r.values.salePing);assert.equal(s.createdAt,'2026-10-23T00:00:00Z');assert.deepEqual(r,before);assert(!s.ruleVersion.includes('待核'));});
  test('area chart uses nonoverlapping floor components',()=>assert(Math.abs(s.charts[1].rows.reduce((a,x)=>a+x[1],0)-r.values.total)<.02));

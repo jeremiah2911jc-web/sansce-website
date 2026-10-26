@@ -2,6 +2,7 @@ import {useState} from 'react';
 import ScriptureStatement from './ScriptureQuote.jsx';
 import './company-footer.css';
 import './company-footer-compact.css';
+import './brand-wordmark-09.css';
 
 const services=[['都市更新顧問','/services/urban-renewal'],['危老重建評估','/services/dangerous-old-rebuilding'],['合建條件比較','/services/joint-construction'],['案件健檢','/checkup'],['全案管理','/services/project-management']];
 const resources=[['關於三策','/about'],['服務流程','/process'],['社區方案','/programs'],['地主分配試算','/landowner-comparison'],['三策觀點','/insights']];
@@ -9,7 +10,7 @@ function FooterLinks({title,items,className}){const [open,setOpen]=useState(fals
 export default function CompanyFooter(){return <footer id="company-footer" className="company-footer" aria-label="公司資訊與網站導覽">
  <div className="wrap company-footer-main">
   <section className="company-footer-identity" aria-labelledby="footer-company-name">
-   <a className="company-footer-brand" href="/" aria-label="三策專案管理顧問有限公司首頁"><img src="/images/brand/logo-20261023.png" width="52" height="52" alt="" loading="lazy"/><h2 id="footer-company-name"><span>三策專案管理</span><span>顧問有限公司</span></h2></a>
+   <a className="company-footer-brand company-footer-brand--wordmark" href="/" aria-label="三策專案管理顧問有限公司首頁"><h2 id="footer-company-name" aria-label="三策專案管理顧問有限公司"><img className="company-footer-wordmark" src="/images/brand/sanze-wordmark-09-white.svg?v=09-vector-2-ce-tall" width="112" height="53.4" alt="三策" loading="lazy"/><span>專案管理顧問有限公司</span></h2></a>
    <p className="company-footer-english" lang="en">Sanze Project Management<br/> Consulting Co., Ltd.</p>
    <p className="company-footer-motto">以信實立本，以專業成事</p>
    <p className="company-footer-tax">統一編號 <span>62250642</span></p>
