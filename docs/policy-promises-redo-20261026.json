@@ -1,0 +1,30 @@
+{
+  "status": "preview only; not published",
+  "generation": "built-in image_gen",
+  "prompts": [
+    "Highly photorealistic editorial photograph for Taiwan urban renewal policy article. 3:2 landscape, natural daylight, realistic skin and building scale, restrained neutral colors, dry surfaces, no cinematic grading, no glow, no text overlay, no invented readable signage. Fictional scene, not named real people or real case. Attractive professional staff with natural age, well groomed and alert. All eyes open with consistent pupils looking toward an actual interaction target. No hand supporting chin or cheek. Anatomically correct fingers, wrists and limbs; real contact with furniture and equipment. No staged pointing or lineup, no one looking at camera. Keep main people's faces and meaningful actions within central 75% for responsive presentation. No brand consultants in these two scenes. Scene: a functioning modest Taiwanese community adult day-service center in daytime, not an empty room. A pretty Taiwanese female care worker in her late 30s with straight black hair tied low, sage polo and plain trousers sits side-on next to a 78-year-old Taiwanese woman with a narrow face, straight silver ear-length hair, no glasses, rust cardigan. They both have open alert eyes and are looking at each other in a natural conversation while the older woman finishes positioning one large wooden puzzle piece on a tabletop, caregiver's hands resting visibly on her own knees. On the far side of the same large table, a handsome Taiwanese male care worker aged 35 with neat short hair in muted blue polo is listening to a different 72-year-old man with buzz-cut gray hair, navy sweatshirt, seated in an ordinary chair; their hands rest on table or chair arms. Broad aisle, sturdy adult-height tables, supportive chairs, closed well-built cabinets, simple activity materials. Four people only. Composition slightly diagonal across activity table, waist-up to full seated bodies, wide contextual framing. Show actual staffing and ongoing service, no medical procedure, no wheelchair transfer, no clinical intervention, no childcare toys. Correct eye lines between each interacting pair, no duplicate faces. No resemblance to recurring elderly married couples or advisors.",
+    "Highly photorealistic editorial photograph for Taiwan urban renewal policy article. 3:2 landscape, natural daylight, realistic skin and building scale, restrained neutral colors, dry surfaces, no cinematic grading, no glow, no text overlay, no invented readable signage. Fictional scene, not named real people or real case. Attractive professional staff with natural age, well groomed and alert. All eyes open with consistent pupils looking toward an actual interaction target. No hand supporting chin or cheek. Anatomically correct fingers, wrists and limbs; real contact with furniture and equipment. No staged pointing or lineup, no one looking at camera. Keep main people's faces and meaningful actions within central 75% for responsive presentation. No brand consultants in these two scenes. Scene: a Taiwanese family's relocation day at the dry ground-level sheltered forecourt of an ordinary residential building, outside the actual doorway, no stairs, no shopping bags, no empty corridor. A 46-year-old Taiwanese daughter, distinctly round face, shoulder-length dark hair with blunt bangs, light blue cotton overshirt, is squatting comfortably beside her 80-year-old father seated safely in a correctly built manual wheelchair. Father has a long face, receding gray hair, thin metal glasses, olive jacket; he and daughter look at one another with alert open eyes as she listens to his concern. Her hands rest naturally on her own knees, his hands rest on wheelchair armrests; neither touches their face. A handsome 32-year-old moving worker wearing a charcoal polo and work gloves in rear left is naturally pushing a hand trolley with two closed plain cardboard moving boxes toward the building. A few neatly stacked packed household boxes near wall establish a household move, not delivery or shopping. Show doorway wide enough for wheelchair, flat level dry pavement, enough turning space, no vehicle ramps, no one lifting wheelchair, no excessive belongings blocking path. Natural eye-level side view with family interaction prominent and moving action legible behind, generous environmental context. Daylight and warm human dignity, not sadness or melodrama. Different people than other article photos, no recurring elderly couple."
+  ],
+  "files": [
+    "public/images/insights/election-promises/day-service.webp",
+    "public/images/insights/election-promises/relocation.webp"
+  ],
+  "review": {
+    "narrative": [
+      "Operating adult day services requires staff and continuing service resources.",
+      "Relocation must support mobility and household care needs."
+    ],
+    "details": "Full images and enlarged detail crops inspected for eyes, limbs, hands, chairs, wheelchair, trolley and door geometry; dry surfaces. Compared with existing article image contact sheet.",
+    "layout": "Continuous 34-paragraph main column; selected original sentences in desktop margins; two asymmetric photo spreads; mobile linear flow. No replacement table.",
+    "copy": "Full original sections preserved. Prohibited language audit and 3 copy tests passed; caption and margin excerpts audited.",
+    "viewports": [
+      1440,
+      1280,
+      768,
+      360,
+      390,
+      430
+    ],
+    "safari": "Native Safari responsive 390x844, 15 screenshots from start to footer inspected."
+  }
+}
