@@ -1,0 +1,35 @@
+{
+  "status": "local preview only; not published",
+  "article": "政治人物談都更 別拿放寬條件開選舉支票",
+  "url": "http://127.0.0.1:4283/insights/urban-renewal-election-promises/",
+  "retainedHero": {
+    "file": "public/images/insights/election-promises/briefing.webp",
+    "prompt": "Use case photorealistic-natural, 3:2 landscape editorial photo for a Taiwan urban-renewal policy commentary website. A generic civic policy briefing in a modern but modest municipal auditorium, photographed from the middle aisle at eye level. A fictitious middle-aged Taiwanese public official with short graying side-part hair, navy jacket and open-collar white shirt stands naturally at a simple wood lectern on a low accessible stage. Several residents are seen from behind in the first few rows of plain connected auditorium seats, listening. A large screen behind the speaker shows only a muted unlabeled aerial street-block map, no promises, no numbers or words. Convey public announcement and accountability, not partisan campaign promotion or protest. No resemblance to any identifiable actual politician, no party symbols, no flags, no seals, no brand consultants, no press watermark. Speaker and lectern near center, room scale and rows visible for mobile crop. Natural soft daytime light, realistic Taiwan public building, dry floor, plausible chairs and microphone, hands resting naturally on lectern sides with correct wrist contact. Eyes open, alert, aimed toward audience. No chin resting, no hand at face, no exaggerated pointing, no dramatic cinema grading, no fake readable Chinese. Crisp but natural skin, unposed editorial realism. This is a wholly fictional generic setting, not a depiction of a named event."
+  },
+  "removed": [
+    {
+      "scene": "empty childcare room",
+      "reason": "Indirect connection to policy operating responsibility; user rejected."
+    },
+    {
+      "scene": "temporary housing corridor",
+      "reason": "Indirect connection to relocation availability and qualifications; user rejected."
+    }
+  ],
+  "replacement": "Three-row policy claim, execution condition and outcome comparison table",
+  "validation": {
+    "bodyParagraphs": 34,
+    "copyAudit": "passed",
+    "build": "passed",
+    "copyTests": "3 passed",
+    "viewports": [
+      1440,
+      1280,
+      768,
+      360,
+      390,
+      430
+    ],
+    "publication": "none"
+  }
+}
