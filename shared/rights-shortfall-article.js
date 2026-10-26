@@ -123,9 +123,9 @@ export const rightsShortfallArticle = {
     ],
     "storyPhotos": [
       {
-        "src": "/images/insights/rights-shortfall/planning.webp",
-        "small": "/images/insights/rights-shortfall/planning-small.webp",
-        "alt": "顧問與建築師比較不同住宅戶型",
+        "src": "/images/design-audit-20261026/planning-12.webp",
+        "small": "/images/design-audit-20261026/planning-12-960.webp",
+        "alt": "男女顧問分別核對住宅圖面與記錄規劃條件",
         "width": 1536,
         "height": 1024,
         "afterSection": 2,

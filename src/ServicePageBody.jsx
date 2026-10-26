@@ -1,40 +1,30 @@
+import {useEffect,useState} from 'react';
 import Readable from './Readable.jsx';
 import {photoProps} from './photo-refresh.js';
 
 function Copy({body}) {return body.split('\n\n').map((text,i)=><Readable as="p" key={i}>{text}</Readable>);}
-function Section({page,index,className=''}) {const [title,body]=page.sections[index];return <section id={`section-${index+1}`} className={'service-copy-section '+className}><Readable as="h2">{title}</Readable><Copy body={body}/></section>;}
-function Photo({name,alt,caption,directory='reaudit-20261021'}){return <figure className="service-evidence-photo"><img loading="lazy" {...photoProps({src:`/images/${directory}/${name}.webp`,srcSet:`/images/${directory}/${name}-960.webp 960w, /images/${directory}/${name}.webp 1536w`,sizes:'(max-width:760px) 100vw, 50vw',width:1536,height:1024,alt})}/><figcaption>{caption}</figcaption></figure>;}
-const menus={
- 'urban-renewal':[[0,'委託與成果'],[3,'基地及程序'],[4,'各階段工作'],[11,'諮詢資料']],
- 'dangerous-old-rebuilding':[[2,'資格與產權'],[3,'全體同意'],[4,'規劃與出資'],[6,'準備資料']],
- 'joint-construction':[[0,'審閱範圍'],[3,'分配條件'],[5,'履約安排'],[7,'文件版本']],
- 'project-management':[[0,'委託範圍'],[2,'階段管理'],[4,'交付資料'],[5,'各方權責']]
+function Section({page,index}) {const [title,body]=page.sections[index];return <section id={`section-${index+1}`} className="service-copy-section"><Readable as="h3">{title}</Readable><Copy body={body}/></section>;}
+function Photo({name,alt,caption,directory='reaudit-20261021'}){return <figure className="service-evidence-photo"><img loading="lazy" {...photoProps({src:`/images/${directory}/${name}.webp`,srcSet:`/images/${directory}/${name}-960.webp 960w, /images/${directory}/${name}.webp 1536w`,sizes:'(max-width:760px) 100vw, 60vw',width:1536,height:1024,alt})}/><figcaption>{caption}</figcaption></figure>;}
+const chapters={
+ 'urban-renewal':[['委託與成果',[0,1]],['基地與程序',[3,2]],['工作與進度',[4,8]],['合作與分配',[5,6,7,9]],['分工與準備',[10,11]]],
+ 'dangerous-old-rebuilding':[['資格與共識',[2,3]],['評估工作',[0,1]],['重建安排',[4,5]],['準備資料',[6]]],
+ 'joint-construction':[['委託範圍',[0,1]],['條件比較',[2,3,4,5]],['提案與文件',[6,7]]],
+ 'project-management':[['工作與委託',[0,1]],['階段與程序',[2,3]],['交付資料',[4]],['權責與費用',[5,7,6]],['準備文件',[8]]]
 };
-export function ServicePageNavigation({page}) {return <nav className="service-task-nav" aria-label="服務重點導覽">{menus[page.path.split('/').pop()].map(([i,label])=><a key={i} href={`#section-${i+1}`}>{label}</a>)}</nav>;}
+export function ServicePageNavigation({page}) {
+ const items=chapters[page.path.split('/').pop()];const [active,setActive]=useState(0);
+ useEffect(()=>{let frame=0;const update=()=>{frame=0;const first=document.querySelector('.service-chapter');const limit=Math.max((document.querySelector('.sx-header')?.getBoundingClientRect().bottom||100)+60,(first?parseFloat(getComputedStyle(first).scrollMarginTop)||0:0)+(parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop)||0))+8;let current=0;items.forEach((_,i)=>{if(document.getElementById(`service-chapter-${i}`)?.getBoundingClientRect().top<=limit)current=i;});setActive(current);};const queue=()=>{if(!frame)frame=requestAnimationFrame(update);};update();window.addEventListener('scroll',queue,{passive:true});window.addEventListener('resize',queue);return()=>{cancelAnimationFrame(frame);window.removeEventListener('scroll',queue);window.removeEventListener('resize',queue);};},[items]);
+ return <nav className="service-task-nav" aria-label="服務重點導覽">{items.map(([label],i)=><a key={label} href={`#service-chapter-${i}`} onClick={()=>setActive(i)} aria-current={active===i?'location':undefined}>{label}</a>)}</nav>;
+}
 export default function ServicePageBody({page}) {
  const type=page.path.split('/').pop();
- if(type==='urban-renewal')return <div className="service-edition urban-edition">
-  <div className="urban-commission"><Section page={page} index={0}/><Section page={page} index={1}/></div>
-  <div className="urban-base"><Section page={page} index={3}/><Section page={page} index={2}/></div>
-  <Section page={page} index={4} className="urban-work-phases"/>
-  <div className="urban-rights"><Section page={page} index={5}/><Section page={page} index={6}/></div>
-  <Section page={page} index={7}/><Section page={page} index={8}/><Section page={page} index={9}/>
-  <div className="urban-responsibility"><Section page={page} index={10}/><Section page={page} index={11}/></div>
- </div>;
- if(type==='dangerous-old-rebuilding')return <div className="service-edition eligibility-edition">
-  <div className="eligibility-record"><Section page={page} index={2}/><Section page={page} index={3}/></div>
-  <div className="eligibility-visit"><Photo name="eligibility-records" directory="photo-scenes-20261025" alt="顧問與屋主在窗邊討論建物照片與圖面" caption="比對建物現況照片與圖面，確認資格初評需補齊的資料。"/><div><Section page={page} index={0}/><Section page={page} index={1}/></div></div>
-  <Section page={page} index={4}/><Section page={page} index={5}/><Section page={page} index={6} className="eligibility-preparation"/>
- </div>;
- if(type==='joint-construction')return <div className="service-edition contract-edition">
-  <Section page={page} index={0}/><Section page={page} index={1}/>
-  <div className="contract-review-register"><table><caption>合建提案逐項檢視</caption><thead><tr><th scope="col">核對事項</th><th scope="col">檢視內容與約定</th></tr></thead><tbody>{[2,3,4,5].map(i=><tr id={`section-${i+1}`} key={i}><th scope="row"><Readable as="h2">{page.sections[i][0]}</Readable></th><td><Copy body={page.sections[i][1]}/></td></tr>)}</tbody></table></div>
-  <Section page={page} index={6}/><div className="contract-version"><Section page={page} index={7}/><Photo name="document-review-v3" alt="工作人員並排檢視兩份住宅圖面" caption="不同版本分別留存，提案、圖面與契約的採用條件須相互對照。"/></div>
- </div>;
- return <div className="service-edition management-edition"><Section page={page} index={0}/><Section page={page} index={1}/>
-  <div className="management-record"><Section page={page} index={2} className="management-phases"/><Photo name="construction-record-v2" alt="現場人員在室內以檢查表核對窗框現況" caption="現場處理情形與待辦事項應有紀錄；施工及監造責任依各專業委託辦理。"/></div>
-  <Section page={page} index={3} className="management-commission"/><Section page={page} index={4}/>
-  <div className="management-boundaries"><Section page={page} index={5}/><Section page={page} index={7}/></div>
-  <Section page={page} index={6}/><Section page={page} index={8}/>
- </div>;
+ return <div className={'service-edition chapter-edition chapter-'+type}>{chapters[type].map(([title,indices],chapter)=><section className="service-chapter" id={`service-chapter-${chapter}`} key={title} aria-labelledby={`service-chapter-heading-${chapter}`}>
+  <header className="service-chapter-identity"><h2 id={`service-chapter-heading-${chapter}`}>{title}</h2></header>
+  <div className="service-chapter-content">
+   {type==='dangerous-old-rebuilding'&&chapter===1&&<Photo name="records-34" directory="design-audit-20261026" alt="男女顧問分別核對建物照片與記錄基地資料" caption="比對建物現況照片與圖面，確認資格初評需補齊的資料。"/>}
+   {type==='joint-construction'&&chapter===1?<div className="contract-review-register"><table><caption>合建提案逐項檢視</caption><thead><tr><th scope="col">核對事項</th><th scope="col">檢視內容與約定</th></tr></thead><tbody>{indices.map(i=><tr id={`section-${i+1}`} key={i}><th scope="row"><Readable as="h3">{page.sections[i][0]}</Readable></th><td><Copy body={page.sections[i][1]}/></td></tr>)}</tbody></table></div>:indices.map(i=><Section page={page} index={i} key={i}/>)}
+   {type==='joint-construction'&&chapter===2&&<Photo name="document-review-v3" alt="工作人員並排檢視兩份住宅圖面" caption="不同版本分別留存，提案、圖面與契約的採用條件須相互對照。"/>}
+   {type==='project-management'&&chapter===1&&<Photo name="construction-record-v2" alt="現場人員在室內以檢查表核對窗框現況" caption="現場處理情形與待辦事項應有紀錄；施工及監造責任依各專業委託辦理。"/>}
+  </div>
+ </section>)}</div>;
 }

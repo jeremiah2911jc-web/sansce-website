@@ -2,13 +2,13 @@
   "/about": {
     "/images/editorial/community-meeting.webp|": {
       "id": "P001",
-      "src": "/images/audit-fixes-20261023/p001.webp",
-      "small": "/images/audit-fixes-20261023/p001-small.webp",
+      "src": "/images/design-audit-20261026/records-34.webp",
+      "small": "/images/design-audit-20261026/records-34-960.webp",
       "width": 1536,
       "height": 1024,
-      "alt": "顧問與短髮女同事在辦公室核對基地圖面",
+      "alt": "男女顧問核對建物照片並記錄基地資料",
       "role": "content",
-      "position": "50% 45%"
+      "position": "50% 50%"
     },
     "/images/redesign/project-management.jpg|": {
       "id": "P002",
@@ -126,13 +126,13 @@
     },
     "/images/editorial/contract-review.webp|": {
       "id": "P013",
-      "src": "/images/audit-fixes-20261023/p013.webp",
-      "small": "/images/audit-fixes-20261023/p013-small.webp",
+      "src": "/images/design-audit-20261026/planning-12.webp",
+      "small": "/images/design-audit-20261026/planning-12-960.webp",
       "width": 1536,
       "height": 1024,
-      "alt": "顧問與屋主並肩檢視重建文件",
+      "alt": "男女顧問分別核對住宅圖面與記錄規劃條件",
       "role": "content",
-      "position": "50% 45%"
+      "position": "50% 50%"
     },
     "/images/editorial/construction-inspection.webp|": {
       "id": "P014",
@@ -380,13 +380,13 @@
     },
     "/images/editorial/community-meeting.webp|home-stage": {
       "id": "P084",
-      "src": "/images/audit-20261023/p084.webp",
-      "small": "/images/audit-20261023/p084-960.webp",
+      "src": "/images/design-audit-20261026/records-34.webp",
+      "small": "/images/design-audit-20261026/records-34-960.webp",
       "width": 1536,
       "height": 1024,
-      "alt": "顧問與住戶討論基地與社區重建",
+      "alt": "男女顧問分別核對建物照片與記錄案件資料",
       "role": "dynamic-content",
-      "position": "50% 45%"
+      "position": "50% 50%"
     },
     "/images/redesign/document-review.jpg|home-stage": {
       "id": "P087",
@@ -896,13 +896,13 @@
   "/services/project-management": {
     "/images/editorial/construction-inspection.webp|": {
       "id": "P065",
-      "src": "/images/refresh-20261020/p065.jpg",
-      "small": "/images/refresh-20261020/p065-960.jpg",
-      "width": 1672,
-      "height": 941,
-      "alt": "專業團隊核對案件分工與工作進度",
+      "src": "/images/design-audit-20261026/site-12.webp",
+      "small": "/images/design-audit-20261026/site-12-960.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "男女顧問在現場比對照片及工作紀錄",
       "role": "content",
-      "position": "50% 45%"
+      "position": "50% 50%"
     },
     "/images/redesign/project-management.jpg|": {
       "id": "P066",

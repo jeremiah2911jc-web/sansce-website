@@ -1,0 +1,49 @@
+{
+  "reference": "consultants-20261025/approved-team.png",
+  "principle": "Preserve approved faces. Neutral focused expressions. Eyes directed to documents, photographs and plans. Independent work tasks, no affectionate gaze, no chin resting.",
+  "assets": [
+    {
+      "file": "planning-12-960.webp",
+      "sha256": "211a77e940541d23cf4ee14826aa3dcab7257fc7e743d2c5cff170563617b385",
+      "pair": "1+2",
+      "status": "approved_for_release"
+    },
+    {
+      "file": "planning-12.webp",
+      "sha256": "3a828eafa0e545a51858003727af3b54e4675bd6269dbb10d1c0830c57d48b9b",
+      "pair": "1+2",
+      "status": "approved_for_release"
+    },
+    {
+      "file": "records-34-960.webp",
+      "sha256": "3ae3f79a477da818a87b124b8c0f7744f2beb6fbf8cd8b910d8736a352b9ff29",
+      "pair": "3+4",
+      "status": "approved_for_release"
+    },
+    {
+      "file": "records-34.webp",
+      "sha256": "61de9bd0eb332636fd60b6a72a94fc5418e4fff3614c9dfb908547dc5c83cc9e",
+      "pair": "3+4",
+      "status": "approved_for_release"
+    },
+    {
+      "file": "site-12-960.webp",
+      "sha256": "b5bb5f6baedb61d04fcea8aed0c3678141beb6073fa43dd3e7907d41435ffc32",
+      "pair": "1+2",
+      "status": "approved_for_release"
+    },
+    {
+      "file": "site-12.webp",
+      "sha256": "085d7615840cee353e461ba11e6f0500fa407e69a5a8f26b2926461271a9fa6d",
+      "pair": "1+2",
+      "status": "approved_for_release"
+    }
+  ],
+  "rejected": [
+    "exec-a18ff513-e726-476a-a195-654da5e4318d.png",
+    "exec-b8b27d83-a071-4b26-8324-0acfd61ab6a5.png",
+    "exec-53dd9650-3f72-4299-96c0-cf2566f7fa8b.png",
+    "exec-1bc984c4-bed3-4ebc-9548-71eea6b250ab.png"
+  ],
+  "rejectionReason": "互動親暱、帶笑凝視、面向鏡頭，缺少清楚工作目標"
+}
