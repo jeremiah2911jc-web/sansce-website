@@ -6,37 +6,37 @@
       "file": "planning-12-960.webp",
       "sha256": "211a77e940541d23cf4ee14826aa3dcab7257fc7e743d2c5cff170563617b385",
       "pair": "1+2",
-      "status": "preview_only"
+      "status": "approved_for_release"
     },
     {
       "file": "planning-12.webp",
       "sha256": "3a828eafa0e545a51858003727af3b54e4675bd6269dbb10d1c0830c57d48b9b",
       "pair": "1+2",
-      "status": "preview_only"
+      "status": "approved_for_release"
     },
     {
       "file": "records-34-960.webp",
       "sha256": "3ae3f79a477da818a87b124b8c0f7744f2beb6fbf8cd8b910d8736a352b9ff29",
       "pair": "3+4",
-      "status": "preview_only"
+      "status": "approved_for_release"
     },
     {
       "file": "records-34.webp",
       "sha256": "61de9bd0eb332636fd60b6a72a94fc5418e4fff3614c9dfb908547dc5c83cc9e",
       "pair": "3+4",
-      "status": "preview_only"
+      "status": "approved_for_release"
     },
     {
       "file": "site-12-960.webp",
       "sha256": "b5bb5f6baedb61d04fcea8aed0c3678141beb6073fa43dd3e7907d41435ffc32",
       "pair": "1+2",
-      "status": "preview_only"
+      "status": "approved_for_release"
     },
     {
       "file": "site-12.webp",
       "sha256": "085d7615840cee353e461ba11e6f0500fa407e69a5a8f26b2926461271a9fa6d",
       "pair": "1+2",
-      "status": "preview_only"
+      "status": "approved_for_release"
     }
   ],
   "rejected": [
