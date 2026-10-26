@@ -1,4 +1,4 @@
-import {useEffect,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import Readable from './Readable.jsx';
 import {photoProps} from './photo-refresh.js';
 
@@ -12,10 +12,31 @@ const chapters={
  'project-management':[['工作與委託',[0,1]],['階段與程序',[2,3]],['交付資料',[4]],['權責與費用',[5,7,6]],['準備文件',[8]]]
 };
 export function ServicePageNavigation({page}) {
- const items=chapters[page.path.split('/').pop()];const [active,setActive]=useState(0);
- useEffect(()=>{let frame=0;const update=()=>{frame=0;const first=document.querySelector('.service-chapter');const limit=Math.max((document.querySelector('.sx-header')?.getBoundingClientRect().bottom||100)+60,(first?parseFloat(getComputedStyle(first).scrollMarginTop)||0:0)+(parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop)||0))+8;let current=0;items.forEach((_,i)=>{if(document.getElementById(`service-chapter-${i}`)?.getBoundingClientRect().top<=limit)current=i;});setActive(current);};const queue=()=>{if(!frame)frame=requestAnimationFrame(update);};update();window.addEventListener('scroll',queue,{passive:true});window.addEventListener('resize',queue);return()=>{cancelAnimationFrame(frame);window.removeEventListener('scroll',queue);window.removeEventListener('resize',queue);};},[items]);
- return <nav className="service-task-nav" aria-label="服務重點導覽">{items.map(([label],i)=><a key={label} href={`#service-chapter-${i}`} onClick={()=>setActive(i)} aria-current={active===i?'location':undefined}>{label}</a>)}</nav>;
+ const items=chapters[page.path.split('/').pop()];
+ const [active,setActive]=useState(0);const navigation=useRef(null);
+ useEffect(()=>{
+  const nav=navigation.current,layout=nav?.closest('.service-reading-layout'),header=document.querySelector('.sx-header');
+  if(!nav||!layout)return;
+  let frame=0;
+  const update=()=>{
+   frame=0;
+   const headerHeight=header?.getBoundingClientRect().height||0;
+   const limit=headerHeight+nav.getBoundingClientRect().height+18;
+   const pagePadding=parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop)||0;
+   layout.style.setProperty('--service-anchor-margin',`${Math.max(0,limit-pagePadding)}px`);
+   const readingLine=Math.max(limit,Math.min(limit+160,innerHeight/3));
+   let current=0;
+   items.forEach((_,i)=>{if(document.getElementById(`service-chapter-${i}`)?.getBoundingClientRect().top<=readingLine+2)current=i;});
+   setActive(current);
+  };
+  const queue=()=>{if(!frame)frame=requestAnimationFrame(update);};
+  const observer=new ResizeObserver(queue);observer.observe(nav,{box:'border-box'});if(header)observer.observe(header,{box:'border-box'});
+  update();window.addEventListener('scroll',queue,{passive:true});window.addEventListener('resize',queue);
+  return()=>{cancelAnimationFrame(frame);observer.disconnect();window.removeEventListener('scroll',queue);window.removeEventListener('resize',queue);layout.style.removeProperty('--service-anchor-margin');};
+ },[items]);
+ return <nav ref={navigation} className="service-task-nav" aria-label="服務重點導覽">{items.map(([label],i)=><a key={label} href={`#service-chapter-${i}`} onClick={()=>setActive(i)} aria-current={active===i?'location':undefined}>{label}</a>)}</nav>;
 }
+
 export default function ServicePageBody({page}) {
  const type=page.path.split('/').pop();
  return <div className={'service-edition chapter-edition chapter-'+type}>{chapters[type].map(([title,indices],chapter)=><section className="service-chapter" id={`service-chapter-${chapter}`} key={title} aria-labelledby={`service-chapter-heading-${chapter}`}>
