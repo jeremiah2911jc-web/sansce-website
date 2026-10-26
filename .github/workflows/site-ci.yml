@@ -23,6 +23,7 @@ jobs:
       # The build itself checks that public routes are open and assets exist.
       - run: npm run verify:evaluation-copy
       - run: npm run build
+      - run: npm run verify:evaluation-delivery
       - run: node --test tests/article-copy.test.mjs
       - run: node --test tests/landowner-calculation.test.mjs tests/land-development.test.mjs tests/line-ai.test.mjs tests/line-timeout.test.mjs tests/line-webhook.test.mjs tests/private-report-bundle.test.mjs
       - run: npm run verify:contact
