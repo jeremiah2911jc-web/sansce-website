@@ -29,7 +29,7 @@ export default function ConsultingOverview() {
   const [selected, setSelected] = useState(0);
   return <div className="co-page">
   <section className="co-hero wrap">
-   <div className="co-hero-copy"><p className="co-kicker">都市更新顧問</p><h1>基地評估、地主整合，<br />到全案管理。</h1><p>三策辦理基地評估、地主整合與更新會輔導，依委託內容協調都更規劃、建築、估價、財務及法律等專業工作，追蹤案件進度與執行情形。</p><div className="co-actions"><a className="design-button" href="#consulting-needs">查閱服務範圍</a><a className="co-text-link" href="/contact">預約案件諮詢</a></div></div>
+   <div className="co-hero-copy"><p className="co-kicker">都市更新顧問</p><h1>基地評估、地主整合，<br />到全案管理。</h1><p>三策為臺北、新北地主與更新會辦理基地評估、地主整合與更新會輔導，依委託內容協調都更規劃、建築、估價、財務及法律等專業工作，追蹤案件進度與執行情形。</p><div className="co-actions"><a className="design-button" href="#consulting-needs">查閱服務範圍</a><a className="co-text-link" href="/contact">預約案件諮詢</a></div></div>
    <figure className="co-hero-image"><img fetchPriority="high" {...photoProps({ src: "/images/redesign/consultation.jpg", alt: "顧問與地主討論案件資料的情境" })} /><figcaption><span className="co-pulse" aria-hidden="true" />會議、文件、責任分工與進度，依委託持續追蹤。</figcaption></figure>
   </section>
   <section id="consulting-needs" className="co-section wrap" aria-labelledby="co-needs-title" data-reveal>

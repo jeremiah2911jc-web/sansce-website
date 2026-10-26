@@ -10,7 +10,7 @@ import react from '@vitejs/plugin-react';
 import {knowledgePages} from '../shared/knowledge-pages.js';
 import {basePagePaths} from '../shared/site-routes.js';
 const serverStyles=new Map(),renderedFiles=[];
-const pages={privacy:['隱私權與資料使用','三策案件諮詢、網站AI助理的資料使用、服務處理與個人資料權利說明。'],'website-use':['網站使用說明','三策顧問服務、文章引用、前期試算與AI回覆的適用範圍及內容使用說明。'],'land-evaluation':['土地開發評估','全臺土地用途與變更、透天及集合住宅配置與坪效，以及市地重劃／區段徵收的地主權益與收購條件初核。限電腦本次操作；成本與財務評估於三策 App 操作。'],reports:['案件報告','登入查閱三策受委託案件的專業評估與分析。'],'landowner-comparison':['地主分配試算與比較','各提案分別填寫容積、獎勵與容積移轉的分配方式，或直接比較承諾建坪；核對面積口徑，換算分回建坪與每坪土地換回量。'],programs:['都更與危老方案','查詢臺北、新北、桃園、臺中、臺南與高雄的都市更新、危老重建、公辦與自主更新協助、地方專案，比較自主更新補助、老屋改善及安置方案的資格、期限與官方資料。'],checkup:['都市更新案件健檢','檢視送審進度、合作文件與整合障礙，整理待補資料、處理順序及專業分工，提供地主與更新會案件健檢服務。'],consulting:['都更、危老重建與合建顧問｜全案管理','三策協助都市更新、危老重建與合建案件的基地評估、地主整合、合作條件比較與全案管理，協調專業分工並追蹤進度。'],process:['服務流程','案件資料檢視、初步諮詢、書面委任與執行回報，確認服務項目、交付成果、時程、費用及階段交接。'],insights:["三策觀點｜都更分配、合建契約與房市分析", "三策從開發整合與營建實務出發，分析都更分配、合建契約、工程交屋與房市數據，協助地主釐清分回條件、費用負擔及合作風險。"],about:['關於三策','以信實立本，以專業成事。依基地與案件資料，協助地主與更新會比較合作條件、整理問題與後續工作。'],contact:['聯絡我們','提供行政區、基地地址、案件階段與目前問題，預約三策案件初步諮詢。']};
+const pages={privacy:['隱私權與資料使用','三策案件諮詢、網站AI助理的資料使用、服務處理與個人資料權利說明。'],'website-use':['網站使用說明','三策服務、文章引用、前期試算與AI回覆的適用範圍及內容使用說明。'],'land-evaluation':['土地開發評估','全臺土地用途與變更、透天及集合住宅配置與坪效，以及市地重劃／區段徵收的地主權益與收購條件初核。限電腦本次操作；成本與財務評估於三策 App 操作。'],reports:['案件報告','登入查閱三策受委託案件的專業評估與分析。'],'landowner-comparison':['地主分配試算與比較','各提案分別填寫容積、獎勵與容積移轉的分配方式，或直接比較承諾建坪；核對面積口徑，換算分回建坪與每坪土地換回量。'],programs:['都更與危老方案','查詢臺北、新北、桃園、臺中、臺南與高雄的都市更新、危老重建、公辦與自主更新協助、地方專案，比較自主更新補助、老屋改善及安置方案的資格、期限與官方資料。'],checkup:['都市更新案件健檢','檢視送審進度、合作文件與整合障礙，整理待補資料、處理順序及專業分工，提供地主與更新會案件健檢服務。'],consulting:['都更、危老重建與合建顧問｜全案管理','三策協助都市更新、危老重建與合建案件的基地評估、地主整合、合作條件比較與全案管理，協調專業分工並追蹤進度。'],process:['服務流程','案件資料檢視、初步諮詢、書面委任與執行回報，確認服務項目、交付成果、時程、費用及階段交接。'],insights:["三策觀點｜都更分配、合建契約與房市分析", "三策從開發整合與營建實務出發，分析都更分配、合建契約、工程交屋與房市數據，協助地主釐清分回條件、費用負擔及合作風險。"],about:['關於三策','以信實立本，以專業成事。依基地與案件資料，協助地主與更新會比較合作條件、整理問題與後續工作。'],contact:['聯絡我們','提供行政區、基地地址、案件階段與目前問題，預約三策案件初步諮詢。']};
 for(const page of knowledgePages) pages[page.path.slice(1)]=[page.title,page.description];
 for(const path of basePagePaths)if(path!=='/'&&!pages[path.slice(1)])throw Error('Missing page metadata: '+path);
 const origin='https://www.sanzepm.com.tw';
@@ -26,7 +26,7 @@ const organization={'@type':'Organization','@id':`${origin}/#organization`,name:
 const assistantPages=[];
 for(const path of ['',...Object.keys(pages)]){
  const url=`${origin}/${path}`;
- const title=knowledgePages.find(p=>p.path==='/'+path)?.seoTitle || (path==='insights'?pages[path][0]:path?`${pages[path][0]}｜三策專案管理顧問有限公司`:'三策｜都更、危老重建、合建與全案管理顧問');
+ const title=knowledgePages.find(p=>p.path==='/'+path)?.seoTitle || (path==='insights'?pages[path][0]:path?`${pages[path][0]}｜三策專案管理顧問有限公司`:'三策｜都更、危老重建與全案管理');
  const description=path?pages[path][1]:'三策專案管理顧問有限公司提供都更與都市更新案件健檢、危老重建及合建諮詢、地主整合與全案管理顧問服務，協助雙北地主及更新會評估基地、比較合作條件、協調團隊並追蹤進度。';
  const knowledgePage=knowledgePages.find(p=>p.path==='/'+path);
  const structured={'@context':'https://schema.org','@graph':[{...organization},{'@type':'WebPage','@id':url+'#webpage',url,name:title,description,inLanguage:'zh-Hant-TW',isPartOf:{'@id':origin+'/#website'},about:{'@id':origin+'/#organization'}},...(!path?[{'@type':'WebSite','@id':origin+'/#website',url:origin+'/',name:'三策',alternateName:['三策專案管理顧問','三策專案管理顧問有限公司','Sanze'],publisher:{'@id':origin+'/#organization'},inLanguage:'zh-Hant-TW'}]:[])]};
@@ -47,7 +47,7 @@ writeFileSync('dist/assets/'+serverStyleAsset,serverCSS);
 for(const file of renderedFiles)writeFileSync(file,readFileSync(file,'utf8').replace('__SANZE_SERVER_STYLES__',serverStyleAsset));
 // Only emit known content modification dates; never replace them with build time.
 const insightModified=knowledgePages.filter(p=>p.kind==='article').map(p=>p.updatedAt||p.publishedAt).filter(Boolean).sort().at(-1);
-writeFileSync('dist/sitemap.xml',`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['',...Object.keys(pages).filter(p=>p!=='reports')].map(path=>{const page=knowledgePages.find(p=>p.path==='/'+path);const modified=page?.updatedAt||(path==='programs'?'2026-10-20':['consulting','about'].includes(path)?'2026-10-15':path==='insights'?insightModified:null);return `<url><loc>${origin}/${path}</loc>${modified?`<lastmod>${escape(modified)}</lastmod>`:''}</url>`;}).join('')}</urlset>`);
+writeFileSync('dist/sitemap.xml',`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['',...Object.keys(pages).filter(p=>p!=='reports')].map(path=>{const page=knowledgePages.find(p=>p.path==='/'+path);const modified=page?.updatedAt||(['','consulting','about'].includes(path)?'2026-10-26':path==='programs'?'2026-10-20':path==='insights'?insightModified:null);return `<url><loc>${origin}/${path}</loc>${modified?`<lastmod>${escape(modified)}</lastmod>`:''}</url>`;}).join('')}</urlset>`);
 rmSync(bundleDir,{recursive:true,force:true});
 
 mkdirSync('docs/website-assistant',{recursive:true});writeFileSync('docs/website-assistant/content.json',JSON.stringify(assistantPages));
