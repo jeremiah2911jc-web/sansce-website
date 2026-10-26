@@ -1,5 +1,6 @@
 // Reviewed semantic boundaries apply to headings only. Prose uses normal text flow.
 export const insightTitlePhrases = {
+  "都更意願高 分配方案接受度低": ["都更意願高", " ", "分配方案", "接受度低"],
   "都更整合，別把地主的審慎當成障礙": [
     "都更整合，",
     "別把地主的審慎",

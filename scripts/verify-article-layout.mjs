@@ -8,7 +8,7 @@ for(const page of insightArticles){
  const phrases=insightTitlePhrases[page.title];
  assert(Array.isArray(phrases)&&phrases.length,`Missing reviewed title phrases: ${page.title}`);
  assert.equal(phrases.join(''),page.title,`Title was changed by line grouping: ${page.title}`);
- assert(phrases.every(x=>x.trim()===x&&!/[\r\n]/.test(x)),`Invalid title phrase: ${page.title}`);
+ assert(phrases.every(x=>(x===' '||x.trim()===x)&&!/[\r\n]/.test(x)),`Invalid title phrase: ${page.title}`);
  for(const phrase of phrases)assert(listing.includes('class="insight-title-phrase">'+escape(phrase)+'</span>'),`Title phrase absent from rendered index: ${phrase}`);
  const article=readFileSync('dist'+page.path+'/index.html','utf8');
  assert(article.includes('sanze-feature-section'),`Article body missing: ${page.path}`);
