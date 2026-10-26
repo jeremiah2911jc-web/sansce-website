@@ -27,7 +27,7 @@
 .service-page-opening[data-service-detail] .opening-copy>p:not(.sx-label){font-size:16px;line-height:1.95}
 .service-page-opening[data-service-detail] figure{position:static;inset:auto;margin:0;width:100%;height:auto;min-height:0;aspect-ratio:auto;border-radius:4px 40px 4px 4px;overflow:hidden}
 .service-page-opening[data-service-detail] figure img{display:block;width:100%;height:auto;min-height:0;max-height:none;aspect-ratio:auto;object-fit:contain}
-.service-reading-layout .service-task-nav{position:sticky;flex-wrap:nowrap;top:var(--site-header-height,94px);z-index:15;background:#f6f3ec;display:flex;gap:0 28px;padding:0;margin:0 0 30px;border-top:0;border-bottom:1px solid #ccc9c1}
+.service-reading-layout .service-task-nav{align-self:stretch;width:100%;box-sizing:border-box;position:sticky;flex-wrap:nowrap;top:var(--site-header-height,94px);z-index:15;background:#f6f3ec;display:flex;gap:0 28px;padding:0;margin:0 0 30px;border-top:0;border-bottom:1px solid #ccc9c1}
 .service-task-nav a{display:flex;align-items:center;min-height:50px;text-decoration:none;border-bottom:2px solid transparent;font-size:14px}
 .service-task-nav a[aria-current=location]{border-color:#263d4b;color:#263d4b}
 .service-reading-layout .chapter-edition{font-size:17px;line-height:1.95}
@@ -84,3 +84,7 @@
 @media(prefers-reduced-motion:reduce){.website-assistant .assistant-launcher{transition:none}}
 
 #home-commission-title,#home-contact-title{scroll-margin-top:calc(var(--site-header-height,94px) + 18px)}
+
+/* A full-width sticky row must cover the complete reading column. Anchor targets
+   clear the measured header and navigation, including the page scroll padding. */
+.service-reading-layout .service-edition :is(.service-chapter,.service-copy-section,tr[id]){scroll-margin-top:var(--service-anchor-margin,110px)}
