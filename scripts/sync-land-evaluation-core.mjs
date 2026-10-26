@@ -1,3 +1,4 @@
+import {normalizeGeneratedSiteCopy} from './normalize-generated-site-copy.mjs';
 import {publicText} from '../src/land-evaluation/public-copy.mjs';
 import {adaptBasementPanel} from './public-basement-panel.mjs';
 import {createRequire} from 'node:module';
@@ -79,7 +80,8 @@ for(const [name,contents]of [['core',core],['panels',ui+industrialUi],['land',la
   return {contents:text,loader:'tsx'};
  });}};
  const result=await build({stdin:{contents,resolveDir:app,loader:'tsx'},outfile:output,bundle:true,format:'esm',platform:'browser',target:'es2020',jsx:'automatic',external:['react','react/jsx-runtime','/src/land-evaluation/PublicSelect.jsx','/src/land-evaluation/PublicFields.jsx','/src/land-evaluation/RuleReference.jsx','/src/land-evaluation/public-copy.mjs'],plugins:name==='panels'?[publicUi]:[],metafile:true,treeShaking:true,minify:false,legalComments:'none'});
- const bundled=await readFile(output,'utf8');
+ const bundled=normalizeGeneratedSiteCopy(await readFile(output,'utf8'));
+ await writeFile(output,bundled);
  if(/localStorage|sessionStorage|indexedDB|@tauri|fetch\(/.test(bundled))throw Error(name+' contains persistence, desktop or network calls');
  for(const file of Object.keys(result.metafile.inputs)){
   if(file==='<stdin>')continue;

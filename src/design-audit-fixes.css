@@ -88,3 +88,32 @@
 /* A full-width sticky row must cover the complete reading column. Anchor targets
    clear the measured header and navigation, including the page scroll padding. */
 .service-reading-layout .service-edition :is(.service-chapter,.service-copy-section,tr[id]){scroll-margin-top:var(--service-anchor-margin,110px)}
+
+/* Preview correction: balance the whole comparison, not an empty side rail. */
+.sx-home .home-topic-tools{display:block;padding-block:44px}
+.sx-home .home-topic-tools .home-topic-identity{position:static;padding:0;margin:0 0 22px}
+.sx-home .home-topic-tools .sx-tools-grid{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(32px,5vw,76px);align-items:center}
+.sx-home .home-topic-tools .sx-tools-grid>div:first-child{padding-bottom:12px}
+.sx-home .home-topic-tools h3{font-size:clamp(32px,3.2vw,46px);line-height:1.5;margin-bottom:22px}
+.sx-home .home-topic-tools p{max-width:32em}
+.sx-home .home-topic-tools .sx-tools-example{border:0;padding:0!important;max-width:620px;justify-self:end;width:100%}
+.sx-home .home-topic-tools .sx-tools-example>div{justify-content:flex-start;border:0;padding:0}
+.sx-home .home-topic-tools .sx-tools-example>div>span:last-child{display:none}
+/* All four short steps stay visible as one reading flow. */
+.process-reading-flow.sx-process-steps.steps{max-width:1120px;margin:24px auto 36px;padding:0}
+.process-reading-flow.sx-process-steps.steps>li{display:grid;grid-template-columns:220px minmax(0,1fr);gap:32px;padding:24px 0;border:0;border-bottom:1px solid var(--sx-line);margin:0;background:none}
+.process-reading-flow.sx-process-steps.steps>li:first-child{border-top:1px solid var(--sx-line)}
+.process-reading-flow.sx-process-steps h3{font-size:21px;line-height:1.7;margin:0;color:#263d4b}
+.process-reading-flow.sx-process-steps p{font-size:16px;line-height:1.95;margin:0;max-width:48em}
+@media(max-width:760px){
+ .sx-home .home-topic-tools{padding-block:0 30px}
+ .sx-home .home-topic-tools .home-topic-identity{position:sticky;margin-bottom:18px}
+ .sx-home .home-topic-tools .sx-tools-grid{display:block}
+ .sx-home .home-topic-tools .sx-tools-grid>div:first-child{padding:0}
+ .sx-home .home-topic-tools h3{font-size:30px}
+ .sx-home .home-topic-tools .sx-tools-example{padding:20px 0 0!important;margin-top:24px;border-top:1px solid #71818a}
+ .process-reading-flow.sx-process-steps.steps{margin:18px 0 28px}
+ .process-reading-flow.sx-process-steps.steps>li{grid-template-columns:1fr;gap:8px;padding:20px 0}
+ .process-reading-flow.sx-process-steps h3{font-size:20px}
+ .process-reading-flow.sx-process-steps p{font-size:15px}
+}

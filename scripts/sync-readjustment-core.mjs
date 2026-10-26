@@ -1,3 +1,4 @@
+import {normalizeGeneratedSiteCopy} from './normalize-generated-site-copy.mjs';
 import {createRequire} from 'node:module';
 import {readFile,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
@@ -7,6 +8,8 @@ const root=resolve(import.meta.dirname,'..'),app=process.env.SANZE_CASES_SOURCE|
 const relative='src/cases/land-readjustment/model.mjs',file=resolve(app,relative);
 const {build}=createRequire(resolve(app,'package.json'))('esbuild');
 await build({entryPoints:[file],outfile:resolve(root,'src/land-evaluation/generated/readjustment.mjs'),bundle:true,platform:'browser',format:'esm',target:'es2020',legalComments:'none'});
+const generated=resolve(root,'src/land-evaluation/generated/readjustment.mjs');
+await writeFile(generated,normalizeGeneratedSiteCopy(await readFile(generated,'utf8')));
 const files=[relative,'src/cases/land-readjustment/conditions.mjs','src/cases/land-readjustment/statutory.mjs','src/cases/land-readjustment/arithmetic.mjs','src/cases/land-readjustment/catalog.mjs','src/cases/land-readjustment/ntpc-catalog-data.mjs','src/cases/land-readjustment/ntpc-current-review.mjs','src/cases/land-readjustment/ntpc-document-audit.mjs'],bundled=await readFile(resolve(root,'src/land-evaluation/generated/readjustment.mjs'),'utf8');
 if(/localStorage|sessionStorage|indexedDB|@tauri|fetch\(/.test(bundled))throw Error('Public-only boundary violated');
 const sources=await Promise.all(files.map(async path=>({path,sha256:createHash('sha256').update(await readFile(resolve(app,path))).digest('hex')})));

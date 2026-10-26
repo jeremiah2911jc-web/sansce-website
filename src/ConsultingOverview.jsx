@@ -16,7 +16,7 @@ const stages = [
 const services = [
 { icon: MapPinned, label: '都更顧問', title: '基地條件與更新程序評估', text: '適用於重建意願整合、更新會運作及計畫準備階段。核對基地與產權資料、整理地主意見，協助確認實施方式、專業委託及送審準備。', output: '基地條件與待查事項、地主意見與會議紀錄、專業分工及計畫準備清單。', href: '/services/urban-renewal', image: 'site-inspection', alt: '查看基地與周邊住宅環境' },
 { icon: Layers, label: '危老重建評估', title: '危老重建資格與合作條件', text: '適用於擬採危老途徑的基地。整理合法建物、結構評估及產權資料，核對所有權人同意進度，配合建築與財務評估比較出資、分配及搬遷安排。', output: '資格與文件檢核、產權及同意進度、重建條件比較與專業評估需求。', href: '/services/dangerous-old-rebuilding', image: 'older-apartment-stair', alt: '老公寓的樓梯與日常通行環境', points: ['建物資格', '產權狀況', '所有權人意願'] },
-{ icon: Files, label: '合建條件比較', title: '分配基準與契約條件比較', text: '適用於收到建商提案、協議書或契約草案的地主。統一面積與費用口徑，對照分配、選屋、車位、補款、搬遷及履約條件，記錄各版本差異與未列明事項。', output: '提案條件對照、費用與時程差異、待補約定及需由律師審閱的文件項目。', href: '/services/joint-construction', image: 'contract-review', alt: '逐項檢閱合作契約內容', points: ['面積與車位', '搬遷與時程', '費用與契約'] },
+{ icon: Files, label: '合建條件比較', title: '分配基準與契約條件比較', text: '適用於收到建商提案、協議書或契約草案的地主。依相同的面積計算基準與費用項目，對照分配、選屋、車位、補款、搬遷及履約條件，記錄各版本差異與未列明事項。', output: '提案條件對照、費用與時程差異、待補約定及需由律師審閱的文件項目。', href: '/services/joint-construction', image: 'contract-review', alt: '逐項檢閱合作契約內容', points: ['面積與車位', '搬遷與時程', '費用與契約'] },
 { icon: ClipboardCheck, label: '全案管理', title: '專業分工、文件與進度管理', text: '適用於需要持續協調地主、更新會與專業團隊的案件。依約建立工作分工與進度紀錄，追蹤會議決議、送審補件、文件版本及跨單位待辦事項。', output: '工作分工表、進度與待辦清單、會議紀錄、文件版本及補件追蹤資料。', href: '/services/project-management', image: 'construction-inspection', alt: '專業人員在工地檢查建築現況' }];
 
 const comparisons = [
