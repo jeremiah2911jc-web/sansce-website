@@ -84,7 +84,8 @@ function Intro({ label, title, children, detail=false }) {
 }
 function CTA() {return <section className="closing-brief wrap"><div><p className="eyebrow">案件諮詢</p><h2>預約顧問諮詢</h2><p>提供基地位置、案件階段及現有文件，安排會談。</p></div><LinkButton /></section>;}
 function ServiceList() {return <div className="service-list">{services.map(([title, stage, body, output], i) => <article key={title}><div><Readable as="p" className="eyebrow">{stage}</Readable><Readable as="h3">{title}</Readable><Readable as="p">{body}</Readable><Readable as="p" className="deliverable">協助內容｜{output}</Readable></div></article>)}</div>;}
-function Steps() {return <ol id="commission-steps" className="steps sx-process-steps">{steps.map(([title, body], i) => <li key={title}><details open={i === 0}><summary><span>{title}</span><span className="process-toggle" aria-hidden="true"></span></summary><Readable as="p">{body}</Readable></details></li>)}</ol>;}
+function Steps() {return <ol id="commission-steps" className="steps sx-process-steps process-reading-flow">{steps.map(([title, body]) => <li key={title}><Readable as="h3">{title}</Readable><Readable as="p">{body}</Readable></li>)}</ol>;}
+
 function WorkSheet({ title, subtitle, children }) {return <div className="work-sheet"><header><Readable as="h3">{title}</Readable><Readable as="p">{subtitle}</Readable></header>{children}</div>;}
 function SiteMap() {return <WorkSheet title="基地條件判讀" subtitle="核對基地範圍、既有建物與臨路條件。"><SiteContextDrawing /><Readable as="p" className="sheet-foot">判讀項目示例，非實際案件圖資；個案依地籍、都市計畫及現場資料核對。</Readable></WorkSheet>;}
 function IssueBoard() {

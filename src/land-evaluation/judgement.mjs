@@ -21,7 +21,7 @@ export function readjustmentJudgement(p,land,r){
  const limits=[...r.errors.map(t=>item('輸入與適用限制',t,'blocked')),...r.findings.filter(f=>f.state==='blocked').map(f=>item(f.title,f.detail,f.state))];
  const gaps=r.findings.filter(f=>['pending','review'].includes(f.state)).map(f=>item(f.title,f.detail+' 會影響本案權利、分配或後續採用條件。',f.state,readjustmentFindingTarget(f,p,land,documentItems(p.system,p.track))));
  const mode=p.allocationMode==='average'?'平均負擔假設概估，不能當成個人核定分配':p.allocationMode==='statutory'?'本次法定數量公式核算，仍須個案分配文件對照':p.allocationMode==='document'?(p.areaStatus==='documented'?'文件記載面積；適用範圍及效力依原件覆核':'明示規劃假設面積，非核定分配'):'尚無可採用的分配面積資料';
- const directions=[item(p.track==='acquisition'?'先辨識取得標的及可承接權利':'先核對個人權利與分配口徑',`${systems[p.system]}／${perspectives[p.track]}。納入${num(r.includedArea)}㎡；持分權利範圍${num(r.rightsArea)}㎡。`),item('本次分配面積的身分',`${mode}；${r.areaLabel}：${num(r.allocationArea)}㎡。`,r.allocationArea==null?'pending':'review')];
+ const directions=[item(p.track==='acquisition'?'先辨識取得標的及可承接權利':'核對個人權利與分配面積依據',`${systems[p.system]}／${perspectives[p.track]}。納入${num(r.includedArea)}㎡；持分權利範圍${num(r.rightsArea)}㎡。`),item('本次分配面積的身分',`${mode}；${r.areaLabel}：${num(r.allocationArea)}㎡。`,r.allocationArea==null?'pending':'review')];
  const actions=[],authority=p.authority?.trim()||'本案公告所載辦理單位／地方地政主管機關';
  if(r.includedArea==null||p.membership!=='in')actions.push(item('確認地號是否及部分納入範圍',`向${authority}取得計畫書圖與地號清冊，逐筆對照納入面積、權利人及持分；選到公告計畫不代表本案地號已納入。`));
  if(r.rightsArea==null)actions.push(item('核對登記與持分','以本案登記及權利文件核對逐筆持分、部分納入範圍與限制；地號、面積及權利範圍分開記錄。'));

@@ -76,7 +76,7 @@ export function calculateOffer(base, offer) {
 export function calculateProposal(landInput, offer) {
   const land = positive(landInput, '你的持分土地面積');
   if (!['ratio','area','exchange'].includes(offer.mode)) throw new Error('請選擇提案的分配方式。');
-  if (offer.areaBasis !== 'registered') throw new Error('請確認坪數口徑為含公設、車位另計的建坪；室內實坪不能直接比較。');
+  if (offer.areaBasis !== 'registered') throw new Error('請確認坪數為含公設、車位另計的建坪；室內實坪不能直接比較。');
   if (offer.mode === 'ratio') {
     if (offer.ratioKind !== 'area') throw new Error('請確認比例是「面積比例」。權利價值比例需要估價、共同負擔及選配資料，不能換成這裡的面積比例。');
     if (!['all','separate'].includes(offer.distribution)) throw new Error('請確認基本容積、獎勵與容積移轉如何分配；尚未確認時不推算分回坪數。');

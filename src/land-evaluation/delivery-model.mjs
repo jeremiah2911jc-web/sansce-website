@@ -22,7 +22,7 @@ export function collectiveDelivery(snapshot){
  s.sources=[i.roadConditions?.source,i.excavationReference,i.parkingDesign?.reference,r.basementDemandReview?.source,i.basementDemand?.source,i.basementDemand?.stricterSource].filter(Boolean);
  s.inputs=planningFields.map(([key,label,unit])=>[label,i[key]===''?'未填／待確認':`${text(i[key])}${unit?' '+unit:''}`]);
  s.inputs.push(['道路名稱',text(i.roadConditions?.roadName)],['計畫／開闢道路寬度',`${text(i.roadConditions?.plannedWidth)}／${text(i.roadConditions?.openedWidth)} m`],['同路段基地面寬',`${text(i.roadConditions?.frontage)} m`],['道路確認狀態',i.roadConditions?.status==='confirmed'?'已填查證，資格依檢核':i.roadConditions?.status==='assumed'?'明示暫採值':'待確認'],['路寬查證日期',text(i.roadConditions?.checkedAt)],['停車規則',i.parkingDesign?.mode==='general'?'地區通則初估':'本次個案條件'],['開挖率上限',r.basementDemandReview?`${displayNumber(r.basementDemandReview.capPercent)}%`:text(i.excavationCap)],['建築／容積使用比例',`${i.coverageUse}%／${i.volumeUse}%`]);
- s.inputs.push(['採用面積口徑','機電、梯廳、屋突及地下預留採逐層／量體檢核；固定比例設定不直接等於實際採用面積，詳計算說明。'],['梯廳淨深',({assumed:'暫按達2m初估',confirmed:'已核對達2m',failed:'不符免計資格，計容'})[i.lobbyDepth]||'待確認'],['屋頂電梯通達',i.elevator==='yes'?'依通達屋頂條件檢核':'依未通達屋頂條件檢核'],['停車方式',`${r.parking?.values?.smallSite?.access==='lift'?'汽車升降機':'依本次停車配置'}；平面${displayNumber(r.parking?.values?.flatCars)}位／機械${displayNumber(r.parking?.values?.mechanicalCars)}位`]);
+ s.inputs.push(['採用面積的計算方式','機電、梯廳、屋突及地下預留採逐層／量體檢核；固定比例設定不直接等於實際採用面積，詳計算說明。'],['梯廳淨深',({assumed:'暫按達2m初估',confirmed:'已核對達2m',failed:'不符免計資格，計容'})[i.lobbyDepth]||'待確認'],['屋頂電梯通達',i.elevator==='yes'?'依通達屋頂條件檢核':'依未通達屋頂條件檢核'],['停車方式',`${r.parking?.values?.smallSite?.access==='lift'?'汽車升降機':'依本次停車配置'}；平面${displayNumber(r.parking?.values?.flatCars)}位／機械${displayNumber(r.parking?.values?.mechanicalCars)}位`]);
  if(i.commercialIntensity?.enabled){s.inputs.push(['商業分區原始條件',JSON.stringify(i.commercialIntensity)],['商業分區基準容積',displayNumber(r.commercialReview?.base)+'㎡']);s.sources.push(i.commercialIntensity.planSource,i.commercialIntensity.useSource,i.commercialIntensity.boundarySource,i.commercialIntensity.documentSource);}
  return s;
 }
@@ -44,7 +44,7 @@ export function layoutDelivery(input,a,r,presentation){
  if(!presentation.showAreas||r.stale)return null;
  const s=summary('透天配置',input.name,presentation.status,LAYOUT_VERSION);
  s.metrics=[['總樓板',r.gross,'㎡'],['計容樓板',r.counted,'㎡'],['免計樓板',r.exempt,'㎡'],['住宅棟數',r.units,'棟'],['停車位',r.parking,'位'],['全案土地坪效',r.landEfficiency,'倍']];
- s.conditions=[['配置形式',input.form==='row'?'聯排透天':'單棟透天'],['土地面積',`${displayNumber(r.landArea)}㎡`],['建築基地',`${displayNumber(r.baseArea)}㎡`],['登記口徑','房屋專有、共有、停車與未分配面積分列']];
+ s.conditions=[['配置形式',input.form==='row'?'聯排透天':'單棟透天'],['土地面積',`${displayNumber(r.landArea)}㎡`],['建築基地',`${displayNumber(r.baseArea)}㎡`],['登記面積分類','房屋專有、共有、停車與未分配面積分列']];
  s.charts=[{title:'樓板計容分類',unit:'㎡',note:'計容與免計共同構成本次總樓板。',rows:[['計容',r.counted],['免計',r.exempt]]},{title:'登記分項估計',unit:'㎡',note:'與免計資格分開；未分配面積不自動列為可售。',rows:[['房屋專有',r.privateArea],['房屋共有',r.commonArea],['停車分攤',r.parkingArea],['未分配',r.unassigned]]}];
  s.issues=distinct([...r.errors,...r.pending]);s.assumptions=distinct(r.warnings);
  for(const g of input.groups){s.inputs.push([g.name||'土地分組',`基地${g.baseArea}㎡；建蔽${g.coverage}%／容積${g.far}%；上限${g.maxFloors}層／${g.maxHeight}m；${g.basis==='after_change'?'變更後情境':'現況情境'}`],['配置範圍與退縮',`${g.width}×${g.depth}m；前${text(g.front)}／後${text(g.back)}／左${text(g.left)}／右${text(g.right)}m`]);if(g.conditionsSource)s.sources.push(`${g.name||'分組'}：${g.conditionsSource}（${g.conditionsDate||'日期未填'}）`);for(const h of g.houses)for(const f of h.floors)s.inputs.push([`${h.name}／${f.name}`,`樓板${f.area}㎡；層高${f.height}m；${f.source||'依本次輸入'}`]);}
@@ -53,8 +53,8 @@ export function layoutDelivery(input,a,r,presentation){
 export function readjustmentDelivery(p,land,r){
  const s=summary('市地重劃／區段徵收',p.name,r.status,READJUSTMENT_VERSION);s.judgement=readjustmentJudgement(p,land,r);
  s.metrics=[['納入面積',r.includedArea,'㎡'],['持分換算權利範圍',r.rightsArea,'㎡'],[r.areaLabel,r.allocationArea,'㎡'],['待確認條件',r.pending,'項'],['已記錄文件依據',r.recorded,'項']];
- s.conditions=[['制度／主線',`${systems[p.system]}／${perspectives[p.track]}`],['計畫名稱',p.planName||'待確認'],['主管機關',p.authority||'待確認'],['評估基準日',p.referenceDate],['分配資料口徑',p.allocationMode==='average'?'平均負擔假設':p.allocationMode==='document'?'文件記載／明示面積':p.allocationMode==='statutory'?'法定公式核算':'尚無面積資料'],['確認狀態',r.canConfirm?'具備本次確認條件，機關核准仍依原件':'條件與文件仍待確認']];
- s.charts=[{title:'本案面積對照',unit:'㎡',note:'各列為不同階段或口徑的面積，不相加；分回位置與選配另依文件。',rows:[['納入面積',r.includedArea],['持分權利範圍',r.rightsArea],[r.areaLabel,r.allocationArea]]}];
+ s.conditions=[['制度／主線',`${systems[p.system]}／${perspectives[p.track]}`],['計畫名稱',p.planName||'待確認'],['主管機關',p.authority||'待確認'],['評估基準日',p.referenceDate],['分配面積依據',p.allocationMode==='average'?'平均負擔假設':p.allocationMode==='document'?'文件記載／明示面積':p.allocationMode==='statutory'?'法定公式核算':'尚無面積資料'],['確認狀態',r.canConfirm?'具備本次確認條件，機關核准仍依原件':'條件與文件仍待確認']];
+ s.charts=[{title:'本案面積對照',unit:'㎡',note:'各列為不同階段或計算基準的面積，不相加；分回位置與選配另依文件。',rows:[['納入面積',r.includedArea],['持分權利範圍',r.rightsArea],[r.areaLabel,r.allocationArea]]}];
  s.issues=distinct([...r.errors,...r.findings.filter(f=>['pending','blocked','review'].includes(f.state)).map(f=>f.title+'：'+f.detail)]);
  s.assumptions=['計畫公開條件與個人權利分開；選到計畫不代表地號納入。','面積核算不等於個人核定分配或實際選配。'];
  for(const parcel of land.parcels.filter(x=>p.parcelIds.includes(x.id))){const rights=p.parcelRights?.[parcel.id]||{};s.inputs.push([[parcel.city,parcel.section,parcel.landNumber].filter(Boolean).join(' ')||'本案土地',`登記${text(parcel.areaSqm)}㎡；本案納入${text(rights.includedArea)}㎡；持分${text(rights.shareNumerator)}／${text(rights.shareDenominator)}`]);}

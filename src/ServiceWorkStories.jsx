@@ -17,7 +17,7 @@ export default function ServiceWorkStories({services}) {
   </article>
   <article className="service-proposal">
    <div className="service-proposal-opening"><div><p className="co-kicker">{joint.label}</p><Readable as="h3"><a href={joint.href}>{joint.title}</a></Readable><p>{joint.text}</p></div><figure><img loading="lazy" {...photoProps({src:photoSource(joint.image),alt:joint.alt})}/></figure></div>
-   <table><caption>各份提案採用相同項目比對</caption><thead><tr><th scope="col">比較項目</th><th scope="col">須由提案列明的條件</th></tr></thead><tbody><tr><th scope="row">分回內容</th><td>面積口徑、樓層、戶別與車位</td></tr><tr><th scope="row">費用負擔</th><td>補款、稅費、搬遷及租金安排</td></tr><tr><th scope="row">履約約定</th><td>負責對象、履約保障與交屋期限</td></tr></tbody></table>
+   <table><caption>各份提案採用相同項目比對</caption><thead><tr><th scope="col">比較項目</th><th scope="col">須由提案列明的條件</th></tr></thead><tbody><tr><th scope="row">分回內容</th><td>面積計算範圍、樓層、戶別與車位</td></tr><tr><th scope="row">費用負擔</th><td>補款、稅費、搬遷及租金安排</td></tr><tr><th scope="row">履約約定</th><td>負責對象、履約保障與交屋期限</td></tr></tbody></table>
    <footer><p>{joint.output}</p><a className="co-text-link" href={joint.href}>查閱合建比較服務</a></footer>
   </article>
   <article className="service-management">
