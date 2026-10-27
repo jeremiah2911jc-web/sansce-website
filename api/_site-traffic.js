@@ -13,7 +13,7 @@ const sourceCategories=new Set(['threads_tagged','threads_referral','google','bi
 const origins=new Set(['https://www.sanzepm.com.tw','https://sanzepm.com.tw']);
 function reply(res,status,body){res.statusCode=status;res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json; charset=utf-8');res.end(JSON.stringify(body));}
 async function readBody(req){if(req.body&&typeof req.body==='object')return req.body;let text=typeof req.body==='string'?req.body:'';if(!text)for await(const part of req){text+=part.toString();if(Buffer.byteLength(text)>2048)throw Error('size');}if(Buffer.byteLength(text)>2048)throw Error('size');return JSON.parse(text);}
-export function makeTrafficHandler({env=process.env,dbFactory=createSupabaseAdminClient,now=()=>Date.now()}={}){
+export function makeTrafficHandler({env=process.env,dbFactory=createSupabaseAdminClient,now=()=>Date.now(),reportRecords=reports}={}){
  const attempts=new Map();
  return async(req,res)=>{
   if(req.method==='GET'){
@@ -28,7 +28,7 @@ export function makeTrafficHandler({env=process.env,dbFactory=createSupabaseAdmi
     const db=dbFactory();if(!db)throw Error();
     const {data,error}=await db.rpc('sanze_traffic_snapshot',{p_topics:trafficTopics});
     if(error||!data||data.snapshotVersion!==2)throw Error();
-    const reportReadings=data.reportReadings&&{...data.reportReadings,cases:Object.values(reports).map(r=>({reportId:r.id,title:r.editorial.title,totalVisits:0,uniqueVisitors:0,returningVisitors:0,todayVisits:0,rows:[],...data.reportReadings.cases.find(c=>c.reportId===r.id)}))};
+    const reportReadings=data.reportReadings&&{...data.reportReadings,cases:Object.values(reportRecords).map(r=>({reportId:r.id,title:r.editorial?.title||r.title||r.id,totalVisits:0,uniqueVisitors:0,returningVisitors:0,todayVisits:0,rows:[],...data.reportReadings.cases.find(c=>c.reportId===r.id)}))};
     return reply(res,200,{...data,reportReadings,pages:trafficPageGroups(data.pages,'views')});
    }catch{return reply(res,503,{message:'本次完整資料未能取得；保留上次結果，請稍後更新。'});}
   }
