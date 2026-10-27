@@ -1,0 +1,2921 @@
+{
+  "date": "2026-10-27",
+  "articles": 22,
+  "scope": "All article text fields including metadata, captions, alt text, margin copy and navigation; URLs excluded.",
+  "status": "Newly prohibited wording corrected in local draft. Remaining attention matches are contextual review candidates, not 315 prohibited expressions or a completed rewrite.",
+  "counts": {
+    "帳": 3,
+    "账": 0,
+    "算清楚": 1,
+    "算得清楚": 0,
+    "說清楚": 7,
+    "講清楚": 1,
+    "看清楚": 0,
+    "釐清": 9,
+    "攤開": 2,
+    "落地": 0,
+    "關鍵": 3,
+    "核心": 1,
+    "本質": 0,
+    "配套": 3,
+    "推進": 23,
+    "銜接": 3,
+    "檢驗": 19,
+    "評估": 135,
+    "安排": 133
+  },
+  "hits": [
+    {
+      "article": "/insights/chiang-shen-urban-renewal-policies",
+      "title": "蔣萬安與沈伯洋的都更政見分析",
+      "field": "article.sections.1.0",
+      "terms": [
+        "評估"
+      ],
+      "text": "蔣萬安的5099：提早評估後，仍要談分配與招商"
+    },
+    {
+      "article": "/insights/chiang-shen-urban-renewal-policies",
+      "title": "蔣萬安與沈伯洋的都更政見分析",
+      "field": "article.sections.1.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "蔣萬安10月16日宣布，將公辦都更初期意願門檻從75%降至50%，由市府提早提供更新方案評估與權益試算"
+    },
+    {
+      "article": "/insights/chiang-shen-urban-renewal-policies",
+      "title": "蔣萬安與沈伯洋的都更政見分析",
+      "field": "article.sections.1.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "若基地暫時無法負擔重建，評估也應列出資金缺口，讓社區決定繼續協商或暫停整合"
+    },
+    {
+      "article": "/insights/chiang-shen-urban-renewal-policies",
+      "title": "蔣萬安與沈伯洋的都更政見分析",
+      "field": "article.sections.1.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "5099讓市府提早進場評估，分配、補款與搬遷條件仍要逐項協商"
+    },
+    {
+      "article": "/insights/chiang-shen-urban-renewal-policies",
+      "title": "蔣萬安與沈伯洋的都更政見分析",
+      "field": "article.sections.1.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "住戶願意讓政府試算，不代表接受較小的室內面積、補繳差額、搬遷安排及多年工期"
+    },
+    {
+      "article": "/insights/chiang-shen-urban-renewal-policies",
+      "title": "蔣萬安與沈伯洋的都更政見分析",
+      "field": "article.sections.1.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "市府應公布每案何時完成評估、有多少住戶接受方案、何時招商，以及中止的原因"
+    },
+    {
+      "article": "/insights/chiang-shen-urban-renewal-policies",
+      "title": "蔣萬安與沈伯洋的都更政見分析",
+      "field": "article.sections.2.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "大街廓有較大的空間安排動線、公設及建築配置，也可能納入更多所有權人、店面與不同土地持分"
+    },
+    {
+      "article": "/insights/chiang-shen-urban-renewal-policies",
+      "title": "蔣萬安與沈伯洋的都更政見分析",
+      "field": "article.sections.3.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "蔣萬安作為現任市長，應公布同一批社區從受理、評估、招商、核定、建照、開工到交屋的進度，列出各階段花費多久、卡在哪項工作、由誰完成"
+    },
+    {
+      "article": "/insights/chiang-shen-urban-renewal-policies",
+      "title": "蔣萬安與沈伯洋的都更政見分析",
+      "field": "article.sections.5.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "沈伯洋8月專訪將更新後的負擔問題，連結到只租不賣與50年、70年的地上權住宅；同篇訪談將這些安排列為提高參與意願的多元選項，未提出全體地主一律採用的制度"
+    },
+    {
+      "article": "/insights/chiang-shen-urban-renewal-policies",
+      "title": "蔣萬安與沈伯洋的都更政見分析",
+      "field": "article.sections.8.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "臺北市中繼住宅申請處理原則，已設承租資格審查，並依可出租戶數與時程安排正取、備取及遞補"
+    },
+    {
+      "article": "/insights/chiang-shen-urban-renewal-policies",
+      "title": "蔣萬安與沈伯洋的都更政見分析",
+      "field": "article.sections.9.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "蔣的5099可以讓居民較早取得試算，但分配、補款與搬遷條件談不成，案件仍可能停在評估階段"
+    },
+    {
+      "article": "/insights/chiang-shen-urban-renewal-policies",
+      "title": "蔣萬安與沈伯洋的都更政見分析",
+      "field": "article.visual.navigation.0.0",
+      "terms": [
+        "評估"
+      ],
+      "text": "蔣萬安的5099：提早評估後，仍要談分配與招商"
+    },
+    {
+      "article": "/insights/urban-renewal-election-promises",
+      "title": "政治人物談都更 別拿放寬條件開選舉支票",
+      "field": "article.sections.2.1",
+      "terms": [
+        "配套"
+      ],
+      "text": "內政部於2026年3月邀集金融主管機關、銀行、地方政府、專業團體及學研單位，討論自主都更的專業整合、財務規劃與管理權責，並研議全案管理及信用保證等配套"
+    },
+    {
+      "article": "/insights/urban-renewal-election-promises",
+      "title": "政治人物談都更 別拿放寬條件開選舉支票",
+      "field": "article.sections.2.1",
+      "terms": [
+        "說清楚"
+      ],
+      "text": "政治人物引用研討結果，就要拿出方案的預算、申請資格與辦理程序，說清楚預計協助多少社區、解決哪些困難"
+    },
+    {
+      "article": "/insights/urban-renewal-election-promises",
+      "title": "政治人物談都更 別拿放寬條件開選舉支票",
+      "field": "article.sections.3.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "臺北市於2026年10月宣布規劃推動公辦都更5099，擬將第一階段意願門檻由75%降至50%，讓市府提早介入評估與權益試算"
+    },
+    {
+      "article": "/insights/urban-renewal-election-promises",
+      "title": "政治人物談都更 別拿放寬條件開選舉支票",
+      "field": "article.sections.3.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "這些條件談不成，初期意願比例降得再低，也無法替地主支付差額或安排搬家"
+    },
+    {
+      "article": "/insights/urban-renewal-election-promises",
+      "title": "政治人物談都更 別拿放寬條件開選舉支票",
+      "field": "article.sections.3.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "市府提早進場，評估、試算與協商的案件也會增加"
+    },
+    {
+      "article": "/insights/urban-renewal-election-promises",
+      "title": "政治人物談都更 別拿放寬條件開選舉支票",
+      "field": "article.sections.3.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "承辦人員有多少、委外團隊能接多少案、預計多久完成評估與試算，都要一起公布"
+    },
+    {
+      "article": "/insights/urban-renewal-election-promises",
+      "title": "政治人物談都更 別拿放寬條件開選舉支票",
+      "field": "article.sections.3.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "人力與經費沒有跟上，社區可能從等待整合，改成等待市府評估"
+    },
+    {
+      "article": "/insights/urban-renewal-election-promises",
+      "title": "政治人物談都更 別拿放寬條件開選舉支票",
+      "field": "article.sections.3.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "受理件數增加，評估時間卻拉長，市府就得交代缺多少人、還需多少經費，以及何時完成"
+    },
+    {
+      "article": "/insights/urban-renewal-election-promises",
+      "title": "政治人物談都更 別拿放寬條件開選舉支票",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "[5]適合補強或修繕的建物，要有人評估、編列費用並完成工程；需要拆除的危險建物，則要先安排重建費用與搬遷住所"
+    },
+    {
+      "article": "/insights/urban-renewal-election-promises",
+      "title": "政治人物談都更 別拿放寬條件開選舉支票",
+      "field": "article.sections.7.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "搬遷前就要列出住所、入住日期、租期、租金與照護安排"
+    },
+    {
+      "article": "/insights/urban-renewal-election-promises",
+      "title": "政治人物談都更 別拿放寬條件開選舉支票",
+      "field": "article.sections.7.1",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "市府與受託團隊要完成基地評估、協助申請貸款，並與銀行議定核貸金額及撥款日期、為住戶安排搬遷住所，就要編列經費、配置人力並訂出各項工作的完成期限"
+    },
+    {
+      "article": "/insights/urban-renewal-election-promises",
+      "title": "政治人物談都更 別拿放寬條件開選舉支票",
+      "field": "article.sections.8.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "都更案件可能跨越首長任期，政府應分階段公布受理、完成評估、取得融資、安置住戶、開工、完工與交屋的案件數，標明統計範圍及截至日期"
+    },
+    {
+      "article": "/insights/urban-renewal-election-promises",
+      "title": "政治人物談都更 別拿放寬條件開選舉支票",
+      "field": "article.visual.sideTitle.1",
+      "terms": [
+        "算清楚"
+      ],
+      "text": "承諾都要算清楚"
+    },
+    {
+      "article": "/insights/urban-renewal-election-promises",
+      "title": "政治人物談都更 別拿放寬條件開選舉支票",
+      "field": "article.visual.policyEdition.photos.1.caption",
+      "terms": [
+        "安排"
+      ],
+      "text": "搬遷前就要列出住所、入住日期、租期、租金與照護安排"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.description",
+      "terms": [
+        "安排"
+      ],
+      "text": "地主希望改善老屋，仍可能無法接受分回面積、補繳價金與搬遷安排"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.summary",
+      "terms": [
+        "檢驗",
+        "安排"
+      ],
+      "text": "地主期待、基地試算及提案條件都須檢驗，讓分配協商落到居住需求、出資與可履行的安排"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.sections.0.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "地主希望改善老屋安全、增設電梯、減少修繕負擔，仍可能無法接受分回面積、補繳價金、搬遷安排與重建風險"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.sections.1.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "初步意願調查，可以了解居民是否希望改善環境，以及是否願意進一步評估"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.sections.2.0",
+      "terms": [
+        "安排"
+      ],
+      "text": "分配條件必須落到居住與財務安排"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.sections.2.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "資產價值增加，與當下有足夠現金支應，是兩件需要一起評估的事"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.sections.3.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "這時應檢討計算與安排，提出可比較的調整版本"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.sections.3.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "差異安排應有可說明的依據，新增費用與權益移轉也應交代清楚"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.sections.4.0",
+      "terms": [
+        "檢驗"
+      ],
+      "text": "地主期待與基地限制都須接受檢驗"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.sections.4.1",
+      "terms": [
+        "檢驗"
+      ],
+      "text": "地主對分配的期待，同樣需要回到土地與開發條件檢驗"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.sections.4.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "如果期待同時包含增加室內面積、不必出資、較高補貼與較少風險，評估就必須把這些條件一起列入"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.sections.4.1",
+      "terms": [
+        "檢驗"
+      ],
+      "text": "「基地做不到」需要計算支持，成本、售價與分配假設不能被當成無須檢驗的答案"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.sections.5.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "這些內容若省略個案條件，讀者就難以判斷哪些結果可以參考、哪些安排適用於自己的社區"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.sections.5.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "早簽優惠或集體簽約可以協助安排進度，但應完整交代適用條件，並與法定權益分清楚"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.sections.6.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "整合應先把地主可接受的條件整理清楚，包括基本居住需求、可負擔的出資、搬遷安排及選配偏好，再與基地試算逐項比較"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.sections.6.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "存在落差時，應指出差距的來源，提出調整戶型、出資方式、安置安排或分配條件等可行選項，並列明對其他地主及整體財務的影響"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "前期評估可以有尚未確定的數字，設計與獎勵也可能隨審議調整"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "僅註記數字供參考，卻不說明變動由誰負擔，地主仍然無法評估自己承擔的風險"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.visual.navigation.1.0",
+      "terms": [
+        "安排"
+      ],
+      "text": "分配條件必須落到居住與財務安排"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.visual.navigation.3.0",
+      "terms": [
+        "檢驗"
+      ],
+      "text": "地主期待與基地限制都須接受檢驗"
+    },
+    {
+      "article": "/insights/urban-renewal-plan-acceptance",
+      "title": "都更意願高 分配方案接受度低",
+      "field": "article.visual.inlinePhoto.caption",
+      "terms": [
+        "評估"
+      ],
+      "text": "搬遷期間仍須維持日常生活，安置空間與相關支出應一併評估"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.summary",
+      "terms": [
+        "推進"
+      ],
+      "text": "整合者應先盡到說明與執行責任，再依合理程序推進"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.lead",
+      "terms": [
+        "評估"
+      ],
+      "text": "地主的簽名，應建立在理解方案與評估負擔之後"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.sections.0.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "房子要拆，搬遷期間的生活、重建後的分配、資金缺口的負擔，都會改變一個家庭的安排"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.sections.0.1",
+      "terms": [
+        "帳"
+      ],
+      "text": "自己尚未完成的說明工作，不能算到地主不夠配合的帳上"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.sections.1.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "把估價與面積說明清楚，把出資與安置安排列出來，住戶才能判斷方案是否適合自己"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.sections.1.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "前期評估可以有尚未確定的數字，設計與獎勵也可能隨審議調整"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.sections.1.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "僅註記數字供參考，卻不說明變動由誰負擔，地主仍然無法評估自己承擔的風險"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.sections.2.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "早簽優惠、條件遞減或優先安排，可能促使住戶提早決定"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.sections.2.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "地主需要知道自己正在比較的權益有哪些，才能評估簽署時點的影響"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.sections.2.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "可見優先安排有其規範，業者提出的早簽條件，仍須檢查與法令及計畫內容的關係"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.sections.2.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "整合者可以說明時間誘因，也必須完整揭露未接受該項安排時，地主仍然享有的權利"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.sections.3.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "若考慮調整更新單元範圍，就須依當地劃定基準與相關計畫程序評估"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.sections.4.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "權利價值、出資、營業損失及安置需求可能不同，相關安排應有可說明的依據"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.sections.4.1",
+      "terms": [
+        "攤開",
+        "安排"
+      ],
+      "text": "長者的居住安排、家庭的資金能力、繼承與共有狀況，未必適合在公開場合全部攤開"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.sections.5.1",
+      "terms": [
+        "檢驗",
+        "安排"
+      ],
+      "text": "整合成果應持續接受檢驗，包括住戶提出的疑慮是否獲得具體回覆、重大變更是否依程序處理、安置與資金安排是否能執行，以及承諾的責任有無清楚落在契約與計畫裡"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.sections.5.1",
+      "terms": [
+        "推進"
+      ],
+      "text": "這些內容，才足以說明案件是否具備繼續推進的條件"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.sections.6.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "尤其涉及地主是否保有分配權、未同意後如何處理、優先選配依據等事項，媒體應確認內容有無混淆法定程序與私約安排"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.sections.6.1",
+      "terms": [
+        "推進"
+      ],
+      "text": "三策對整合工作的要求很清楚：把足以支持決定的資訊交給地主，把仍有變動的條件交代清楚，把承諾寫成可以執行的責任，再依合理程序推進"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "地主的簽名，應建立在理解方案與評估負擔之後"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.visual.inlinePhoto.alt",
+      "terms": [
+        "安排"
+      ],
+      "text": "家人在居家空間整理搬遷物品並討論生活安排"
+    },
+    {
+      "article": "/insights/urban-renewal-homeowner-deliberation",
+      "title": "都更整合，別把地主的審慎當成障礙",
+      "field": "article.visual.inlinePhoto.caption",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "搬遷期間的生活與家庭安排，也應納入方案評估與個別溝通"
+    },
+    {
+      "article": "/insights/urban-renewal-media-accountability",
+      "title": "都更資訊失真，名嘴與媒體都該負責",
+      "field": "article.sections.0.1",
+      "terms": [
+        "關鍵"
+      ],
+      "text": "三策反對這種省略關鍵條件的都更論述"
+    },
+    {
+      "article": "/insights/urban-renewal-media-accountability",
+      "title": "都更資訊失真，名嘴與媒體都該負責",
+      "field": "article.sections.1.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "一坪換幾坪，必須先確認新舊坪數各自包含哪些面積，再把基地條件、開發成本與出資安排放進計算"
+    },
+    {
+      "article": "/insights/urban-renewal-media-accountability",
+      "title": "都更資訊失真，名嘴與媒體都該負責",
+      "field": "article.sections.2.0",
+      "terms": [
+        "評估"
+      ],
+      "text": "成功案例沒有替其他基地完成評估"
+    },
+    {
+      "article": "/insights/urban-renewal-media-accountability",
+      "title": "都更資訊失真，名嘴與媒體都該負責",
+      "field": "article.sections.3.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "防弊論述應幫助地主辨認控制與利益安排，不能停在一句即將出現亂象的預告"
+    },
+    {
+      "article": "/insights/urban-renewal-media-accountability",
+      "title": "都更資訊失真，名嘴與媒體都該負責",
+      "field": "article.sections.5.1",
+      "terms": [
+        "檢驗"
+      ],
+      "text": "三策要求的資訊責任很具體：談分回，就交代計算；談制度，就交代適用條件；談弊端，就提出可檢驗的行為與依據"
+    },
+    {
+      "article": "/insights/urban-renewal-media-accountability",
+      "title": "都更資訊失真，名嘴與媒體都該負責",
+      "field": "article.visual.navigation.1.0",
+      "terms": [
+        "評估"
+      ],
+      "text": "成功案例沒有替其他基地完成評估"
+    },
+    {
+      "article": "/insights/know-your-land",
+      "title": "認識自己的土地",
+      "field": "article.sections.0.1",
+      "terms": [
+        "攤開"
+      ],
+      "text": "這些差異沒有攤開，百分比就失去了比較基礎"
+    },
+    {
+      "article": "/insights/know-your-land",
+      "title": "認識自己的土地",
+      "field": "article.sections.0.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "地主清楚自己的權利與基地條件，才有能力提出具體主張，也有依據評估合作方案"
+    },
+    {
+      "article": "/insights/know-your-land",
+      "title": "認識自己的土地",
+      "field": "article.sections.1.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "即使共有人已有分管使用的約定，也應將使用安排與所有權分別核對"
+    },
+    {
+      "article": "/insights/know-your-land",
+      "title": "認識自己的土地",
+      "field": "article.sections.1.1",
+      "terms": [
+        "釐清"
+      ],
+      "text": "若涉及多人共有、土地與建物分屬不同人、抵押權或繼承事項，也應一併釐清，讓後續整合有明確的權利人與處理範圍"
+    },
+    {
+      "article": "/insights/know-your-land",
+      "title": "認識自己的土地",
+      "field": "article.sections.2.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "分區查詢、建築法令與現場條件要合併判讀，才能形成基地評估"
+    },
+    {
+      "article": "/insights/know-your-land",
+      "title": "認識自己的土地",
+      "field": "article.sections.3.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "建築設計、可供分配的房地、成本負擔與契約安排，都需要納入計算"
+    },
+    {
+      "article": "/insights/know-your-land",
+      "title": "認識自己的土地",
+      "field": "article.sections.3.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "評估階段可以採用假設，但假設應該被明確標示"
+    },
+    {
+      "article": "/insights/know-your-land",
+      "title": "認識自己的土地",
+      "field": "article.sections.4.1",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "因此，評估資料應把實施者、資金安排、實施方式與分配依據說明清楚"
+    },
+    {
+      "article": "/insights/know-your-land",
+      "title": "認識自己的土地",
+      "field": "article.sections.4.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "僅以都更或合建概括整個案件，無法充分呈現地主將參與的安排"
+    },
+    {
+      "article": "/insights/know-your-land",
+      "title": "認識自己的土地",
+      "field": "article.sections.5.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "同樣標示分回三十坪的方案，也應列明主建物、附屬建物、共有部分與車位的處理，並交代樓層、戶別、選配及價差找補安排"
+    },
+    {
+      "article": "/insights/know-your-land",
+      "title": "認識自己的土地",
+      "field": "article.sections.5.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "開發量、整合範圍或成本確實無法支持原先期待時，就應調整規劃與分配評估"
+    },
+    {
+      "article": "/insights/know-your-land",
+      "title": "認識自己的土地",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "資料交由專業團隊判讀後，應形成地主能夠理解的評估內容，交代產權、開發限制與待處理事項"
+    },
+    {
+      "article": "/insights/know-your-land",
+      "title": "認識自己的土地",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "地主可以憑資料核對提案、理解契約、評估承擔的費用與風險，才有基礎作出決定"
+    },
+    {
+      "article": "/insights/know-your-land",
+      "title": "認識自己的土地",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "這也是合建與都更前期評估應完成的工作"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.description",
+      "terms": [
+        "安排"
+      ],
+      "text": "土地交付銀行信託後，完工仍須有足夠資金、撥款控管與續建安排"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.sections.0.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "合建方案設有土地信託、工程款專戶與續建機制時，地主仍須分別確認各項安排的保障範圍"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.sections.0.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "拆除老屋、交付土地與搬遷，會改變家庭未來幾年的居住安排，簽約前就應了解各方承擔的責任"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.sections.0.1",
+      "terms": [
+        "銜接"
+      ],
+      "text": "若未約定融資、撥款與續建如何銜接，停工時仍可能無人提供資金或接手工程"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.sections.1.0",
+      "terms": [
+        "安排"
+      ],
+      "text": "土地進入信託，仍須檢查抵押與融資安排"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.sections.1.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "如果契約給了廣泛的融資與變更權限，地主卻無法掌握借款用途、債務變動與清償安排，土地交付後，就可能失去對重大風險的判斷能力"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.sections.2.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "工程款無法支付時才發現資金缺口，可能已錯過調整融資與工程安排的時機"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.sections.3.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "即使由同一家銀行辦理，也應分別檢視授信安排與信託契約"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.sections.4.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "臺北市政府對相關機制的說明，也提到信託銀行依契約邀集相關當事人，評估是否啟動續建"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.sections.4.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "評估、協調與承擔完工責任，具有不同意義"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.sections.4.1",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "因此，續建安排應連同剩餘資金、未售房地、既有債務與追加融資能力一起評估"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.sections.5.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "接手安排應同時處理權利、債務與資金"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.sections.6.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "相關事項多久檢查一次、多久向地主說明，都應有安排"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.sections.6.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "法律、產權、工程與財務各有不同的專業要求，委任範圍應依工作內容與人員能力安排"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.sections.7.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "這些條件影響未來利益，停工後的處理安排，則影響這些利益能否實現"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.sections.7.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "一份分配條件優厚的契約，如果資金不足、融資授權過廣，或續建安排缺乏執行基礎，地主最後承擔的代價，可能遠超過多分幾坪的價值"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.sections.7.1",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "三策評估案件，會把合建、信託、融資與工程安排放在一起檢視"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.sections.7.1",
+      "terms": [
+        "銜接"
+      ],
+      "text": "土地授權是否受限制、資金能否支應完工、異常由誰發現，以及停工後誰能接手，都應相互銜接"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.sections.7.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "續建可以預作安排，但執行所需的權限與資金，也必須有著落"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.visual.navigation.0.0",
+      "terms": [
+        "安排"
+      ],
+      "text": "土地進入信託，仍須檢查抵押與融資安排"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.visual.storyComparison.caption",
+      "terms": [
+        "安排"
+      ],
+      "text": "三種安排，分別核對哪些事項"
+    },
+    {
+      "article": "/insights/land-trust-construction-completion",
+      "title": "土地信託給銀行，仍須確認完工資金與續建責任",
+      "field": "article.visual.storyComparison.headers.0",
+      "terms": [
+        "安排"
+      ],
+      "text": "安排"
+    },
+    {
+      "article": "/insights/public-urban-renewal-5099-threshold",
+      "title": "都更五成意願門檻，不能當成拆屋標準",
+      "field": "article.summary",
+      "terms": [
+        "評估"
+      ],
+      "text": "5099的五成意願門檻，供政府提早協助評估"
+    },
+    {
+      "article": "/insights/public-urban-renewal-5099-threshold",
+      "title": "都更五成意願門檻，不能當成拆屋標準",
+      "field": "article.sections.0.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "這種說法混淆了初期評估與拆除程序，也可能讓住戶連方案說明都不願意參加"
+    },
+    {
+      "article": "/insights/public-urban-renewal-5099-threshold",
+      "title": "都更五成意願門檻，不能當成拆屋標準",
+      "field": "article.sections.0.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "臺北市於2026年10月16日宣布規劃推動公辦都更「5099」新制，將第一階段更新意願門檻由75%調降至50%，讓政府提早協助方案評估、權益試算與溝通"
+    },
+    {
+      "article": "/insights/public-urban-renewal-5099-threshold",
+      "title": "都更五成意願門檻，不能當成拆屋標準",
+      "field": "article.sections.0.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "住戶表達參與初期評估的意願後，仍有重建方案、分配、招商及法定程序需要處理"
+    },
+    {
+      "article": "/insights/public-urban-renewal-5099-threshold",
+      "title": "都更五成意願門檻，不能當成拆屋標準",
+      "field": "article.sections.0.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "地主也應在收到方案後，核對自己能分回哪些房屋、是否需要補款，以及搬遷和履約安排"
+    },
+    {
+      "article": "/insights/public-urban-renewal-5099-threshold",
+      "title": "都更五成意願門檻，不能當成拆屋標準",
+      "field": "article.sections.1.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "這些要求能否實現，取決於土地條件、可建規模、營建成本、房地價值與分配安排"
+    },
+    {
+      "article": "/insights/public-urban-renewal-5099-threshold",
+      "title": "都更五成意願門檻，不能當成拆屋標準",
+      "field": "article.sections.1.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "較早提供評估，可以讓大家先了解基地能蓋多少、有哪些分配方式，以及各自需要負擔的費用"
+    },
+    {
+      "article": "/insights/public-urban-renewal-5099-threshold",
+      "title": "都更五成意願門檻，不能當成拆屋標準",
+      "field": "article.sections.2.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "評估結果不利於重建時，政府與專業團隊同樣有責任向住戶說明"
+    },
+    {
+      "article": "/insights/public-urban-renewal-5099-threshold",
+      "title": "都更五成意願門檻，不能當成拆屋標準",
+      "field": "article.sections.5.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "這些項目會影響實際居住與資金安排，應與容積變化一起呈現"
+    },
+    {
+      "article": "/insights/public-urban-renewal-5099-threshold",
+      "title": "都更五成意願門檻，不能當成拆屋標準",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "政府提供初期評估的門檻、特定快速審查專案的申請資格，以及事業計畫的法定同意比例，各有不同用途"
+    },
+    {
+      "article": "/insights/public-urban-renewal-5099-threshold",
+      "title": "都更五成意願門檻，不能當成拆屋標準",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "評估政策成效，也應分別看待初期協助與後續執行"
+    },
+    {
+      "article": "/insights/public-urban-renewal-5099-threshold",
+      "title": "都更五成意願門檻，不能當成拆屋標準",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "較早進場能否增加完成評估的社區、縮短整合時間，可以持續追蹤；分配協商、招商、融資與拆遷是否順利，則需要各階段的執行資料"
+    },
+    {
+      "article": "/insights/public-urban-renewal-5099-threshold",
+      "title": "都更五成意願門檻，不能當成拆屋標準",
+      "field": "article.sections.7.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "三策支持政府較早提供專業評估，並要求試算交代容積、成本、售價與工期假設，以及變動後對住戶分配和補款的影響"
+    },
+    {
+      "article": "/insights/public-urban-renewal-5099-threshold",
+      "title": "都更五成意願門檻，不能當成拆屋標準",
+      "field": "article.sections.7.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "批評政策，應核對門檻、分配依據、費用列計、公共回饋與履約安排"
+    },
+    {
+      "article": "/insights/public-urban-renewal-5099-threshold",
+      "title": "都更五成意願門檻，不能當成拆屋標準",
+      "field": "article.sections.7.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "三策評估政策與案件，會核對適用容積、預估樓地板、成本及房地價值，並比較屋主可取得的房屋、應付差額與安置條件"
+    },
+    {
+      "article": "/insights/urban-renewal-approved-not-started",
+      "title": "都更核定未開工，須查明拆遷、融資與發包進度",
+      "field": "article.sections.1.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "如果仍有人居住、使用建物，而其位置又影響整體拆除、地下室開挖或施工動線，工程就可能無法依原定安排進行"
+    },
+    {
+      "article": "/insights/urban-renewal-approved-not-started",
+      "title": "都更核定未開工，須查明拆遷、融資與發包進度",
+      "field": "article.sections.1.1",
+      "terms": [
+        "推進"
+      ],
+      "text": "行政程序已經推進，與現場已經具備施工條件，必須分別檢視"
+    },
+    {
+      "article": "/insights/urban-renewal-approved-not-started",
+      "title": "都更核定未開工，須查明拆遷、融資與發包進度",
+      "field": "article.sections.2.1",
+      "terms": [
+        "推進"
+      ],
+      "text": "都市更新可以依法定同意門檻推進，但達到門檻之後，仍須處理個別住戶的搬遷與安置問題"
+    },
+    {
+      "article": "/insights/urban-renewal-approved-not-started",
+      "title": "都更核定未開工，須查明拆遷、融資與發包進度",
+      "field": "article.sections.2.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "有人對分配結果仍有疑義，有人面臨租賃、營業或照顧安排的困難，也可能有當事人對搬遷時間、補償及安置條件尚未達成共識"
+    },
+    {
+      "article": "/insights/urban-renewal-approved-not-started",
+      "title": "都更核定未開工，須查明拆遷、融資與發包進度",
+      "field": "article.sections.2.1",
+      "terms": [
+        "推進"
+      ],
+      "text": "同意參與更新，也不代表已經完成搬遷；未同意參與更新，也不代表案件在法律上永遠無法推進"
+    },
+    {
+      "article": "/insights/urban-renewal-approved-not-started",
+      "title": "都更核定未開工，須查明拆遷、融資與發包進度",
+      "field": "article.sections.3.1",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "以臺北市現行代拆辦法為例，實施者申請市府代拆，須符合協調及文件要求；市府受理後，也有再行協調、評估與執行安排"
+    },
+    {
+      "article": "/insights/urban-renewal-approved-not-started",
+      "title": "都更核定未開工，須查明拆遷、融資與發包進度",
+      "field": "article.sections.4.1",
+      "terms": [
+        "推進"
+      ],
+      "text": "營造成本、土方費用與融資條件，確實會影響案件能否推進"
+    },
+    {
+      "article": "/insights/urban-renewal-approved-not-started",
+      "title": "都更核定未開工，須查明拆遷、融資與發包進度",
+      "field": "article.sections.4.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "另一種情況是原本已有開發安排，卻因搬遷與拆除遲遲無法完成，導致預定進場時間不斷後移"
+    },
+    {
+      "article": "/insights/urban-renewal-approved-not-started",
+      "title": "都更核定未開工，須查明拆遷、融資與發包進度",
+      "field": "article.sections.6.1",
+      "terms": [
+        "釐清",
+        "推進",
+        "安排"
+      ],
+      "text": "拆遷尚未完成，工作重點在於釐清未搬遷原因、履行補償與安置安排，並依法推進協調或後續程序"
+    },
+    {
+      "article": "/insights/urban-renewal-approved-not-started",
+      "title": "都更核定未開工，須查明拆遷、融資與發包進度",
+      "field": "article.sections.6.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "基地已完成交付，但融資未落實，則須檢視資金來源、授信條件、自有資金與撥款安排"
+    },
+    {
+      "article": "/insights/urban-renewal-approved-not-started",
+      "title": "都更核定未開工，須查明拆遷、融資與發包進度",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "資金已有安排，工程卻無法發包，就需要重新評估圖說、工項範圍、實際報價與預算落差，以及調整後是否影響原有分配及履約條件"
+    },
+    {
+      "article": "/insights/urban-renewal-approved-not-started",
+      "title": "都更核定未開工，須查明拆遷、融資與發包進度",
+      "field": "article.sections.6.1",
+      "terms": [
+        "推進"
+      ],
+      "text": "這些工作彼此關聯，也各有負責的主體與推進方式"
+    },
+    {
+      "article": "/insights/urban-renewal-approved-not-started",
+      "title": "都更核定未開工，須查明拆遷、融資與發包進度",
+      "field": "article.sections.7.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "地主評估案件進度，需要看到足以支持下一步的具體資料"
+    },
+    {
+      "article": "/insights/urban-renewal-approved-not-started",
+      "title": "都更核定未開工，須查明拆遷、融資與發包進度",
+      "field": "article.sections.7.1",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "對推動團隊而言，也應把拆遷、資金與工程安排放在同一份執行時程中，辨識彼此的前後關係，並隨進度更新成本與財務評估"
+    },
+    {
+      "article": "/insights/urban-renewal-approved-not-started",
+      "title": "都更核定未開工，須查明拆遷、融資與發包進度",
+      "field": "article.sections.7.1",
+      "terms": [
+        "銜接"
+      ],
+      "text": "核定之後能否開工，取決於多項條件能否銜接"
+    },
+    {
+      "article": "/insights/urban-renewal-approved-not-started",
+      "title": "都更核定未開工，須查明拆遷、融資與發包進度",
+      "field": "article.sections.7.1",
+      "terms": [
+        "推進"
+      ],
+      "text": "三策重視的專業判斷，就是辨明案件停在哪裡、原因如何形成，以及由誰完成哪些工作，才能推進到下一階段"
+    },
+    {
+      "article": "/insights/urban-renewal-approved-not-started",
+      "title": "都更核定未開工，須查明拆遷、融資與發包進度",
+      "field": "article.visual.storyPhotos.1.caption",
+      "terms": [
+        "評估"
+      ],
+      "text": "發包前須核對圖說、工項與報價，評估預算落差"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.title",
+      "terms": [
+        "安排"
+      ],
+      "text": "都更權值不足、差額難以負擔，應提早安排分配與安置"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.seoTitle",
+      "terms": [
+        "安排"
+      ],
+      "text": "都更權值不足、差額難以負擔，應提早安排分配與安置｜三策觀點"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.description",
+      "terms": [
+        "安排"
+      ],
+      "text": "都更分回的權值不足以選配最小一戶、家庭又難以負擔差額時，應提早比較戶型、付款、合併選配與居住安排"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.description",
+      "terms": [
+        "安排"
+      ],
+      "text": "從最小分配面積、戶型總價、付款能力、合併選配與現金補償，檢視重建後的居住安排"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.summary",
+      "terms": [
+        "安排"
+      ],
+      "text": "選不到最小一戶，補款又超過能力，應提早比較戶型、付款安排、合併選配與補償後的居住選擇"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.0.1",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "屋主原本希望透過重建改善居住安全，卻可能因權值不足而無法分回一戶，必須在前期評估可行的分配與居住安排"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.1.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "專業評估還需要說明造成這項結果的原因，才能判斷有哪些調整空間"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.3.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "等到戶型與配置逐漸定案，再要求屋主自行籌足差額，可調整的戶型與付款安排已受限制"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.4.1",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "這時可以評估融資或協商付款安排，但核貸條件、擔保設定、撥款與差額繳納時點，都必須先確認"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.4.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "因此，「銀行可以貸款」需要有具體評估支持"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.5.0",
+      "terms": [
+        "評估"
+      ],
+      "text": "合併選配，可以評估，但共有關係也要先處理"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.5.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "當個別屋主的應分配價值不足，可以依個案規則評估與其他權利人合併選配的可能性"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.5.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "親屬之間可能較有協調基礎，仍應事先約定；彼此沒有共同居住需求的屋主，則更需要審慎評估"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.5.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "合併選配有機會降低個別補款需求，但取得一戶的共有持分，與獨立擁有一戶住宅，對屋主的生活安排有明顯差異"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.6.0",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "現金補償，也需要連同後續居住安排評估"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "但領到補償金，與解決後續居住需求，是兩項需要分別評估的事情"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "評估補償金時，應對照適合生活範圍內的購屋總價、租金與可支應期間，並確認搬離原社區後的就醫、照顧與家庭支持安排"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.7.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "增加低總價戶型、協商補款安排，或提供個別支持，都可能影響整體規劃與財務"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.7.1",
+      "terms": [
+        "檢驗"
+      ],
+      "text": "分配公平仍須建立在一致、可檢驗的標準上"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.7.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "即使經過評估，仍可能有屋主無法在不增加負擔的情況下獨立分回一戶，這項結果應及早揭露"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.8.0",
+      "terms": [
+        "評估"
+      ],
+      "text": "三策觀點：規劃階段須評估屋主的補款能力"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.8.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "更新初期的可行性評估，應將個別屋主的分配結果納入檢視"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.8.1",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "它能讓團隊提早評估小戶型的必要性、付款安排的可行性，以及確實無法分回住宅時的替代選擇"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.8.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "當分配權值不足、差額又補不起，這個困難就應進入方案本身，接受具體評估"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.sections.8.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "等到選屋時才告知屋主必須籌款，可能已錯過調整戶型、分配與付款安排的機會"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.visual.titleLines.2",
+      "terms": [
+        "安排"
+      ],
+      "text": "應提早安排"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.visual.sideTitle.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "差額與居住安排"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.visual.navigation.4.0",
+      "terms": [
+        "評估"
+      ],
+      "text": "合併選配，可以評估，但共有關係也要先處理"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.visual.navigation.5.0",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "現金補償，也需要連同後續居住安排評估"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.visual.navigation.7.0",
+      "terms": [
+        "評估"
+      ],
+      "text": "三策觀點：規劃階段須評估屋主的補款能力"
+    },
+    {
+      "article": "/insights/urban-renewal-rights-shortfall",
+      "title": "都更權值不足、差額難以負擔，應提早安排分配與安置",
+      "field": "article.visual.storyPhotos.1.alt",
+      "terms": [
+        "安排"
+      ],
+      "text": "父親與女兒在家中核算家庭預算與居住安排"
+    },
+    {
+      "article": "/insights/joint-construction-lower-floor-allocation",
+      "title": "地主由下往上分，比例須連同樓層價值比較",
+      "field": "article.sections.0.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "六成若附帶「地主由下往上分取」的條件，另一方案則提供不同樓層的選擇，評估時就須把樓層價值與可選範圍一併納入"
+    },
+    {
+      "article": "/insights/joint-construction-lower-floor-allocation",
+      "title": "地主由下往上分，比例須連同樓層價值比較",
+      "field": "article.sections.0.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "「由下往上分」所帶來的影響，應在議定分配比例時一併評估"
+    },
+    {
+      "article": "/insights/joint-construction-lower-floor-allocation",
+      "title": "地主由下往上分，比例須連同樓層價值比較",
+      "field": "article.sections.1.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "但地主評估條件時，應理解自己談到的六成，究竟代表什麼"
+    },
+    {
+      "article": "/insights/joint-construction-lower-floor-allocation",
+      "title": "地主由下往上分，比例須連同樓層價值比較",
+      "field": "article.sections.1.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "如果面積比例已經反映樓層安排，地主也接受這樣的交換，雙方就有協商基礎"
+    },
+    {
+      "article": "/insights/joint-construction-lower-floor-allocation",
+      "title": "地主由下往上分，比例須連同樓層價值比較",
+      "field": "article.sections.2.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "這些安排會影響雙方取得的利益，也應反映在整體合作條件中"
+    },
+    {
+      "article": "/insights/joint-construction-lower-floor-allocation",
+      "title": "地主由下往上分，比例須連同樓層價值比較",
+      "field": "article.sections.4.1",
+      "terms": [
+        "帳"
+      ],
+      "text": "若地主可選房屋的計價偏高，相同額度可取得的面積可能減少；若不同樓層的價差缺乏依據，也可能使帳面分配與市場價值產生落差"
+    },
+    {
+      "article": "/insights/joint-construction-lower-floor-allocation",
+      "title": "地主由下往上分，比例須連同樓層價值比較",
+      "field": "article.sections.4.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "比較的目的，是讓雙方取得的房屋，都能在一致且有依據的標準下受到評估"
+    },
+    {
+      "article": "/insights/joint-construction-lower-floor-allocation",
+      "title": "地主由下往上分，比例須連同樓層價值比較",
+      "field": "article.sections.5.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "不同安排，對個別地主的選擇會產生不同影響"
+    },
+    {
+      "article": "/insights/joint-construction-lower-floor-allocation",
+      "title": "地主由下往上分，比例須連同樓層價值比較",
+      "field": "article.sections.6.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "超出額度需要補多少、少選的差額如何返還，以及車位能否與住宅額度互相抵用，都會影響地主的資金安排"
+    },
+    {
+      "article": "/insights/joint-construction-lower-floor-allocation",
+      "title": "地主由下往上分，比例須連同樓層價值比較",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "較高的分配比例，如果伴隨較大的補款需求，仍須評估家庭是否有能力承擔"
+    },
+    {
+      "article": "/insights/joint-construction-lower-floor-allocation",
+      "title": "地主由下往上分，比例須連同樓層價值比較",
+      "field": "article.sections.7.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "本文主要討論協議合建條件的評估"
+    },
+    {
+      "article": "/insights/joint-construction-lower-floor-allocation",
+      "title": "地主由下往上分，比例須連同樓層價值比較",
+      "field": "article.sections.7.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "契約中的分配比例、樓層安排與找補方式，應依個案約定及適用法令檢視"
+    },
+    {
+      "article": "/insights/joint-construction-lower-floor-allocation",
+      "title": "地主由下往上分，比例須連同樓層價值比較",
+      "field": "article.sections.8.0",
+      "terms": [
+        "評估"
+      ],
+      "text": "樓層限制的影響，應在議定比例時就受到評估"
+    },
+    {
+      "article": "/insights/joint-construction-lower-floor-allocation",
+      "title": "地主由下往上分，比例須連同樓層價值比較",
+      "field": "article.sections.8.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "這項安排可能有利於整體開發與銷售，也可能符合地主增加面積的期待，但其對房地價值與居住選擇的影響，應在合作條件中充分呈現"
+    },
+    {
+      "article": "/insights/joint-construction-lower-floor-allocation",
+      "title": "地主由下往上分，比例須連同樓層價值比較",
+      "field": "article.sections.8.1",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "三策評估合建條件，會將分配比例換算為具體戶別、房地價值與資金負擔，再判斷這項安排是否符合地主的需求，以及整體開發能否履行"
+    },
+    {
+      "article": "/insights/transfer-development-rights-allocation",
+      "title": "容積移轉由建商出資，新增利益仍須依分配約定檢視",
+      "field": "article.summary",
+      "terms": [
+        "評估"
+      ],
+      "text": "建商出資取得容積，是評估分配的重要條件"
+    },
+    {
+      "article": "/insights/transfer-development-rights-allocation",
+      "title": "容積移轉由建商出資，新增利益仍須依分配約定檢視",
+      "field": "article.summary",
+      "terms": [
+        "安排"
+      ],
+      "text": "新增利益如何安排，仍須回到契約、適用制度與完整的財務比較"
+    },
+    {
+      "article": "/insights/transfer-development-rights-allocation",
+      "title": "容積移轉由建商出資，新增利益仍須依分配約定檢視",
+      "field": "article.lead",
+      "terms": [
+        "安排"
+      ],
+      "text": "從新增成本、土地持分與分配價值，理解容積移轉的利益如何安排"
+    },
+    {
+      "article": "/insights/transfer-development-rights-allocation",
+      "title": "容積移轉由建商出資，新增利益仍須依分配約定檢視",
+      "field": "article.sections.0.1",
+      "terms": [
+        "釐清"
+      ],
+      "text": "要判斷分配是否合理，應先釐清新增容積如何取得、增加多少成本，以及原有合作條件涵蓋哪些範圍"
+    },
+    {
+      "article": "/insights/transfer-development-rights-allocation",
+      "title": "容積移轉由建商出資，新增利益仍須依分配約定檢視",
+      "field": "article.sections.0.1",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "出資取得容積，是評估分配的重要條件；至於新增利益如何安排，仍須回到適用制度、契約內容與完整的財務比較"
+    },
+    {
+      "article": "/insights/transfer-development-rights-allocation",
+      "title": "容積移轉由建商出資，新增利益仍須依分配約定檢視",
+      "field": "article.sections.2.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "新增房屋的配置、分配及登記安排，都可能影響重建後的土地持分"
+    },
+    {
+      "article": "/insights/transfer-development-rights-allocation",
+      "title": "容積移轉由建商出資，新增利益仍須依分配約定檢視",
+      "field": "article.sections.2.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "評估方案時，應把土地權利與房地價值的變化一併列出，讓屋主知道自己取得了什麼、承擔了什麼"
+    },
+    {
+      "article": "/insights/transfer-development-rights-allocation",
+      "title": "容積移轉由建商出資，新增利益仍須依分配約定檢視",
+      "field": "article.sections.3.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "地主認為，契約寫分回六成，未來蓋出的房子就按六成計算；建商認為，六成只適用於原先約定的容積，後來另外取得的容積應另作安排"
+    },
+    {
+      "article": "/insights/transfer-development-rights-allocation",
+      "title": "容積移轉由建商出資，新增利益仍須依分配約定檢視",
+      "field": "article.sections.3.1",
+      "terms": [
+        "說清楚"
+      ],
+      "text": "如果簽約時沒有把計算範圍說清楚，等到申請或設計變更時，就容易產生落差"
+    },
+    {
+      "article": "/insights/transfer-development-rights-allocation",
+      "title": "容積移轉由建商出資，新增利益仍須依分配約定檢視",
+      "field": "article.sections.3.1",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "如果契約已明確約定，容積移轉的取得與新增興建成本由建商負擔，對應增加的房屋也歸建商，評估時就須把這項安排與地主原有的分回條件一起理解"
+    },
+    {
+      "article": "/insights/transfer-development-rights-allocation",
+      "title": "容積移轉由建商出資，新增利益仍須依分配約定檢視",
+      "field": "article.sections.5.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "容積移轉有機會改善案件財務與地主分配，但增加多少效益、如何安排，仍須逐案計算"
+    },
+    {
+      "article": "/insights/transfer-development-rights-allocation",
+      "title": "容積移轉由建商出資，新增利益仍須依分配約定檢視",
+      "field": "article.sections.5.1",
+      "terms": [
+        "說清楚"
+      ],
+      "text": "把成本、價值與契約說清楚，雙方才有條件討論分配是否合理"
+    },
+    {
+      "article": "/insights/urban-renewal-ground-floor-shops",
+      "title": "都更難談的，可能就是那間一樓店面",
+      "field": "article.description",
+      "terms": [
+        "評估"
+      ],
+      "text": "一樓店面參與都更，須評估收益中斷、商業條件與分配差異"
+    },
+    {
+      "article": "/insights/urban-renewal-ground-floor-shops",
+      "title": "都更難談的，可能就是那間一樓店面",
+      "field": "article.summary",
+      "terms": [
+        "評估"
+      ],
+      "text": "一樓店面的更新選擇，必須連同商業條件、施工期間收入與整體分配公平評估"
+    },
+    {
+      "article": "/insights/urban-renewal-ground-floor-shops",
+      "title": "都更難談的，可能就是那間一樓店面",
+      "field": "article.sections.1.0",
+      "terms": [
+        "評估"
+      ],
+      "text": "一樓屋主須評估更新期間中斷的收入與使用利益"
+    },
+    {
+      "article": "/insights/urban-renewal-ground-floor-shops",
+      "title": "都更難談的，可能就是那間一樓店面",
+      "field": "article.sections.1.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "因此，一樓屋主評估更新時，會同時考量未來的資產價值與眼前的現金流"
+    },
+    {
+      "article": "/insights/urban-renewal-ground-floor-shops",
+      "title": "都更難談的，可能就是那間一樓店面",
+      "field": "article.sections.2.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "這些增益同樣應納入評估"
+    },
+    {
+      "article": "/insights/urban-renewal-ground-floor-shops",
+      "title": "都更難談的，可能就是那間一樓店面",
+      "field": "article.sections.3.1",
+      "terms": [
+        "檢驗"
+      ],
+      "text": "雙方都需要能夠檢驗的標準，才能判斷差別待遇是否合理"
+    },
+    {
+      "article": "/insights/urban-renewal-ground-floor-shops",
+      "title": "都更難談的，可能就是那間一樓店面",
+      "field": "article.sections.3.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "因此，店面目前的售價、屋主期待的租金，與權利變換中的權利價值，應依各自的評估目的與規則理解，不能直接畫上等號"
+    },
+    {
+      "article": "/insights/urban-renewal-ground-floor-shops",
+      "title": "都更難談的，可能就是那間一樓店面",
+      "field": "article.sections.4.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "協商時，應分別處理房地分配、施工期間的安置或租金安排，以及營業遷移等事項"
+    },
+    {
+      "article": "/insights/urban-renewal-ground-floor-shops",
+      "title": "都更難談的，可能就是那間一樓店面",
+      "field": "article.sections.4.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "屋主的租金、營業與生活支出，應各有對應的估算資料與處理安排"
+    },
+    {
+      "article": "/insights/urban-renewal-ground-floor-shops",
+      "title": "都更難談的，可能就是那間一樓店面",
+      "field": "article.sections.5.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "若原有條件無法保留，應提出原因與替代安排，讓屋主有足夠資訊判斷得失"
+    },
+    {
+      "article": "/insights/urban-renewal-ground-floor-shops",
+      "title": "都更難談的，可能就是那間一樓店面",
+      "field": "article.sections.5.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "一樓的價值應受到合理評估，整體方案也必須維持一致且可說明的分配邏輯"
+    },
+    {
+      "article": "/insights/urban-renewal-ground-floor-shops",
+      "title": "都更難談的，可能就是那間一樓店面",
+      "field": "article.sections.6.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "一樓店面牽涉建築配置、估價、分配與營業安排，若等到整合後期才集中處理，許多問題已經難以調整"
+    },
+    {
+      "article": "/insights/urban-renewal-ground-floor-shops",
+      "title": "都更難談的，可能就是那間一樓店面",
+      "field": "article.sections.6.1",
+      "terms": [
+        "推進",
+        "安排"
+      ],
+      "text": "都市更新能否推進，取決於各方能否接受利益與負擔的安排"
+    },
+    {
+      "article": "/insights/urban-renewal-ground-floor-shops",
+      "title": "都更難談的，可能就是那間一樓店面",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "當方案能說明原有價值如何受到評估、新建物如何分配、過渡期間如何處理，以及哪些要求確實無法承擔，協商才有形成共識的基礎"
+    },
+    {
+      "article": "/insights/developer-launch-market-recovery",
+      "title": "建商增加推案，房市回溫仍須成交與融資資料支持",
+      "field": "article.description",
+      "terms": [
+        "檢驗"
+      ],
+      "text": "三策檢驗鄉林房市展望報導中的推論，區分企業銷售期待與成交、貸款及住宅去化的市場證據"
+    },
+    {
+      "article": "/insights/developer-launch-market-recovery",
+      "title": "建商增加推案，房市回溫仍須成交與融資資料支持",
+      "field": "article.summary",
+      "terms": [
+        "檢驗"
+      ],
+      "text": "三策從高資產客戶、來客量、推案總銷與銀行核貸，檢驗建商的銷售期待為何不足以證明房市回溫"
+    },
+    {
+      "article": "/insights/developer-launch-market-recovery",
+      "title": "建商增加推案，房市回溫仍須成交與融資資料支持",
+      "field": "article.sections.0.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "公司的銷售計畫可以具體安排，市場復甦的判斷則需要另外提出證據"
+    },
+    {
+      "article": "/insights/developer-launch-market-recovery",
+      "title": "建商增加推案，房市回溫仍須成交與融資資料支持",
+      "field": "article.sections.1.1",
+      "terms": [
+        "說清楚"
+      ],
+      "text": "這項觀察有參考價值，但適用範圍需要說清楚"
+    },
+    {
+      "article": "/insights/developer-launch-market-recovery",
+      "title": "建商增加推案，房市回溫仍須成交與融資資料支持",
+      "field": "article.sections.1.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "高資產客戶的購屋能力，與一般首購、換屋家庭的自備款及貸款條件，須分別評估"
+    },
+    {
+      "article": "/insights/developer-launch-market-recovery",
+      "title": "建商增加推案，房市回溫仍須成交與融資資料支持",
+      "field": "article.sections.2.1",
+      "terms": [
+        "帳"
+      ],
+      "text": "股票上漲，可能增加部分投資人的資產，但帳面獲利有沒有實現、實現後如何配置、其中多少投入住宅，都需要另外確認"
+    },
+    {
+      "article": "/insights/developer-launch-market-recovery",
+      "title": "建商增加推案，房市回溫仍須成交與融資資料支持",
+      "field": "article.sections.3.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "但比較基期、建案範圍、原始人數，以及同期是否推出促銷或調整銷售安排，都沒有交代"
+    },
+    {
+      "article": "/insights/developer-launch-market-recovery",
+      "title": "建商增加推案，房市回溫仍須成交與融資資料支持",
+      "field": "article.sections.6.0",
+      "terms": [
+        "檢驗"
+      ],
+      "text": "預測可以保留彈性，依據仍須接受檢驗"
+    },
+    {
+      "article": "/insights/developer-launch-market-recovery",
+      "title": "建商增加推案，房市回溫仍須成交與融資資料支持",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "評估這項市場展望，仍須檢查公司銷售計畫以外的成交、價格與融資資料"
+    },
+    {
+      "article": "/insights/developer-launch-market-recovery",
+      "title": "建商增加推案，房市回溫仍須成交與融資資料支持",
+      "field": "article.sections.6.1",
+      "terms": [
+        "檢驗"
+      ],
+      "text": "企業對自家產品有信心，是經營表態；要進一步預測整體市場，則應提出可供檢驗的依據"
+    },
+    {
+      "article": "/insights/developer-launch-market-recovery",
+      "title": "建商增加推案，房市回溫仍須成交與融資資料支持",
+      "field": "article.sections.6.1",
+      "terms": [
+        "檢驗"
+      ],
+      "text": "這類表述若沒有搭配明確條件與檢驗時間，即使結果不符預期，也很難判斷原先的推論究竟錯在哪裡"
+    },
+    {
+      "article": "/insights/developer-launch-market-recovery",
+      "title": "建商增加推案，房市回溫仍須成交與融資資料支持",
+      "field": "article.sections.6.1",
+      "terms": [
+        "檢驗"
+      ],
+      "text": "對外溝通可以保留彈性，市場分析仍應留下能夠檢驗的內容"
+    },
+    {
+      "article": "/insights/developer-launch-market-recovery",
+      "title": "建商增加推案，房市回溫仍須成交與融資資料支持",
+      "field": "article.sections.7.1",
+      "terms": [
+        "檢驗"
+      ],
+      "text": "當樂觀預測替後面的建案介紹建立期待，卻缺少同等力道檢驗成交、貸款與庫存，文章就容易替企業完成宣傳，留下尚未完成的市場分析"
+    },
+    {
+      "article": "/insights/developer-launch-market-recovery",
+      "title": "建商增加推案，房市回溫仍須成交與融資資料支持",
+      "field": "article.sections.7.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "建商可以安排推案時程，買方有自己的財務條件，銀行也有自己的放款標準"
+    },
+    {
+      "article": "/insights/urban-renewal-far-300",
+      "title": "容積提高到300%，重建效益須連同回饋與成本評估",
+      "field": "article.title",
+      "terms": [
+        "評估"
+      ],
+      "text": "容積提高到300%，重建效益須連同回饋與成本評估"
+    },
+    {
+      "article": "/insights/urban-renewal-far-300",
+      "title": "容積提高到300%，重建效益須連同回饋與成本評估",
+      "field": "article.seoTitle",
+      "terms": [
+        "評估"
+      ],
+      "text": "容積提高到300%，重建效益須連同回饋與成本評估｜三策觀點"
+    },
+    {
+      "article": "/insights/urban-renewal-far-300",
+      "title": "容積提高到300%，重建效益須連同回饋與成本評估",
+      "field": "article.description",
+      "terms": [
+        "評估"
+      ],
+      "text": "臺北大街廓都更擬提高基準容積至300%，開發效益應扣除公益回饋與新增成本後評估"
+    },
+    {
+      "article": "/insights/urban-renewal-far-300",
+      "title": "容積提高到300%，重建效益須連同回饋與成本評估",
+      "field": "article.sections.0.0",
+      "terms": [
+        "評估"
+      ],
+      "text": "容積放寬須以完整開發試算評估重建條件"
+    },
+    {
+      "article": "/insights/urban-renewal-far-300",
+      "title": "容積提高到300%，重建效益須連同回饋與成本評估",
+      "field": "article.sections.0.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "臺北市大街廓都更新政策的評估，應把新增收益、回饋與成本一起列明"
+    },
+    {
+      "article": "/insights/urban-renewal-far-300",
+      "title": "容積提高到300%，重建效益須連同回饋與成本評估",
+      "field": "article.sections.1.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "因此，政策評估必須同時處理回饋面積、設施用途、興建費用、裝修設備、交付標準及後續管理責任"
+    },
+    {
+      "article": "/insights/urban-renewal-far-300",
+      "title": "容積提高到300%，重建效益須連同回饋與成本評估",
+      "field": "article.sections.2.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "從開發評估來看，土地價格所能承受的上限，受到預估銷售收入、工程與相關費用、融資成本、開發期間及風險報酬共同限制"
+    },
+    {
+      "article": "/insights/urban-renewal-far-300",
+      "title": "容積提高到300%，重建效益須連同回饋與成本評估",
+      "field": "article.sections.2.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "但評估必須同時呈現新增利益、回饋負擔與執行風險"
+    },
+    {
+      "article": "/insights/urban-renewal-far-300",
+      "title": "容積提高到300%，重建效益須連同回饋與成本評估",
+      "field": "article.sections.3.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "資訊越明確，地主越能比較不同方案，出資者越能評估風險，市場也越難以用未經確認的容積條件抬高報價"
+    },
+    {
+      "article": "/insights/urban-renewal-far-300",
+      "title": "容積提高到300%，重建效益須連同回饋與成本評估",
+      "field": "article.sections.4.0",
+      "terms": [
+        "檢驗"
+      ],
+      "text": "案件送進來之後，還要有人持續檢驗可行性"
+    },
+    {
+      "article": "/insights/urban-renewal-far-300",
+      "title": "容積提高到300%，重建效益須連同回饋與成本評估",
+      "field": "article.sections.4.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "容積放寬可能促使更多基地重新評估，甚至提出申請"
+    },
+    {
+      "article": "/insights/urban-renewal-far-300",
+      "title": "容積提高到300%，重建效益須連同回饋與成本評估",
+      "field": "article.sections.4.1",
+      "terms": [
+        "配套",
+        "評估"
+      ],
+      "text": "這些配套的成效應持續追蹤；對於開發條件已不成立的案件，仍須建立重新評估與調整方案的程序"
+    },
+    {
+      "article": "/insights/urban-renewal-far-300",
+      "title": "容積提高到300%，重建效益須連同回饋與成本評估",
+      "field": "article.sections.4.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "市府應按案件階段追蹤整合進度、財務可行性、招商結果與資金安排"
+    },
+    {
+      "article": "/insights/urban-renewal-far-300",
+      "title": "容積提高到300%，重建效益須連同回饋與成本評估",
+      "field": "article.sources.1.0",
+      "terms": [
+        "配套"
+      ],
+      "text": "臺北市都市更新處｜都更新制、審議及安置配套說明"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.description",
+      "terms": [
+        "評估"
+      ],
+      "text": "一坪換一坪應連同新舊室內面積、房間數及家庭需求評估"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.description",
+      "terms": [
+        "安排"
+      ],
+      "text": "三策從室內面積、格局、分配方式、差額價金與家庭預算，討論地主參與都更前需要確認的居住與資金安排"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.summary",
+      "terms": [
+        "安排"
+      ],
+      "text": "從坪數、格局到差額價金，讓住戶比較重建後的居住安排與費用負擔"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.sections.0.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "重建後的空間安排，會影響老屋家庭參與更新的意願"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.sections.1.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "如果無法達成，也應提出具體依據，讓住戶看見差距，評估可以接受的調整"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.sections.2.1",
+      "terms": [
+        "講清楚"
+      ],
+      "text": "首先，雙方必須把比較的面積講清楚"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.sections.2.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "因此，分回條件需要搭配平面圖檢視，讓坪數轉成住戶能理解的生活安排"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.sections.3.0",
+      "terms": [
+        "評估"
+      ],
+      "text": "基地能提供多少資源，需要個案評估"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.sections.5.0",
+      "terms": [
+        "評估"
+      ],
+      "text": "資產增值與居住是否合用，應分開評估"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.sections.5.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "地主投入土地與房屋，同樣承擔搬遷、等待及生活安排的變動"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.sections.5.1",
+      "terms": [
+        "檢驗"
+      ],
+      "text": "雙方的投入與負擔都應被清楚呈現，分配條件才有可以檢驗與討論的基礎"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.sections.5.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "其中，資產增值與居住是否合用，應該分開評估"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.sections.5.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "假設一家三代原本需要三間臥室，分回的新屋只能安排兩間，即使估值提高，少一間房的問題仍然存在"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.sections.5.1",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "住戶必須重新安排同住方式，或評估選擇較大房屋所需的費用"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "如果需要選擇較大的房屋，差額應該在討論方案時就納入評估"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "這是說明計算關係的假設；實際評估應同時列出差額的資金來源與付款時點"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.sections.6.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "如果資金安排需要貸款，就應把預計交屋時的年齡、收入、退休規劃與既有負債一併納入"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.sections.8.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "隨著設計、估價與時程逐步明確，住戶的空間與資金評估也應同步更新"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.sections.8.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "住戶也可能在理解條件後，接受較小面積、調整樓層，或重新安排車位與家庭資金"
+    },
+    {
+      "article": "/insights/urban-renewal-one-for-one",
+      "title": "一坪換一坪，仍須核對重建後的居住空間",
+      "field": "article.sections.8.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "都更應改善房子的安全，並讓原住戶掌握更新後的居住面積、費用負擔與搬遷後的生活安排"
+    },
+    {
+      "article": "/insights/urban-renewal-selection-disputes",
+      "title": "都更選屋爭議，應依法處理異議與既有選配結果",
+      "field": "article.description",
+      "terms": [
+        "釐清"
+      ],
+      "text": "從板橋江子翠都更案公開資料，討論選屋公平、部分重新抽籤、找補金額與多數同意後的地主權益，釐清權利變換與合建私約的處理界線"
+    },
+    {
+      "article": "/insights/urban-renewal-selection-disputes",
+      "title": "都更選屋爭議，應依法處理異議與既有選配結果",
+      "field": "article.lead",
+      "terms": [
+        "推進"
+      ],
+      "text": "選配爭議須查明程序瑕疵、受影響權利人與既有選配效力，再依適用法令與計畫處理補正及後續推進"
+    },
+    {
+      "article": "/insights/urban-renewal-selection-disputes",
+      "title": "都更選屋爭議，應依法處理異議與既有選配結果",
+      "field": "article.visual.sideTitle.1",
+      "terms": [
+        "推進"
+      ],
+      "text": "讓案件推進"
+    },
+    {
+      "article": "/insights/urban-renewal-selection-disputes",
+      "title": "都更選屋爭議，應依法處理異議與既有選配結果",
+      "field": "article.sections.0.1",
+      "terms": [
+        "推進"
+      ],
+      "text": "處理選配爭議，應依法保障個別地主權益，確認既有選配效力與應補正事項，並依程序推進案件"
+    },
+    {
+      "article": "/insights/urban-renewal-selection-disputes",
+      "title": "都更選屋爭議，應依法處理異議與既有選配結果",
+      "field": "article.sections.0.1",
+      "terms": [
+        "推進"
+      ],
+      "text": "這些事項會決定補正範圍及案件能否繼續推進"
+    },
+    {
+      "article": "/insights/urban-renewal-selection-disputes",
+      "title": "都更選屋爭議，應依法處理異議與既有選配結果",
+      "field": "article.sections.1.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "如果按照簽約先後決定，後簽約的地主可能質疑權益受到限制；如果由建商自行安排，也容易引起分配不公平的疑慮"
+    },
+    {
+      "article": "/insights/urban-renewal-selection-disputes",
+      "title": "都更選屋爭議，應依法處理異議與既有選配結果",
+      "field": "article.sections.2.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "評估重新抽籤範圍，應先查明原選配程序的瑕疵、受影響地主，以及各項選配結果的法律效力"
+    },
+    {
+      "article": "/insights/urban-renewal-selection-disputes",
+      "title": "都更選屋爭議，應依法處理異議與既有選配結果",
+      "field": "article.sections.2.1",
+      "terms": [
+        "檢驗"
+      ],
+      "text": "程序需要補正，就應針對問題依法處理；但補正的方式，同樣必須經得起公平性與合法性的檢驗"
+    },
+    {
+      "article": "/insights/urban-renewal-selection-disputes",
+      "title": "都更選屋爭議，應依法處理異議與既有選配結果",
+      "field": "article.sections.4.1",
+      "terms": [
+        "推進"
+      ],
+      "text": "少數地主不同意時，案件能否推進，應依適用的同意門檻、實施方式與法定程序判斷"
+    },
+    {
+      "article": "/insights/urban-renewal-selection-disputes",
+      "title": "都更選屋爭議，應依法處理異議與既有選配結果",
+      "field": "article.sections.5.0",
+      "terms": [
+        "釐清"
+      ],
+      "text": "地主有權提出異議，但也必須釐清爭議的性質"
+    },
+    {
+      "article": "/insights/urban-renewal-selection-disputes",
+      "title": "都更選屋爭議，應依法處理異議與既有選配結果",
+      "field": "article.sections.6.0",
+      "terms": [
+        "釐清"
+      ],
+      "text": "案件延宕的成本與責任須按原因釐清"
+    },
+    {
+      "article": "/insights/urban-renewal-selection-disputes",
+      "title": "都更選屋爭議，應依法處理異議與既有選配結果",
+      "field": "article.sections.6.1",
+      "terms": [
+        "釐清"
+      ],
+      "text": "但案件延遲的原因，仍應依事實釐清"
+    },
+    {
+      "article": "/insights/urban-renewal-selection-disputes",
+      "title": "都更選屋爭議，應依法處理異議與既有選配結果",
+      "field": "article.sections.7.1",
+      "terms": [
+        "推進"
+      ],
+      "text": " 在地主權益受到依法保障、相關爭議經適當處理後，案件應能持續往下一階段推進"
+    },
+    {
+      "article": "/insights/urban-renewal-consent-plan-changes",
+      "title": "都更同意書簽署後，計畫變更仍須依法處理",
+      "field": "article.summary",
+      "terms": [
+        "安排"
+      ],
+      "text": "同意書應對應明確的計畫版本及權益安排"
+    },
+    {
+      "article": "/insights/urban-renewal-consent-plan-changes",
+      "title": "都更同意書簽署後，計畫變更仍須依法處理",
+      "field": "article.lead",
+      "terms": [
+        "安排"
+      ],
+      "text": "地主簽下同意書時，看到的是一套建築規劃與權益安排"
+    },
+    {
+      "article": "/insights/urban-renewal-consent-plan-changes",
+      "title": "都更同意書簽署後，計畫變更仍須依法處理",
+      "field": "article.sections.0.1",
+      "terms": [
+        "推進"
+      ],
+      "text": "需要取得同意的案件，必須達到適用的法定門檻，才能依規定推進"
+    },
+    {
+      "article": "/insights/urban-renewal-consent-plan-changes",
+      "title": "都更同意書簽署後，計畫變更仍須依法處理",
+      "field": "article.sections.0.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "同意書的效力須對照地主簽署時的計畫內容，區分支持重建的意願與對具體規劃、實施方式及權益安排的同意"
+    },
+    {
+      "article": "/insights/urban-renewal-consent-plan-changes",
+      "title": "都更同意書簽署後，計畫變更仍須依法處理",
+      "field": "article.sections.0.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "假設地主原先看到的是某一套建築規劃、開發條件及權益安排，後來卻因為主管機關審議要求、設計調整或其他因素，導致計畫內容出現重大變動"
+    },
+    {
+      "article": "/insights/urban-renewal-consent-plan-changes",
+      "title": "都更同意書簽署後，計畫變更仍須依法處理",
+      "field": "article.sections.1.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "實施者在取得地主同意時，應交代同意書對應的計畫版本及內容，包括更新範圍、建築規劃、實施方式與相關財務安排"
+    },
+    {
+      "article": "/insights/urban-renewal-consent-plan-changes",
+      "title": "都更同意書簽署後，計畫變更仍須依法處理",
+      "field": "article.sections.4.1",
+      "terms": [
+        "核心"
+      ],
+      "text": "最高行政法院認為，涉及地主同意基礎的計畫核心內容變動，應依該案適用的法規重新辦理必要程序，讓權利人有機會行使同意權；公開閱覽與說明會不能逕行取代法定公開展覽及公聽會"
+    },
+    {
+      "article": "/insights/urban-renewal-consent-plan-changes",
+      "title": "都更同意書簽署後，計畫變更仍須依法處理",
+      "field": "article.sections.4.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "判決對實施者的提醒很具體：審議中的修正是否影響地主原本的同意基礎，必須及早評估"
+    },
+    {
+      "article": "/insights/urban-renewal-consent-plan-changes",
+      "title": "都更同意書簽署後，計畫變更仍須依法處理",
+      "field": "article.sections.5.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "計畫內容發生變更時，應提供前後對照，交代變更原因，以及對分回面積、樓層、車位、費用與居住安排的影響"
+    },
+    {
+      "article": "/insights/urban-renewal-consent-plan-changes",
+      "title": "都更同意書簽署後，計畫變更仍須依法處理",
+      "field": "article.sections.5.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "對於可能涉及原同意基礎的重大變更，應及早進行法律與程序評估，確認所需通知、公開展覽、公聽會及同意程序，避免等到計畫即將核定，才發現原本的程序存在爭議"
+    },
+    {
+      "article": "/insights/urban-renewal-consent-plan-changes",
+      "title": "都更同意書簽署後，計畫變更仍須依法處理",
+      "field": "article.sections.6.1",
+      "terms": [
+        "推進"
+      ],
+      "text": "整合初期若以過度樂觀的條件取得同意，卻未交代審議後可能的變動，計畫調整時就可能引發分配與履約爭議，影響後續推進"
+    },
+    {
+      "article": "/insights/urban-renewal-consent-plan-changes",
+      "title": "都更同意書簽署後，計畫變更仍須依法處理",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "從三策的觀點來看，都市更新的專業能力，包括開發條件的合理評估、計畫變更的風險管理，以及對地主權益的充分說明"
+    },
+    {
+      "article": "/insights/public-urban-renewal-challenges",
+      "title": "公辦都更仍須核對財務、共同負擔與地主分配",
+      "field": "article.description",
+      "terms": [
+        "評估"
+      ],
+      "text": "公辦都更的地主權益，仍須依財務可行性、共同負擔與分配條件評估"
+    },
+    {
+      "article": "/insights/public-urban-renewal-challenges",
+      "title": "公辦都更仍須核對財務、共同負擔與地主分配",
+      "field": "article.description",
+      "terms": [
+        "關鍵"
+      ],
+      "text": "三策從都市更新實務分析公辦都更的整合困境、財務可行性、共同負擔及權利分配，探討地主在參與更新前應注意的關鍵問題"
+    },
+    {
+      "article": "/insights/public-urban-renewal-challenges",
+      "title": "公辦都更仍須核對財務、共同負擔與地主分配",
+      "field": "article.visual.detail.alt",
+      "terms": [
+        "評估"
+      ],
+      "text": "住宅建築模型、圖面與財務評估工具"
+    },
+    {
+      "article": "/insights/public-urban-renewal-challenges",
+      "title": "公辦都更仍須核對財務、共同負擔與地主分配",
+      "field": "article.sections.0.1",
+      "terms": [
+        "推進"
+      ],
+      "text": "公辦都更要落實重建，須有可行的財務方案，並讓地主理解分配條件與負擔，形成依法推進的基礎"
+    },
+    {
+      "article": "/insights/public-urban-renewal-challenges",
+      "title": "公辦都更仍須核對財務、共同負擔與地主分配",
+      "field": "article.sections.2.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "都市更新應在整合初期建立有依據的財務評估，讓地主了解可能的開發條件與分配範圍"
+    },
+    {
+      "article": "/insights/public-urban-renewal-challenges",
+      "title": "公辦都更仍須核對財務、共同負擔與地主分配",
+      "field": "article.sections.4.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "部分地主重視分回的建物面積，部分地主關心店面位置與使用價值，也有人希望保留現有居住安排，或盡量減少額外資金負擔"
+    },
+    {
+      "article": "/insights/public-urban-renewal-challenges",
+      "title": "公辦都更仍須核對財務、共同負擔與地主分配",
+      "field": "article.sections.5.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "地主評估方案所需的資訊包括基地可開發規模、預估營建成本、共同負擔計算依據、更新後權利價值，以及未來分配可能受到哪些因素影響"
+    },
+    {
+      "article": "/insights/public-urban-renewal-challenges",
+      "title": "公辦都更仍須核對財務、共同負擔與地主分配",
+      "field": "article.sections.5.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "畢竟，地主最終要面對的是自己持有多年的土地與房屋，任何分配上的變化，都可能直接影響家庭資產與未來生活安排"
+    },
+    {
+      "article": "/insights/public-urban-renewal-challenges",
+      "title": "公辦都更仍須核對財務、共同負擔與地主分配",
+      "field": "article.sections.6.1",
+      "terms": [
+        "推進"
+      ],
+      "text": "前期需要的是整合與信任，中期必須面對開發財務與共同負擔，到了權利分配階段，地主對自身利益的期待更會直接影響案件能否順利推進"
+    },
+    {
+      "article": "/insights/public-urban-renewal-challenges",
+      "title": "公辦都更仍須核對財務、共同負擔與地主分配",
+      "field": "article.sections.6.1",
+      "terms": [
+        "關鍵",
+        "推進"
+      ],
+      "text": "地主願意參與，是都更推動的開始；地主了解並能接受合理的分配結果，才是案件能否持續推進的關鍵"
+    },
+    {
+      "article": "/insights/public-urban-renewal-challenges",
+      "title": "公辦都更仍須核對財務、共同負擔與地主分配",
+      "field": "article.sections.6.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "這也是三策始終重視前期開發評估與財務分析的原因"
+    },
+    {
+      "article": "/insights/public-urban-renewal-challenges",
+      "title": "公辦都更仍須核對財務、共同負擔與地主分配",
+      "field": "article.sections.6.1",
+      "terms": [
+        "說清楚"
+      ],
+      "text": "整合時把這些資訊說清楚，才有條件談後續合作"
+    },
+    {
+      "article": "/insights/renewal-distribution",
+      "title": "都更分配須核對面積、價值與費用負擔",
+      "field": "article.lead",
+      "terms": [
+        "評估"
+      ],
+      "text": "提案若僅列分配比例，應補上估算依據、尚待確認的條件及說明時點，讓地主有資料評估是否參與"
+    },
+    {
+      "article": "/insights/renewal-distribution",
+      "title": "都更分配須核對面積、價值與費用負擔",
+      "field": "article.sections.0.0",
+      "terms": [
+        "安排"
+      ],
+      "text": "分回面積，影響一家人的居住安排"
+    },
+    {
+      "article": "/insights/renewal-distribution",
+      "title": "都更分配須核對面積、價值與費用負擔",
+      "field": "article.sections.0.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "重建後的室內空間、長輩能否留在熟悉社區，以及車位費用，都會影響地主參與的意願與家庭安排"
+    },
+    {
+      "article": "/insights/renewal-distribution",
+      "title": "都更分配須核對面積、價值與費用負擔",
+      "field": "article.sections.1.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "資料應區分主建物、附屬建物、共有部分與車位面積，列明車位數量及分配方式，並說明選配不同樓層或較大戶別時的差額計算與找補安排"
+    },
+    {
+      "article": "/insights/renewal-distribution",
+      "title": "都更分配須核對面積、價值與費用負擔",
+      "field": "article.sections.5.1",
+      "terms": [
+        "評估",
+        "安排"
+      ],
+      "text": "地主看得到這些條件，才有資料可核對，也才能評估重建後的居住與資金安排"
+    },
+    {
+      "article": "/insights/renewal-distribution",
+      "title": "都更分配須核對面積、價值與費用負擔",
+      "field": "article.sections.5.1",
+      "terms": [
+        "說清楚"
+      ],
+      "text": "已能確認的條件說清楚，尚未確認的項目列出查核方式與時程"
+    },
+    {
+      "article": "/insights/renewal-distribution",
+      "title": "都更分配須核對面積、價值與費用負擔",
+      "field": "article.sections.5.1",
+      "terms": [
+        "釐清"
+      ],
+      "text": "三策協助地主比較分配方案、釐清費用負擔與待確認事項，讓地主在簽約前知道自己接受了哪些條件"
+    },
+    {
+      "article": "/insights/building-permit-extension",
+      "title": "新北建築期限增加兩年，合建交屋仍依契約判斷",
+      "field": "article.sections.3.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "如果原有貸款仍須繳納，延期期間的現金支出也應一併列出，評估租金補貼能否涵蓋實際負擔"
+    },
+    {
+      "article": "/insights/building-permit-extension",
+      "title": "新北建築期限增加兩年，合建交屋仍依契約判斷",
+      "field": "article.sections.5.0",
+      "terms": [
+        "說清楚"
+      ],
+      "text": "三策觀點：延後多久、誰付費用，都要說清楚"
+    },
+    {
+      "article": "/insights/building-permit-extension",
+      "title": "新北建築期限增加兩年，合建交屋仍依契約判斷",
+      "field": "article.sections.5.1",
+      "terms": [
+        "釐清"
+      ],
+      "text": "三策協助地主核對公告適用條件、執照期限、合建契約與工程進度，釐清案件能否適用展延措施，以及交屋時程、租金補貼與待處理事項"
+    },
+    {
+      "article": "/insights/property-transfers-market",
+      "title": "買賣移轉棟數增加，仍須區分交屋潮與市場成交",
+      "field": "article.description",
+      "terms": [
+        "評估"
+      ],
+      "text": "三策分析成交與過戶的時間差，說明地主評估合建時，如何核對售價、銷售期間與資金需求"
+    },
+    {
+      "article": "/insights/property-transfers-market",
+      "title": "買賣移轉棟數增加，仍須區分交屋潮與市場成交",
+      "field": "article.sections.3.1",
+      "terms": [
+        "評估"
+      ],
+      "text": "一則移轉量增加的新聞，無法代替個案的銷售與資金評估"
+    },
+    {
+      "article": "/insights/property-transfers-market",
+      "title": "買賣移轉棟數增加，仍須區分交屋潮與市場成交",
+      "field": "article.sections.4.0",
+      "terms": [
+        "評估"
+      ],
+      "text": "合建試算須評估售價下修與銷售延長的資金缺口"
+    },
+    {
+      "article": "/insights/property-transfers-market",
+      "title": "買賣移轉棟數增加，仍須區分交屋潮與市場成交",
+      "field": "article.sections.5.1",
+      "terms": [
+        "安排"
+      ],
+      "text": "三策檢視合作提案時，會核對售價依據、成本項目、銷售期間與資金安排，並把尚待確認的條件列清楚"
+    },
+    {
+      "article": "/insights/property-transfers-market",
+      "title": "買賣移轉棟數增加，仍須區分交屋潮與市場成交",
+      "field": "article.sections.5.1",
+      "terms": [
+        "推進"
+      ],
+      "text": "地主需要知道的是：這份提案算得是否合理，遇到市場變動時，工程與交屋能否繼續推進"
+    },
+    {
+      "article": "/insights/property-transfers-market",
+      "title": "買賣移轉棟數增加，仍須區分交屋潮與市場成交",
+      "field": "article.summary",
+      "terms": [
+        "評估"
+      ],
+      "text": "三策分析成交與過戶的時間差，說明地主評估合建時，如何核對售價、銷售期間與資金需求"
+    }
+  ],
+  "corrections": [
+    {
+      "file": "shared/election-promises-article.js",
+      "before": "分回多少、補多少，",
+      "after": "分回房地與補繳差額，"
+    },
+    {
+      "file": "shared/election-promises-article.js",
+      "before": "承諾都要算清楚。",
+      "after": "均應列明計算依據。"
+    },
+    {
+      "file": "shared/homeowner-deliberation-article.js",
+      "before": "自己尚未完成的說明工作，不能算到地主不夠配合的帳上。",
+      "after": "整合者未提供完整說明，不能將未簽署歸咎於地主不配合。"
+    },
+    {
+      "file": "shared/insight-articles.js",
+      "before": "也可能使帳面分配與市場價值產生落差。",
+      "after": "也可能使提案列示的分配價值與市場價值產生落差。"
+    }
+  ],
+  "retained": [
+    {
+      "term": "帳面獲利",
+      "article": "/insights/developer-launch-market-recovery",
+      "reason": "明確指尚未出售股票的收益；不是以帳比喻成本、分配或責任。"
+    }
+  ]
+}

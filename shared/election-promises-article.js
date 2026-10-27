@@ -99,8 +99,8 @@ export const electionPromisesArticle = {
       "開選舉支票"
     ],
     "sideTitle": [
-      "分回多少、補多少，",
-      "承諾都要算清楚。"
+      "分回房地與補繳差額，",
+      "均應列明計算依據。"
     ],
     "navigation": [
       [
