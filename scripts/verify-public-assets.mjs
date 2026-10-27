@@ -7,7 +7,12 @@ const assets=new Set();
 function asset(value,page){
  const url=new URL(value.replaceAll('&amp;','&'),'https://www.sanzepm.com.tw'+page);
  if(url.origin!=='https://www.sanzepm.com.tw'||url.protocol!=='https:')return;
- const path=decodeURI(url.pathname);assets.add(path);
+ const path=decodeURI(url.pathname);
+ if(path==='/api/reports'&&/^report-(?:regular|bold)\.woff2$/.test(url.searchParams.get('asset')||'')){
+  assert(config.routes.some(r=>r.dest==='/api/contact?route=reports'), 'Protected report font API route missing');
+  return;
+ }
+ assets.add(path);
  assert(existsSync('dist'+path),`Missing built asset ${path} on ${page}`);
  const route=config.routes.find(r=>!r.continue&&new RegExp(`^(?:${r.src})$`).test(path));
  assert(route&&route.dest!=='/api/public-site-not-found',`Asset blocked by public routes: ${path} on ${page}`);

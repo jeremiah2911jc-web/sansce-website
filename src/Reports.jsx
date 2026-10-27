@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 import { trackReportReading } from './report-reading.js';
 import './reports.css';
 import CaseReport from './CaseReport.jsx';
+import CaseDocumentReport from './CaseDocumentReport.jsx';
 import { Eye, EyeOff, LockKeyhole } from 'lucide-react';
 export default function Reports() {
   const [report, setReport] = useState(null),[message, setMessage] = useState(''),[busy, setBusy] = useState(false),[expires, setExpires] = useState(0);
@@ -37,5 +38,5 @@ export default function Reports() {
    </section>
   </div>
  </div>;
-  return <CaseReport report={report} onLogout={logout} busy={busy} message={message} />;
+  return report.layout==='case-document' ? <CaseDocumentReport report={report} onLogout={logout} busy={busy} message={message} /> : <CaseReport report={report} onLogout={logout} busy={busy} message={message} />;
 }

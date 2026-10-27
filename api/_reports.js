@@ -16,7 +16,7 @@ export function makeReportsHandler({env=process.env,now=()=>Date.now(),dbFactory
   res.setHeader('X-Content-Type-Options','nosniff');
   const send=(status,data)=>{res.statusCode=status;res.end(JSON.stringify(data));};
   if(!['GET','POST'].includes(req.method)){res.setHeader('Allow','GET, POST');return send(405,{error:'不支援的操作。'});}
-  let access={};try{access=JSON.parse(env.REPORT_ACCESS_HASHES||'{}');}catch{}
+  let access={};try{access={...JSON.parse(env.REPORT_ADDITIONAL_ACCESS_HASHES||'{}'),...JSON.parse(env.REPORT_ACCESS_HASHES||'{}')};}catch{}
   if(!env.REPORT_SESSION_SECRET||env.REPORT_SESSION_SECRET.length<32)return send(503,{error:'報告專區尚未開放，請聯絡三策。'});
   const sign=value=>createHmac('sha256',env.REPORT_SESSION_SECRET).update(value).digest('base64url');
   const cookie=value=>res.setHeader('Set-Cookie',`${COOKIE}=${value}; Path=/api/reports; HttpOnly; SameSite=Strict; ${env.NODE_ENV==='production'?'Secure; ':''}Max-Age=${value?AGE:0}`);
@@ -32,10 +32,11 @@ export function makeReportsHandler({env=process.env,now=()=>Date.now(),dbFactory
    if(url.searchParams.get('asset')){
     const name=url.searchParams.get('asset');
     const allowed=new Set(['permit-status-2026-10-16.png','progress-2026-10-16.png','street-2020-screen.png','street-2025-screen.png','street-2020.jpg','street-2025.jpg','permit.pdf','mortgage.pdf','ownership.pdf','mortgage-1.png','ownership-1.png',...Array.from({length:6},(_,i)=>`permit-${i+1}.png`)]);
-    if(session.id!=='SZ202613'||!allowed.has(name))return send(404,{error:'找不到文件。'});
+    const permitted = session.id==='SZ202613' ? allowed : new Set(reports[session.id].assets || []);
+    if(!permitted.has(name))return send(404,{error:'找不到文件。'});
     try{
      const bytes=await readFile(join(process.cwd(),'private/reports',session.id,name));
-     res.setHeader('Content-Type',name.endsWith('.pdf')?'application/pdf':name.endsWith('.jpg')?'image/jpeg':'image/png');
+     res.setHeader('Content-Type',name.endsWith('.pdf')?'application/pdf':name.endsWith('.jpg')?'image/jpeg':name.endsWith('.woff2')?'font/woff2':'image/png');
      res.setHeader('Content-Disposition',`inline; filename="${name}"`);
      res.statusCode=200;return res.end(bytes);
     }catch{return send(404,{error:'找不到文件。'});}
