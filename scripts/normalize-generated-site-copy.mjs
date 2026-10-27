@@ -1,7 +1,9 @@
 import {parse} from '@babel/parser';
+import {developmentServiceCopyEdits} from '../shared/development-service-copy.mjs';
 
 // Presentation strings only. Never change operators, identifiers, inputs or numeric literals.
 const edits=[
+ ...developmentServiceCopyEdits,
  ['不以填入原容積自動取得該差額','該差額須依原容積適用條件另行檢核'],
  ['不依新申請時程重算或自動取得新獎勵','既有許可案件依原核准內容比較，新獎勵另依申請條件檢核'],
  ['法定樓板與陽台口徑','法定樓板與陽台計算範圍'],

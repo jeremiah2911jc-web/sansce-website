@@ -1,4 +1,5 @@
 import ServiceWorkStories from './ServiceWorkStories.jsx';
+import DevelopmentService from './DevelopmentService.jsx';
 import Readable from './Readable.jsx';
 import {photoProps,photoSourceProps} from './photo-refresh.js';
 import { trackInteraction } from './interaction-tracking.js';
@@ -29,7 +30,7 @@ export default function ConsultingOverview() {
   const [selected, setSelected] = useState(0);
   return <div className="co-page">
   <section className="co-hero wrap">
-   <div className="co-hero-copy"><p className="co-kicker">都市更新顧問</p><h1>基地評估、地主整合，<br />到全案管理。</h1><p>三策為臺北、新北地主與更新會辦理基地評估、地主整合與更新會輔導，依委託內容協調都更規劃、建築、估價、財務及法律等專業工作，追蹤案件進度與執行情形。</p><div className="co-actions"><a className="design-button" href="#consulting-needs">查閱服務範圍</a><a className="co-text-link" href="/contact">預約案件諮詢</a></div></div>
+   <div className="co-hero-copy"><p className="co-kicker">都市更新顧問</p><h1>基地評估、地主整合，<br />到全案管理。</h1><p>三策為臺北、新北地主與更新會辦理基地評估、地主整合與更新會輔導，依委託內容協調都更規劃、建築、估價、財務及法律等專業工作，追蹤案件進度與執行情形。</p><div className="co-actions"><a className="design-button" href="#consulting-needs">查閱服務範圍</a><a className="co-text-link" href="#development-evaluation-service">三策開發評估服務</a><a className="co-text-link" href="/contact">預約案件諮詢</a></div></div>
    <figure className="co-hero-image"><img fetchPriority="high" {...photoProps({ src: "/images/redesign/consultation.jpg", alt: "顧問與地主討論案件資料的情境" })} /><figcaption><span className="co-pulse" aria-hidden="true" />會議、文件、責任分工與進度，依委託持續追蹤。</figcaption></figure>
   </section>
   <section id="consulting-needs" className="co-section wrap" aria-labelledby="co-needs-title" data-reveal>
@@ -38,6 +39,7 @@ export default function ConsultingOverview() {
    <div className="co-stage-content" aria-live="polite">{stages.map((stage, i) => <div key={stage.label} id={'co-stage-' + i} hidden={selected !== i} className="co-stage-panel"><div><p className="co-kicker">{stage.label}</p><h3>{stage.title}</h3><p>{stage.text}</p><div className="co-actions">{stage.links.map(([label, href]) => <a className="co-text-link" key={href} href={href}>{label}</a>)}</div></div><ul>{stage.items.map(([title, text]) => <li key={title}><strong>{title}</strong><p>{text}</p></li>)}</ul></div>)}</div>
   </section>
   <section id="consulting-services" className="co-services-band"><div className="co-section wrap" data-reveal><div className="co-section-heading"><div><p className="co-kicker">深入了解服務</p><h2>三策承接的顧問工作</h2></div><p>從初步評估到案件推動，<br />工作範圍與分工在委託前確認。</p></div><ServiceWorkStories services={services}/></div></section>
+  <div className="wrap"><DevelopmentService/></div>
   <section className="co-section co-comparison wrap" aria-labelledby="co-compare-title" data-reveal><div><p className="co-kicker">合作條件比較</p><Readable as="h2" id="co-compare-title">提案比較：<br />工作、費用、時程與權責。</Readable><p>比較合建或專業團隊提案時，逐項記錄工作範圍、費用明細、預計時程及各方權責，未列明的內容請提案方補充。</p><a className="co-text-link" href="/services/joint-construction">了解合建條件比較</a></div><div className="co-comparison-items">{comparisons.map(([title, question, text]) => <details key={title}><summary><span><small>{title}</small><strong>{question}</strong></span><Plus size={20} aria-hidden="true" /></summary><p>{text}</p></details>)}</div></section>
   <section className="co-meeting wrap" data-reveal><div className="co-meeting-intro"><p className="co-kicker">案件諮詢與委託</p><h2>案件資料檢視<br />與顧問委託</h2><p>服務對象包括個別地主、更新會及已成立合作團隊的社區。依現有文件與案件階段確認諮詢、健檢或持續管理的委託範圍。</p><a className="design-button" href="/contact">預約案件諮詢</a></div><ol>{[['說明現況', '提供基地地址、案件階段與目前問題。'], ['查看資料', '整理提案、契約、會議紀錄或審查通知。'], ['確認安排', '討論工作範圍、參與人員、時間與費用。']].map(([title, text], i) => <li key={title}><span>{String(i + 1).padStart(2, '0')}</span><div><h3>{title}</h3><p>{text}</p></div></li>)}</ol></section>
   <div className="co-scope wrap"><p>三策依委託範圍提供顧問與工作協調；建築設計、估價、法律及施工等專業工作，分別由具相應資格的單位與人員辦理。</p></div>
