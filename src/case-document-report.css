@@ -1,3 +1,4 @@
+/* Noto Sans CJK TC: SIL OFL 1.1, /licenses/noto-cjk-OFL.txt */
 @font-face{font-family:SanzeReportTC;src:url('/api/reports?asset=report-regular.woff2') format('woff2');font-weight:400;font-display:swap}
 @font-face{font-family:SanzeReportTC;src:url('/api/reports?asset=report-bold.woff2') format('woff2');font-weight:700;font-display:swap}
 .case-document-report{font-family:SanzeReportTC,sans-serif;color:#253437;background:#fff;max-width:1100px;margin:auto;padding:28px 48px 70px;font-weight:400}
