@@ -25,6 +25,7 @@
     "verify:assistant-guard": "node --test tests/website-ai-cost.test.mjs tests/website-ai-guard.test.mjs",
     "verify:assistant-sql": "node scripts/verify-website-ai-sql.mjs",
     "verify:article-copy": "node scripts/verify-article-copy.mjs",
+    "audit:article-wording": "node scripts/verify-article-copy.mjs --attention",
     "verify:site-copy": "node scripts/verify-site-copy.mjs"
   },
   "dependencies": {
