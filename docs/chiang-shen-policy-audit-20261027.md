@@ -51,3 +51,7 @@ Use case: photorealistic-natural. Landscape 3:2 highly realistic editorial photo
 - 新原則寫入 docs/article-writing-rules.md，正式法規名稱不因單字掃描遭誤改。
 - 公開建置與22篇禁用語盤查通過；Chromium／WebKit於1440、1280、768、360、390、430px共12組，比對全文、表格、標題、摘要及全部／分類／搜尋／首頁入口。Safari實看桌機及390×844手機模擬；未宣稱實體iPhone測試。
 - 修訂全文及驗收畫面：repo外 chiang-shen-policy-20261027/prose-revision/。僅本機預覽，未推送或合併main，未重新發布正式站，也未重複提出Google索引要求。
+
+### 本輪發布授權
+
+使用者於本次文字修訂完成後明確要求「上架」。依此授權發布 f18613d 的修訂內容與文章規則；保留既有網址、發布日期與來源。正式部署及驗收證據續存 repo 外 prose-revision/，以實際正式站結果確認完成。此網址前輪已成功加入 Google 優先檢索佇列，不重複提交同網址以求加速。
