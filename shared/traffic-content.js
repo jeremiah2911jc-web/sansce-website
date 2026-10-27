@@ -1,6 +1,7 @@
 import {knowledgePages} from './knowledge-pages.js';
 const topics={
- '/land-evaluation':'土地開發評估',
+ '/land-evaluation':'土地開發評估工具',
+ '/services/development-evaluation':'開發評估服務',
  '/insights/joint-construction-lower-floor-allocation':'合建樓層與選屋條件',
  '/insights/transfer-development-rights-allocation':'容積移轉與地主分配',
  '/insights/urban-renewal-ground-floor-shops':'店面價值與分配',
@@ -15,6 +16,6 @@ const topics={
  '/insights/property-transfers-market':'房市數據判讀',
  '/':'認識三策','/insights':'三策觀點總覽','/about':'認識三策',
  '/landowner-comparison':'地主分配試算','/contact':'案件諮詢','/checkup':'案件健檢',
- '/reports':'案件報告入口','/process':'顧問服務流程','/consulting':'都更與合建顧問服務','/programs':'雙北都更專案'
+ '/reports':'案件報告入口','/process':'顧問服務流程','/consulting':'地主與社區服務','/programs':'雙北都更專案'
 };
 export const trafficTopics=Object.fromEntries(knowledgePages.map(p=>[p.path,topics[p.path]||(p.kind==='article'?p.label:'顧問服務')]).concat(Object.entries(topics)));

@@ -11,7 +11,7 @@ const knowledge = JSON.parse(readFileSync(new URL('../docs/website-assistant/con
 function sourcesFor(text,path){
  const terms = [...new Set((text.match(/[\p{Script=Han}]{2,}|[a-z0-9]+/giu)||[]).flatMap(t=>t.length>2&&/\p{Script=Han}/u.test(t)?Array.from({length:t.length-1},(_,i)=>t.slice(i,i+2)):[t.toLowerCase()]))];
  const scores=knowledge.map(p=>({...p,score:terms.reduce((n,t)=>n+(p.text.toLowerCase().includes(t)?1:0),0)+(p.path===path?3:0)})).sort((a,b)=>b.score-a.score);
- return [...new Map([knowledge.find(p=>p.path==='/consulting'),...scores.slice(0,3)].filter(Boolean).map(p=>[p.path,p])).values()];
+ return [...new Map([knowledge.find(p=>p.path===(path==='/services/development-evaluation'||/開發評估|成本收益|現金流|投資評估/.test(text)?'/services/development-evaluation':'/consulting')),...scores.slice(0,3)].filter(Boolean).map(p=>[p.path,p])).values()];
 }
 export function makeWebAssistantHandler({env=process.env,fetchImpl=fetch,log=console.info,dbFactory=createSupabaseAdminClient,guardImpl}={}){
  const admit=guardImpl||makeWebsiteAiGuard({env,fetchImpl,dbFactory,log});

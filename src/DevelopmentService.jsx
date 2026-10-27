@@ -6,7 +6,7 @@ function ServiceTitle({as:Tag,id}) {
 }
 
 export function DevelopmentServiceContact() {
-  return <a className="ds-contact" href={service.contact} target="_blank" rel="noopener noreferrer">洽詢三策</a>;
+  return <a className="ds-contact" href={service.contact}>洽詢三策</a>;
 }
 
 export function DevelopmentServiceEntry() {
@@ -16,9 +16,9 @@ export function DevelopmentServiceEntry() {
   </section>;
 }
 
-export default function DevelopmentService({className=''}) {
+export default function DevelopmentService({className='',headingAs='h2',showDetailLink=true}) {
   return <section id="development-evaluation-service" className={'ds-service '+className} aria-labelledby="development-service-title">
-    <div className="ds-service-copy"><p className="ds-kicker">{service.name}</p><ServiceTitle as="h2" id="development-service-title"/><div className="ds-service-prose">{service.paragraphs.map(text=><p key={text}>{text}</p>)}</div><div className="ds-actions"><DevelopmentServiceContact/></div></div>
+    <div className="ds-service-copy"><p className="ds-kicker">{service.name}</p><ServiceTitle as={headingAs} id="development-service-title"/><div className="ds-service-prose">{service.paragraphs.map(text=><p key={text}>{text}</p>)}</div><div className="ds-actions"><DevelopmentServiceContact/>{showDetailLink&&<a className="ds-detail" href={service.path}>查看開發評估服務</a>}</div></div>
     <div className="ds-service-scope"><p className="ds-scope-label">委託評估內容</p><dl>{service.scopes.map(([title,text])=><div key={title}><dt>{title}</dt><dd>{text}</dd></div>)}</dl></div>
   </section>;
 }

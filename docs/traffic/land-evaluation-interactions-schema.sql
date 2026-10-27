@@ -1,4 +1,5 @@
--- Apply only when releasing the reviewed interaction tracking update.
+-- Local preview candidate: 2026-10-28 adds the independent development service target.
+-- Not applied remotely. Apply only with a separately approved website release.
 -- Existing RLS, service-role grants, RPC signature and historical records are unchanged.
 begin;
 alter table public.sanze_visitor_actions drop constraint sanze_action_allowed;
@@ -6,7 +7,7 @@ alter table public.sanze_visitor_actions add constraint sanze_action_allowed che
   (action='tool_entry' and target='/land-evaluation') or
   (action='land_evaluation_complete' and target='result') or
   (action='scroll' and target in ('25','50','75','100')) or
-  (action='service_click' and target in ('/consulting','/services/urban-renewal','/services/dangerous-old-rebuilding','/services/joint-construction','/services/project-management')) or
+  (action='service_click' and target in ('/consulting','/services/urban-renewal','/services/dangerous-old-rebuilding','/services/joint-construction','/services/project-management','/services/development-evaluation')) or
   (action='checkup_click' and target='/checkup') or
   (action='contact_click' and target in ('/contact','line','phone','email')) or
   (action='service_select' and target in ('site','contract','checkup','management')) or

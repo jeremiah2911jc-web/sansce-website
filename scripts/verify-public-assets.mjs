@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync,readdirSync,existsSync} from 'node:fs';
 import {knowledgePages} from '../shared/knowledge-pages.js';
 const config=JSON.parse(readFileSync('vercel.json','utf8'));
-const pages=['/','/checkup','/consulting','/process','/insights','/about','/contact','/programs','/landowner-comparison','/land-evaluation',...knowledgePages.map(p=>p.path)];
+const pages=['/','/checkup','/consulting','/services/development-evaluation','/process','/insights','/about','/contact','/programs','/landowner-comparison','/land-evaluation',...knowledgePages.map(p=>p.path)];
 const assets=new Set();
 function asset(value,page){
  const url=new URL(value.replaceAll('&amp;','&'),'https://www.sanzepm.com.tw'+page);
