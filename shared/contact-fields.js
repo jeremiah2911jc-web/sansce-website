@@ -5,3 +5,11 @@ export const contactFields = [
  ['district','行政區',100,true],['location','基地地址',150,true],['stage','案件階段',40,true],
  ['association','目前由誰推動案件',40,true],['willingness','地主意願概況',500,false],['problem','目前遇到的問題',1500,true]
 ];
+
+export const contactServices = {owner:'地主與社區服務',development:'開發評估服務'};
+export const acquisitionMethods = ['購地評估','合建洽談','自有土地開發','委託代建／開發管理','其他／尚待確認'];
+export const developmentContactFields = [
+ ...contactFields.filter(([key])=>['name','phone','email','district','location'].includes(key)),
+ ['acquisition','土地取得或開發方式',40,true],['goal','開發目標',500,true],['problem','預計評估項目與委託需求',1500,true]
+];
+export function contactSchema(service){return service==='development'?developmentContactFields:contactFields;}

@@ -7,7 +7,7 @@ import lineTimeout from './_line-timeout.js';
 import lineWebhook from './_line-webhook.js';
 export const config = { api: { bodyParser: false }, maxDuration: 60 };
 import { createHash, createHmac } from 'node:crypto';
-import { contactFields, stages, promoters } from '../shared/contact-fields.js';
+import { contactSchema, contactServices, acquisitionMethods, stages, promoters } from '../shared/contact-fields.js';
 const unavailable = '目前無法送出，請稍後重試，或來電 0916-711-323 與我們聯絡。';
 const invalid = '請確認必填欄位、電話與電子郵件格式。';
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -42,13 +42,16 @@ export function makeContactHandler({ env = process.env, fetchImpl = (...args) =>
     let body;
     try { body = await bodyOf(req); } catch { return reply(res,400,{ok:false,message:invalid}); }
     if (!body || Array.isArray(body) || typeof body !== 'object' || (typeof body.requestId !== 'string' || !uuid.test(body.requestId)) || body.consent !== true || body.website) return reply(res,400,{ok:false,message:invalid});
-    const data = {};
-    for (const [key,,max,required] of contactFields) {
+    const service=body.service===undefined?'owner':body.service;
+    if(!Object.hasOwn(contactServices,service))return reply(res,400,{ok:false,message:invalid});
+    const schema=contactSchema(service);
+    const data = {service};
+    for (const [key,,max,required] of schema) {
       if (typeof body[key] !== 'string') return reply(res,400,{ok:false,message:invalid});
       data[key] = body[key].trim();
       if ((required && !data[key]) || data[key].length > max || /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(data[key])) return reply(res,400,{ok:false,message:invalid});
     }
-    if (!/^[+0-9()\s-]{6,30}$/.test(data.phone) || data.phone.replace(/\D/g,'').length < 6 || /[\r\n]/.test(data.phone) || (data.email && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(data.email)) || !stages.includes(data.stage) || !promoters.includes(data.association)) return reply(res,400,{ok:false,message:invalid});
+    if (!/^[+0-9()\s-]{6,30}$/.test(data.phone) || data.phone.replace(/\D/g,'').length < 6 || /[\r\n]/.test(data.phone) || (data.email && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(data.email)) || (service==='owner'&&(!stages.includes(data.stage)||!promoters.includes(data.association))) || (service==='development'&&!acquisitionMethods.includes(data.acquisition))) return reply(res,400,{ok:false,message:invalid});
     if (!env.RESEND_API_KEY || !env.CONTACT_FROM_EMAIL || !env.CONTACT_TO_EMAIL || !env.TURNSTILE_SECRET_KEY) return reply(res,503,{ok:false,message:unavailable});
     const time = now();
     for (const [key,value] of attempts) if (time-value.start >= 600000) attempts.delete(key);
@@ -67,7 +70,7 @@ export function makeContactHandler({ env = process.env, fetchImpl = (...args) =>
       if(!verification.ok || result.success!==true || !['sanzepm.com.tw','www.sanzepm.com.tw'].includes(result.hostname) || result.action!=='contact') return reply(res,400,{ok:false,message:'驗證未通過，請重新驗證後送出。您填寫的內容仍保留。'});
     } catch {return reply(res,503,{ok:false,message:'驗證暫時無法完成，請稍後重試。您填寫的內容仍保留。'});}
     const reference = body.requestId;
-    const text = `三策網站案件諮詢\n諮詢編號：${reference}\n\n` + contactFields.map(([key,label])=>`${label}：${data[key] || '未提供'}`).join('\n') + '\n\n聯絡人已同意將以上資料用於案件諮詢與聯絡。';
+    const text = `三策網站案件諮詢\n諮詢編號：${reference}\n\n` + `諮詢服務：${contactServices[service]}\n` + schema.map(([key,label])=>`${label}：${data[key] || '未提供'}`).join('\n') + '\n\n聯絡人已同意將以上資料用於案件諮詢與聯絡。';
     // Stable across retries; changing any content creates a distinct provider request.
     const digest = createHmac('sha256', env.RESEND_API_KEY).update(JSON.stringify({reference,data})).digest('hex');
     try {

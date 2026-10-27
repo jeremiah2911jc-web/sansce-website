@@ -1,5 +1,5 @@
 // Only fixed public destinations are collected; never store link text, queries or form values.
-export const servicePaths = ['/consulting','/services/urban-renewal','/services/dangerous-old-rebuilding','/services/joint-construction','/services/project-management'];
+export const servicePaths = ['/consulting','/services/development-evaluation','/services/urban-renewal','/services/dangerous-old-rebuilding','/services/joint-construction','/services/project-management'];
 export const interactionTargets = {
  tool_entry:['/land-evaluation'],
  land_evaluation_complete:['result'],

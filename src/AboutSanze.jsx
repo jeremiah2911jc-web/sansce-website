@@ -23,8 +23,8 @@ const principles = [
 ];
 
 export default function AboutSanze() {return <div className="as-page">
- <section className="as-hero wrap"><div className="as-hero-copy"><p className="as-kicker">關於三策</p><h1>以信實立本，<br /><span>以專業成事。</span></h1><p>三策專案管理顧問有限公司為地主與更新會提供都市更新顧問服務，辦理基地評估、地主整合、更新會輔導與案件管理。受託工作依約執行，案件條件與尚未確認的事項據實說明。</p><a className="as-link" href="/consulting">了解三策的協助</a></div><figure><img fetchPriority="high" {...photoProps({ src: "/images/editorial/community-meeting.webp", alt: "住戶共同討論基地資料與工作安排" })} /><figcaption>住戶意見、會議決定與待辦工作，均須留下紀錄。</figcaption></figure></section>
- <section className="as-intro wrap" data-reveal><p className="as-kicker">三策專案管理顧問有限公司</p><div><Readable as="h2">受地主與更新會委託，<br />辦理重建中的協調工作</Readable><p>推動都更，需要了解基地條件、聽取住戶意見、談妥合作條件，也需要不同專業人員互相配合。三策依您提供的資料比較合作提案，記錄待補文件、各方責任與需要決定的事項。</p></div></section>
+ <section className="as-hero wrap"><div className="as-hero-copy"><p className="as-kicker">關於三策</p><h1>以信實立本，<br /><span>以專業成事。</span></h1><p>三策專案管理顧問有限公司提供地主與社區服務、開發評估服務。前者比較重建提案、分回房地與契約，協調社區及案件工作；後者分析土地取得、開發規模、成本收益與資金需求。委託目的與工作範圍分別議定。</p><div className="co-actions"><a className="as-link" href="/consulting">地主與社區服務</a><a className="as-link" href="/services/development-evaluation">開發評估服務</a></div></div><figure><img fetchPriority="high" {...photoProps({ src: "/images/editorial/community-meeting.webp", alt: "住戶共同討論基地資料與工作安排" })} /><figcaption>住戶意見、會議決定與待辦工作，均須留下紀錄。</figcaption></figure></section>
+ <section className="as-intro wrap" data-reveal><p className="as-kicker">三策專案管理顧問有限公司</p><div><Readable as="h2">依重建與開發目的，<br />議定受託工作</Readable><p>地主與社區重建，須比較分回房地、費用與履約條件；開發投資，須試算產品配置、成本收益及各期資金需求。三策依各次委託的資料與目標提出分析，列明採用條件、待查事項與專業分工。</p></div></section>
  <section id="working-principles" className="as-practice" aria-labelledby="as-practice-title">
    <div className="wrap as-practice-layout">
      <div className="as-practice-intro">

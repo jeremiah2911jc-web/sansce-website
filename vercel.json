@@ -102,7 +102,7 @@
       }
     },
     {
-      "src": "/(services/(urban-renewal|dangerous-old-rebuilding|joint-construction|project-management))/?",
+      "src": "/(services/(urban-renewal|dangerous-old-rebuilding|joint-construction|project-management|development-evaluation))/?",
       "dest": "/$1/index.html"
     },
     {

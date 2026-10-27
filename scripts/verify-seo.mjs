@@ -1,6 +1,6 @@
 import {knowledgePages} from '../shared/knowledge-pages.js';
 import assert from 'node:assert/strict';import{readFileSync}from'node:fs';
-for(const path of ['', 'checkup','consulting','process','insights','about','contact','programs','landowner-comparison','land-evaluation',...knowledgePages.map(p=>p.path.slice(1))]){
+for(const path of ['', 'checkup','consulting','services/development-evaluation','process','insights','about','contact','programs','landowner-comparison','land-evaluation',...knowledgePages.map(p=>p.path.slice(1))]){
  const html=readFileSync(`dist/${path?path+'/':''}index.html`,'utf8');
  assert.match(html,/<main id="main"/);assert.equal((html.match(/<h1[ >]/g)||[]).length,1);assert.match(html,/三策專案管理顧問有限公司/);assert.match(html,/<link rel="stylesheet" href="\/assets\/ConsultingSite-/);
  const json=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);const graph=json['@graph'];assert.equal(graph.find(x=>x['@type']==='Organization').legalName,'三策專案管理顧問有限公司');const org=graph.find(x=>x['@type']==='Organization');assert.equal(org.name,'三策專案管理顧問有限公司');assert.equal(org.taxID,'62250642');assert.deepEqual(org.sameAs,['https://findbiz.nat.gov.tw/fts/company/62250642']);assert.doesNotMatch(html,/3cstrat\.com/);assert.equal(graph.find(x=>x['@type']==='WebPage').url,`https://www.sanzepm.com.tw/${path}`);assert.equal(html.match(/rel="canonical"/g).length,1);
@@ -16,4 +16,4 @@ for(const page of knowledgePages.filter(p=>p.kind==='article')){
  const graph=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1])['@graph'];
  assert.equal(graph.find(x=>x['@type']==='Article').dateModified,page.updatedAt);
 }
-console.log(`PASS: ${10+knowledgePages.length} public pages, SEO metadata, structured data and accurate article sitemap modification dates.`);
+console.log(`PASS: ${11+knowledgePages.length} public pages, SEO metadata, structured data and accurate article sitemap modification dates.`);
