@@ -39,6 +39,8 @@ function PolicyEdition({ page }) {
 }
 
 export function ArticleParagraph({ page, paragraph }) {
+  const comparison = page.comparisons?.find((item) => item.marker === paragraph);
+  if (comparison) return <ArticleComparison comparison={comparison} />;
   if (paragraph === '[比較表]' && page.comparison) return <ArticleComparison comparison={page.comparison} />;
   const emphasis = page.emphasis?.find((text) => paragraph.includes(text));
   if (!emphasis) return <p><ArticleText page={page} text={paragraph} /></p>;
@@ -54,7 +56,7 @@ function ArticleText({ page, text }) {
 }
 
 function ArticleComparison({ comparison }) {
-  return <figure className={'article-comparison' + (comparison.headers.length > 3 ? ' article-comparison-detailed' : '') + (comparison.afterSection !== undefined ? ' article-shortfall-comparison' : '')}><figcaption>{comparison.caption || '同一評價條件下的方案比較'}</figcaption><p>{comparison.note || '假設數字，僅說明分配關係'}</p><table><thead><tr>{comparison.headers.map((label) => <th key={label} scope="col">{label}</th>)}</tr></thead><tbody>{comparison.rows.map(([label, ...values]) => <tr key={label}><th scope="row">{label}</th>{values.map((value, index) => <td key={index} data-label={comparison.headers[index + 1]}>{value}</td>)}</tr>)}</tbody></table></figure>;
+  return <figure className={'article-comparison' + (comparison.headers.length > 3 || comparison.mobileRows ? ' article-comparison-detailed' : '') + (comparison.afterSection !== undefined ? ' article-shortfall-comparison' : '')}><figcaption>{comparison.caption || '同一評價條件下的方案比較'}</figcaption><p>{comparison.note || '假設數字，僅說明分配關係'}</p><table><thead><tr>{comparison.headers.map((label) => <th key={label} scope="col">{label}</th>)}</tr></thead><tbody>{comparison.rows.map(([label, ...values]) => <tr key={label}><th scope="row">{label}</th>{values.map((value, index) => <td key={index} data-label={comparison.headers[index + 1]}>{value}</td>)}</tr>)}</tbody></table></figure>;
 }
 
 function PlanDoor({ x, y, width = 36 }) {

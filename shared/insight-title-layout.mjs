@@ -1,5 +1,6 @@
 // Reviewed semantic boundaries apply to headings only. Prose uses normal text flow.
 export const insightTitlePhrases = {
+  "蔣萬安與沈伯洋的都更政見分析": ["蔣萬安", "與沈伯洋的", "都更政見分析"],
   "政治人物談都更 別拿放寬條件開選舉支票": ["政治人物談都更", " ", "別拿放寬條件", "開選舉支票"],
   "都更意願高 分配方案接受度低": ["都更意願高", " ", "分配方案", "接受度低"],
   "都更整合，別把地主的審慎當成障礙": [
