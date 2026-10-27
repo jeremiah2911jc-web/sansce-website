@@ -1,0 +1,30 @@
+{
+  "status": "preview only; not published",
+  "date": "2026-10-27",
+  "route": "/insights/urban-renewal-election-promises",
+  "preview": "http://127.0.0.1:4274/insights/urban-renewal-election-promises#section-4",
+  "changes": [
+    "Rewrite abstract and repetitive policy criticism into concrete funding, allocation, relocation and agency responsibilities.",
+    "Separate primary-source policy descriptions from conditional risk analysis and editorial recommendations.",
+    "Update all five margin notes, two photo captions, lead, summary, description and section navigation."
+  ],
+  "preserved": {
+    "title": true,
+    "route": true,
+    "publishedAt": true,
+    "sources": true,
+    "photos": true
+  },
+  "paragraphs": {
+    "before": 34,
+    "after": 29
+  },
+  "validation": {
+    "build": "passed; 21 article copy records and site-wide checks",
+    "render": "Chromium and WebKit at 1440,1280,360,390,430px; 29 exact paragraphs, section headings, notes, captions, metadata and no overflow",
+    "entryPoints": "homepage, listing, category and search at five widths",
+    "nativeSafari": "Desktop screenshot and responsive 390x844 inspected; browser simulation, not physical iPhone"
+  },
+  "evidence": "../article-audit-20261027/rewrite/",
+  "sourcesReview": "Sources were checked in the preceding article audit on 2026-10-27. No new numerical claims introduced; credit guarantee remains described as draft design."
+}
