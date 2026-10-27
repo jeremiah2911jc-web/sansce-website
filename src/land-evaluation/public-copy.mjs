@@ -1,6 +1,8 @@
+import {developmentServiceCopyEdits} from '../../shared/development-service-copy.mjs';
 // Website wording only. Keep the authoritative App inputs and calculation rules intact.
 export const publicCopyEdits = [
- ['代金金額須由主管機關委託三家以上專業估價者查估評定；缺值顯示未估，不以公告現值比直接當代金','代金估價與費用於 App 操作。'],
+ ...developmentServiceCopyEdits,
+ ['代金金額須由主管機關委託三家以上專業估價者查估評定；缺值顯示未估，不以公告現值比直接當代金','代金估價與取得費用，可洽詢三策開發評估服務。'],
  ['使用者指定依合法投影、高度及用途上限初估','依本次投影、高度及用途假設初估'],
  ['資格未知，依目標假設繼續；非核准、非已取得容積','依規劃目標估算，容移資格待查證。'],
  ['計算來源：法規需求及必要空間預留總量初估，未採用自動配置圖造成的退縮、矩形切割或排位損失；不是建築師已完成的配置，也不是基地可實現上限。','依本次法規條件與預留尺寸估算；實際量體及排位待圖說核對。'],

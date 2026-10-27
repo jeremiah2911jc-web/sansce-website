@@ -13,7 +13,7 @@ export function checkInput(input){
  const errors=commercial?[...commercial.errors]:[];
  for(const [k,label]of [['site','基地面積'],['coverage','法定建蔽率'],['far','基準容積率']])if(!(k==='far'&&commercial)&&(!input[k]?.trim()||!Number.isFinite(Number(input[k]))||Number(input[k])<=0))errors.push(label+'請填大於0的有效數值。');
  // Bound the public tool's workload before entering the App's iterative solver.
- for(const [k,max,label]of [['site',1000000,'基地面積'],['far',3000,'基準容積率'],['roofFloors',3,'屋突層數'],['basementFloors',30,'地下層數']])if(!(k==='far'&&commercial)&&Number(input[k])>max)errors.push(`${label}超出本網站評估範圍（上限${max}${k==='site'?'㎡':k==='far'?'%':'層'}），請使用完整版 App。`);
+ for(const [k,max,label]of [['site',1000000,'基地面積'],['far',3000,'基準容積率'],['roofFloors',3,'屋突層數'],['basementFloors',30,'地下層數']])if(!(k==='far'&&commercial)&&Number(input[k])>max)errors.push(`${label}超出本網站評估範圍（上限${max}${k==='site'?'㎡':k==='far'?'%':'層'}），請洽詢三策開發評估服務。`);
  if(!Number.isFinite(Number(input.unitPing))||Number(input.unitPing)<=0)errors.push('每戶面積請填大於0的有效數值。');
  return errors;
 }

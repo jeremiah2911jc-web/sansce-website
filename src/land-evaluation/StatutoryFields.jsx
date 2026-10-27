@@ -6,7 +6,7 @@ export function StatutoryFields({plan:p,result,change,Field,Choice}){
  const field=(k,label,type='number')=><Field key={k} label={label} value={v[k]??''} type={type} change={x=>set(k,x)}/>;
  return <div className="ra-formula">
   <h3>{p.system==='expropriation'?'抵價地權利比例與面積換算':'個別負擔與宗地分配核算'}</h3>
-  <p>{p.system==='expropriation'?'依施行細則第50條附件二計算。採官方補償地價比例及同一基準的評定單價比，金額資料由 App 處理。':'依市地重劃實施辦法第29條附件二計算。B、C採本區核定係數；費用金額及係數推算留在 App。'}</p>
+  <p>{p.system==='expropriation'?'依施行細則第50條附件二計算。採官方補償地價比例及同一基準的評定單價比，金額試算可洽詢三策開發評估服務。':'依市地重劃實施辦法第29條附件二計算。B、C採本區核定係數；費用金額及係數推算可洽詢三策開發評估服務。'}</p>
   <p><a href={p.system==='expropriation'?formulaSources.expropriation:formulaSources.readjustment} target="_blank" rel="noreferrer">官方計算公式附件</a></p>
   {p.system==='expropriation'?<>
    <div className="lw-fields">{field('totalArea','全區徵收面積（㎡）')}{field('ratio','全區抵價地比例（%）')}{field('farmArea','曾農地重劃徵收面積（㎡，無則填0）')}{field('extraRatio','農地重劃增加比例（百分點，無則填0）')}</div>

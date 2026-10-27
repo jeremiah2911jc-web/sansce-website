@@ -4,7 +4,7 @@ import './company-footer.css';
 import './company-footer-compact.css';
 import './brand-wordmark-09.css';
 
-const services=[['都市更新顧問','/services/urban-renewal'],['危老重建評估','/services/dangerous-old-rebuilding'],['合建條件比較','/services/joint-construction'],['案件健檢','/checkup'],['全案管理','/services/project-management']];
+const services=[['都市更新顧問','/services/urban-renewal'],['危老重建評估','/services/dangerous-old-rebuilding'],['合建條件比較','/services/joint-construction'],['案件健檢','/checkup'],['全案管理','/services/project-management'],['三策開發評估服務','/consulting#development-evaluation-service']];
 const resources=[['關於三策','/about'],['服務流程','/process'],['社區方案','/programs'],['地主分配試算','/landowner-comparison'],['三策觀點','/insights']];
 function FooterLinks({title,items,className}){const [open,setOpen]=useState(false);const id=className+"-links";return <nav className={className} aria-label={"頁尾"+title}><h3>{title}</h3><button type="button" className="company-footer-toggle" aria-expanded={open} aria-controls={id} onClick={()=>setOpen(!open)}>{title}<span aria-hidden="true">{open?"－":"＋"}</span></button><ul id={id} className={open?"is-open":""}>{items.map(([label,href])=><li key={href}><a href={href}>{label}</a></li>)}</ul></nav>;}
 export default function CompanyFooter(){return <footer id="company-footer" className="company-footer" aria-label="公司資訊與網站導覽">
