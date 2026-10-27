@@ -1,5 +1,5 @@
--- Local preview candidate: 2026-10-28 adds the independent development service target.
--- Not applied remotely. Apply only with a separately approved website release.
+-- 2026-10-28 reviewed release: adds the independent development service target.
+-- User approved publication after reviewing the local preview.
 -- Existing RLS, service-role grants, RPC signature and historical records are unchanged.
 begin;
 alter table public.sanze_visitor_actions drop constraint sanze_action_allowed;
