@@ -15,3 +15,5 @@
 @media(max-width:700px){.case-document-report .cdr-table-wide table{min-width:0;table-layout:fixed}.case-document-report .cdr-table-wide th,.case-document-report .cdr-table-wide td{padding:9px 7px;font-size:13px;overflow-wrap:anywhere}.case-document-report .cdr-table-wide th:first-child{width:34%}.case-document-report .cdr-table-wide:has(th:nth-child(4)) th:first-child{width:25%}}
 .interior-page .case-document-report :is(h1,h2,h3,p,a,button,table,td,th,figcaption){font-family:SanzeReportTC,sans-serif}
 @media(max-width:700px){.case-document-report .cdr-table-text th:first-child{width:32%}.case-document-report .cdr-table-text td{width:68%}}
+
+.case-document-report .cdr-heading-phrase{white-space:nowrap}
