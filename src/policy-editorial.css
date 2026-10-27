@@ -21,3 +21,10 @@
 @media(max-width:900px){.policy-chapter-grid{grid-template-columns:minmax(0,1fr)}.policy-margin{display:none}.policy-edition .sanze-feature-section{max-width:740px;margin-inline:auto}.policy-photo{gap:22px;grid-template-columns:minmax(0,2.7fr) minmax(160px,1fr)}.policy-photo-relocation{grid-template-columns:minmax(160px,1fr) minmax(0,2.7fr)}}
 @media(max-width:760px){.policy-edition .sanze-feature-section{margin-bottom:34px}.policy-edition .feature-section-copy>p{font-size:17px;line-height:2.05;white-space:normal;text-wrap:wrap}.policy-edition .sanze-feature-section h2{font-size:25px;margin-bottom:18px}.policy-photo,.policy-photo-relocation{display:flex;flex-direction:column;gap:16px;margin:4px 0 42px;align-items:stretch}.policy-photo img,.policy-photo-relocation img{border-radius:3px 3px 30px 3px}.policy-photo figcaption{max-width:none;padding:0 2px}.knowledge-body .policy-photo figcaption p{font-size:15px;line-height:1.9}.policy-photo figcaption a{margin-top:10px;min-height:44px;box-sizing:border-box}}
 @media(prefers-reduced-motion:reduce){.policy-photo figcaption a{transition:none}}
+
+/* Policy comparison tables remain part of the page; mobile rights rows keep readable text widths. */
+.policy-edition .article-comparison{padding:0;margin:28px 0 34px;background:transparent;border:0;border-radius:0}
+.policy-edition .article-comparison figcaption{font-size:21px;line-height:1.6}
+.policy-edition .article-comparison>p{font-size:14px;line-height:1.9;margin:8px 0 18px}
+.policy-edition .article-comparison-detailed th:first-child{width:22%}
+@media(max-width:600px){.policy-edition .article-comparison-detailed td{grid-template-columns:80px minmax(0,1fr);gap:12px;font-size:16px;line-height:1.9;padding:10px 0}.policy-edition .article-comparison-detailed tbody th{font-size:18px;padding:4px 0 10px}.policy-edition .article-comparison-detailed td:before{font-size:14px;align-self:start}.policy-edition .article-comparison:not(.article-comparison-detailed) th:first-child{width:48%}.policy-edition .article-comparison:not(.article-comparison-detailed) :is(th,td){font-size:14px;padding:12px 7px}}
