@@ -28,3 +28,6 @@
 .policy-edition .article-comparison>p{font-size:14px;line-height:1.9;margin:8px 0 18px}
 .policy-edition .article-comparison-detailed th:first-child{width:22%}
 @media(max-width:600px){.policy-edition .article-comparison-detailed td{grid-template-columns:80px minmax(0,1fr);gap:12px;font-size:16px;line-height:1.9;padding:10px 0}.policy-edition .article-comparison-detailed tbody th{font-size:18px;padding:4px 0 10px}.policy-edition .article-comparison-detailed td:before{font-size:14px;align-self:start}.policy-edition .article-comparison:not(.article-comparison-detailed) th:first-child{width:48%}.policy-edition .article-comparison:not(.article-comparison-detailed) :is(th,td){font-size:14px;padding:12px 7px}}
+
+/* A reviewed cover phrase stays on its own line across Safari and Chromium. */
+.feature-approval-cover .sanze-feature-copy h1 > .feature-title-line{display:block}
