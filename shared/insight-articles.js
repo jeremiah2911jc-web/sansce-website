@@ -1,3 +1,4 @@
+import {socialHousingFarArticle} from './social-housing-far-article.js';
 import {renewalFinancingArticle} from './renewal-financing-article.js';
 import {chiangShenPolicyArticle} from './chiang-shen-policy-article.js';
 import {electionPromisesArticle} from './election-promises-article.js';
@@ -11,6 +12,7 @@ import {approvedNotStartedArticle} from './approved-not-started-article.js';
 import {rightsShortfallArticle} from './rights-shortfall-article.js';
 // Listing, metadata, sitemap and assistant knowledge share these article records.
 export const insightArticles = [
+socialHousingFarArticle,
 renewalFinancingArticle,
 chiangShenPolicyArticle,
 electionPromisesArticle,
