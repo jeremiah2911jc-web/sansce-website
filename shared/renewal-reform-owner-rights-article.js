@@ -53,7 +53,7 @@ const sections = [
 export const renewalReformOwnerRightsArticle = {
   path: "/insights/urban-renewal-reform-owner-rights",
   kind: "article", label: "政策觀點", category: "政策觀點", pinned: false,
-  publishedAt: "2026-10-28", updatedAt: "2026-10-28",
+  publishedAt: "2026-10-28", updatedAt: "2026-10-29",
   title: "都更與危老修法，地主的權利與責任必須一起說明",
   seoTitle: "都更與危老修法，地主的權利與責任必須一起說明｜三策觀點",
   description: "三策核對2026年都更與危老修法草案及公聽會報告，分析全案管理的重大決策、資金責任、機構更換與資料移交，並說明禁止處分延長、危老容積分級及過渡期限對地主的影響。",
@@ -69,7 +69,7 @@ export const renewalReformOwnerRightsArticle = {
     ["行政院｜都市危險及老舊建築物加速重建條例修正草案，第7條及第14條", "https://www.ey.gov.tw/File/8F15763D148E5298?A=C"],
     ["內政部｜危老稅捐減免優惠申請年限延長至2027年5月11日", "https://www.moi.gov.tw/News_Content.aspx?n=4&s=259582"],
   ],
-  related: ["/insights/social-housing-far-owner-allocation", "/insights/urban-renewal-priority-lending", "/services/project-management"],
+  related: ["/insights/full-project-management-responsibility", "/insights/social-housing-far-owner-allocation", "/insights/urban-renewal-priority-lending", "/services/project-management"],
   visual: {
     hero: { small: "/images/insights/renewal-reform/hero-small.webp", large: "/images/insights/renewal-reform/hero.webp" },
     alt: "社區所有權人在會議中一起查看重建圖說與費用資料",
