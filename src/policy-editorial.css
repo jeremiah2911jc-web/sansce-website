@@ -55,3 +55,9 @@
 .funding-edition .policy-chapter-grid{grid-template-columns:minmax(0,720px) minmax(170px,250px)}
 @media(max-width:900px){.funding-edition .policy-chapter-grid{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:760px){.insight-magazine-layout .policy-edition.funding-edition .sanze-feature-section .feature-section-copy>p{font-size:18px;line-height:2.05}}
+
+/* Feasibility essay: a continuous reading column and household cost spread. */
+.insight-magazine-layout .policy-edition.feasibility-edition .sanze-feature-section .feature-section-copy>p{font-size:18px;line-height:2.1;font-weight:400}
+.feasibility-edition .policy-chapter-grid{grid-template-columns:minmax(0,720px) minmax(170px,250px)}
+@media(max-width:900px){.feasibility-edition .policy-chapter-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:760px){.insight-magazine-layout .policy-edition.feasibility-edition .sanze-feature-section .feature-section-copy>p{font-size:18px;line-height:2.05}}
