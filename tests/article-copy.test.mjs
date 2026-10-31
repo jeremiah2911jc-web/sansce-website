@@ -15,6 +15,13 @@ test('preserves genuine source URL queries and direct factual prose',()=>{
  assert.deepEqual(inspectArticleCopy([record]),[]);
 });
 
+test('blocks ambiguous payments and indirect negative conclusions on secondary surfaces',()=>{
+ const record={path:'/insights/example',summary:'地主補款後參與。',visual:{sideTitle:['不能據此認定沒有約定。'],storyPhotos:[{caption:'不能僅因更新會為法人，便認為地主沒有支出。'}]},sections:[['責任','案件虧損不足以認定機構有過失。']]};
+ const errors=inspectArticleCopy([record]);
+ for(const field of ['article.summary','article.visual.sideTitle.0','article.visual.storyPhotos.0.caption','article.sections.0.1'])assert(errors.some(x=>x.field===field),field);
+ assert.deepEqual(inspectArticleCopy([{path:'/insights/example',sections:[['費用與責任','選配房屋應繳納差額價金；工程追加出資須載明用途與支付對象。受任人過失依受託義務、行為及因果關係認定。']]}]),[]);
+});
+
 
 test('rejects vague calculation conclusions and account metaphors in secondary copy',()=>{
  for(const text of ['帳算清楚。','承諾都要算清楚。','成本要算得清楚。','責任不能算到地主的帳上。','列出成本帳。','帳面分配與實際價值不同。','算這筆帳。']){
