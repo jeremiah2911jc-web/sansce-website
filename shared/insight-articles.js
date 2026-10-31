@@ -1,3 +1,4 @@
+import {propertyPolicyArticle} from './property-policy-article.js';
 import {upfrontFundingArticle} from './upfront-funding-article.js';
 import {earlyIntegrationArticle} from './early-integration-article.js';
 import {fullProjectManagementArticle} from './full-project-management-article.js';
@@ -16,6 +17,7 @@ import {approvedNotStartedArticle} from './approved-not-started-article.js';
 import {rightsShortfallArticle} from './rights-shortfall-article.js';
 // Listing, metadata, sitemap and assistant knowledge share these article records.
 export const insightArticles = [
+propertyPolicyArticle,
 upfrontFundingArticle,
 earlyIntegrationArticle,
 fullProjectManagementArticle,
@@ -778,7 +780,7 @@ rightsShortfallArticle,
   "path": "/insights/public-urban-renewal-challenges",
   "kind": "article",
   "label": "都市更新實務",
-  "pinned": true,
+  "pinned": false,
   "publishedAt": "2026-10-12",
   "updatedAt": "2026-10-25",
   "title": "公辦都更仍須核對財務、共同負擔與地主分配",

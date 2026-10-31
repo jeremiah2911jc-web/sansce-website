@@ -27,7 +27,7 @@ export function InsightSection({ page, title, body, index }) {
 
 function PolicyEdition({ page }) {
   const { photos, notes } = page.visual.policyEdition;
-  return <div className={"policy-edition" + (page.visual.managementEdition ? " management-edition" : "") + (page.visual.earlyEdition ? " early-edition" : "") + (page.visual.fundingEdition ? " funding-edition" : "")}>{page.sections.map(([title, body], index) => <div className="policy-chapter" key={index}>
+  return <div className={"policy-edition" + (page.visual.managementEdition ? " management-edition" : "") + (page.visual.earlyEdition ? " early-edition" : "") + (page.visual.fundingEdition ? " funding-edition" : "") + (page.visual.feasibilityEdition ? " feasibility-edition" : "")}>{page.sections.map(([title, body], index) => <div className="policy-chapter" key={index}>
     <div className="policy-chapter-grid"><InsightSection page={page} title={title} body={body} index={index} />
       {notes[index] && <aside className="policy-margin"><p>{notes[index]}</p></aside>}
     </div>
