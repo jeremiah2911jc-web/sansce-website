@@ -10,7 +10,7 @@ export function InsightHero({ page }) {
 
 function DetailPhoto({ page }) {
   const detail = page.visual?.detail;
-  return detail ? <img loading="lazy" {...photoProps({ src: detail.src, alt: detail.alt, width: detail.width, height: detail.height })} /> : null;
+  return detail ? <img loading="lazy" style={detail.fullFrame ? {aspectRatio: 'auto', height: 'auto', objectFit: 'contain'} : undefined} {...photoProps({ src: detail.src, alt: detail.alt, width: detail.width, height: detail.height })} /> : null;
 }
 
 export function InsightBody({ page }) {

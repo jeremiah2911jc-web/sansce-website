@@ -75,19 +75,10 @@ export const debateFeasibilityArticle = {
   ],
   "visual": {
     "hero": {
-      "small": "/images/insights/debate-feasibility/consultation-small.webp",
-      "large": "/images/insights/debate-feasibility/consultation.webp"
+      "small": "/images/insights/debate-feasibility/urban-blocks-small.webp",
+      "large": "/images/insights/debate-feasibility/urban-blocks.webp"
     },
-    "alt": "男女顧問在規劃工作室聆聽地主說明參與條件，身旁陳列建物照片與規劃資料",
-    "compactTitle": true,
-    "longTitle": true,
-    "approvalCover": true,
-    "separateTitleLines": true,
-    "titleLines": [
-      "蔣萬安、沈伯洋談都更：",
-      "政治語言與",
-      "成案措施的落差"
-    ],
+    "alt": "老舊公寓與較新住宅交錯的街廓，呈現不同屋齡的都市建築環境",
     "headingWords": [
       "蔣萬安",
       "沈伯洋",
@@ -130,21 +121,15 @@ export const debateFeasibilityArticle = {
         "#section-6"
       ]
     ],
-    "policyEdition": {
-      "notes": {
-        "1": "支持重建、接受參與條件與承擔借款義務，涉及不同的決定。",
-        "4": "前期協商、法定審議與工程履約，分別核對工作及負責人。"
-      },
-      "photos": [
-        {
-          "src": "/images/insights/debate-feasibility/household.webp",
-          "small": "/images/insights/debate-feasibility/household-small.webp",
-          "afterSection": 3,
-          "layout": "relocation",
-          "alt": "地主母子在家比較費用資料與建物照片，母親持文件，兒子指向其中一列",
-          "caption": "家庭須依參與條件衡量出資與搬遷負擔；前期協商應提供據以作決定的規劃與試算。"
-        }
-      ]
-    }
+    "detail": {
+      "src": "/images/insights/debate-feasibility/consultation.webp",
+      "alt": "男女顧問在規劃工作室聆聽地主說明參與條件，身旁陳列建物照片與規劃資料",
+      "width": 1536,
+      "height": 1024,
+      "fullFrame": true
+    },
+    "sideTitle": [
+      "都市更新政策"
+    ]
   }
 };
