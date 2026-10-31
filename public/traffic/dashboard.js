@@ -176,7 +176,7 @@ function fillAudienceSelect(id,items,fallback){
 function semanticText(text,tone){const span=document.createElement('span');span.className='semantic-label tone-'+tone;span.textContent=text;return span;}
 function audienceFacts(row,unit){return [semanticText(number(row.visitors)+unit+'訪客','neutral'),semanticText(number(row.views)+' 次瀏覽','views'),semanticText(Number(row.visibleMs)>0?'網頁顯示時間 '+formatStay(row.visibleMs):'沒有顯示時間紀錄',Number(row.visibleMs)>0?'stay':'unknown'),...(row.durationViews>0&&row.durationViews<row.views?[semanticText('部分瀏覽缺少顯示時間','unknown')]:[])];}
 function renderAudience(){
- const host=$('audience-content');host.replaceChildren();
+ const host=$('audience-content'),expanded=new Set([...host.querySelectorAll('details[open]')].map(el=>el.id));host.replaceChildren();
  const data=latestData?.audienceContent;
  if(!data){$('audience-summary').textContent='各地瀏覽紀錄暫時無法取得，請稍後更新數據。';return;}
  const period=$('audience-period').value,all=audienceRows(period),unit=period==='today'?' 位':' 人次';
@@ -188,11 +188,12 @@ function renderAudience(){
  const visitors=rows.reduce((n,r)=>n+Number(r.visitors),0),views=rows.reduce((n,r)=>n+Number(r.views),0);
  $('audience-summary').textContent=({today:'今日',week:'近七天',total:'累計'}[period])+' · '+number(visitors)+unit+'訪客 · '+number(views)+' 次瀏覽 · '+rows.length+' 個地區';
  for(const row of rows){
-  const card=document.createElement('article');card.className='audience-location';
-  const heading=document.createElement('h3');heading.textContent=geographyLabel(row);
-  const metrics=document.createElement('p');metrics.className='audience-metrics';metrics.textContent=number(row.visitors)+unit+'訪客 · '+number(row.views)+' 次瀏覽 · 網頁顯示時間 '+formatStay(row.visibleMs)+(row.durationViews>0&&row.durationViews<row.views?'（部分瀏覽缺少顯示時間）':'');
+  const card=document.createElement('details');card.className='audience-location';card.id='audience-location-'+period+'-'+encodeURIComponent(row.key);card.open=expanded.has(card.id);
+  const summary=document.createElement('summary');summary.className='audience-location-toggle';
+  const heading=document.createElement('span');heading.className='audience-location-name';heading.textContent=geographyLabel(row);
+  const metrics=document.createElement('span');metrics.className='audience-metrics';metrics.textContent=number(row.visitors)+unit+'訪客 · '+number(row.views)+' 次瀏覽 · 網頁顯示時間 '+formatStay(row.visibleMs)+(row.durationViews>0&&row.durationViews<row.views?'（部分瀏覽缺少顯示時間）':'');
   const topics=document.createElement('p');topics.className='audience-topics';topics.textContent='看過的內容主題：'+(row.topics||[]).slice(0,4).map(t=>t.name+' '+number(t.visitors)+unit).join('；');
-  metrics.replaceChildren(...audienceFacts(row,unit));card.append(heading,metrics,topics);
+  metrics.replaceChildren(...audienceFacts(row,unit));summary.append(heading,metrics);card.append(summary,topics);
   const list=document.createElement('ol');list.className='audience-pages';
   for(const page of row.pages||[]){
    const li=document.createElement('li'),copy=document.createElement('div'),a=document.createElement('a'),stats=document.createElement('p'),activity=document.createElement('p');

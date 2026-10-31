@@ -59,3 +59,16 @@ main{max-width:1240px;padding:24px}header{padding-bottom:14px}h1{font-size:30px}
 .section-title h2{text-wrap:balance}
 
 .online-status{border-block:1px solid #cddbd6;padding:14px 0;margin:18px 0;color:#284e42}.online-status>div{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.online-status strong{font-size:30px;font-variant-numeric:tabular-nums}.online-status>p{font-size:13px;color:#677b75;margin:5px 0}.online-status .reading-guide{margin-top:6px}
+
+/* Long geography records stay closed until the owner chooses a section. */
+.audience-toggle,.audience-location-toggle{list-style:none;cursor:pointer;position:relative;padding-right:36px;min-height:44px}
+.audience-toggle::-webkit-details-marker,.audience-location-toggle::-webkit-details-marker{display:none}
+.audience-toggle::after,.audience-location-toggle::after{content:'＋';position:absolute;right:0;top:0;color:#496782;font-size:22px;line-height:44px;font-weight:400}
+.audience-panel[open]>.audience-toggle::after,.audience-location[open]>.audience-location-toggle::after{content:'−'}
+.audience-toggle{display:flex;align-items:center}.audience-toggle h2{margin:0;line-height:1.5}
+.audience-body{padding-top:14px}.audience-location{padding:10px 0}.audience-location-toggle{padding-block:4px}
+.audience-location-name{display:block;font-size:19px;font-weight:600;color:#203e60;line-height:1.6}
+.audience-location-toggle .audience-metrics{display:block;margin:4px 0 0}
+.audience-location[open]>.audience-location-toggle{margin-bottom:10px}
+.audience-toggle:hover h2,.audience-location-toggle:hover .audience-location-name{color:#31577f}
+@media(max-width:600px){.audience-location-name{font-size:17px}.audience-toggle h2{font-size:17px}}
