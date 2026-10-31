@@ -3,7 +3,7 @@ export const propertyPolicyArticle = {
   "kind": "article",
   "label": "都市更新實務",
   "category": "都市更新實務",
-  "pinned": true,
+  "pinned": false,
   "publishedAt": "2026-10-31",
   "updatedAt": "2026-10-31",
   "title": "都更成案的現實：開發可行性與私人財產風險",
