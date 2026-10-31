@@ -20,14 +20,14 @@ export function InsightBody({ page }) {
 
 export function InsightSection({ page, title, body, index }) {
   return <section id={'section-' + (index + 1)} className="sanze-feature-section">
-    {title && <ArticleHeading>{title}</ArticleHeading>}
+    {title && <ArticleHeading keepWords={page.visual?.sectionHeadingWords || []}>{title}</ArticleHeading>}
     <div className="feature-section-copy">{body.split('\n\n').map((paragraph, j) => <ArticleParagraph key={j} page={page} paragraph={paragraph} />)}<InsightInsert page={page} index={index} />{page.visual.storyComparison?.afterSection === index && <ArticleComparison comparison={page.visual.storyComparison} />}{page.visual.storyPhotos?.filter(photo => photo.afterSection === index).map(photo => <figure className="insight-story-photo" key={photo.src}><picture><source srcSet={`${photo.small} 768w, ${photo.src} 1536w`} sizes="(max-width: 760px) 100vw, 760px"/><img src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} loading="lazy"/></picture><figcaption>{photo.caption}</figcaption></figure>)}{page.visual.inlinePhoto?.afterSection===index && <figure className="insight-inline-photo"><picture><source srcSet={`${page.visual.inlinePhoto.small} 960w, ${page.visual.inlinePhoto.src} 1536w`} sizes="(max-width:760px) 100vw, 820px"/><img src={page.visual.inlinePhoto.src} width="1536" height="1024" loading="lazy" alt={page.visual.inlinePhoto.alt}/></picture><figcaption>{page.visual.inlinePhoto.caption}</figcaption></figure>}{index === 1 && page.visual.detail && <figure className="feature-mobile-detail"><DetailPhoto page={page} /></figure>}</div>
   </section>;
 }
 
 function PolicyEdition({ page }) {
   const { photos, notes } = page.visual.policyEdition;
-  return <div className={"policy-edition" + (page.visual.managementEdition ? " management-edition" : "") + (page.visual.earlyEdition ? " early-edition" : "")}>{page.sections.map(([title, body], index) => <div className="policy-chapter" key={index}>
+  return <div className={"policy-edition" + (page.visual.managementEdition ? " management-edition" : "") + (page.visual.earlyEdition ? " early-edition" : "") + (page.visual.fundingEdition ? " funding-edition" : "")}>{page.sections.map(([title, body], index) => <div className="policy-chapter" key={index}>
     <div className="policy-chapter-grid"><InsightSection page={page} title={title} body={body} index={index} />
       {notes[index] && <aside className="policy-margin"><p>{notes[index]}</p></aside>}
     </div>
