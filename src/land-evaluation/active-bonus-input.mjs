@@ -1,5 +1,6 @@
 import {evaluate} from './model.mjs';
 import {planningInputIssues} from './planning-input-review.mjs';
+import {applyStatutoryBonusLimits} from './statutory-bonus-limits.mjs';
 
 // Keep the editable scenario intact. Only unused award inputs are neutralized
 // in the temporary input passed to the shared calculator.
@@ -15,7 +16,7 @@ export function activeBonusInput(input){
  if(input.quantityReserve)patch.reserve='0';
  // Demand search always uses the named rooms, not the fixed-floor percentage.
  if(input.basementDemand?.enabled&&input.quantityReserve)patch.quantityReserve={...input.quantityReserve,basementEquipmentMode:'named'};
- return {...input,...patch};
+ return applyStatutoryBonusLimits({...input,...patch});
 }
 export function evaluateActiveBonuses(input){
  const active=activeBonusInput(input);if(!input.regulatoryReview?.bonusAssessment)return evaluate(input);

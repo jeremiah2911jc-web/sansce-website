@@ -28,6 +28,11 @@
 
 /* Inputs: label, control and hint have a shared vertical rhythm. */
 .land-evaluation label{display:flex;flex-direction:column;gap:8px;color:#3e5146;font-size:var(--le-label);font-weight:500;line-height:1.7}
+.land-evaluation .le-statutory-limits{display:flex;flex-wrap:wrap;gap:22px 48px;margin:20px 0 24px}
+.land-evaluation .le-statutory-limits dt{font-size:14px;color:var(--le-muted)}
+.land-evaluation .le-statutory-limits dd{display:flex;align-items:baseline;gap:16px}
+.land-evaluation .le-statutory-limits output{font-size:28px;font-weight:500;font-variant-numeric:tabular-nums;line-height:1.7}
+.land-evaluation .le-statutory-limits a{font-size:12px}
 .land-evaluation .le-field>span:first-child{display:flex;align-items:baseline;gap:9px;min-height:24px}
 .land-evaluation .le-label-text{display:block;min-height:24px;font-size:var(--le-label);line-height:1.7}
 .land-evaluation .le-selected-caption{display:block;overflow-wrap:anywhere;font-weight:400}
