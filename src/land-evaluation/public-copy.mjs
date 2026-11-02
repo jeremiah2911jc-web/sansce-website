@@ -2,6 +2,7 @@ import {approvedEvaluationCopyEdits} from './approved-copy-edits.mjs';
 import {developmentServiceCopyEdits} from '../../shared/development-service-copy.mjs';
 // Website wording only. Keep the authoritative App inputs and calculation rules intact.
 export const publicCopyEdits = [
+ ['額外市場汽車位','增設汽車位數'],
  ['，不套用新北危老容移例外。','。'],
  ['缺文件，依目標假設初估','待補文件，先按規劃條件估算'],
  ...developmentServiceCopyEdits,
