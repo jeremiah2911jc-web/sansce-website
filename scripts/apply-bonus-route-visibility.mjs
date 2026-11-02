@@ -6,6 +6,7 @@ export function applyBonusRouteVisibility(code){
  const hasText=(n,pattern)=>n&&typeof n==='object'&&(n.type==='StringLiteral'&&pattern.test(n.value)||Object.entries(n).some(([k,v])=>!['loc','extra','comments'].includes(k)&&(Array.isArray(v)?v.some(x=>hasText(x,pattern)):v&&typeof v==='object'&&hasText(v,pattern))));
  function walk(n,parent){
   if(!n||typeof n!=='object')return;
+  if(n.type==='StringLiteral'&&n.value==='都更額度依資格與核定文件確認。'&&parent?.type==='ArrayExpression')edits.push({start:n.start,end:n.end,text:'(a.route === "renewal" ? "都更額度依資格與核定文件確認。" : a.route === "danger" ? "危老額度依資格與核定文件確認。" : "")'});
   if(n.type==='CallExpression'&&/^jsx/.test(n.callee.name||'')&&n.arguments[0]?.value==='details'){
    const children=n.arguments[1]?.properties?.find(p=>p.key?.name==='children')?.value;
    const title=children?.elements?.find(x=>x?.type==='CallExpression'&&x.arguments[0]?.value==='summary');

@@ -3205,7 +3205,7 @@ function BonusAssessmentPanel({
         f8(base * effective.danger / 100),
         "\u33A1\uFF09\u3002"
       ] }),
-      "\u90FD\u66F4\u984D\u5EA6\u4F9D\u8CC7\u683C\u8207\u6838\u5B9A\u6587\u4EF6\u78BA\u8A8D\u3002"
+      (a.route === "renewal" ? "都更額度依資格與核定文件確認。" : a.route === "danger" ? "危老額度依資格與核定文件確認。" : "")
     ] }),
     /* @__PURE__ */ jsxs2("details", { className: "le-advanced", children: [
       /* @__PURE__ */ jsx2("summary", { children: "\u5BB9\u79FB\u53D6\u5F97\u689D\u4EF6\u8207\u8CC7\u683C\u6AA2\u6838" }),

@@ -68,3 +68,15 @@ for(const route of ['renewal','danger','none'])for(const mode of ['quick','detai
 writeFileSync(root+'qa/evaluation-preview-20261102/route-visibility.json',JSON.stringify({routeChecks,reportRouteChecks:3,taipeiNoteChecks:12,inputsPreserved:true,transferIndependent:true},null,2));
 console.log('PASS 12 Taipei source-note route/mode/transfer combinations; necessary restrictions and calculation output preserved.');
 console.log(`PASS ${routeChecks.length} Taipei/New Taipei route, mode and document-basis combinations; 3 report-route checks; retained inputs and independent transfer controls.`);
+
+// The short source reminder follows the active rebuilding route; rendering preserves every value.
+for(const city of ['臺北市','新北市'])for(const route of ['renewal','danger','none'])for(const mode of ['quick','detail']){
+ const input=exampleInput();Object.assign(input,{site:'2400',far:'280',renewal:'10',danger:'10',tdr:'0',scale:'0'});input.parkingDesign.district=city;Object.assign(input.regulatoryReview,{renewalLimitPercent:'50',tdrLimitPercent:'30'});
+ input.regulatoryReview.bonusAssessment={...routeAssessment(),route,renewalMode:mode,dangerMode:mode,dangerEligibleSite:'2400',dangerAdjacentSite:'0'};
+ const frozen=structuredClone(input),values=evaluate(input),html=render('BonusAssessmentPanel',{input,edit:()=>{},financials:false});
+ assert(html.includes('本次採用：'),JSON.stringify({city,route,mode,errors:values.errors,summary:html.match(/<p role="status">[^<]+/g)}));
+ assert.equal(html.includes('都更額度依資格與核定文件確認。'),route==='renewal',[city,route,mode,'renewal source reminder']);
+ assert.equal(html.includes('危老額度依資格與核定文件確認。'),route==='danger',[city,route,mode,'danger source reminder']);
+ assert.deepEqual(input,frozen);assert.deepEqual(evaluate(input),values);
+}
+console.log('PASS 12 active-route source reminders across two cities and quick/detail modes; no input or calculation changes.');
