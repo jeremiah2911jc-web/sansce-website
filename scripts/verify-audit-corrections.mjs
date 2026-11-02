@@ -5,7 +5,7 @@ import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {publicText} from '../src/land-evaluation/public-copy.mjs';
 process.env.NODE_ENV='production';
-const root=resolve(import.meta.dirname,'..'),app='/Users/jeremiah/src/sanze-cases-desktop',qa=resolve(root,'qa/audit-corrections');
+const root=resolve(import.meta.dirname,'..'),app='/Users/jeremiah/Documents/Codex/2026-10-24/sanze-release-app',qa=resolve(root,'qa/audit-corrections');
 await mkdir(qa,{recursive:true});
 const {build}=createRequire(resolve(app,'package.json'))('esbuild');
 const contents=`
@@ -35,9 +35,12 @@ const finance=['每容積㎡代金估價元','估價及協檢費元','其他申�
 const checks=[];
 for(const city of ['ntpc','taipei'])for(const method of ['land','cash','mixed']){
  const r=fixture.renderFixture(city,method);
+ if(city==='taipei'){assert(r.web.includes('77年8月1日'));assert(!r.web.includes('1992-01-10'));}else assert(r.web.includes('1992-01-10'));
+ assert(!r.web.includes('目標假設'));
+
  for(const name of finance)assert(!r.web.includes('aria-label="'+name+'"'),city+'/'+method+' leaked '+name);
  assert(!r.details.includes('取得成本合計'));assert(!r.details.includes('估價及其他規費'));
- assert(r.web.includes('資格待查證')||r.web.includes('目標假設'));
+ assert(r.web.includes('資格待查證')||r.web.includes('規劃目標，待核對'));
  if(city==='ntpc')assert(r.appBonus.includes('捐贈都更基金計算量'));
  if(method!=='cash')assert(r.app.includes('取得成本元（整筆申請持分總價）'));
  if(method!=='land')assert(r.app.includes('每容積㎡代金估價元'));
@@ -49,7 +52,7 @@ for(const [input,expected] of [
  ['面積預算通過，實際排位及連續通路待圖說確認。','待圖說核對'],
  ['（資格待核）','資格待核'],
  ['附條件試算，個案審議及設備尚未確認。','待核對'],
- ['本表採獎勵細項加總；直接依原容積建築的替代路徑尚未接入，含鄰地或部分合格基地時暫不放寬一般30%核心上限。','尚未支援'],
+ ['本表採獎勵細項加總；直接依原容積建築的替代路徑尚未接入，含鄰地或部分合格基地時暫不放寬一般30%核心上限。','請另依個案文件評估'],
  ])assert(publicText(input).includes(expected));
 checks.push('verification status preserved in natural copy');
 const road={...fixture.newSiteRoadConditions(),plannedWidth:'12',source:'模擬道路證明',checkedAt:'2099-01-01',status:'confirmed'};
@@ -59,7 +62,7 @@ assert(fixture.reviewPermittedAward({route:'renewal',baseSqm:'1000',awardSqm:'10
 assert(fixture.reviewPermittedAward({route:'renewal',baseSqm:'1000',awardSqm:'100',approvedAt:'2026-02-30',source:'模擬核准文件'},'renewal',1000).errors.length);
 checks.push('road and existing award dates');
 const jsx=await readFile(resolve(root,'src/land-evaluation/ReadjustmentWorkbench.jsx'),'utf8');
-assert(jsx.includes('confirmed:result.canConfirm'));assert(jsx.includes('!item.history.at(-1)?.confirmed'));assert(jsx.includes('latest.signature!==signature'));assert(jsx.includes('保留待核紀錄'));
+assert(jsx.includes('confirmed:result.canConfirm'));assert(jsx.includes('!item.history.at(-1)?.confirmed'));assert(jsx.includes('latest.signature!==signature'));assert(jsx.includes('保留待核結果'));
 const land=await readFile(resolve(root,'src/land-evaluation/LandWorkbench.jsx'),'utf8');assert(land.includes("newLandFact('unknown')"));assert(land.includes("status:'assumed'"));
 checks.push('pending records, confirmed snapshots, stale sources and unknown land drafts');
 const site=await readFile(resolve(root,'src/land-evaluation/LandEvaluation.jsx'),'utf8');assert(site.includes('financials={false}'));

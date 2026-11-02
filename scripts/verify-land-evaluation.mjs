@@ -1,3 +1,4 @@
+import {assertEvaluationEqual} from './evaluation-test-output.mjs';
 import assert from 'node:assert/strict';
 import {readFile,mkdir,writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
@@ -22,9 +23,9 @@ variants.push(['中心四路升降機機械',smallFixture.input],['中心四路�
 const yc=planningAssumptionsTemplate({input:{siteAreaSqm:'471',buildingCoverageRatePercent:'45',baseFarRatePercent:'225',urbanRenewalBonusRatePercent:'0',tdrBonusRatePercent:'19.9',district:'臺北市南港區',landIdentifier:''}});
 delete yc.basementDemand;yc.excavation='80';yc.regulatoryReview.bonusAssessment={...newBonusAssessment(),tdrApplication:{...newTdrApplication('taipei'),quantityBasis:'permitted',permittedSqm:'211.93',permittedSource:'108建字0209號附表註22及108年5月1日北市都新字1076014731函；歷史建物來源由使用者確認',stage:'permitted'}};
 variants.push(['玉成大賞既有許可19.9%',yc]);
-legacyLimits(yc);const ycr=evaluate(yc);assert.deepEqual(ycr.errors,[]);assert(ycr.values.totalWithoutBalcony>0);assert.equal(ycr.values.cars,6);
+legacyLimits(yc);const ycr=evaluate(yc);assertEvaluationEqual(ycr.errors,[]);assert(ycr.values.totalWithoutBalcony>0);assert.equal(ycr.values.cars,6);
 await writeFile(resolve(qa,'yucheng-permit-comparison.json'),JSON.stringify({input:yc,result:ycr,permitTotal:2801.95,differenceSqm:Number((ycr.values.totalWithoutBalcony-2801.95).toFixed(2)),note:'Legacy synthetic comparison, not a current installed-App verification; explicit template assumptions include 80% excavation and 4 basements. Not permit entitlement.'},null,2));
-const demandFixture=JSON.parse(await readFile(resolve(manifest.sourceRoot,'docs/yucheng-basement-demand-result.json'),'utf8'));variants.push(['玉成大賞基地限制與倉儲式需求檢討',demandFixture.input]);assert.deepEqual(evaluate(demandFixture.input),appCalculate(demandFixture.input));
+const demandFixture=JSON.parse(await readFile(resolve(manifest.sourceRoot,'docs/yucheng-basement-demand-result.json'),'utf8'));variants.push(['玉成大賞基地限制與倉儲式需求檢討',demandFixture.input]);assertEvaluationEqual(evaluate(demandFixture.input),appCalculate(demandFixture.input));
 const d=demandFixture.input,copy=()=>structuredClone(d);
 const restrictions=[['已知禁止替代停車',x=>{x.parkingDesign.smallSite={...defaultSmallSiteParking(),localReview:'failed',reviewSource:'測試個案禁止'};}],['搜尋不得忽略全部採用',x=>{x.parkingDesign.fillRemaining=true;}],['危老不得沿用一般南港',x=>{x.basementDemand.rule='nangang_general';}],['核准基準變更',x=>{x.site='472';}],['核准來源缺漏',x=>{x.regulatoryReview.bonusAssessment.permittedAward.source='';}],['南港資格來源缺漏',x=>{x.basementDemand.source='';}]];
 for(const [name,patch] of restrictions){const x=copy();patch(x);assert.equal(evaluate(x).values,null,name);variants.push([name,x]);}
@@ -48,9 +49,9 @@ const taipeiAuto={...ntpcAuto,renewal:'0',tdr:'0',parkingDesign:newParkingDesign
 for(const zone of ['res12','commercial','industrial','protected','public','other'])variants.push(['臺北市分區'+zone,{...taipeiAuto,basementDemand:{...taipeiAuto.basementDemand,taipeiZone:zone}}]);
 const taipeiUnknown={...taipeiAuto,basementDemand:{...taipeiAuto.basementDemand,taipeiPlanUnspecified:false}};assert.equal(evaluate(taipeiUnknown).values,null);variants.push(['臺北都市計畫條件未選',taipeiUnknown]);
 const report=[];
-for(const[name,input]of variants){const upstream=appCalculate(input),web=calculatePlanning(input);assert.deepEqual(web,upstream,name);assert.deepEqual(evaluate(input),upstream,name+' website adapter');report.push({name,errors:web.errors,values:web.values,matching:true});}
+for(const[name,input]of variants){const upstream=appCalculate(input),web=calculatePlanning(input);assertEvaluationEqual(web,upstream,name);assertEvaluationEqual(evaluate(input),upstream,name+' website adapter');report.push({name,errors:web.errors,values:web.values,matching:true});}
 const sample=planningAssumptionsTemplate({input:{siteAreaSqm:'2359.67',buildingCoverageRatePercent:'50',baseFarRatePercent:'280',urbanRenewalBonusRatePercent:'50',tdrBonusRatePercent:'25',district:'新北市新店區',landIdentifier:''}});delete sample.basementDemand;legacyLimits(sample);const r=evaluate(sample);
-assert.deepEqual(r.errors,[]);assert.equal(r.values.salePing,5284.53);assert.equal(r.values.totalWithoutBalcony,19230.48);assert.equal(r.values.cars,79);assert.equal(r.values.capacity,117);assert.equal(r.values.equivalentFloors,15);
+assertEvaluationEqual(r.errors,[]);assert.equal(r.values.salePing,5284.53);assert.equal(r.values.totalWithoutBalcony,19230.48);assert.equal(r.values.cars,79);assert.equal(r.values.capacity,117);assert.equal(r.values.equivalentFloors,15);
 assert.equal(Number((r.values.totalWithoutBalcony*.3025).toFixed(2)),5817.22);
 assert.equal(evaluate(createInput()).values,null);assert.equal(evaluate({...a,site:'0'}).values,null);assert.equal(evaluate({...a,site:'1000000000000'}).values,null);
 for(const name of ['core','panels']){const content=await readFile(resolve(root,'src/land-evaluation/generated',name+'.mjs'),'utf8');assert.ok(!/localStorage|sessionStorage|indexedDB|@tauri|fetch\(/.test(content));}

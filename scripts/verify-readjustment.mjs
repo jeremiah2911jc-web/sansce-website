@@ -1,3 +1,4 @@
+import {assertEvaluationEqual} from './evaluation-test-output.mjs';
 import assert from 'node:assert/strict';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
@@ -10,7 +11,7 @@ const shared=await import(pathToFileURL(resolve(manifest.sourceRoot,'src/cases/l
 let checks=0;
 const land={parcels:[{id:'p1',areaSqm:'1000',city:'新北市',section:'模擬段',landNumber:'模擬001',status:'assumed'}]};
 const base=(system='public')=>({...web.newReadjustmentPlan('test',system),planName:'記憶體模擬計畫',stage:'processing',parcelIds:['p1'],parcelRights:{p1:{includedArea:'1000',shareNumerator:'1',shareDenominator:'2',source:'模擬逐筆權利範圍',date:'2026-10-21'}},shareNumerator:'1',shareDenominator:'2',scopeSource:'模擬持分文件',membership:'in',membershipSource:'模擬範圍文件',membershipDate:'2026-10-21'});
-function evaluate(p,a=land){const r=web.evaluateReadjustment(p,a);assert.deepEqual(r,shared.evaluateReadjustment(p,a));checks++;return r;}
+function evaluate(p,a=land){const r=web.evaluateReadjustment(p,a);assertEvaluationEqual(r,shared.evaluateReadjustment(p,a));checks++;return r;}
 for(const system of Object.keys(web.systems))for(const track of Object.keys(web.perspectives)){const p={...base(system),track};const r=evaluate(p);assert.equal(r.rightsArea,500);assert(r.canRecord);assert(!r.canConfirm);assert(r.pending>0);assert.equal(r.allocationArea,null);if(track==='acquisition')assert(r.findings.some(x=>x.id==='target'));}
 let p=base();Object.assign(p,{allocationMode:'average',burdenRate:'40',areaSource:'模擬平均負擔情境'});let r=evaluate(p);assert.equal(r.allocationArea,300);assert.match(r.areaLabel,/假設/);assert(!r.canCreateLand);
 assert.equal(evaluate({...p,burdenRate:'0'}).allocationArea,500);assert.equal(evaluate({...p,burdenRate:'100'}).allocationArea,0);assert(evaluate({...p,burdenRate:'101'}).errors.length);assert(evaluate({...p,burdenRate:'-2'}).errors.length);
@@ -70,7 +71,7 @@ for(const system of Object.keys(web.systems))for(const track of Object.keys(web.
 }
 for(const c of web.publishedPlans){assert(c.source.startsWith('https://'));assert(c.audit.fullReview===false);if(c.versions[0].id==='review-20261021'){assert.equal(c.versions[0].publishedAt,c.assessmentReview.publicationDate??null);assert(c.versions[0].conditions.some(r=>r.id==='current-lineage'));assert(!c.assessmentReview.latestVerified);}else assert(c.versions[0].publishedAt===null);assert(c.audit.gaps.length);for(const d of c.versions[0].documents){assert(d.url.startsWith('https://'));if(d.retrieved&&d.sha256)assert.match(d.sha256,/^[a-f0-9]{64}$/);}}
 // Every original dataset row must occur exactly once, even when detailed project aliases differ.
-for(const ds of web.catalogCoverage.datasets){const rows=web.publishedPlans.flatMap(p=>p.evidenceRows??[]).filter(r=>r.dataset===ds.title).map(r=>r.row).sort((a,b)=>a-b);assert.deepEqual(rows,Array.from({length:ds.rows},(_,i)=>i+1));}
+for(const ds of web.catalogCoverage.datasets){const rows=web.publishedPlans.flatMap(p=>p.evidenceRows??[]).filter(r=>r.dataset===ds.title).map(r=>r.row).sort((a,b)=>a-b);assertEvaluationEqual(rows,Array.from({length:ds.rows},(_,i)=>i+1));}
 assert.equal(web.publishedPlans.find(p=>p.name.includes('灣潭')).evidenceRows[0].note.includes('0980151290'),true);
 assert(web.publishedPlans.find(p=>p.id==='ntpc-public-8778').versions[0].documents.some(d=>d.category==='amendment'&&d.reviewNote));
 const original=base(),sig=web.readjustmentSignature(original,land);assert.notEqual(sig,web.readjustmentSignature({...original,track:'acquisition'},land));assert.notEqual(sig,web.readjustmentSignature(original,{parcels:[{...land.parcels[0],areaSqm:'1100'}]}));assert.equal(sig,web.readjustmentSignature(original,{parcels:[...land.parcels,{id:'unselected',areaSqm:'3'}]}));

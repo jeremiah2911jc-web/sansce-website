@@ -4,7 +4,7 @@ export function landFindingTarget(f,parcelId){
 }
 export function readjustmentFindingTarget(f,p,land,documents){
  const doc=documents.find(d=>d.id===f.id);if(doc)return {label:doc.title+'依據、頁次與適用範圍'};
- const fields={membership:'範圍圖、清冊與地號查證依據','plan-name':'整體開發計畫名稱',stage:'本案辦理階段','本案-share':'評估持分分子','scope-source':'納入範圍與持分依據','burden-method':'分配面積資料方式','expro-method':'分配面積資料方式',buildability:'後續建築條件',target:'預定取得標的','trade-date':'預定取得日期','right-state':'取得時點原土地權利',transfer:'本次權利承接查核',handled:'已處理事項與承擔義務',choice:'本案補償選擇紀錄'};
+ const fields={membership:'範圍圖、清冊與地號查證依據','plan-name':'整體開發計畫名稱',stage:'本案辦理階段','本案-share':'評估持分分子','scope-source':'納入範圍與持分依據','burden-method':'分配面積資料方式','expro-method':'分配面積資料方式',buildability:'後續建築條件',target:'預定取得標的','trade-date':'預定取得日期','right-state':'取得時點原土地權利',transfer:'本次權利承接查核',handled:'已領款項、已辦移轉與待履行義務',choice:'本案補償選擇紀錄'};
  if(f.id==='plan-name')return {label:p.planName?.trim()?'辦理單位／主管機關':'整體開發計畫名稱'};
  if(f.id==='scope-area')return p.parcelIds.length?{heading:'地號與納入範圍'}:{label:'本案納入面積（㎡）'};
  if(fields[f.id])return {label:fields[f.id]};

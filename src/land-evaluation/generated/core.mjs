@@ -1,3 +1,4 @@
+import { isTaipeiRenewal,taipeiRenewalApplies,applyTaipeiRenewal } from "../taipei-renewal/model.mjs";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -3826,11 +3827,18 @@ var bonusItems = [
   { id: "d-time", group: "danger", label: "\u6642\u7A0B\u734E\u52F5", law: "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0070249&flno=6", options: yes(1), formula: "dangerTime", condition: "\u5371\u8001\u689D\u4F8B6\u689D\uFF1A\u4F9D\u7533\u8ACB\u65E5\u671F\uFF0C2025-05-12\u8D77\u6642\u7A0B\u70BA0%\uFF1B\u8207\u898F\u6A21\u5408\u8A08\u226410%\u3002\u73FE\u884C\u91CD\u5EFA\u8A08\u756B\u7533\u8ACB\u671F\u96502027-05-31\u3002" }
 ];
 function isBonusAssessment(x) {
+  /* taipei-renewal-hook */
+  if (x && typeof x === "object" && x.taipei !== undefined && !isTaipeiRenewal(x.taipei)) return false;
+
   if (!x || typeof x !== "object") return false;
   const a = x;
   return (a.awardBasis === void 0 || ["target", "permitted"].includes(a.awardBasis)) && (a.permittedAward === void 0 || isPermittedAward(a.permittedAward)) && (a.tdrApplication === void 0 || isTdrApplication(a.tdrApplication)) && (a.tdrApplications === void 0 || a.tdrApplications && typeof a.tdrApplications === "object" && !Array.isArray(a.tdrApplications) && Object.entries(a.tdrApplications).every(([k, v]) => ["ntpc", "taipei", "other"].includes(k) && isTdrApplication(v) && v.city === k)) && (a.distinctSpaces === void 0 || typeof a.distinctSpaces === "boolean") && a.version === BONUS_VERSION && ["renewal", "danger", "none"].includes(a.route) && ["renewalMode", "tdrMode", "dangerMode"].every((k) => ["quick", "detail"].includes(a[k])) && ["date", "source", "deduction", "dangerOriginal", "dangerEligibleSite", "dangerAdjacentSite"].every((k) => typeof a[k] === "string") && (a.date === "" || /^\d{4}-\d{2}-\d{2}$/.test(a.date)) && ["general", "forty", "hillside", "narrow", "special50"].includes(a.tdrProfile) && ["renewalQualification", "tdrQualification", "dangerQualification"].every((k) => ["unknown", "yes", "no"].includes(a[k])) && !!a.entries && typeof a.entries === "object" && !Array.isArray(a.entries) && Object.entries(a.entries).every(([id2, e]) => bonusItems.some((d) => d.id === id2) && e && typeof e.choice === "string" && (e.choice === "" || bonusItems.find((d) => d.id === id2).options.some((o) => o[0] === e.choice)) && ["amount", "amount2", "amount3", "share", "source"].every((k) => e[k] === void 0 || typeof e[k] === "string") && (e.status === void 0 || ["assumed", "verified", "excluded"].includes(e.status)));
 }
 function assessBonuses(a, c, cash, updateArea) {
+  /* danger-area-validation-hook */
+
+  if (taipeiRenewalApplies(a,c)) return applyTaipeiRenewal(assessBonuses({...a,taipei:undefined},c,cash,updateArea),a,c);
+
   const errors = [], notes = [], base = c.site * c.far / 100;
   const city = a.tdrApplication?.city ?? (c.district ? inferTdrCity(c.district) : "ntpc");
   cash = tdrCashPercent(a.tdrApplication, cash);
@@ -3848,8 +3856,8 @@ function assessBonuses(a, c, cash, updateArea) {
     }
     return n;
   };
-  const eligible = a.dangerEligibleSite.trim() ? Math.min(c.site, num(a.dangerEligibleSite, "\u5408\u683C\u539F\u57FA\u5730")) : NaN, adjacent = num(a.dangerAdjacentSite, "\u5408\u4F75\u9130\u5730"), eligibleTotal = Math.min(c.site, eligible + Math.min(adjacent, eligible, 1e3));
-  if (dangerActive && bonusItems.some((d) => d.formula === "dangerSize" && selected(d.id)) && (!a.dangerEligibleSite.trim() || !a.dangerAdjacentSite.trim())) errors.push("\u5371\u8001\u539F\u5408\u683C\u57FA\u5730\u53CA\u9130\u5730\u9762\u7A4D\u672A\u586B\uFF0C\u4E0D\u80FD\u5047\u5B9A\u5168\u57FA\u5730\u5408\u683C\uFF1B\u7121\u9130\u5730\u8ACB\u660E\u586B0\u3002");
+  const eligible = a.dangerEligibleSite.trim() ? Math.min(c.site, num(a.dangerEligibleSite, "\u5408\u683C\u539F\u57FA\u5730")) : dangerActive ? 0 : NaN, adjacent = num(a.dangerAdjacentSite, "\u5408\u4F75\u9130\u5730"), eligibleTotal = Math.min(c.site, eligible + Math.min(adjacent, eligible, 1e3));
+  if (dangerActive && (!a.dangerEligibleSite.trim() || !a.dangerAdjacentSite.trim())) errors.push("請填寫危老原合格基地面積及鄰地面積；沒有鄰地請填0。");
   if (adjacent > Math.min(eligible, 1e3)) notes.push("\u5408\u4F75\u9130\u5730\u8D85\u904E\u539F\u5408\u683C\u57FA\u5730\u62161000\u33A1\u90E8\u5206\u4E0D\u5217\u5371\u8001\u734E\u52F5\u3002");
   const rows5 = bonusItems.map((d) => {
     const e = a.entries[d.id], option = d.options.find((o) => o[0] === e?.choice);
@@ -4001,6 +4009,12 @@ function resolveBonusLimits(p, rates, context) {
     }
     return n;
   };
+  if (assessment?.taipei?.active) {
+    const cap=assessment.taipei.totalCap;
+    const specified=p.renewalLimitPercent.trim()?Number(p.renewalLimitPercent):cap;
+    if(!Number.isFinite(specified)||specified<0) errors.push("臺北都更獎勵上限請填有效非負數值。");
+    p={...p,renewalLimitPercent:String(Math.min(Number.isFinite(specified)&&specified>=0?specified:cap,cap)),bonusSource:p.bonusSource.trim()||a.taipei.source};
+  }
   let renewalLimit = rates.renewal > 0 ? read(p.renewalLimitPercent, "\u90FD\u66F4\u734E\u52F5\u4E0A\u9650", NaN) : 0, tdrLimit = rates.tdr > 0 ? read(p.tdrLimitPercent, "\u5BB9\u79FB\u4E0A\u9650", NaN) : 0;
   if (renewalLimit > 50 && !p.bonusSource.trim()) {
     errors.push("\u8D85\u904E\u4E00\u822C\u90FD\u66F450%\u4E0A\u9650\u7684\u7279\u5225\u8DEF\u5F91\u7F3A\u4F9D\u64DA\uFF1B\u672A\u81EA\u52D5\u6539\u621050%\u3002");
@@ -4060,6 +4074,10 @@ function resolveBonusLimits(p, rates, context) {
     if (rates.tdr > 0) errors.push(...application.errors);
   }
   notes.push("\u90FD\u66F4\u53CA\u5BB9\u79FB\u5747\u70BA\u898F\u5283\u76EE\u6A19\uFF0F\u8A55\u9EDE\u8F38\u5165\uFF1B\u53EF\u7B97\u4E0D\u7B49\u65BC\u6838\u5B9A\u3002\u90FD\u66F450%\u4F9D\u4E00\u822C\u8DEF\u5F91\u4F5C\u4E0A\u9650\uFF0C\u4E0D\u5C07\u7279\u6B8A\u500B\u6848\u5408\u8A0850%\u4E00\u5F8B\u5957\u7528\u6240\u6709\u6848\u4EF6\u3002");
+  if (assessment?.taipei?.active) {
+    for(let i=notes.length-1;i>=0;i--) if(notes[i].startsWith("都更及容移均為")) notes.splice(i,1);
+    notes.push("臺北都更中央與地方獎勵依本次適用路徑檢核，上限"+assessment.taipei.totalCap+"%；容移另依接受基地資格與取得條件檢核。");
+  }
   return { renewal, tdr: tdr2, scale, danger: danger2, renewalLimit, tdrLimit, points, totalLimit, notes, errors, assessment, application };
 }
 function reviewBasementVolume(p, v, aboveEquipmentExempt, equipmentCap, context) {

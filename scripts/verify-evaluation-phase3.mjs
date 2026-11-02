@@ -6,7 +6,8 @@ import {landJudgement,readjustmentJudgement} from '../src/land-evaluation/judgem
 import {newLandAssessment,newLandFact,evaluateLand} from '../src/land-evaluation/generated/land.mjs';
 import {newReadjustmentPlan,evaluateReadjustment} from '../src/land-evaluation/generated/readjustment.mjs';
 let count=0;const test=(name,fn)=>{fn();count++;};
-const a=createScenario({input:exampleInput(),name:'合成驗收',district:'新北市'},'A','a'),b=createScenario(a,'B','b'),c=createScenario(a,'C','c');
+const sample=exampleInput();sample.unitPing='35';sample.regulatoryReview.renewalLimitPercent='50';sample.regulatoryReview.tdrLimitPercent='30';
+const a=createScenario({input:sample,name:'合成驗收',district:'新北市'},'A','a'),b=createScenario(a,'B','b'),c=createScenario(a,'C','c');
 b.input.unitPing='50';c.input.extraCars='20';
 const plans=[a,b,c],snapshots=Object.fromEntries(plans.map(p=>[p.id,{...p,result:evaluate(p.input),signature:collectiveSignature(p),calculatedAt:'2026-10-23T00:00:00Z'}]));
 test('copies retain independent nested input',()=>{b.input.quantityReserve.basementReservePercent=31;assert.notEqual(a.input.quantityReserve.basementReservePercent,31);b.input.quantityReserve.basementReservePercent=a.input.quantityReserve.basementReservePercent;});
@@ -25,6 +26,6 @@ const land=newLandAssessment('synthetic');land.parcels.push(newLandFact('unknown
 test('land judgement keeps original core result and unknowns',()=>{const before=structuredClone(lr),j=landJudgement(land,lr);assert(j.gaps.length);assert(j.actions.length);assert.deepEqual(lr,before);});
 for(const system of ['public','private','expropriation'])for(const track of ['owner','acquisition']){
  const p={...newReadjustmentPlan('s',system),track,manualArea:'100',shareNumerator:'1',shareDenominator:'2'},r=evaluateReadjustment(p,land),before=structuredClone(r),j=readjustmentJudgement(p,land,r);
- test('six tracks preserve unknown allocation and core gates',()=>{assert(j.directions.some(x=>x.detail.includes('待確認')));assert(j.gaps.length);assert.deepEqual(r,before);assert(j.actions.length);if(track==='acquisition')assert(j.actions.some(x=>x.title==='確認實際取得與承接範圍'));});
+ test('six tracks preserve unknown allocation and core gates',()=>{assert(j.directions.some(x=>x.status==='待補資料'));assert.equal(r.allocationArea,null);assert(j.gaps.length);assert.deepEqual(r,before);assert(j.actions.length);if(track==='acquisition')assert(j.actions.some(x=>x.title==='確認實際取得與承接範圍'));});
 }
 console.log(`PASS ${count} phase3 checks: independent scenarios, fresh results, input-only restore, invalid drafts, six-track judgement and unchanged core.`);

@@ -9,7 +9,7 @@ const DraftContext=createContext(null);
 function LeaveDialog({onStay,onLeave,onSave}){
  const ref=useRef(null),[error,setError]=useState('');
  useEffect(()=>{ref.current.showModal();return()=>ref.current?.close();},[]);
- return <dialog ref={ref} className="case-import-dialog" aria-label="離開前儲存評估" onCancel={e=>{e.preventDefault();onStay();}}><h2>要先儲存本次評估嗎？</h2><p>離開後，本次輸入將清除。</p>{error&&<p role="alert">{error}</p>}<footer><button onClick={()=>{try{onSave();}catch(e){setError(e.message);}}}>下載案件檔</button><button onClick={onStay}>繼續編輯</button><button onClick={onLeave}>離開評估</button></footer></dialog>;
+ return <dialog ref={ref} className="case-import-dialog" aria-label="離開前儲存評估" onCancel={e=>{e.preventDefault();onStay();}}><h2>離開前下載案件檔</h2><p>離開後，本次輸入將清除。</p>{error&&<p role="alert">{error}</p>}<footer><button onClick={()=>{try{onSave();}catch(e){setError(e.message);}}}>下載案件檔</button><button onClick={onStay}>繼續編輯</button><button onClick={onLeave}>離開評估</button></footer></dialog>;
 }
 export function LocalDraftProvider({children}){
  const data=useRef({}),dirty=useRef(false),[generation,setGeneration]=useState(0),[leave,setLeave]=useState('');

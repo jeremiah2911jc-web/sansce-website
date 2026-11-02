@@ -1,3 +1,4 @@
+import {assertEvaluationEqual} from './evaluation-test-output.mjs';
 import assert from 'node:assert/strict';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {resolve} from 'node:path';
@@ -9,7 +10,7 @@ const row={id:'r1',name:'臺北官方示範',area:'1497.46',numerator:'1',denomi
 const expro={totalArea:'10000',ratio:'50',farmArea:'2000',extraRatio:'5',blocks:[{id:'a',area:'3000',priceRatio:'1'},{id:'b',area:'3000',priceRatio:'2'}],compensationShare:'1',farmTotalCompensationShare:'20',farmCompensationShare:'2',selectedPriceRatio:'1.5',usedRightPercent:'0'};
 const proof={state:'reviewed',source:'模擬驗收來源；非核定個案',date:'2026-10-21'};
 const land={parcels:[]};let cases=0;
-function evaluate(p){const r=web.evaluateReadjustment(p,land);assert.deepEqual(r,shared.evaluateReadjustment(p,land));cases++;return r;}
+function evaluate(p){const r=web.evaluateReadjustment(p,land);assertEvaluationEqual(r,shared.evaluateReadjustment(p,land));cases++;return r;}
 for(const system of ['public','private','expropriation'])for(const track of ['owner','acquisition']){
  const p={...web.newReadjustmentPlan(system+'-'+track,system),track,stage:'allocation',planName:'模擬驗收計畫',manualArea:system==='expropriation'?'1000':'1497.46',manualSource:'模擬範圍',shareNumerator:'1',shareDenominator:'1',scopeSource:'模擬權利',membership:'in',membershipSource:'模擬範圍',membershipDate:'2026-10-21',buildability:'conditional',target:'award',tradeDate:'2026-10-22',rightState:'exists',transfer:'reviewed',handled:'已領及承接範圍已核對（模擬）',compensationChoice:'land',applicationState:'approved',evidence:Object.fromEntries(web.documentItems(system,track).map(d=>[d.id,{...proof}])),allocationMode:'statutory',statutory:{...proof,specialCases:'reviewed',districtBurdenRate:'40',...(system==='expropriation'?expro:{generalCoefficient:'0.20577906',expenseCoefficient:'0.05329133',rows:[row]})}};
  let r=evaluate(p);assert.equal(r.allocationArea,system==='expropriation'?52:805.18);assert.equal(r.canConfirm,true);assert.equal(r.canCreateLand,false);
