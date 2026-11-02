@@ -1,3 +1,4 @@
+import {reviewBonusConditions} from './bonus-eligibility.mjs';
 import {evaluate} from './model.mjs';
 import {planningInputIssues} from './planning-input-review.mjs';
 import {applyStatutoryBonusLimits} from './statutory-bonus-limits.mjs';
@@ -19,8 +20,10 @@ export function activeBonusInput(input){
  return applyStatutoryBonusLimits({...input,...patch});
 }
 export function evaluateActiveBonuses(input){
- const active=activeBonusInput(input);if(!input.regulatoryReview?.bonusAssessment)return evaluate(input);
- const errors=planningInputIssues(active);
+ const active=activeBonusInput(input);if(!input.regulatoryReview?.bonusAssessment)return ['renewal','danger','tdr','scale'].some(k=>Number(input[k])>0)?{errors:['請先選擇重建獎勵路徑並核對本次獎勵適用條件。'],notes:[],values:null}:evaluate(input);
+ const a=active.regulatoryReview.bonusAssessment;
+ const legal=input.assessmentMode==='document'||input.mixedSite?.enabled?{errors:[]}:reviewBonusConditions(a,{site:Number(active.site),far:Number(active.far),district:active.parkingDesign?.district,roadConditions:active.roadConditions},{renewal:Number(active.renewal),danger:Number(active.danger),tdr:Number(active.tdr),scale:Number(active.scale),updateArea:active.regulatoryReview.renewalArea});
+ const errors=[...new Set([...planningInputIssues(active),...legal.errors])];
  return errors.length?{errors,notes:[],values:null}:evaluate(active);
 }
 

@@ -18,6 +18,8 @@ export const planningIssueDestinations={
  reviewSiteRoad:{tab:'base',summary:'基地道路條件'},
  reviewPermittedAward:{tab:'base',label:'獎勵核准文號及來源'},
  reviewTdrApplication:{tab:'base',summary:'容移取得條件與資格檢核'},
+ reviewBonusConditions:{tab:'base',region:'獎勵適用條件'},
+ assessBonusesBase:{tab:'base',heading:'獎勵與容移：快速估算／細項評定'},
  assessBonuses:{tab:'base',heading:'獎勵與容移：快速估算／細項評定'},
  resolveBonusLimits:{tab:'basement',summary:'獎勵、容移上限與評點假設'},
  reviewRoofEnvelope:{tab:'above',summary:'屋突用途與登記假設'},

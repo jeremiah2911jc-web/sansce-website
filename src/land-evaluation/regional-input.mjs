@@ -11,7 +11,7 @@ export function regionalInputPatch(input,district){
   if(assessment.tdrApplication)applications[assessment.tdrApplication.city]=assessment.tdrApplication;
   const entries={...assessment.entries};
   if(regionCode(district)==='taipei'&&entries['u-public'])entries['u-public']={...entries['u-public'],choice:''};
-  bonusAssessment={...assessment,entries,awardBasis:'target',permittedAward:undefined,tdrProfile:'general',tdrApplication:applications[regionCode(district)],tdrApplications:applications};
+  bonusAssessment={...assessment,conditions:undefined,renewalQualification:'unknown',dangerQualification:'unknown',tdrQualification:'unknown',source:'',entries,awardBasis:'target',permittedAward:undefined,tdrProfile:'general',tdrApplication:applications[regionCode(district)],tdrApplications:applications};
  }
  return {...(input.commercialIntensity?.enabled?{commercialIntensity:{...newCommercialIntensity(),city:district}}:{}),parkingDesign:newParkingDesign(district,'',Number(input.tdr)>0?'yes':'unknown'),basementDemand:defaultBasementDemand(district),regulatoryReview:{...defaultRegulatoryReview(),...(bonusAssessment?{bonusAssessment}:{})}};
 }

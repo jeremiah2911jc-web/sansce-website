@@ -1,0 +1,27 @@
+import {PublicSelect} from './PublicSelect.jsx';
+import {bonusLabels} from './bonus-eligibility.mjs';
+import {bonusIssueLabels} from './blocking-issue-catalog.mjs';
+const answers=[['','待確認'],['yes','符合本項條件'],['no','不符合，本項不採計']];
+export function BonusEligibilityPanel({input,edit}){
+ const p=input.regulatoryReview,a=p?.bonusAssessment;if(!a)return null;
+ const g=a.conditions??{},change=patch=>edit({regulatoryReview:{...p,bonusAssessment:{...a,conditions:{...g,...patch}}}}),changeA=patch=>edit({regulatoryReview:{...p,bonusAssessment:{...a,...patch}}});
+ const select=(key,options=answers)=> <label key={key}><span>{bonusLabels[key]}</span><PublicSelect aria-label={bonusLabels[key]} value={g[key]??''} onChange={e=>change({[key]:e.target.value})}>{options.map(([v,t])=><option key={v} value={v}>{t}</option>)}</PublicSelect></label>;
+ const text=key=><label key={key}><span>{bonusLabels[key]}</span><input aria-label={bonusLabels[key]} value={g[key]??''} onChange={e=>change({[key]:e.target.value})}/></label>;
+ const area=(key,label)=><label><span>{label}</span><span className="le-number"><input type="number" min="0" step="any" aria-label={label} value={a[key]} onChange={e=>changeA({[key]:e.target.value})}/><span>㎡</span></span></label>;
+ const qualification=(key,label)=><label><span>{label}</span><PublicSelect aria-label={label} value={a[key]??'unknown'} onChange={e=>changeA({[key]:e.target.value})}><option value="unknown">待確認</option><option value="yes">已核對符合申請資格</option><option value="no">不符合申請資格</option></PublicSelect></label>;
+ const renewal=a.route==='renewal',danger=a.route==='danger',permitted=a.awardBasis==='permitted',tdr=Number(input.tdr)>0||a.tdrMode==='detail';
+ const ids=Object.entries(a.entries).filter(([id,e])=>e.choice&&e.status!=='excluded'&&((renewal&&a.renewalMode==='detail'&&/^[ul]-/.test(id))||(danger&&a.dangerMode==='detail'&&id.startsWith('d-'))||(a.tdrMode==='detail'&&id.startsWith('t-')))).map(([id])=>id);
+ const pairedSpace=[['l-setback','t-setback'],['l-plaza','t-plaza'],['l-path','t-walk'],['t-plaza','t-walk'],['u-infra','t-ex-infra'],['u-public','t-social'],['u-public','t-care'],['u-public','t-elder'],['d-infra','t-ex-infra']].some(pair=>pair.every(id=>ids.includes(id)));
+ const overlaps=pairedSpace||renewal&&a.renewalMode==='quick'||ids.filter(id=>/^[ul]-/.test(id)).length>1||renewal&&Number(input.scale)>0||tdr&&ids.some(id=>['u-infra','u-heritage','l-setback','l-plaza','l-path'].includes(id));
+ return <section className="le-bonus-eligibility" aria-label="獎勵適用條件"><h3>先核對本次獎勵的適用條件</h3><p>確認實施方式與基地資格後採計獎勵。標章、設計及施工義務可依本次規劃填寫，採用依據會列入報告。</p><div className="planning-field-grid">
+ {!permitted&&renewal&&<>{qualification('renewalQualification','都更適用資格')}{select('renewalWork',[['','待確認'],['rebuild','重建'],['rehabilitation','整建'],['maintenance','維護']])}{select('implementation',[['','待確認'],['rights','權利變換'],['agreement','全體同意協議合建'],['public12','依第12條第1項公辦方式'],['other','其他依法實施方式']])}</>}
+ {!permitted&&danger&&<>{qualification('dangerQualification','危老法定適用資格')}{select('dangerCategory',[['','待確認'],['1','主管機關通知拆除、補強或有危險之虞'],['2','結構安全性能評估未達最低等級'],['3','30年以上且耐震未達標準，改善無效益或無電梯']])}{select('dangerConsent')}{select('originalCap',[['','待確認'],['base','基準容積130%'],['original115','合法原建築容積115%（全合格原基地）']])}{area('dangerEligibleSite','危老合格原建築基地㎡（須依資料填寫）')}{area('dangerAdjacentSite','合併鄰接基地㎡')}{g.originalCap==='original115'&&<>{area('dangerOriginal','符合條件的合法原建築容積㎡（全合格原基地才核較高上限）')}{text('originalSource')}</>}{a.dangerMode==='quick'&&select('quickExtras',[['','待確認'],['yes','已核對面積，計入規模獎勵'],['no','不計規模獎勵']])}</>}
+ {!permitted&&(renewal||danger)&&<label><span>{bonusLabels.source}</span><input aria-label={bonusLabels.source} value={a.source} onChange={e=>changeA({source:e.target.value})}/></label>}
+ {!permitted&&renewal&&ids.some(id=>['u-green','u-smart'].includes(id)&&Number(a.entries[id].choice)>=4)&&select('article7District',[['','待確認'],['yes','依第7條第1項第3款劃定更新地區'],['no','其他更新地區或未劃定']])}
+ {!permitted&&renewal&&ids.includes('u-time')&&select('renewalDistrict')}
+ {!permitted&&renewal&&ids.includes('u-green')&&select('greenMinimum',[['','待確認'],['none','無最低等級規定'],['5','合格級'],['4','銅級'],['3','銀級'],['2','黃金級'],['1','鑽石級']])}
+ {!permitted&&renewal&&ids.includes('u-agreement')&&<>{text('agreementDoors')}{select('agreementConsent')}</>}
+ {tdr&&<>{qualification('tdrQualification','容移接受基地、道路及移入資格')}{text('tdrSource')}{p.renewalArea&&a.tdrMode==='detail'&&text('renewalAreaSource')}</>}
+ {!permitted&&overlaps&&<>{select('overlap',[['','待確認'],['distinct','已核對各項給予事項或空間範圍不同'],['deducted','有重複事項，已填列扣除比例']])}{text('overlapSource')}{tdr&&ids.some(id=>['u-infra','u-heritage'].includes(id))&&select('tdrResource',[['','待確認'],['distinct','兩者土地或保存建物範圍不同'],['award','同一標的選擇獎勵'],['transfer','同一標的選擇容移']])}</>}
+ </div>{!permitted&&ids.length>0&&<div className="le-bonus-condition-list"><h4>本次選用項目的申請條件</h4><p>各項法定條件列於下方細項說明；不符合的項目不採計。</p><div className="planning-field-grid">{ids.map(id=><label key={id}><span>{bonusIssueLabels[id]??id}申請條件</span><PublicSelect aria-label={(bonusIssueLabels[id]??id)+'申請條件'} value={g.entries?.[id]??''} onChange={e=>change({entries:{...g.entries,[id]:e.target.value}})}>{answers.map(([v,t])=><option key={v} value={v}>{t}</option>)}</PublicSelect></label>)}</div></div>}</section>;
+}

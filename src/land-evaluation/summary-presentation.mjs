@@ -19,7 +19,7 @@ export function summaryForDisplay(raw){
   const path=originalLabel.replace(/^(?:文件原始輸入|原始輸入)[／/]?/,'').split(/[／/]/);
   if(path.some(token=>['id','version','enabled','basis','資料版本'].includes(token))||noValue(originalValue))continue;
   const label=publicText(path.map(token=>/^\d+$/.test(token)?`第${Number(token)+(documentIndex?0:1)}項`:labels[token]||token).join('／'));
-  const leaf=path.at(-1),sourceFields={source:'source',來源:'source',date:'date',文件日期:'date',state:'status',status:'status',覆核狀態:'status',finding:'finding',採用條件:'finding',"採用條件":'finding'};
+  const leaf=path.at(-1),sourceFields={source:'source',來源:'source',date:'date',文件日期:'date',state:'status',status:'status',覆核狀態:'status',finding:'finding',採用條件:'finding'};
   if(sourceFields[leaf]&&path.slice(0,-1).some(token=>['evidence','boundary','jointEvidence','reviews','採計依據','法規條件'].includes(token))){const scope=path.slice(0,-1).map(token=>/^\d+$/.test(token)?`第${Number(token)+(documentIndex?0:1)}項`:labels[token]||token).join('／');const entry=evidence.get(scope)||{};entry[sourceFields[leaf]]=clean(enums[originalValue]||originalValue);evidence.set(scope,entry);continue;}
   const value=clean(raw.referenceNames?.[originalValue]||enums[originalValue]||(path.includes('affects')?labels[originalValue]:null)||originalValue),key=label+'\0'+value;
   if(seen.has(key)||s.conditions.some(row=>row[0]===label&&row[1]===value))continue;

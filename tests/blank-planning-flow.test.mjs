@@ -1,3 +1,4 @@
+import {confirmSyntheticBonusConditions} from './helpers/bonus-conditions.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createInput,exampleInput,evaluate} from '../src/land-evaluation/model.mjs';
@@ -10,7 +11,7 @@ function blankFilled(){
 
  i.parkingDesign={...i.parkingDesign,demandMode:'per_unit',demandPerUnit:'1'};
  i.basementDemand={...i.basementDemand,allowAlternatives:false};
- return i;
+ return confirmSyntheticBonusConditions(i);
 }
 test('blank Banqiao case receives statutory caps without extra required fields',()=>{
  const i=blankFilled(),before=structuredClone(i),r=evaluateActiveBonuses(i);
@@ -42,4 +43,4 @@ test('every moved cap and source error has a base-tab destination',()=>{for(cons
 
 test('a fresh website case follows its visible renewal route before any bonus interaction',()=>{const i=createWorkspaceInput(createInput),m=planningInputIssues(activeBonusInput(i));assert(!m.some(t=>t.includes('危老快速目標')));assert(m.some(t=>t.includes('都更快速目標')));});
 
-test('Taipei conditional excavation choices remain blocking and both locate exact fields',()=>{let i=blankFilled();Object.assign(i,regionalInputPatch(i,'臺北市'));Object.assign(i.regulatoryReview,{renewalLimitPercent:'50',tdrLimitPercent:'30'});const errors=evaluateActiveBonuses(i).errors;for(const [pattern,label]of [[/都市計畫是否另訂地下開挖/,'都市計畫開挖規定'],[/請選擇地下開挖適用分區/,'地下開挖適用分區']]){const message=errors.find(t=>pattern.test(t));assert(message);assert.equal(issueTarget(message,i).label,label);}});
+test('Taipei conditional excavation choices remain blocking and both locate exact fields',()=>{let i=blankFilled();Object.assign(i,regionalInputPatch(i,'臺北市'));Object.assign(i.regulatoryReview,{renewalLimitPercent:'50',tdrLimitPercent:'30'});confirmSyntheticBonusConditions(i);const errors=evaluateActiveBonuses(i).errors;for(const [pattern,label]of [[/都市計畫是否另訂地下開挖/,'都市計畫開挖規定'],[/請選擇地下開挖適用分區/,'地下開挖適用分區']]){const message=errors.find(t=>pattern.test(t));assert(message);assert.equal(issueTarget(message,i).label,label);}});
