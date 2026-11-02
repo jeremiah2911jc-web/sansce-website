@@ -2,6 +2,7 @@ import {calculateCommercialIntensity,planningFields,planningAssumptionsTemplate}
 import {evaluate} from './model.mjs';
 import {issueTarget} from './workspace-guidance.mjs';
 import {publicText} from './public-copy.mjs';
+import {caseLimitIssues} from './statutory-bonus-limits.mjs';
 
 // The shared solver remains the authority for required limits and eligibility.
 // This isolated validation pass omits geometry/search models so an absent limit
@@ -30,7 +31,7 @@ export function planningInputIssues(input){
  if(input.assessmentMode==='document'||input.mixedSite?.enabled)return [];
  const errors=requiredPlanningFields(input).filter(([key])=>blank(input[key])).map(([,label])=>{const message=publicText(label)+'未填',target=issueTarget(message,input);return (target.label??publicText(label)).replace(/%$/,'')+'未填';});
  if(input.quantityReserve?.reservationMode==='legal_envelope'&&input.quantityReserve.basementEquipmentMode!=='named'&&!Number.isFinite(input.quantityReserve.basementReservePercent))errors.push('地下預留比例未填');
- return [...new Set([...errors,...bonusLimitIssues(input)])];
+ return [...new Set([...errors,...caseLimitIssues(input),...bonusLimitIssues(input)])];
 }
 export function missingPlanningFields(input){
  return planningInputIssues(input).filter(message=>/未填$/.test(message)).map(message=>({...issueTarget(message,input),message}));

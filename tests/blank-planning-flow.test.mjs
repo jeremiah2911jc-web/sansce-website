@@ -12,10 +12,9 @@ function blankFilled(){
  i.basementDemand={...i.basementDemand,allowAlternatives:false};
  return i;
 }
-test('blank Banqiao case reports the two absent caps before geometry and search',()=>{
+test('blank Banqiao case receives statutory caps without extra required fields',()=>{
  const i=blankFilled(),before=structuredClone(i),r=evaluateActiveBonuses(i);
- assert.deepEqual(r.errors,['都更獎勵上限未填','容移上限未填']);assert.equal(r.values,null);assert.deepEqual(i,before);
- for(const m of r.errors){const target=issueTarget(m,i);assert.equal(target.tab,'base');assert(target.label);}
+ assert.deepEqual(r.errors,[]);assert(r.values);assert.equal(r.values.salePing.toFixed(2),'3810.27');assert.deepEqual(i,before);
 });
 test('after caps are filled, the exact shared-calculator quantities are retained',()=>{
  const i=blankFilled();Object.assign(i.regulatoryReview,{renewalLimitPercent:'50',tdrLimitPercent:'30'});
