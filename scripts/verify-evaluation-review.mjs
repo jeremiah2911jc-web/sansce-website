@@ -55,5 +55,16 @@ for(const route of ['renewal','danger','none']){
  const input={tdr:'25',regulatoryReview:{bonusAssessment:{route}}},notes=collectiveDisplayNotes(input,noteFixture);
  assert.equal(notes.some(x=>x.startsWith('危老第3')),route==='danger');assert.equal(notes.some(x=>x.startsWith('都更中央')),route==='renewal');assert(notes.includes('基地道路資料待補'));assert.deepEqual(noteFixture,frozenNoteFixture);
 }
-writeFileSync(root+'qa/evaluation-preview-20261102/route-visibility.json',JSON.stringify({routeChecks,reportRouteChecks:3,inputsPreserved:true,transferIndependent:true},null,2));
+// The shared Taipei source note retains its transfer condition on the danger route.
+const taipeiSourceNote='目前非新北：新北地方都更獎勵、容移評點與代金倍數不套用。臺北容移另按資格、上限及取得方式評估，未建臺北地方都更獎勵細項。';
+const taipeiDisplayNote=publicText(taipeiSourceNote);
+for(const route of ['renewal','danger','none'])for(const mode of ['quick','detail'])for(const tdr of ['0','25']){
+ const input={tdr,regulatoryReview:{bonusAssessment:{route,renewalMode:mode,dangerMode:mode}}};
+ const result={notes:[taipeiSourceNote,'危老不得疊加都更及其他法令容積獎勵。','基地道路資料待補']};
+ const frozen=structuredClone({input,result});
+ assert.deepEqual(collectiveDisplayNotes(input,result),[route==='danger'?'臺北市容移依接受基地資格、上限及取得方式檢核。':taipeiDisplayNote,...result.notes.slice(1)]);
+ assert.deepEqual({input,result},frozen,'Report selection must preserve inputs and calculation output');
+}
+writeFileSync(root+'qa/evaluation-preview-20261102/route-visibility.json',JSON.stringify({routeChecks,reportRouteChecks:3,taipeiNoteChecks:12,inputsPreserved:true,transferIndependent:true},null,2));
+console.log('PASS 12 Taipei source-note route/mode/transfer combinations; necessary restrictions and calculation output preserved.');
 console.log(`PASS ${routeChecks.length} Taipei/New Taipei route, mode and document-basis combinations; 3 report-route checks; retained inputs and independent transfer controls.`);
