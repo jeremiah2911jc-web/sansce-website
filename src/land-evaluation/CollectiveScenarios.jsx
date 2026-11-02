@@ -2,12 +2,13 @@ import {collectiveDisplayNotes} from './collective-notes.mjs';
 import {useState} from 'react';
 import {useDraftState} from './LocalDraft.jsx';
 import {createInput} from './model.mjs';
+import {createWorkspaceInput} from './active-bonus-input.mjs';
 import {SCENARIO_LIMIT,createScenario,nextScenarioCode,freshScenarioResult,scenarioDifferences,comparisonObservations,comparisonMetrics,comparisonDelivery,baseConditionsMatch} from './collective-comparison.mjs';
 import {displayNumber} from './delivery-model.mjs';
 import {EvaluationDelivery} from './EvaluationDelivery.jsx';
 import './phase3.css';
 export function useCollectiveScenarios(){
- const [input,setInput]=useDraftState('collective.input',createInput),[district,setDistrict]=useDraftState('collective.district','新北市'),[name,setName]=useDraftState('collective.name',''),[tab,setTab]=useDraftState('collective.tab','base');
+ const [input,setInput]=useDraftState('collective.input',()=>createWorkspaceInput(createInput)),[district,setDistrict]=useDraftState('collective.district','新北市'),[name,setName]=useDraftState('collective.name',''),[tab,setTab]=useDraftState('collective.tab','base');
  const [plans,setPlans]=useDraftState('collective.scenarios',[]),[active,setActive]=useDraftState('collective.active','');
  const current={input,district,name,tab},activeId=plans.some(p=>p.id===active)?active:'working';
  const entries=plans.length?plans.map(p=>p.id===activeId?{...p,...current}:p):[{id:'working',code:'A',title:'目前方案',...current}];

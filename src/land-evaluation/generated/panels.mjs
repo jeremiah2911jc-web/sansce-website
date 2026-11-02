@@ -6935,7 +6935,7 @@ import { jsx as jsx8, jsxs as jsxs8 } from "/src/land-evaluation/public-panel-ru
 var f6 = (n) => n.toLocaleString("zh-TW", {
   maximumFractionDigits: 2
 });
-function RegulatoryReviewPanel({
+function RegulatoryReviewPanel({section = "all",
   input,
   result,
   edit
@@ -6974,7 +6974,7 @@ function RegulatoryReviewPanel({
       f6(v.allowed),
       "\u33A1\u3002"
     ] }),
-    /* @__PURE__ */ jsxs8("details", { children: [
+    /* @__PURE__ */ section !== "basement" && jsxs8("details", { children: [
       /* @__PURE__ */ jsx8("summary", { children: "\u734E\u52F5\u3001\u5BB9\u79FB\u4E0A\u9650\u8207\u8A55\u9EDE\u5047\u8A2D" }),
       /* @__PURE__ */ jsx8("p", { children: "\u4E00\u822C\u90FD\u66F4\u734E\u52F5\u5148\u630950%\u4E0A\u9650\uFF1B\u7279\u5225\u8DEF\u5F91\u9808\u53E6\u586B\u4F9D\u64DA\u3002\u5BB9\u79FB\u5148\u6309\u4E00\u822C30%\u4E0A\u9650\uFF0C\u8A55\u9EDE\u672A\u586B\u6642\u63A1\u76EE\u6A19\u8207\u4E0A\u9650\u8F03\u4F4E\u8005\uFF0C\u8CC7\u683C\u4ECD\u5F85\u8986\u6838\u3002\u500B\u6848\u5408\u8A08\u4E0A\u9650\u6709\u9069\u7528\u4F9D\u64DA\u624D\u586B\uFF0C\u4E0D\u5C07\u7279\u6B8A\u5408\u8A0850%\u9650\u5236\u5957\u7528\u6240\u6709\u90FD\u66F4\u6848\u3002" }),
       /* @__PURE__ */ jsxs8("div", { className: "planning-field-grid", children: [

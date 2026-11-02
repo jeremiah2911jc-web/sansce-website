@@ -24,7 +24,7 @@ const specialTargets=[
  {label:'機電免計適用條件',tab:'above',terms:['直通樓梯','安全梯','機電免計']},
  {label:'預計報核／申請日期',tab:'base',terms:['報核日期','申請日期','申請期限']},
 ];
-const fields=planningFields.map(([key,label,,tab])=>({key,label:fieldLabels[key]||publicText(label),tab,terms:[label,publicText(label),fieldLabels[key]||publicText(label)]}));
+const fields=planningFields.map(([key,label,,tab])=>({key,label:fieldLabels[key]||publicText(label),tab,terms:[label,publicText(label),fieldLabels[key]||publicText(label),(fieldLabels[key]||publicText(label)).replace(/%$/,'')]}));
 export function issueTarget(message,input={}){
  const detail=blockingFieldTarget(message,input);if(detail)return detail;
  const row=message.match(/^(.+?)(適用比例|第二計算量|第三計算量|計算量)(未填|不得)/);
@@ -78,7 +78,10 @@ function blockingFieldTarget(message,input){
   [/屋突用途不符合/,{tab:'above',summary:'屋突用途與登記假設',label:'屋突暫按符合樓梯、昇降機及機械房用途'}],
   [/R2.R3.*昇降機|9m屋突假設不允許/,{tab:'above',summary:'屋突用途與登記假設',label:'昇降機出入口只設於屋頂層，不設R2／R3'}],
   [/普通計容樓板公設比例/,{tab:'basement',summary:'普通計容樓板內的公設分類假設',label:'普通樓板內計容公設比例%'}],
-  [/個案獎勵及容移合計上限/,{tab:'basement',summary:'獎勵、容移上限與評點假設',label:'個案獎勵及容移合計上限%（無資料留白）'}],
+  [/都更獎勵上限/,{tab:'base',region:'獎勵與容移上限',label:'本次都更路徑獎勵上限%'}],
+  [/^容移上限/,{tab:'base',region:'獎勵與容移上限',label:'本次容移上限%'}],
+  [/一般都更50%上限|一般容移30%上限/,{tab:'base',summary:'上限適用依據',label:'上限、評點及特殊適用依據'}],
+  [/個案獎勵及容移合計上限/,{tab:'base',region:'獎勵與容移上限',label:'個案獎勵及容移合計上限%（無資料留白）'}],
   [/地下層高無效/,{tab:'basement',label:input.basementDemand?.enabled?'一般方案地下層高（設備另檢查）':'地下室每層高度'}],
   [/柱網與轉彎預留比例無效/,{tab:'basement',label:'柱網及轉彎額外預留 %'}],
   [/規劃開挖率超出個案上限/,{tab:'basement',key:'excavation',label:'規劃開挖率'}],
@@ -86,6 +89,7 @@ function blockingFieldTarget(message,input){
   [/核准基準容積與獎勵面積/,{tab:'base',label:'核准基準容積㎡'}],
   [/既有核准獎勵與所選重建路徑/,{tab:'base',label:'獎勵核准路徑'}],
   [/既有核准獎勵.*來源/,{tab:'base',label:'獎勵核准文號及來源'}],
+  [/都市計畫是否另訂地下開挖|都市計畫開挖規定/,{tab:'basement',region:'地下需求檢討',label:'都市計畫開挖規定'}],
   [/地下開挖.*分區|地下開挖適用分區/,{tab:'basement',label:'地下開挖適用分區'}],
   [/較嚴格開挖率.*來源/,{tab:'basement',summary:'個案都市計畫較嚴格規定',label:'較嚴格規定來源'}],
   [/較嚴格開挖率須/,{tab:'basement',summary:'個案都市計畫較嚴格規定',label:'個案較嚴格開挖率上限%'}],

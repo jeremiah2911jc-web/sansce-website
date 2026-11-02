@@ -1,0 +1,36 @@
+{
+  "routes": [
+    {
+      "city": "臺北市",
+      "route": "renewal",
+      "calculated": true
+    },
+    {
+      "city": "臺北市",
+      "route": "danger",
+      "calculated": true,
+      "renewalCapVisible": 0
+    },
+    {
+      "city": "新北市",
+      "route": "danger",
+      "calculated": true
+    },
+    {
+      "city": "新北市",
+      "route": "renewal",
+      "calculated": true,
+      "dangerFieldVisible": 0
+    }
+  ],
+  "conditionalFields": [
+    {
+      "label": "都市計畫開挖規定",
+      "focus": "都市計畫開挖規定"
+    },
+    {
+      "label": "地下開挖適用分區",
+      "focus": "地下開挖適用分區"
+    }
+  ]
+}
