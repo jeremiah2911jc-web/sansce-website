@@ -1,3 +1,4 @@
+import {publicText} from './public-copy.mjs';
 import {useId,useLayoutEffect,useRef,useState} from 'react';
 
 /** Keep the native select and expose a full value only when its text cannot fit. */
@@ -20,5 +21,5 @@ export function PublicSelect({children,...props}){
   const observer=new ResizeObserver(measure);observer.observe(control);
   return()=>observer.disconnect();
  },[props.value,children]);
- return <><select {...props} ref={ref} aria-label={props['aria-label']||label||undefined} aria-describedby={[props['aria-describedby'],caption?hintId:null].filter(Boolean).join(' ')||undefined} title={caption||props.title}>{children}</select>{caption&&<small className="le-selected-caption" id={hintId}>{caption}</small>}</>;
+ return <><select {...props} ref={ref} aria-label={publicText(props['aria-label']||label)||undefined} aria-describedby={[props['aria-describedby'],caption?hintId:null].filter(Boolean).join(' ')||undefined} title={caption||props.title}>{children}</select>{caption&&<small className="le-selected-caption" id={hintId}>{caption}</small>}</>;
 }

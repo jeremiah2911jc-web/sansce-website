@@ -1,0 +1,8 @@
+import {readFileSync,writeFileSync,mkdirSync,symlinkSync,existsSync,copyFileSync} from 'node:fs';
+import {resolve} from 'node:path';import {spawnSync} from 'node:child_process';
+const root=resolve(import.meta.dirname,'..'),manifest=JSON.parse(readFileSync(resolve(root,'src/land-evaluation/generated/source-manifest.json'))),app=manifest.sourceRoot,qa=resolve(root,'qa/legacy-app'),cwd=resolve(qa,'workspace');
+mkdirSync(resolve(cwd,'docs'),{recursive:true});for(const name of ['src','node_modules'])if(!existsSync(resolve(cwd,name)))symlinkSync(resolve(app,name),resolve(cwd,name),'dir');
+for(const name of ['small-site-centre-road-result.json','yucheng-basement-demand-result.json'])copyFileSync(resolve(app,'docs',name),resolve(cwd,'docs',name));
+const suites=['industrial','mixed-zone','planning-regulatory-core','permitted-tdr','roof-envelope','quantity-area-audit','bonus-assessment','basement-demand','legal-parking','small-site-parking','tdr-application','quantity-reserve'],results=[];
+for(const name of suites){const r=spawnSync(process.execPath,[resolve(root,'scripts/legacy-app/verify-'+name+'.mjs')],{cwd,env:{...process.env,NODE_ENV:'production'},encoding:'utf8',timeout:120000,maxBuffer:8e6});writeFileSync(resolve(qa,name+'.log'),(r.stdout||'')+(r.stderr||''));results.push({name,status:r.status,output:(r.stdout||'').trim(),errors:r.status===0?undefined:r.stderr});console.log(name,r.status,(r.stdout||r.stderr).slice(-1700));}
+writeFileSync(resolve(qa,'verification.json'),JSON.stringify({sourceRoot:app,authorizedCorrection:'danger-area-validation',suites:results},null,2));if(results.some(r=>r.status!==0))process.exitCode=1;

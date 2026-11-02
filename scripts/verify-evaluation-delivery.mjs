@@ -40,7 +40,7 @@ for(const i of [summaryFixture(),{...summaryFixture(),site:'1800',coverage:'50',
  test('collective output mapped without recalculation or mutation',()=>{assert.equal(s.metrics[0][1],r.values.salePing);assert.equal(s.createdAt,'2026-10-23T00:00:00Z');assert.deepEqual(r,before);assert(!s.ruleVersion.includes('待核'));});
  test('area chart uses nonoverlapping floor components',()=>assert(Math.abs(s.charts[1].rows.reduce((a,x)=>a+x[1],0)-r.values.total)<.02));
  test('volume chart preserves core precision',()=>assert(Math.abs(s.charts[0].rows.reduce((a,x)=>a+x[1],0)-r.values.allowed)<.02));
- test('all core assumptions retained without duplicate issue/assumption paragraphs',()=>{assert.deepEqual(new Set([...s.issues,...s.assumptions]),new Set(r.notes.map(publicText)));assert(s.assumptions.every(x=>!s.issues.includes(x)));});
+ test('regulatory conditions retained while approved implementation commentary is omitted',()=>{const necessary=r.notes.filter(note=>!note.startsWith('逐層表未提供圖說時')&&!note.startsWith('建築面積與等面積樓層為總量模型'));assert.deepEqual(new Set([...s.issues,...s.assumptions]),new Set(necessary.map(publicText)));assert(s.assumptions.every(x=>!s.issues.includes(x)));});
 }
 test('unknown values and small positives are distinct from zero',()=>{assert.equal(displayNumber(null),'待確認');assert.equal(displayNumber(NaN),'待確認');assert.equal(displayNumber(undefined),'待確認');assert.equal(displayNumber(0),'0');assert.equal(displayNumber(.001),'<0.01');});
 const a={...newLandAssessment('synthetic'),intendedUse:'housing',legalInputs:newLegalInputs(),routePlans:[],parcels:[{...newLandFact('unknown'),areaSqm:'300',landNumber:'模擬001'}]};
@@ -54,3 +54,11 @@ for(const system of ['public','private','expropriation'])for(const track of ['ow
  test('readjustment unknown allocation is not zero in any system or track',()=>{assert.equal(s.charts[0].rows[0][1],1800);assert.equal(s.charts[0].rows[1][1],900);assert.equal(s.charts[0].rows[2][1],null);assert.equal(s.metrics[2][1],null);assert(s.issues.length>0);});
 }
 console.log(`PASS ${cases} local-draft and summary/chart checks: malformed and unknown values, input-only restore, core-derived numbers, stale gates, six readjustment modes.`);
+for(const city of ['新北市','臺北市'])for(const route of ['renewal','danger','none']){
+ const i=summaryFixture();i.regulatoryReview.bonusAssessment={route,renewalMode:'detail',dangerMode:'detail',tdrMode:'quick'};
+ const r=evaluate(summaryFixture()),frozen=structuredClone(r),s=collectiveDelivery({input:i,result:r,district:city});
+ const adopted=s.conditions.find(([key])=>key==='獎勵與容移')[1];
+ assert.equal(adopted.includes('都更'),route==='renewal');assert.equal(adopted.includes('危老'),route==='danger');
+ assert.equal(s.inputs.some(([label])=>label.includes('危老獎勵目標')),route==='danger');assert.equal(s.inputs.some(([label])=>label.includes('都更獎勵目標')),route==='renewal');assert.deepEqual(r,frozen);
+}
+console.log('PASS six city/route report summaries: inactive reward totals and input rows omitted, all quantities unchanged.');

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run verify:site-copy && npm run verify:article-copy && npm run prepare:private && vite build && node scripts/build-pages.mjs && node scripts/verify-site-copy.mjs --built && npm run verify:public-site && npm run verify:seo && npm run verify:assets && node scripts/verify-article-layout.mjs",
+    "build": "npm run verify:evaluation-copy && npm run verify:site-copy && npm run verify:article-copy && npm run prepare:private && vite build && node scripts/build-pages.mjs && node scripts/verify-site-copy.mjs --built && npm run verify:public-site && npm run verify:seo && npm run verify:assets && node scripts/verify-article-layout.mjs",
     "preview": "vite preview",
     "verify:public-site": "node scripts/verify-public-site.mjs",
     "verify:contact": "node scripts/verify-contact.mjs",
@@ -26,7 +26,12 @@
     "verify:assistant-sql": "node scripts/verify-website-ai-sql.mjs",
     "verify:article-copy": "node scripts/verify-article-copy.mjs",
     "audit:article-wording": "node scripts/verify-article-copy.mjs --attention",
-    "verify:site-copy": "node scripts/verify-site-copy.mjs"
+    "verify:site-copy": "node scripts/verify-site-copy.mjs",
+    "verify:evaluation-presentation": "node scripts/verify-evaluation-presentation.mjs",
+    "verify:evaluation-review": "NODE_ENV=production node scripts/verify-evaluation-review.mjs",
+    "verify:taipei-renewal": "NODE_ENV=production node scripts/verify-taipei-renewal.mjs",
+    "verify:danger-area-fix": "node scripts/verify-danger-area-fix.mjs",
+    "verify:legacy-app": "node scripts/verify-legacy-app.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",

@@ -1,0 +1,218 @@
+[
+  {
+    "area": "共用摘要",
+    "before": "試算不代表主管機關核准、登記或實際可配置成果。",
+    "after": "本次依輸入條件試算；核准、登記與實際配置須分別核對主管機關文件、測量成果及設計圖說。",
+    "location": "EvaluationDelivery.jsx:52"
+  },
+  {
+    "area": "土地與公告入口",
+    "before": "先選公告計畫及版本，再核對納入地號、持分與個人文件；選到計畫不代表土地已納入。",
+    "after": "選定公告計畫及版本後，依計畫書圖與地號清冊核對本案納入範圍，再填寫持分與個人權利文件。",
+    "location": "LandWorkbench.jsx:44"
+  },
+  {
+    "area": "土地用途結果",
+    "before": "用途檢核、採用資料與待查事項一併整理；候選途徑不代表已核准。",
+    "after": "列出用途檢核結果、採用資料與待查事項；各途徑的申請條件及核准文件分別核對。",
+    "location": "LandWorkbench.jsx:62"
+  },
+  {
+    "area": "官方查詢入口",
+    "before": "查詢後請填入本案取值、文件來源及查證日期；入口核對不代表個案資料已覆核。",
+    "after": "查詢後請填入本案取值、文件來源及查證日期，並核對文件適用的地號與範圍。",
+    "location": "OfficialSources.jsx:7"
+  },
+  {
+    "area": "共用判讀空狀態",
+    "before": "本次未列出已知不符事項；仍須處理待補及專案覆核條件。",
+    "after": "本次待查資料與專案覆核項目列於下方，請逐項補齊來源及適用判斷。",
+    "location": "JudgementPanel.jsx:11"
+  },
+  {
+    "area": "離開評估對話框",
+    "before": "要先儲存本次評估嗎？",
+    "after": "離開前下載案件檔",
+    "location": "LocalDraft.jsx:12"
+  },
+  {
+    "area": "方案比較",
+    "before": "基地、強度或道路條件不同；請按各案條件判讀，不能只看面積大小。",
+    "after": "基地、強度或道路條件不同，請連同各案採用條件比較可售面積、戶數、車位與地下樓板。",
+    "location": "collective-comparison.mjs:40"
+  },
+  {
+    "area": "比較圖說",
+    "before": "呈現地下開發規模；不是工程成本或施工可行性結論。",
+    "after": "列出各案地下樓板面積；工程造價、地質與施工條件須另行評估。",
+    "location": "collective-comparison.mjs:48"
+  },
+  {
+    "area": "透天摘要圖說",
+    "before": "與免計資格分開；未分配面積不自動列為可售。",
+    "after": "房屋專有、共有、停車及未分配面積分列；可售面積另依用途與分配文件確認。",
+    "location": "delivery-model.mjs:48"
+  },
+  {
+    "area": "重劃摘要",
+    "before": "計畫公開條件與個人權利分開；選到計畫不代表地號納入。",
+    "after": "計畫公開條件與個人權利分列；本案地號及納入面積依計畫書圖與地號清冊核對。",
+    "location": "delivery-model.mjs:59"
+  },
+  {
+    "area": "重劃缺件影響",
+    "before": "計畫書圖、清冊及範圍查證依據待補。 會影響本案權利、分配或後續採用條件。",
+    "after": "計畫書圖與地號清冊待補，尚未確認本案納入的地號及面積。",
+    "location": "judgement.mjs:24，正式站已確認"
+  },
+  {
+    "area": "重劃持分缺件",
+    "before": "持分分子、分母待填。 會影響本案權利、分配或後續採用條件。",
+    "after": "持分分子與分母待填，持分換算權利面積暫列待確認。",
+    "location": "judgement.mjs:24，正式站已確認"
+  },
+  {
+    "area": "土地用途缺件共用追加語句",
+    "before": "會影響本案用途、途徑或許可的採用前提。",
+    "after": "依缺件項目分別列出影響，例如：土地管制身分待查，適用的使用許可與變更程序尚未選定。",
+    "location": "judgement.mjs:10；改稿時依各 finding.id 補具體影響，保留原判斷"
+  },
+  {
+    "area": "重劃判讀標題",
+    "before": "確認地號是否及部分納入範圍",
+    "after": "核對納入地號與部分納入面積",
+    "location": "judgement.mjs:26"
+  },
+  {
+    "area": "重劃判讀欄名",
+    "before": "本次分配面積的身分",
+    "after": "分配面積採用依據",
+    "location": "judgement.mjs:25"
+  },
+  {
+    "area": "重劃無面積資料",
+    "before": "尚無可採用的分配面積資料；尚無分配面積資料：待確認㎡。",
+    "after": "分配面積資料待補。請依分配文件填入面積，或選擇適用的試算方式。",
+    "location": "judgement.mjs:25，正式站已確認"
+  },
+  {
+    "area": "文件查證狀態",
+    "before": "各制度依本案文件核對。已取得文件、完成覆核及機關核准分別處理。",
+    "after": "各制度依本案文件核對，分別記錄文件取得、內容覆核及機關核准狀態。",
+    "location": "ReadjustmentWorkbench.jsx:63"
+  },
+  {
+    "area": "收購主線欄位",
+    "before": "已處理事項與承擔義務",
+    "after": "已領款項、已辦移轉與待履行義務",
+    "location": "ReadjustmentWorkbench.jsx:58、delivery-model.mjs:60；欄位內部名稱保留"
+  },
+  {
+    "area": "期間試算選項",
+    "before": "末日休假處理",
+    "after": "截止日遇休假日的順延規則",
+    "location": "SupplementaryFields.jsx:5、field-location.mjs；期間公式保留"
+  },
+  {
+    "area": "官方申領說明",
+    "before": "依官方流程申領及核對登記內容；登入、申請與費用由使用者在官方網站處理。",
+    "after": "依官方流程申領及核對登記內容；登入、申請與繳費請於官方網站辦理。",
+    "location": "official-sources.mjs:4"
+  },
+  {
+    "area": "工業開場",
+    "before": "土地身分 → 用途 → 開發途徑 → 原容積、獎勵與容移 → 樓層配置。",
+    "after": "依土地身分與預定用途核對開發途徑，再計算原容積、獎勵、容移及逐層配置。",
+    "location": "generated/panels.mjs，正式站已確認；遵守網站禁用箭頭規則"
+  },
+  {
+    "area": "工業選項",
+    "before": "工業獎勵處理",
+    "after": "工業獎勵採計方式",
+    "location": "generated/panels.mjs:8841"
+  },
+  {
+    "area": "工業選項",
+    "before": "工業容移處理",
+    "after": "工業容移採計方式",
+    "location": "generated/panels.mjs:8842"
+  },
+  {
+    "area": "原容積選項",
+    "before": "本組原容積處理",
+    "after": "本組原容積採用方式",
+    "location": "generated/panels.mjs:8810"
+  },
+  {
+    "area": "工業缺件提示",
+    "before": "獎勵處理未確認／容移處理未確認",
+    "after": "獎勵採計方式待選定／容移採計方式待選定",
+    "location": "generated/core.mjs:2283，正式站已確認"
+  },
+  {
+    "area": "工業資料衝突提示",
+    "before": "額度處理選項與分項資料矛盾",
+    "after": "所選額度採計方式與已填分項不一致，請核對採計選項及分項。",
+    "location": "generated/core.mjs:2278"
+  },
+  {
+    "area": "工業都更選項",
+    "before": "都更上限路徑（不是核給比例）",
+    "after": "都更上限路徑（資格與核准額度另核）",
+    "location": "generated/panels.mjs:8827"
+  },
+  {
+    "area": "工業樓層說明",
+    "before": "增量填本列合計，不是每層值。",
+    "after": "立體化增量填本列各層合計；層數與每層計容面積分欄填寫。",
+    "location": "generated/panels.mjs:8874；保留核心 count×area 與 increment 分列"
+  },
+  {
+    "area": "工業結果前提",
+    "before": "本結果檢查已輸入數量與列明條件，不代表主管機關核准。規劃假設與依文件覆核不得互相冒用。",
+    "after": "依已填土地、額度與樓層資料核算；規劃假設、文件覆核及主管機關核准狀態分別記錄。",
+    "location": "generated/core.mjs:2444，正式站已確認"
+  },
+  {
+    "area": "混合分區選項",
+    "before": "公共設施容積移轉處理",
+    "after": "公共設施用地容積移轉採計方式",
+    "location": "generated/panels.mjs:7653"
+  },
+  {
+    "area": "混合用途停車說明",
+    "before": "臺北市須依土管使用組別判讀，不能把中央停車第一、二類直接當成臺北分類。下列組別只供停車算法辨識，並不自動核准用途。",
+    "after": "臺北市依土地使用分區管制的使用組別檢核。下列組別供停車數量計算使用，用途許可另依個案文件核對。",
+    "location": "generated/panels.mjs:8192；保留臺北與中央分類的分流計算"
+  },
+  {
+    "area": "重劃公告版本提示",
+    "before": "計畫書、計畫圖、修正及後續分配公告核對同一地號與基準日；目錄不是最新適用版本的認定。",
+    "after": "依同一地號與評估基準日，核對原計畫書圖、修正公告及分配公告，記錄本案採用版本。",
+    "location": "generated/readjustment.mjs:2977，正式站已確認"
+  },
+  {
+    "area": "重劃階段提示",
+    "before": "文件效力與可處理事項須配合目前階段。",
+    "after": "請填寫目前辦理階段，並核對該階段適用的公告、通知、分配及登記文件。",
+    "location": "generated/readjustment.mjs:3035"
+  },
+  {
+    "area": "重劃平均率說明",
+    "before": "全區平均負擔不是個人扣地率；正式分配依個別資料及法定公式核對。",
+    "after": "平均負擔率供全區面積情境估算；個人負擔與分配面積依個別資料及適用公式核對。",
+    "location": "generated/readjustment.mjs:3100，正式站已確認"
+  },
+  {
+    "area": "集合住宅道路提示",
+    "before": "實際開闢寬度、同路段面寬或開闢連通尚缺，不因計畫路寬已確認即認定其餘資格。",
+    "after": "實際開闢寬度、同路段基地面寬及道路連通資料待補；道路資格依各項資料分別檢核。",
+    "location": "generated/panels.mjs，正式站已確認"
+  },
+  {
+    "area": "集合住宅容積餘額",
+    "before": "㎡容積未使用；未為吃滿容積自動加深地下室。",
+    "after": "㎡容積未使用；本次地下層數依所選條件計算。",
+    "location": "generated/core.mjs:5131"
+  }
+]

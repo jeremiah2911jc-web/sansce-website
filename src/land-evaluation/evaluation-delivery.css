@@ -30,3 +30,10 @@ button.evaluation-chart-row{display:block;width:100%;border:0;border-radius:0;ba
 
 /* The company descriptor follows the approved Songti brand typography. */
 .summary-front>header>div>p:first-child{font-family:"Songti TC","Noto Serif TC","PMingLiU",serif}
+
+/* Industrial sections reuse the approved summary and printing controls. */
+.evaluation-summary-document .summary-data-table th{width:auto}
+.evaluation-summary-document.is-industrial{background-image:url('/images/evaluation-watermark-09.svg?v=20261102');background-size:688px 1020px;background-repeat:repeat}
+@media print{.evaluation-summary-document.is-industrial{background-image:none!important}.evaluation-summary-document.is-industrial .summary-appendix{margin-top:10mm}.evaluation-summary-document.is-industrial .summary-data-table th,.evaluation-summary-document.is-industrial .summary-data-table td{padding:4px;font-size:7.5pt}}
+.evaluation-summary-document a{color:#244e60;text-decoration:underline;text-underline-offset:.15em;overflow-wrap:anywhere}
+@media print{.evaluation-summary-document a{color:inherit;text-decoration:underline}.evaluation-summary-document a[href]::after{content:none!important}}

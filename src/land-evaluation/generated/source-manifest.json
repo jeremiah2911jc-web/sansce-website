@@ -246,5 +246,33 @@
       "path": "src/lib/stableFingerprint.ts",
       "sha256": "3ce6a0814d62e3ceddcd648b4ba970c631feca819a2d038030fbddc845a55b1f"
     }
+  ],
+  "extensions": [
+    {
+      "id": "taipei-renewal",
+      "version": "taipei-renewal.2026-11-02.v1",
+      "scope": "Taipei local renewal only",
+      "sources": [
+        {
+          "path": "src/land-evaluation/taipei-renewal/model.mjs",
+          "sha256": "064429214bf41462fb65f4d4b983d55f78f67a1601f44d3d21c1e5fb1c3c3ea8"
+        },
+        {
+          "path": "scripts/apply-taipei-renewal-core.mjs",
+          "sha256": "84f0a7db098d6942c2a1bd70b39e649f1cef8b7bcbd7cb0b0bebbdc975a48d1c"
+        }
+      ]
+    },
+    {
+      "id": "danger-area-validation",
+      "version": "danger-area-validation.2026-11-02.v1",
+      "scope": "Active danger detailed-assessment missing eligible/adjacent areas only",
+      "sources": [
+        {
+          "path": "scripts/apply-danger-area-fix.mjs",
+          "sha256": "792ffea4cd709b6a9913a0388ff3dd9656f0ef00d8fd4a250ca8a662cbbe66d7"
+        }
+      ]
+    }
   ]
 }

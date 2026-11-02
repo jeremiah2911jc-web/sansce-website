@@ -10,7 +10,7 @@ export function StatutoryFields({plan:p,result,change,Field,Choice}){
   <p><a href={p.system==='expropriation'?formulaSources.expropriation:formulaSources.readjustment} target="_blank" rel="noreferrer">官方計算公式附件</a></p>
   {p.system==='expropriation'?<>
    <div className="lw-fields">{field('totalArea','全區徵收面積（㎡）')}{field('ratio','全區抵價地比例（%）')}{field('farmArea','曾農地重劃徵收面積（㎡，無則填0）')}{field('extraRatio','農地重劃增加比例（百分點，無則填0）')}</div>
-   <h4>規劃供抵價地分配街廓</h4><p>列入全部規劃街廓；各單價比採同一基準，不以本次選配街廓替代全區母數。</p>
+   <h4>規劃供抵價地分配街廓</h4><p>列入全部規劃街廓；各單價比採同一基準，不以本次選配街廓替代全區計算基礎。</p>
    {(v.blocks??[]).map((b,i)=><div className="ra-formula-row" key={b.id}><h4>街廓 {i+1}</h4><div className="lw-fields">{[['name','街廓名稱','text'],['area','街廓面積（㎡）','number'],['priceRatio','評定單價比（共同基準=1）','number']].map(([key,label,type])=><Field key={key} label={'街廓'+(i+1)+label} value={b[key]??''} type={type} change={x=>set('blocks',v.blocks.map(r=>r.id===b.id?{...r,[key]:x}:r))}/>)}</div><button className="le-text-button" onClick={()=>set('blocks',v.blocks.filter(r=>r.id!==b.id))}>移除此街廓</button></div>)}
    <button className="le-secondary" onClick={()=>set('blocks',[...(v.blocks??[]),{id:crypto.randomUUID(),name:'',area:'',priceRatio:''}])}>新增分配街廓</button>
    <h4>本方案權利範圍</h4><p>申請比例依已申請領回抵價地的補償地價計算，部分申請僅納入該部分。全區分母不隨收購標的改變；農地增加部分另採農地重劃區分母。</p>
