@@ -1,3 +1,4 @@
+import {bonusLabels} from './bonus-eligibility.mjs';
 import {taipeiRenewalItems} from './taipei-renewal/model.mjs';
 import {planningFields} from './generated/core.mjs';
 import {blockingIssueCatalog,bonusIssueLabels} from './blocking-issue-catalog.mjs';
@@ -47,8 +48,34 @@ export function issueTarget(message,input={}){
 }
 
 function blockingFieldTarget(message,input){
+ const prerequisite=(label)=>({tab:'base',region:'獎勵適用條件',label});
+ if(/其他都市更新實施方式須|策略性更新加倍須依第12條/.test(message))return prerequisite(bonusLabels.implementation);
+ if(/報核時程所選更新地區|第7條第1項第3款更新地區與報核/.test(message))return prerequisite(bonusLabels.renewalDistrict);
+ if(/危老原合格基地及鄰地面積須/.test(message))return prerequisite('危老合格原建築基地㎡（須依資料填寫）');
+ if(/危老資格與結構獎勵所選條件/.test(message))return prerequisite(bonusLabels.dangerCategory);
+ if(/同一事項重複獎勵扣除比例/.test(message))return {tab:'base',label:'同一事項重複獎勵扣除（基準容積%）'};
+ if(/其他獎勵已超過/.test(message))return {tab:'base',key:'scale',label:'土管／規模獎勵目標'};
+ if(/^(綠建築|智慧建築)銅級或合格級限/.test(message)){const label=message.startsWith('綠建築')?'綠建築':'智慧建築';return {tab:'base',summary:label,label:label+'目標條件'};}
+ const legal=Object.values(bonusLabels).find(label=>message.includes(label));
+ if(legal)return {tab:'base',region:'獎勵適用條件',label:legal};
+ const item=message.match(/獎勵項目條件待確認：(.+)/)?.[1];
+ if(item)return {tab:'base',region:'獎勵適用條件',label:item+'申請條件'};
+ if(message.includes('路寬確認狀態須'))return {tab:'base',label:'路寬確認狀態'};
+ if(message.includes('足寬開闢道路之連通待'))return {tab:'base',label:'足寬開闢道路之連通'};
+ if(message.includes('都更適用資格須'))return {tab:'base',region:'獎勵適用條件',label:'都更適用資格'};
+ if(message.includes('危老法定適用資格須'))return {tab:'base',region:'獎勵適用條件',label:'危老法定適用資格'};
+ if(message.includes('容移接受基地、道路及移入資格須'))return {tab:'base',region:'獎勵適用條件',label:'容移接受基地、道路及移入資格'};
+ if(message.includes('綠建築申請等級須'))return {tab:'base',region:'獎勵適用條件',label:bonusLabels.greenMinimum};
+ if(message.includes('本工具計算重建量體'))return {tab:'base',region:'獎勵適用條件',label:bonusLabels.renewalWork};
+ if(message.includes('全體協議合建獎勵限'))return {tab:'base',region:'獎勵適用條件',label:bonusLabels.implementation};
+ if(message.includes('重複獎勵，請填'))return {tab:'base',label:'同一事項重複獎勵扣除（基準容積%）'};
+ if(message.includes('同一公共設施土地'))return {tab:'base',region:'獎勵適用條件',label:bonusLabels.tdrResource};
+ if(message.includes('合法原建築容積115%上限'))return {tab:'base',region:'獎勵適用條件',label:bonusLabels.originalCap};
+
  for(const item of taipeiRenewalItems){if(message.includes(item.title)){const field=item.fields.find(f=>message.includes(f.label));return {tab:'base',region:'臺北市地方都更獎勵',summary:item.title,...(field?{label:field.label}:{})};}}
  const rules=[
+  [/請先選擇重建獎勵路徑/,{tab:'base',label:'重建獎勵路徑'}],
+  [/所選獎勵超過個案合計上限/,{tab:'base',region:'獎勵與容移上限',label:'個案獎勵及容移合計上限%（無資料留白）'}],
   [/法規檢討資料格式無效/,{tab:'base',invalidOption:true,entries:Object.entries(input.regulatoryReview?.bonusAssessment?.entries??{}).map(([key,value])=>({label:bonusIssueLabels[key]+'目標條件',choice:value.choice})),heading:'獎勵與容移：快速估算／細項評定'}],
   [/既有許可移入容積須/,{tab:'base',summary:'容移取得條件與資格檢核',label:'既有許可移入容積㎡'}],
   [/須填既有容移許可文號/,{tab:'base',summary:'容移取得條件與資格檢核',label:'既有容移許可文號及文件來源'}],

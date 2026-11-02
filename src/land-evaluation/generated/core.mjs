@@ -1,3 +1,4 @@
+import {reviewBonusConditions,dangerLegalCap,isBonusConditions} from "../bonus-eligibility.mjs";
 import { isTaipeiRenewal,taipeiRenewalApplies,applyTaipeiRenewal } from "../taipei-renewal/model.mjs";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -3827,6 +3828,8 @@ var bonusItems = [
   { id: "d-time", group: "danger", label: "\u6642\u7A0B\u734E\u52F5", law: "https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0070249&flno=6", options: yes(1), formula: "dangerTime", condition: "\u5371\u8001\u689D\u4F8B6\u689D\uFF1A\u4F9D\u7533\u8ACB\u65E5\u671F\uFF0C2025-05-12\u8D77\u6642\u7A0B\u70BA0%\uFF1B\u8207\u898F\u6A21\u5408\u8A08\u226410%\u3002\u73FE\u884C\u91CD\u5EFA\u8A08\u756B\u7533\u8ACB\u671F\u96502027-05-31\u3002" }
 ];
 function isBonusAssessment(x) {
+  if(x?.conditions!==undefined&&!isBonusConditions(x.conditions))return false;
+
   /* taipei-renewal-hook */
   if (x && typeof x === "object" && x.taipei !== undefined && !isTaipeiRenewal(x.taipei)) return false;
 
@@ -3834,7 +3837,7 @@ function isBonusAssessment(x) {
   const a = x;
   return (a.awardBasis === void 0 || ["target", "permitted"].includes(a.awardBasis)) && (a.permittedAward === void 0 || isPermittedAward(a.permittedAward)) && (a.tdrApplication === void 0 || isTdrApplication(a.tdrApplication)) && (a.tdrApplications === void 0 || a.tdrApplications && typeof a.tdrApplications === "object" && !Array.isArray(a.tdrApplications) && Object.entries(a.tdrApplications).every(([k, v]) => ["ntpc", "taipei", "other"].includes(k) && isTdrApplication(v) && v.city === k)) && (a.distinctSpaces === void 0 || typeof a.distinctSpaces === "boolean") && a.version === BONUS_VERSION && ["renewal", "danger", "none"].includes(a.route) && ["renewalMode", "tdrMode", "dangerMode"].every((k) => ["quick", "detail"].includes(a[k])) && ["date", "source", "deduction", "dangerOriginal", "dangerEligibleSite", "dangerAdjacentSite"].every((k) => typeof a[k] === "string") && (a.date === "" || /^\d{4}-\d{2}-\d{2}$/.test(a.date)) && ["general", "forty", "hillside", "narrow", "special50"].includes(a.tdrProfile) && ["renewalQualification", "tdrQualification", "dangerQualification"].every((k) => ["unknown", "yes", "no"].includes(a[k])) && !!a.entries && typeof a.entries === "object" && !Array.isArray(a.entries) && Object.entries(a.entries).every(([id2, e]) => bonusItems.some((d) => d.id === id2) && e && typeof e.choice === "string" && (e.choice === "" || bonusItems.find((d) => d.id === id2).options.some((o) => o[0] === e.choice)) && ["amount", "amount2", "amount3", "share", "source"].every((k) => e[k] === void 0 || typeof e[k] === "string") && (e.status === void 0 || ["assumed", "verified", "excluded"].includes(e.status)));
 }
-function assessBonuses(a, c, cash, updateArea) {
+function assessBonusesBase(a, c, cash, updateArea) {
   /* danger-area-validation-hook */
 
   if (taipeiRenewalApplies(a,c)) return applyTaipeiRenewal(assessBonuses({...a,taipei:undefined},c,cash,updateArea),a,c);
@@ -3981,17 +3984,20 @@ function isRegulatoryReview(x) {
   return [REGULATORY_REVIEW_VERSION, "planning-law.2026-10-19.v3", "planning-law.2026-10-19.v2"].includes(p.version) && ["renewalLimitPercent", "tdrLimitPercent", "totalBonusLimitPercent", "tdrBasePoints", "tdrInternalPoints", "tdrExternalPoints", "cashTdrPercent", "bonusSource", "bicycleSource", "ordinaryCommonPercent", "ordinaryCommonSource"].every((k) => typeof p[k] === "string") && typeof p.renewalArea === "boolean" && ["counted", "documented"].includes(p.bicycleExemption) && ["statutory_assumption", "counted"].includes(p.motorcycleExemption) && ["loading", "other"].includes(p.communityUse) && ["counted", "parking"].includes(p.spareUse);
 }
 function resolveBonusLimits(p, rates, context) {
+  /* bonus-eligibility-hook */
+  const legal = p.bonusAssessment && context ? reviewBonusConditions(p.bonusAssessment,context,{...rates,updateArea:p.renewalArea}) : {errors:[]};
+
   const roadReview = reviewSiteRoad(context?.roadConditions, p.bonusAssessment?.date);
   const notes = [...roadReview.notes], errors = [...roadReview.errors];
   const a = p.bonusAssessment, waivePoints = a?.tdrProfile === "special50" && (a.tdrApplication?.city ?? (context?.district ? inferTdrCity(context.district) : "ntpc")) === "ntpc", assessment = a && context && isBonusAssessment(a) ? assessBonuses(a.awardBasis === "permitted" ? { ...a, renewalMode: "quick", dangerMode: "quick" } : a, context, Number(p.cashTdrPercent) || 0, p.renewalArea) : void 0;
   if (a && assessment) {
-    rates = { ...rates, renewal: a.route === "renewal" ? a.renewalMode === "detail" ? assessment.renewal : rates.renewal : 0, danger: a.route === "danger" ? a.dangerMode === "detail" ? assessment.danger : Math.min(40, rates.danger) : 0, scale: a.route === "danger" ? 0 : rates.scale, tdr: a.tdrMode === "detail" && !waivePoints ? assessment.tdr : rates.tdr };
+    rates = { ...rates, renewal: a.route === "renewal" ? a.renewalMode === "detail" ? assessment.renewal : Math.max(0,rates.renewal-Number(a.deduction||0)) : 0, danger: a.route === "danger" ? a.dangerMode === "detail" ? assessment.danger : Math.min(dangerLegalCap(a, context), rates.danger) : 0, scale: a.route === "danger" ? 0 : rates.scale, tdr: a.tdrMode === "detail" && !waivePoints ? assessment.tdr : rates.tdr };
     if (a.renewalQualification === "no") rates.renewal = 0;
     if (a.tdrQualification === "no") rates.tdr = 0;
     if (a.dangerQualification === "no") rates.danger = 0;
     if (a.awardBasis !== "permitted" && a.route === "danger" && a.date > "2027-05-31") rates.danger = 0;
     notes.push(`\u63A1\u8A08\u65B9\u5F0F\uFF1A${a.route === "danger" ? "\u5371\u8001" : a.route === "renewal" ? "\u90FD\u66F4" : "\u4E0D\u63A1\u90FD\u66F4\uFF0F\u5371\u8001"}\uFF1B\u90FD\u66F4${a.renewalMode === "quick" ? "\u5FEB\u901F\u76EE\u6A19" : "\u7D30\u9805\u52A0\u7E3D"}\u3001\u5BB9\u79FB${a.tdrMode === "quick" ? "\u5FEB\u901F\u76EE\u6A19" : "\u7D30\u9805\u8A55\u5B9A"}\u3001\u5371\u8001${a.dangerMode === "quick" ? "\u5FEB\u901F\u76EE\u6A19" : "\u7D30\u9805\u52A0\u7E3D"}\u3002\u672A\u9078\u7528\u8DEF\u5F91\u8CC7\u6599\u4FDD\u7559\uFF0C\u4E0D\u758A\u52A0\u3002`);
-    notes.push("\u52FE\u9078\u689D\u4EF6\u70BA\u898F\u5283\u76EE\u6A19\uFF1B\u8CC7\u683C\u672A\u77E5\u4ECD\u53EF\u521D\u4F30\uFF0C\u5DF2\u77E5\u4E0D\u9069\u7528\u63A10\u3002\u9644\u4F86\u6E90\u4E0D\u7B49\u540C\u4E3B\u7BA1\u6A5F\u95DC\u6838\u5B9A\uFF1B\u63A5\u53D7\u57FA\u5730\u7981\u9650\u3001\u9053\u8DEF\u958B\u95E2\u8207\u9762\u5BEC\u3001\u9001\u51FA\u5730\uFF0F\u4EE3\u91D1\u53CA\u500B\u6848\u571F\u7BA1\u9808\u8986\u6838\u3002");
+    notes.push("本次獎勵依已填實施方式、申請條件及範圍計算；標章、保證金與完工義務依本案文件及後續審查辦理。");
     if (a.renewalMode === "detail" || a.tdrMode === "detail" || a.dangerMode === "detail") {
       notes.push(...assessment.notes);
       errors.push(...assessment.errors);
@@ -4022,7 +4028,8 @@ function resolveBonusLimits(p, rates, context) {
   if (tdrLimit > 30 && !p.bonusSource.trim()) {
     errors.push("\u8D85\u904E\u4E00\u822C\u5BB9\u79FB30%\u4E0A\u9650\u7684\u9069\u7528\u4F9D\u64DA\u672A\u586B\uFF1B\u672A\u81EA\u52D5\u6539\u621030%\u3002");
   }
-  if (a && assessment) tdrLimit = a.tdrMode === "detail" || a.tdrApplication ? assessment.tdrCap : Math.min(tdrLimit, assessment.tdrCap);
+  if (a && assessment) tdrLimit = Math.min(tdrLimit, assessment.tdrCap);
+  if(a?.awardBasis!=="permitted") renewalLimit=Math.min(renewalLimit,assessment?.taipei?.totalCap??50);
   let points = null;
   const pointValues = [p.tdrBasePoints, p.tdrInternalPoints, p.tdrExternalPoints];
   if (!a && (!context?.district || inferTdrCity(context.district) === "ntpc") && pointValues.some((x) => x.trim())) {
@@ -4036,6 +4043,7 @@ function resolveBonusLimits(p, rates, context) {
   } else if (a && rates.tdr > 0) notes.push("\u5BB9\u79FB\u63A1\u5FEB\u901F\u76EE\u6A19\uFF1A\u7D30\u9805\u8A55\u9EDE\u4FDD\u7559\u4F46\u4E0D\u53C3\u8207\u672C\u6B21\u52A0\u7E3D\uFF1B\u63A5\u53D7\u57FA\u5730\u53CA\u4E0A\u9650\u8DEF\u5F91\u8CC7\u683C\u4ECD\u5C6C\u898F\u5283\u5047\u8A2D\u3002");
   else if (rates.tdr > 0) notes.push(`\u5BB9\u79FB\u8A55\u9EDE\u5C1A\u672A\u586B\u9F4A\uFF1A\u5148\u4EE5\u76EE\u6A19\u8207\u4E00\u822C\uFF0F\u6240\u586B\u4E0A\u9650${tdrLimit}%\u8F03\u4F4E\u8005\u521D\u4F30\uFF0C\u672A\u8A8D\u5B9A\u672C\u6848\u5DF2\u53D6\u5F97\u8A72\u984D\u5EA6\u3002`);
   let renewal = Math.min(rates.renewal, renewalLimit), tdr2 = Math.min(rates.tdr, tdrLimit, points ?? Infinity), scale = rates.scale, danger2 = rates.danger;
+  if(a?.route==="renewal"&&a.awardBasis!=="permitted"&&renewal+scale>renewalLimit){if(scale>renewalLimit)errors.push("其他獎勵已超過本次都更合計上限，請核對適用路徑。");renewal=Math.max(0,renewalLimit-scale);notes.push("其他獎勵先計入都更合計上限；本次都更採"+renewal+"%、其他獎勵"+scale+"%。");}
   if (renewal < rates.renewal) notes.push(`\u90FD\u66F4\u76EE\u6A19${rates.renewal}%\u8D85\u904E\u672C\u6B21\u8DEF\u5F91\u4E0A\u9650\uFF0C\u66AB\u63A1${renewal}%\uFF0C\u4E0D\u4EE5\u8D85\u984D\u76EE\u6A19\u64F4\u5F35\u5BB9\u7A4D\u3002`);
   if (tdr2 < rates.tdr) notes.push(`\u5BB9\u79FB\u76EE\u6A19${rates.tdr}%\u53D7\u4E0A\u9650\uFF0F\u8A55\u9EDE\u9650\u5236\uFF0C\u66AB\u63A1${tdr2.toFixed(4)}%\u3002`);
   const permitted = a?.awardBasis === "permitted" ? reviewPermittedAward(a.permittedAward, a.route, (context?.site ?? 0) * (context?.far ?? 0) / 100, a.date) : void 0;
@@ -4057,10 +4065,7 @@ function resolveBonusLimits(p, rates, context) {
   } else if (totalLimit !== null && renewal + tdr2 + scale + danger2 > totalLimit) {
     tdr2 = Math.min(tdr2, Math.max(0, totalLimit - renewal - scale - danger2));
     if (renewal + scale + danger2 > totalLimit) {
-      const f = totalLimit / (renewal + scale + danger2);
-      renewal *= f;
-      scale *= f;
-      danger2 *= f;
+      errors.push("所選獎勵超過個案合計上限，請調整採用項目或比例；未依比例任意分攤獎勵。");
     }
     notes.push(`\u4F9D\u660E\u793A\u500B\u6848\u5408\u8A08\u4E0A\u9650${totalLimit}%\u9650\u5236\u734E\u52F5\u53CA\u5BB9\u79FB\uFF1B\u4F86\u6E90${p.bonusSource.trim() || "\u672A\u586B\uFF0C\u5C6C\u4FDD\u5B88\u898F\u5283\u5047\u8A2D"}\u3002`);
   }
@@ -4068,7 +4073,7 @@ function resolveBonusLimits(p, rates, context) {
   const app = a?.tdrApplication ?? ((a || context?.roadConditions) && context?.district ? newTdrApplication(inferTdrCity(context.district)) : void 0);
   const application = app && context ? reviewTdrApplication(app, context, tdr2, tdrLimit, scale) : void 0;
   if (application) {
-    if (context?.roadConditions?.status === "confirmed" && rates.tdr > application.capPercent + 1e-8) errors.push(`\u5DF2\u78BA\u8A8D\u57FA\u5730\u9053\u8DEF\u689D\u4EF6\u4E0B\u5BB9\u79FB\u76EE\u6A19${rates.tdr}%\u8D85\u904E\u672C\u8DEF\u5F91${application.capPercent}%\u4E0A\u9650\uFF0C\u9808\u4FEE\u6B63\u5F8C\u624D\u80FD\u63A1\u7528\u3002`);
+    if (context?.roadConditions?.status === "confirmed" && tdr2 > application.capPercent + 1e-8) errors.push(`\u5DF2\u78BA\u8A8D\u57FA\u5730\u9053\u8DEF\u689D\u4EF6\u4E0B\u5BB9\u79FB\u76EE\u6A19${rates.tdr}%\u8D85\u904E\u672C\u8DEF\u5F91${application.capPercent}%\u4E0A\u9650\uFF0C\u9808\u4FEE\u6B63\u5F8C\u624D\u80FD\u63A1\u7528\u3002`);
     tdr2 = application.appliedPercent;
     notes.push(...application.notes, ...application.gaps);
     if (rates.tdr > 0) errors.push(...application.errors);
@@ -4078,6 +4083,8 @@ function resolveBonusLimits(p, rates, context) {
     for(let i=notes.length-1;i>=0;i--) if(notes[i].startsWith("都更及容移均為")) notes.splice(i,1);
     notes.push("臺北都更中央與地方獎勵依本次適用路徑檢核，上限"+assessment.taipei.totalCap+"%；容移另依接受基地資格與取得條件檢核。");
   }
+  errors.push(...legal.errors);
+  errors.splice(0,errors.length,...new Set(errors));
   return { renewal, tdr: tdr2, scale, danger: danger2, renewalLimit, tdrLimit, points, totalLimit, notes, errors, assessment, application };
 }
 function reviewBasementVolume(p, v, aboveEquipmentExempt, equipmentCap, context) {
@@ -5184,3 +5191,9 @@ export {
   planningFields,
   renderRoofEnvelope
 };
+
+function assessBonuses(a,c,cash,updateArea){
+ const legal=reviewBonusConditions(a,c,{updateArea,renewal:a.route==="renewal"&&a.renewalMode==="detail"?1:0,danger:a.route==="danger"&&a.dangerMode==="detail"?1:0,tdr:a.tdrMode==="detail"?1:0});
+ const result=assessBonusesBase(legal.assessment,c,cash,updateArea);
+ return {...result,errors:[...new Set([...result.errors,...legal.errors])],notes:[...result.notes,...legal.notes]};
+}

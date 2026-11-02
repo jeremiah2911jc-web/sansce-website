@@ -1,3 +1,4 @@
+import {BONUS_LEGAL_VERSION,BONUS_LEGAL_REVIEWED_AT,bonusLabels,dangerLegalCap} from './bonus-eligibility.mjs';
 import {taipeiRenewalLaw,taipeiRenewalTable} from './taipei-renewal/model.mjs';
 import {collectiveDisplayNotes,bonusResultRows,bonusInputVisible} from './collective-notes.mjs';
 import {commercialInputs} from './summary-presentation.mjs';
@@ -8,7 +9,7 @@ import {planningFields,PLANNING_VERSION} from './generated/core.mjs';
 import {RULE_VERSION,LAYOUT_VERSION,REVIEWED_AT,landRegimes,intendedUses,buildingForms,lawSources} from './generated/land.mjs';
 import {systems,perspectives,READJUSTMENT_VERSION,documentItems,getPublishedPlan,formulaSources} from './generated/readjustment.mjs';
 import {publicText} from './public-copy.mjs';
-import {statutoryBonusLimits,bonusLimitMode} from './statutory-bonus-limits.mjs';
+import {statutoryBonusLimits,bonusLimitMode,dangerLaw} from './statutory-bonus-limits.mjs';
 export function displayRuleVersion(value){const match=String(value||'').match(/(\d{4}-\d{2}-\d{2})\.(?:v)?(\d+)(?=\D|$)/i);return match?`${match[1]} · V${match[2]}`:'版本待確認';}
 export const displayNumber=(n,d=2)=>typeof n==='number'&&Number.isFinite(n)?(n>0&&n<10**-d?'<'+(10**-d):n.toLocaleString('zh-TW',{maximumFractionDigits:d})):'待確認';
 const text=v=>v===null||v===undefined||v===''?'未填／待確認':String(v);
@@ -16,7 +17,8 @@ const distinct=items=>[...new Set(items.filter(Boolean).map(publicText))];
 const summary=(kind,title,status,ruleVersion)=>({kind,title:title||'本次評估',status,ruleVersion:ruleVersion+'／來源 '+(kind==='市地重劃／區段徵收'?readjustmentManifest:sourceManifest).sourceCommit.slice(0,8),createdAt:new Date().toISOString(),reviewedAt:REVIEWED_AT,metrics:[],conditions:[],charts:[],issues:[],assumptions:[],sources:[],inputs:[]});
 export function collectiveDelivery(snapshot){
  const {input:i,result:r}=snapshot,v=r.values;if(!v)return null;
- const s=summary('集合住宅',snapshot.name,'依輸入及規劃假設試算；資格與圖說另核',PLANNING_VERSION);
+ const s=summary('集合住宅',snapshot.name,'依輸入及規劃假設試算；資格與圖說另核',BONUS_LEGAL_VERSION);
+ s.reviewedAt=BONUS_LEGAL_REVIEWED_AT;
  s.createdAt=snapshot.calculatedAt||s.createdAt;
  s.metrics=[['房屋可售面積',v.salePing,'坪'],['公設比（估算）',v.commonRatio,'%'],['規劃戶數',v.units,'戶'],['汽車位',v.cars,'位'],['推估地上樓層',v.equivalentFloors,'層'],['地下層數',v.floors,'層']];
  s.conditions=[['地區',snapshot.district],['基地面積',`${displayNumber(Number(i.site))}㎡`],['建蔽／基準容積',`${i.coverage}%／${r.commercialReview?displayNumber(r.commercialReview.effectiveFar)+'%（分段換算）':i.far+'%'}`],['獎勵與容移',bonusResultRows(i,v).map(([label,value])=>label+displayNumber(value)+'%').join('、')],['每戶地上分攤',`${i.unitPing}坪／戶`],['總樓地板（不含陽台）',`${displayNumber(v.totalWithoutBalcony)}㎡`]];
@@ -24,19 +26,26 @@ export function collectiveDelivery(snapshot){
  s.assumptions=collectiveDisplayNotes(i,r);s.issues=s.assumptions.filter(x=>/待|未確認|未取得|另核|覆核|假設/.test(x));
  s.assumptions=s.assumptions.filter(x=>!s.issues.includes(x));
  s.sources=[i.roadConditions?.source,i.excavationReference,i.parkingDesign?.reference,r.basementDemandReview?.source,i.basementDemand?.source,i.basementDemand?.stricterSource].filter(Boolean);
- s.inputs=planningFields.filter(([key])=>bonusInputVisible(i,key)).map(([key,label,unit])=>[label,i[key]===''?'未填／待確認':`${text(i[key])}${unit?' '+unit:''}`]);
+ s.inputs=planningFields.filter(([key])=>bonusInputVisible(i,key)).map(([key,label,unit])=>[label,i[key]===''?'未填／待確認':`${text(i[key])}${unit?' '+(key==='balcony'?'%各層樓板':unit):''}`]);
  s.inputs.push(['道路名稱',text(i.roadConditions?.roadName)],['計畫／開闢道路寬度',`${text(i.roadConditions?.plannedWidth)}／${text(i.roadConditions?.openedWidth)} m`],['同路段基地面寬',`${text(i.roadConditions?.frontage)} m`],['道路確認狀態',i.roadConditions?.status==='confirmed'?'已填查證，資格依檢核':i.roadConditions?.status==='assumed'?"暫用估計值，待文件確認":'待確認'],['路寬查證日期',text(i.roadConditions?.checkedAt)],['停車規則',i.parkingDesign?.mode==='general'?'地區通則初估':'本次個案條件'],['開挖率上限',r.basementDemandReview?`${displayNumber(r.basementDemandReview.capPercent)}%`:text(i.excavationCap)],['建築／容積使用比例',`${i.coverageUse}%／${i.volumeUse}%`]);
  s.inputs.push(['採用面積的計算方式','機電、梯廳、屋突及地下預留採逐層／量體檢核；固定比例設定不直接等於實際採用面積，詳計算說明。'],['梯廳淨深',({assumed:'暫按達2m初估',confirmed:'已核對達2m',failed:'不符免計資格，計容'})[i.lobbyDepth]||'待確認'],['屋頂電梯通達',i.elevator==='yes'?'依通達屋頂條件檢核':'依未通達屋頂條件檢核'],['停車方式',`${r.parking?.values?.smallSite?.access==='lift'?'汽車升降機':'依本次停車配置'}；平面${displayNumber(r.parking?.values?.flatCars)}位／機械${displayNumber(r.parking?.values?.mechanicalCars)}位`]);
  const limits=statutoryBonusLimits(i),bonus=r.regulatory?.bonus;
  if(limits&&bonus){
   const route=i.regulatoryReview.bonusAssessment.route;
   if(route==='renewal')s.inputs.push(['都更獎勵上限',`${displayNumber(bonus.renewalLimit)}%`]);
-  if(v.tdrApplied>0)s.inputs.push(['容移上限',`${displayNumber(bonus.application?.capPercent??bonus.tdrLimit)}%`]);
+  if(v.tdrApplied>0)s.inputs.push(['容移上限',`${displayNumber(Math.min(bonus.application?.capPercent??Infinity,bonus.tdrLimit))}%`]);
   if(bonus.totalLimit!==null&&bonus.totalLimit!==undefined)s.inputs.push(['獎勵與容移合計上限',`${displayNumber(bonus.totalLimit)}%`]);
   s.inputs.push(['上限採用方式',bonusLimitMode(i)==='document'?'依個案文件；'+i.regulatoryReview.bonusSource:'依地區與適用法規帶入']);
   if(route==='renewal')s.sources.push('都更獎勵上限：'+limits.renewalSource);
+  if(route==='danger')s.sources.push('危老獎勵上限：'+dangerLaw,'危老重建容積獎勵辦法：https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0070258');
   if(v.tdrApplied>0)s.sources.push('容移上限：'+limits.tdrSource);
  }
+ const a=i.regulatoryReview?.bonusAssessment;
+ if(a?.source)s.sources.push(a.source);
+ const conditions=a?.conditions;
+ if(conditions)for(const key of ['tdrSource','renewalAreaSource','overlapSource','originalSource'])if(conditions[key]&&(key==='originalSource'?a.route==='danger':key==='overlapSource'?a.route==='renewal'||v.tdrApplied>0:v.tdrApplied>0))s.sources.push(bonusLabels[key]+'：'+conditions[key]);
+ if(a?.route==='danger'&&a.awardBasis!=='permitted'){s.inputs.push(['危老合格原建築基地',a.dangerEligibleSite+'㎡'],['合併鄰接基地',a.dangerAdjacentSite+'㎡'],['預計申請日期',a.date]);if(a.dangerMode==='quick')s.inputs.push(['本次危老獎勵上限',displayNumber(dangerLegalCap(a,{site:i.site,far:i.far}),4)+'%'],['規模獎勵',conditions?.quickExtras==='yes'?'依合格面積計入':'本次不計']);}
+ if(a?.route==='renewal'&&conditions)s.inputs.push(['都市更新實施措施',({rebuild:'重建',rehabilitation:'整建',maintenance:'維護'})[conditions.renewalWork]||'待確認'],['都市更新實施方式',({rights:'權利變換',agreement:'全體同意協議合建',public12:'依第12條第1項公辦方式',other:'其他方式'})[conditions.implementation]||'待確認']);
  const taipei=r.regulatory?.bonus?.assessment?.taipei;
  if(taipei?.active){
   s.conditions.push(['臺北地方獎勵法規依據','112年9月18日附表；查核日期2026-11-02'],['臺北地方都更獎勵',`細項${displayNumber(taipei.raw,4)}%，倍率${taipei.multiplier}，採${displayNumber(taipei.applied,4)}%；地方上限${taipei.localCap}%，中央與地方合計上限${displayNumber(taipei.totalCap,4)}%`]);

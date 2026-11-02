@@ -1,3 +1,4 @@
+import {applyBonusEligibility} from './apply-bonus-eligibility.mjs';
 import {applyDangerAreaFix} from './apply-danger-area-fix.mjs';
 import {applyTaipeiRenewalCore,taipeiCoreFunctions} from './apply-taipei-renewal-core.mjs';
 import assert from 'node:assert/strict';
@@ -13,13 +14,13 @@ const root=new URL('../',import.meta.url),read=p=>readFileSync(new URL(p,root),'
 const baseline=p=>execFileSync('git',['show','origin/main:'+p],{cwd:root,encoding:'utf8',maxBuffer:20e6});
 const protectedFiles=['src/land-evaluation/generated/core.mjs','src/land-evaluation/generated/land.mjs','src/land-evaluation/generated/readjustment.mjs','src/land-evaluation/generated/source-manifest.json','src/land-evaluation/generated/readjustment-manifest.json','src/land-evaluation/model.mjs'];
 for(const p of protectedFiles){
- if(p.endsWith('/generated/core.mjs'))assert.equal(read(p),applyDangerAreaFix(applyTaipeiRenewalCore(baseline(p))),'Only authorized Taipei hooks and danger-area validation may change core.mjs');
- else if(p.endsWith('/source-manifest.json')){const current=JSON.parse(read(p)),original=JSON.parse(baseline(p));const {extensions,...base}=current;const {extensions:originalExtensions,...originalBase}=original;assert.deepEqual(base,originalBase);assert.deepEqual(extensions.map(x=>x.id),['taipei-renewal','danger-area-validation']);if(originalExtensions)assert.deepEqual(extensions,originalExtensions,'Released calculation extension hashes changed');}
+ if(p.endsWith('/generated/core.mjs'))assert.equal(read(p),applyBonusEligibility(applyDangerAreaFix(applyTaipeiRenewalCore(baseline(p)))),'Only documented calculation adapters may change core.mjs');
+ else if(p.endsWith('/source-manifest.json')){const current=JSON.parse(read(p)),original=JSON.parse(baseline(p));const {extensions,...base}=current;const {extensions:originalExtensions,...originalBase}=original;assert.deepEqual(base,originalBase);assert.deepEqual(extensions.map(x=>x.id),['taipei-renewal','danger-area-validation','bonus-eligibility']);if(originalExtensions)assert.deepEqual(extensions.filter(x=>x.id!=='bonus-eligibility'),originalExtensions.filter(x=>x.id!=='bonus-eligibility'),'Unchanged calculation extension hashes changed');}
  else assert.equal(read(p),baseline(p),'Protected calculation source changed: '+p);
 }
 const panels='src/land-evaluation/generated/panels.mjs',before=baseline(panels),after=read(panels);
 const functions=code=>parse(code,{sourceType:'module'}).program.body.filter(n=>n.type==='FunctionDeclaration'&&!n.id.name.endsWith('Panel')&&!taipeiCoreFunctions.includes(n.id.name)).map(n=>[n.id.name,code.slice(n.start,n.end)]);
-assert.deepEqual(functions(after),functions(before),'Non-UI functions in shared panels must remain byte-identical');
+assert.deepEqual(functions(after),functions(applyBonusEligibility(before)),'Non-UI functions in shared panels must remain byte-identical');
 assert.equal(applyEvaluationPanelCopy(after),after,'UI copy adapter must be idempotent');
 const fixture=newIndustrial(),ev={source:'合成測試文件',date:'2026-10-24',finding:'合成條件，供數量驗收',state:'assumed'};
 Object.assign(fixture,{name:'工業報告合成驗收',edition:'合成V1',date:'2026-10-24',city:'ntpc',regime:'urban',route:'ordinary',vertical:'none',awardMode:'none',transferMode:'none'});

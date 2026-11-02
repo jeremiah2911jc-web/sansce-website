@@ -1,3 +1,4 @@
+import {applyBonusEligibility,applyBonusEligibilityPanel,BONUS_ELIGIBILITY_PATCH_VERSION} from './apply-bonus-eligibility.mjs';
 import {applyDangerAreaFix,DANGER_AREA_FIX_VERSION} from './apply-danger-area-fix.mjs';
 import {applyTaipeiRenewalCore} from './apply-taipei-renewal-core.mjs';
 import {applyTaipeiRenewalPanel} from './apply-taipei-renewal-panel.mjs';
@@ -85,8 +86,8 @@ for(const [name,contents]of [['core',core],['panels',ui+industrialUi],['land',la
  });}};
  const result=await build({stdin:{contents,resolveDir:app,loader:'tsx'},outfile:output,bundle:true,format:'esm',platform:'browser',target:'es2020',jsx:'automatic',external:['react','react/jsx-runtime','/src/land-evaluation/PublicSelect.jsx','/src/land-evaluation/PublicFields.jsx','/src/land-evaluation/RuleReference.jsx','/src/land-evaluation/public-copy.mjs'],plugins:name==='panels'?[publicUi]:[],metafile:true,treeShaking:true,minify:false,legalComments:'none'});
  const normalized=normalizeGeneratedSiteCopy(await readFile(output,'utf8'));
- const scoped=['core','panels'].includes(name)?applyDangerAreaFix(applyTaipeiRenewalCore(normalized)):normalized;
- const bundled=name==='panels'?applyTaipeiRenewalPanel(applyEvaluationPanelCopy(scoped)):scoped;
+ const scoped=['core','panels'].includes(name)?applyBonusEligibility(applyDangerAreaFix(applyTaipeiRenewalCore(normalized))):normalized;
+ const bundled=name==='panels'?applyBonusEligibilityPanel(applyTaipeiRenewalPanel(applyEvaluationPanelCopy(scoped))):scoped;
  await writeFile(output,bundled);
  if(/localStorage|sessionStorage|indexedDB|@tauri|fetch\(/.test(bundled))throw Error(name+' contains persistence, desktop or network calls');
  for(const file of Object.keys(result.metafile.inputs)){
@@ -102,5 +103,6 @@ const {execFileSync}=await import('node:child_process');
 const manifest={sourceCommit:execFileSync('git',['rev-parse','HEAD'],{cwd:app,encoding:'utf8'}).trim(),scope:'land identity, laws, routes, layout and efficiency only; no financial UI or case persistence',source:'三策案件版',sourceRoot:app,generatedAt:new Date().toISOString(),method:'esbuild directly bundles original App exports; website has no separate calculation fork; App source is authoritative',sources:[...sources.values()].sort((a,b)=>a.path.localeCompare(b.path))};
 manifest.extensions=[{id:'taipei-renewal',version:'taipei-renewal.2026-11-02.v1',scope:'Taipei local renewal only',sources:await Promise.all(['src/land-evaluation/taipei-renewal/model.mjs','scripts/apply-taipei-renewal-core.mjs'].map(async path=>({path,sha256:createHash('sha256').update(await readFile(resolve(root,path))).digest('hex')})))}];
 manifest.extensions.push({id:'danger-area-validation',version:DANGER_AREA_FIX_VERSION,scope:'Active danger detailed-assessment missing eligible/adjacent areas only',sources:await Promise.all(['scripts/apply-danger-area-fix.mjs'].map(async path=>({path,sha256:createHash('sha256').update(await readFile(resolve(root,path))).digest('hex')})))});
+manifest.extensions.push({id:'bonus-eligibility',version:BONUS_ELIGIBILITY_PATCH_VERSION,scope:'UR implementation and award eligibility, overlap exclusion, TDR limit intersection and danger cap',sources:await Promise.all(['scripts/apply-bonus-eligibility.mjs','src/land-evaluation/bonus-eligibility.mjs'].map(async path=>({path,sha256:createHash('sha256').update(await readFile(resolve(root,path))).digest('hex')})))});
 await writeFile(resolve(dir,'source-manifest.json'),JSON.stringify(manifest,null,2)+'\n');
 console.log('Shared App core and pure panels synchronized; no storage, desktop or network code. '+sources.size+' source files.');

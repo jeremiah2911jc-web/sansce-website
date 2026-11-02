@@ -18,7 +18,7 @@ import {readFileSync} from 'node:fs';
 import {planningIssueCatalog} from '../scripts/planning-issue-catalog.mjs';
 import {blockingIssueCatalog} from '../src/land-evaluation/blocking-issue-catalog.mjs';
 import {publicText as displayIssue} from '../src/land-evaluation/public-copy.mjs';
-test('calculator error inventory stays synchronized',()=>assert.deepEqual(blockingIssueCatalog,['../src/land-evaluation/generated/core.mjs','../src/land-evaluation/taipei-renewal/model.mjs'].flatMap(path=>planningIssueCatalog(readFileSync(new URL(path,import.meta.url),'utf8')))));
+test('calculator error inventory stays synchronized',()=>assert.deepEqual(blockingIssueCatalog,['../src/land-evaluation/generated/core.mjs','../src/land-evaluation/taipei-renewal/model.mjs','../src/land-evaluation/bonus-eligibility.mjs'].flatMap(path=>planningIssueCatalog(readFileSync(new URL(path,import.meta.url),'utf8')))));
 for(const row of blockingIssueCatalog)test(`error owner ${row.owner}:${row.line} has a destination`,()=>{
  assert(row.target.label||row.target.summary||row.target.region||row.target.heading);
  for(const term of row.terms){const target=issueTarget(displayIssue(term));assert(target.label||target.summary||target.region||target.heading);assert(['base','above','parking','basement'].includes(target.tab));}

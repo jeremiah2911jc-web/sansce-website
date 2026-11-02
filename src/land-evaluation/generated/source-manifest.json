@@ -273,6 +273,21 @@
           "sha256": "792ffea4cd709b6a9913a0388ff3dd9656f0ef00d8fd4a250ca8a662cbbe66d7"
         }
       ]
+    },
+    {
+      "id": "bonus-eligibility",
+      "version": "bonus-legal.2026-11-03.v2",
+      "scope": "UR implementation and award eligibility, overlap exclusion, TDR limit intersection and danger cap",
+      "sources": [
+        {
+          "path": "scripts/apply-bonus-eligibility.mjs",
+          "sha256": "db7abffad956235521da296c15991a8a4c04679bd844be8fdd1eca87f1d412f4"
+        },
+        {
+          "path": "src/land-evaluation/bonus-eligibility.mjs",
+          "sha256": "76d979c1ecc73081568d16ea8c3bafe6cd415c2ce038e4b7e2764be1dc90c5c8"
+        }
+      ]
     }
   ]
 }
