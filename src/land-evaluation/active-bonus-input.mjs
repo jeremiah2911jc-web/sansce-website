@@ -1,4 +1,5 @@
 import {evaluate} from './model.mjs';
+import {planningInputIssues} from './planning-input-review.mjs';
 
 // Keep the editable scenario intact. Only unused award inputs are neutralized
 // in the temporary input passed to the shared calculator.
@@ -16,4 +17,15 @@ export function activeBonusInput(input){
  if(input.basementDemand?.enabled&&input.quantityReserve)patch.quantityReserve={...input.quantityReserve,basementEquipmentMode:'named'};
  return {...input,...patch};
 }
-export const evaluateActiveBonuses=input=>evaluate(activeBonusInput(input));
+export function evaluateActiveBonuses(input){
+ const active=activeBonusInput(input);if(!input.regulatoryReview?.bonusAssessment)return evaluate(input);
+ const errors=planningInputIssues(active);
+ return errors.length?{errors,notes:[],values:null}:evaluate(active);
+}
+
+// New website cases start on the same route shown by the bonus selector.
+// Imported cases keep their stored fields and validation behavior.
+export function createWorkspaceInput(create){
+ const input=create();
+ return {...input,regulatoryReview:{...input.regulatoryReview,bonusAssessment:{version:'bonus-assessment.2026-10-19.v1',route:'renewal',renewalMode:'quick',tdrMode:'quick',dangerMode:'quick',date:'',entries:{},renewalQualification:'unknown',tdrQualification:'unknown',dangerQualification:'unknown',source:'',deduction:'0',tdrProfile:'general',dangerOriginal:'',dangerEligibleSite:'',dangerAdjacentSite:''}}};
+}

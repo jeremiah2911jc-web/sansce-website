@@ -219,3 +219,7 @@
  .studio-overview .studio-entry-notes>div {grid-template-columns:1fr;gap:20px}
  .studio-overview .studio-entry-notes p {font-size:14px}
 }
+
+/* Numeric fields include a unit: draw one focus ring around the complete control. */
+.dev-tool-shell :is(.land-evaluation,.mixed-zone) :is(.le-number,.planning-number-unit) input:is(:focus-visible,.field-located) {outline:none!important;box-shadow:none}
+.dev-tool-shell :is(.land-evaluation,.mixed-zone) :is(.le-number,.planning-number-unit):has(input.field-located) {outline:2px solid #84583f;outline-offset:3px}

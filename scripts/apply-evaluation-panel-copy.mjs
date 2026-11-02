@@ -1,10 +1,11 @@
+import {applyInputFlowPanel} from './apply-input-flow-panel.mjs';
 import {applyBonusRouteVisibility} from './apply-bonus-route-visibility.mjs';
 import {parse} from '@babel/parser';
 import {publicText} from '../src/land-evaluation/public-copy.mjs';
 
 // Only UI functions are adapted. Bundled quantity, validation and rule functions stay byte-identical.
 export function applyEvaluationPanelCopy(code){
- code=applyPanelLayout(code);
+ code=applyInputFlowPanel(applyPanelLayout(code));
  const ast=parse(code,{sourceType:'module'}),edits=[];
  function visit(node,panel=''){
   if(!node||typeof node!=='object')return;
