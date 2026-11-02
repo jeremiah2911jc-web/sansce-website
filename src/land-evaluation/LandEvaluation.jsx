@@ -20,7 +20,7 @@ import {LandWorkbench} from './LandWorkbench.jsx';
 import {trackInteraction} from '../interaction-tracking.js';
 import {publicText} from './public-copy.mjs';
 import {regionalInputPatch,regionalInputIssues} from './regional-input.mjs';
-import {useEffect,useMemo,useRef,useState,useDeferredValue} from 'react';
+import {useEffect,useLayoutEffect,useMemo,useRef,useState,useDeferredValue} from 'react';
 import {BonusAssessmentPanel,LegalParkingPanel,AreaReviewPanel,RegulatoryReviewPanel,SiteRoadConditionsPanel} from './generated/panels.mjs';
 import {renderRoofEnvelope,newParkingDesign,defaultBasementDemand,landAreaRatios,planningFields} from './generated/core.mjs';
 import {createInput,checkInput,format as f} from './model.mjs';
@@ -58,6 +58,18 @@ function EvaluationWorkspace(){
  const submitted=snapshots[workspace.activeId]??null,setSubmitted=value=>setSnapshots(current=>({...current,[workspace.activeId]:value})),comparisonRef=useRef(null);
  const resultRef=useRef(null),errorRef=useRef(null),editorRef=useRef(null),sectionRef=useRef(null);const regionIssues=regionalInputIssues(input,district);const deferred=useDeferredValue(input),draft=useMemo(()=>{const errors=regionalInputIssues(deferred,district),z=errors.length?{errors,notes:[],values:null}:evaluate(deferred);return z.errors.length?{...z,values:null,parking:undefined,legal:null}:z;},[deferred,district]);
  const serialized=collectiveSignature({input,name,district}),stale=submitted&&submitted.signature!==serialized;
+ const tabNavigationRequested=useRef(false),[tabNavigationCount,setTabNavigationCount]=useState(0);
+ function openTab(id){tabNavigationRequested.current=true;setTab(id);setTabNavigationCount(count=>count+1);}
+ useLayoutEffect(()=>{
+  if(!tabNavigationRequested.current)return;
+  tabNavigationRequested.current=false;
+  const section=sectionRef.current;if(!section)return;
+  const headerHeight=document.querySelector('.sx-header')?.getBoundingClientRect().height??0;
+  const tabsHeight=editorRef.current?.querySelector('.le-tabs')?.getBoundingClientRect().height??0;
+  const top=window.scrollY+section.getBoundingClientRect().top-headerHeight-tabsHeight-20;
+  window.scrollTo({top:Math.max(0,top),behavior:'instant'});
+  section.focus({preventScroll:true});
+ },[tab,tabNavigationCount]);
  const activePlan=workspace.entries.find(p=>p.id===workspace.activeId),reportSnapshot=submitted&&workspace.managed?{...submitted,name:[submitted.name,`${activePlan.code} · ${activePlan.title}`].filter(Boolean).join('｜')}:submitted;
  const commercialReview=input.commercialIntensity?.enabled?calculateCommercialIntensity(input.commercialIntensity,input.site,input.coverage,true):null;
  const missing=missingBaseFields(input).filter(x=>!input.commercialIntensity?.enabled||!JSON.stringify(x).includes('far'));
@@ -109,7 +121,7 @@ function EvaluationWorkspace(){
 
  {input.commercialIntensity?.enabled&&<CommercialIntensityPanel district={district} value={input.commercialIntensity} site={input.site} coverage={input.coverage} onChange={commercialIntensity=>edit({commercialIntensity})}/>}
  {regionIssues.length>0&&<div className="le-replace" role="alert"><ul>{regionIssues.map(x=><li key={x}><button type="button" className="le-issue-link" onClick={()=>locate({tab:'base',scope:'editor',label:'評估地區'})}>{x}<span>查看相關設定</span></button></li>)}</ul><button type="button" className="le-secondary" onClick={()=>changeDistrict(district)}>依評估地區重設條件</button></div>}
- <div className="le-workspace"><nav className="le-tabs" aria-label="土地評估設定"><p>評估設定</p>{tabs.map(([id,label])=><button type="button" key={id} aria-current={tab===id?'step':undefined} onClick={()=>setTab(id)}>{label}</button>)}<button type="button" className="studio-quick-calculate" onClick={calculate}>{stale?'重新計算':'計算評估結果'}</button></nav>
+ <div className="le-workspace"><nav className="le-tabs" aria-label="土地評估設定"><p>評估設定</p>{tabs.map(([id,label])=><button type="button" key={id} aria-current={tab===id?'step':undefined} onClick={()=>openTab(id)}>{label}</button>)}<button type="button" className="studio-quick-calculate" onClick={calculate}>{stale?'重新計算':'計算評估結果'}</button></nav>
  <div className="studio-status"><details className={'le-input-status'+(stale?' is-stale':'')}><summary><strong>{stale?'條件已變更，結果待更新':submitted?'已完成本次試算，資格仍須核對':missing.length?'先填基地基本資料':'基本資料已填，請核對其餘規劃條件'}</strong></summary><div role="status"><span>{stale?'前次結果已收起；重新計算後再引用。':'其餘規劃條件依各組設定檢核。'}</span></div>{missing.length>0&&<div className="le-missing-links" aria-label="待填基本資料">{missing.map(x=><button type="button" key={x.key} onClick={()=>locate(x)}>填寫{x.label}</button>)}</div>}</details><a className="le-service-contact" href="/contact?service=development#service-inquiry">洽詢三策</a></div><section className="le-form-section" ref={sectionRef} tabIndex={-1} aria-label={tabs.find(([id])=>id===tab)[1]}>
  {tab==='base'&&<><div className="studio-base"><div className="le-section-heading"><h2>基地與開發強度</h2><p>面積請填基地總面積；獎勵與容移以基準容積為計算基礎。</p></div><div className="le-fields le-base-fields"><NumberField fieldKey="site" label="基地面積" unit="㎡" required value={input.site} onChange={v=>edit({site:v})} hint={Number(input.site)>0?`${f(Number(input.site)*.3025)} 坪`:undefined}/><NumberField fieldKey="coverage" label="法定建蔽率" unit="%" rangeMax={100} required value={input.coverage} onChange={v=>edit({coverage:v})}/><NumberField fieldKey="far" label={input.commercialIntensity?.enabled?"原容積率參考（商業模式不採計）":"基準容積率"} unit="%" required={!input.commercialIntensity?.enabled} value={input.far} onChange={v=>edit({far:v})} hint={input.commercialIntensity?.enabled?"本模式按商業分區法規及道路分段核算基準容積。":undefined}/></div>
  </div><details className="studio-roads"><summary>基地道路條件</summary><SiteRoadConditionsPanel value={input.roadConditions} onChange={roadConditions=>edit({roadConditions})}/></details>
@@ -125,7 +137,7 @@ function EvaluationWorkspace(){
  <div className="le-calculate"><div><strong>{stale?'條件已變更，請重新計算':'計算本次評估'}</strong><p>{missing.length?`尚缺${missing.length}項基地基本資料`:'依本次輸入及規劃假設計算，結果另列待查事項。'}</p></div><div className="le-calculate-actions">{submitted&&!stale&&<button type="button" className="le-text-button" onClick={()=>resultRef.current?.scrollIntoView({behavior:'instant',block:'start'})}>查看本次結果</button>}<button className="le-primary" type="button" onClick={calculate}>{stale?'重新計算':'計算評估結果'}</button></div></div>
  {!submitted&&<p className="le-before-results">填入基地條件及適用法規，核對規劃假設後再計算；商業模式須完成強度與用途檢核。</p>}
  </div>
- {submitted&&<div className="le-results-wrap" ref={resultRef}>{stale?<div className="le-stale" role="status"><strong>輸入已變更，請重新計算。</strong><button className="le-primary" onClick={calculate}>重新計算</button></div>:<><ResultSheet snapshot={reportSnapshot}/><nav className="le-result-actions" aria-label="調整本次方案">{tabs.map(([id,label])=><button type="button" key={id} onClick={()=>{setTab(id);requestAnimationFrame(()=>sectionRef.current?.scrollIntoView({behavior:'smooth',block:'start'}));}}>{label}</button>)}{workspace.entries.length>1&&<button type="button" onClick={compare}>集合住宅方案比較</button>}<button type="button" disabled={workspace.entries.length>=3} onClick={()=>{duplicateScenario();requestAnimationFrame(()=>editorRef.current?.scrollIntoView({behavior:'smooth',block:'start'}));}}>複製目前方案</button></nav><EvaluationDelivery getSummary={()=>collectiveDelivery(reportSnapshot)} charts={collectiveDelivery(reportSnapshot)?.charts||[]}/>{!focus&&<details className="le-full-notes"><summary>查看完整計算明細與檢核說明</summary><ResultDetails snapshot={submitted}/></details>}</> }</div>}
+ {submitted&&<div className="le-results-wrap" ref={resultRef}>{stale?<div className="le-stale" role="status"><strong>輸入已變更，請重新計算。</strong><button className="le-primary" onClick={calculate}>重新計算</button></div>:<><ResultSheet snapshot={reportSnapshot}/><nav className="le-result-actions" aria-label="調整本次方案">{tabs.map(([id,label])=><button type="button" key={id} onClick={()=>openTab(id)}>{label}</button>)}{workspace.entries.length>1&&<button type="button" onClick={compare}>集合住宅方案比較</button>}<button type="button" disabled={workspace.entries.length>=3} onClick={()=>{duplicateScenario();requestAnimationFrame(()=>editorRef.current?.scrollIntoView({behavior:'smooth',block:'start'}));}}>複製目前方案</button></nav><EvaluationDelivery getSummary={()=>collectiveDelivery(reportSnapshot)} charts={collectiveDelivery(reportSnapshot)?.charts||[]}/>{!focus&&<details className="le-full-notes"><summary>查看完整計算明細與檢核說明</summary><ResultDetails snapshot={submitted}/></details>}</> }</div>}
  <CollectiveComparison workspace={workspace} snapshots={snapshots} errors={scenarioErrors} onCalculateAll={calculateAll} onActivate={activateScenario} comparisonRef={comparisonRef}/>
  </div>;
 }
