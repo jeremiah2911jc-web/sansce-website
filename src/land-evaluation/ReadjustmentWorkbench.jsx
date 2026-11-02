@@ -13,6 +13,7 @@ import {localCatalog} from './generated/land.mjs';
 import {systems,perspectives,stages,targets,evidenceStates,sources,publishedPlans,getPublishedPlan,documentItems,newReadjustmentPlan,evaluateReadjustment,readjustmentSignature,READJUSTMENT_VERSION,REVIEWED_AT,publicationStates} from './generated/readjustment.mjs';
 import './readjustment.css';
 import {SupplementaryFields} from './SupplementaryFields.jsx';
+import {readjustmentNameForTrack} from './readjustment-names.mjs';
 import {StatutoryFields,ConsentFields} from './StatutoryFields.jsx';
 const format=n=>n===null||n===undefined?'待確認':n.toLocaleString('zh-TW',{maximumFractionDigits:3});
 const editionLabel=e=>/文件索引/.test(e.label)?'官方文件（適用公告待核對）':e.label;
@@ -28,7 +29,11 @@ export function ReadjustmentWorkbench({land,onLand,onLandDraft,initialTrack='own
  const entry=publishedPlans.find(x=>x.id===catalogId),edition=entry?.versions.find(x=>x.id===editionId),item=items.find(x=>x.input.id===active),p=item?.input;
  const result=p?evaluateReadjustment(p,land):null,signature=p?readjustmentSignature(p,land):'',published=p?getPublishedPlan(p.catalogId,p.catalogVersion):null;const resultMotion=useResultMotion(signature);
  const update=patch=>{setItems(xs=>xs.map(x=>x.input.id===active?{...x,input:{...x.input,...patch}}:x));setMessage('');};
- const edit=(key,value)=>update({[key]:value});
+ const edit=(key,value)=>update(key==='track'?{track:value,name:readjustmentNameForTrack(p,value)}:{[key]:value});
+ useEffect(()=>{
+  if(!p||readjustmentNameForTrack(p)===p.name)return;
+  setItems(xs=>xs.map(x=>x.input.id===active?{...x,input:{...x.input,name:readjustmentNameForTrack(x.input)}}:x));
+ },[active,p?.name,p?.track,p?.system,p?.planName,setItems]);
  const filtered=publishedPlans.filter(x=>x.city===city&&x.system===system&&(scope==='all'||x.assessmentReview?.scope===scope)&&[x.name,x.district,...(x.aliases??[])].join(' ').toLowerCase().includes(search.trim().toLowerCase()));
  function create(){if(items.length>=30){setMessage('已達30個評估方案，既有資料保留。');return;}if(catalogId&&(!entry||!edition)){setMessage('公告版本尚未選定。');return;}const input=newReadjustmentPlan(crypto.randomUUID(),system);input.track=initialTrack==='acquisition'?'acquisition':'owner';input.name=systems[system]+'／'+perspectives[input.track];if(entry)Object.assign(input,{catalogId:entry.id,catalogVersion:edition.id,planName:entry.name,authority:entry.authority,name:entry.name+'／'+perspectives[input.track]});setItems(xs=>[...xs,{input,history:[]}]);setActive(input.id);setMessage('');}
  function confirm(){if(!result?.canRecord)return;if(item.history.some(s=>s.signature===signature)){setMessage('本次條件已有核對結果。');return;}if(item.history.length>=20){setMessage('本方案已達20個本次核對版本。');return;}const snap={id:crypto.randomUUID(),confirmed:result.canConfirm,signature,input:structuredClone(p),result:structuredClone(result),context:structuredClone(land),published:structuredClone(published),createdAt:new Date().toISOString()};setItems(xs=>xs.map(x=>x.input.id===active?{...x,history:[...x.history,snap]}:x));setMessage(result.canConfirm?'本次文件核對已確認；核准效力仍依原文件。':'已保留待核結果；缺件及障礙仍列於本次結果。');}
