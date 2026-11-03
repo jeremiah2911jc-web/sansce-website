@@ -85,11 +85,12 @@ export function FieldGuidance({label,fieldKey,help:customHelp}){
   if(!open)return;
   const dismiss=e=>{if(!trigger.current?.contains(e.target)&&!panel.current?.contains(e.target))close();};
   const keyboard=e=>{if(e.key==='Escape'){e.preventDefault();close(true);}};
-  document.addEventListener('pointerdown',dismiss);document.addEventListener('keydown',keyboard);
-  return()=>{document.removeEventListener('pointerdown',dismiss);document.removeEventListener('keydown',keyboard);};
+  const another=e=>{if(e.detail!==id)close();};
+  document.addEventListener('pointerdown',dismiss);document.addEventListener('keydown',keyboard);document.addEventListener('sanze-field-help-open',another);
+  return()=>{document.removeEventListener('pointerdown',dismiss);document.removeEventListener('keydown',keyboard);document.removeEventListener('sanze-field-help-open',another);};
  },[open]);
  if(!context||!help)return null;
- return <><button ref={trigger} type="button" className="le-help-trigger" aria-label={label+'填寫說明'} aria-expanded={open} aria-controls={open?id:undefined} onClick={e=>{e.preventDefault();e.stopPropagation();setPosition(null);setOpen(v=>!v);}}>?</button>{open&&createPortal(<aside ref={panel} id={id} role="note" aria-label={label+'填寫說明'} className="le-help-popover" style={{left:position?.left??12,top:position?.top??12,visibility:position?'visible':'hidden'}}><div className="le-help-heading"><strong>{label}</strong><button type="button" aria-label="關閉填寫說明" onClick={()=>close(true)}>關閉</button></div><p>{help}</p></aside>,document.body)}</>;
+ return <><button ref={trigger} type="button" className="le-help-trigger" aria-label={label+'填寫說明'} aria-expanded={open} aria-controls={open?id:undefined} onClick={e=>{e.preventDefault();e.stopPropagation();if(!open)document.dispatchEvent(new CustomEvent('sanze-field-help-open',{detail:id}));setPosition(null);setOpen(v=>!v);}}>?</button>{open&&createPortal(<aside ref={panel} id={id} role="note" aria-label={label+'填寫說明'} className="le-help-popover" style={{left:position?.left??12,top:position?.top??12,visibility:position?'visible':'hidden'}}><div className="le-help-heading"><strong>{label}</strong><button type="button" aria-label="關閉填寫說明" onClick={()=>close(true)}>關閉</button></div><p>{help}</p></aside>,document.body)}</>;
 }
 export function PlanningDefaultsIntro({input,onApply}){
  const guided=isGuidedInput(input),rows=planningDefaultRows(input);

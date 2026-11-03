@@ -300,11 +300,15 @@
         },
         {
           "path": "src/land-evaluation/guided-input.mjs",
-          "sha256": "ae5f96974c390190d2624247d959dcbeacaedbb9467b444a8e625d947e33d862"
+          "sha256": "5bba227e5e3191d6ee324a4c077fc291094a2976c4e946a32e7f0a2465f8abb6"
         },
         {
           "path": "src/land-evaluation/evidence-input.mjs",
           "sha256": "9fb9cb6b90d0e1fa593e3823c3e6f866017f4fd826cdbe2b6108f6d337760f51"
+        },
+        {
+          "path": "src/land-evaluation/applied-planning-fields.mjs",
+          "sha256": "ca0c3a14fb855ca6144d2c260630ab029c454a98c81f54a736761fe4a5e1f0b4"
         }
       ]
     },

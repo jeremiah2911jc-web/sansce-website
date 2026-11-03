@@ -37,5 +37,18 @@
       "path": "src/cases/land-readjustment/ntpc-document-audit.mjs",
       "sha256": "36cfc29d0f5817a4356f9c6139928bd01beeda4425c25977de28f9ceff2039a9"
     }
+  ],
+  "extensions": [
+    {
+      "id": "readjustment-dates",
+      "version": "readjustment-dates.2026-11-03.v1",
+      "scope": "Case-document date validation only; quantity formulas and catalog review date unchanged",
+      "sources": [
+        {
+          "path": "scripts/apply-readjustment-dates.mjs",
+          "sha256": "af3dfcbb845ded1724b739dbb8720d657b66900b637ed461ea8c2cc13eb58ecb"
+        }
+      ]
+    }
   ]
 }
