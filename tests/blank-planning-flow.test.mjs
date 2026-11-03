@@ -7,7 +7,7 @@ import {planningInputIssues,missingPlanningFields,requiredPlanningFields} from '
 import {regionalInputPatch} from '../src/land-evaluation/regional-input.mjs';
 import {issueTarget} from '../src/land-evaluation/workspace-guidance.mjs';
 function blankFilled(){
- const i=createWorkspaceInput(createInput);Object.assign(i,{site:'1600',coverage:'50',far:'300',scale:'0',renewal:'50',tdr:'25',coverageUse:'80',volumeUse:'100',balcony:'5',roofFloors:'3',roofHeight:'3',unitPing:'30',storePercent:'0',motoPerUnit:'1',extraCars:'0',basementSalePercent:'100'});
+ const i=createWorkspaceInput(createInput);delete i.planningDefaults;Object.assign(i,{site:'1600',coverage:'50',far:'300',scale:'0',renewal:'50',tdr:'25',coverageUse:'80',volumeUse:'100',balcony:'5',roofFloors:'3',roofHeight:'3',unitPing:'30',storePercent:'0',motoPerUnit:'1',extraCars:'0',basementSalePercent:'100'});
 
  i.parkingDesign={...i.parkingDesign,demandMode:'per_unit',demandPerUnit:'1'};
  i.basementDemand={...i.basementDemand,allowAlternatives:false};
@@ -41,6 +41,6 @@ test('automatic demand search omits legacy excavation and reserve; fixed basemen
 test('document and mixed cases retain their owning validation',()=>{for(const patch of [{assessmentMode:'document'},{mixedSite:{enabled:true}}])assert.deepEqual(planningInputIssues({...createInput(),...patch}),[]);});
 test('every moved cap and source error has a base-tab destination',()=>{for(const m of ['都更獎勵上限未填','容移上限未填','個案獎勵及容移合計上限不得小於0','高於一般都更50%上限須附來源','高於一般容移30%上限須附來源']){const t=issueTarget(m);assert.equal(t.tab,'base');assert(t.label);}});
 
-test('a fresh website case follows its visible renewal route before any bonus interaction',()=>{const i=createWorkspaceInput(createInput),m=planningInputIssues(activeBonusInput(i));assert(!m.some(t=>t.includes('危老快速目標')));assert(m.some(t=>t.includes('都更快速目標')));});
+test('a fresh website case follows its visible renewal route before any bonus interaction',()=>{const i=createWorkspaceInput(createInput),m=planningInputIssues(activeBonusInput(i));assert(!m.some(t=>t.includes('危老快速目標')));assert.equal(i.renewal,'0');assert(m.every(t=>/基地面積|建蔽率|容積率/.test(t)));});
 
 test('Taipei conditional excavation choices remain blocking and both locate exact fields',()=>{let i=blankFilled();Object.assign(i,regionalInputPatch(i,'臺北市'));Object.assign(i.regulatoryReview,{renewalLimitPercent:'50',tdrLimitPercent:'30'});confirmSyntheticBonusConditions(i);const errors=evaluateActiveBonuses(i).errors;for(const [pattern,label]of [[/都市計畫是否另訂地下開挖/,'都市計畫開挖規定'],[/請選擇地下開挖適用分區/,'地下開挖適用分區']]){const message=errors.find(t=>pattern.test(t));assert(message);assert.equal(issueTarget(message,i).label,label);}});

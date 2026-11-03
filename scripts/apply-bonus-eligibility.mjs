@@ -32,11 +32,11 @@ export function applyBonusEligibility(code){
 }
 
 export function applyBonusEligibilityPanel(code){
- if(code.includes('/* bonus-eligibility-panel-hook */'))return code;
+ if(code.includes('/* bonus-eligibility-panel-hook */'))return code.replace('/* bonus-eligibility-panel-hook */ jsx2("div",','/* bonus-eligibility-panel-hook */ jsxs2("div",');
  const ast=parse(code,{sourceType:'module'}),edits=[];
  function walk(n){if(!n||typeof n!=='object')return;
   if(n.type==='ConditionalExpression'&&n.test?.name==='summaryIncomplete'){
-   edits.push({start:n.start,end:n.end,text:`/* bonus-eligibility-panel-hook */ jsx2("div", {children:[jsx2(BonusEligibilityPanel,{input,edit}), summaryIncomplete ? jsx2("p", {role:"status",children:"請完成基地資料、獎勵適用條件與本次採用比例。"}) : jsx2("p", {children:[a.route==="renewal"?"都更 "+f8(effective.renewal)+"%":a.route==="danger"?"危老 "+f8(effective.danger)+"%":"未採重建獎勵",effective.tdr>0?"容移 "+f8(effective.tdr)+"%":""].filter(Boolean).join("；")})]})`});
+   edits.push({start:n.start,end:n.end,text:`/* bonus-eligibility-panel-hook */ jsxs2("div", {children:[jsx2(BonusEligibilityPanel,{input,edit}), summaryIncomplete ? jsx2("p", {role:"status",children:"請完成基地資料、獎勵適用條件與本次採用比例。"}) : jsx2("p", {children:[a.route==="renewal"?"都更 "+f8(effective.renewal)+"%":a.route==="danger"?"危老 "+f8(effective.danger)+"%":"未採重建獎勵",effective.tdr>0?"容移 "+f8(effective.tdr)+"%":""].filter(Boolean).join("；")})]})`});
   }
   for(const[k,v]of Object.entries(n)){if(['loc','extra','comments'].includes(k))continue;if(Array.isArray(v))v.forEach(walk);else if(v&&typeof v==='object')walk(v);}
  }walk(ast.program);

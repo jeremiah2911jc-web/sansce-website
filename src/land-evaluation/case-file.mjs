@@ -1,5 +1,7 @@
+import {isTod} from './ntpc-tod.mjs';
 import {encodeValue,decodeValue,inputOnly,parseDraft,serializeDraft,MAX_DRAFT_SIZE} from './local-draft.mjs';
 import {createInput} from './model.mjs';
+import {isGuidedInput} from './guided-input.mjs';
 import {newLandAssessment,newLandFact,newLegalInputs,newGroup,newHouse,newFloor,dossierById,localProfile} from './generated/land.mjs';
 import {newReadjustmentPlan} from './generated/readjustment.mjs';
 export const CASE_FORMAT='sanze.evaluation-inputs',CASE_VERSION=1,MAX_CASE_BYTES=4_000_000;
@@ -19,8 +21,9 @@ function scalarMap(map,label){if(!object(map))fail(label);for(const row of Objec
 export function validateCaseData(data){
  // Reuse the draft envelope whitelist and lossless value codec before inspecting UI shapes.
  const clean=parseDraft(serializeDraft(data,'validation','validation')).data;
- if(clean['collective.input'])like(clean['collective.input'],createInput(),'集合住宅');
- for(const p of clean['collective.scenarios']||[])like(p.input,createInput(),'集合住宅'+p.code);
+ const collective=(input,label)=>{like(input,createInput(),label);if(input.regulatoryReview?.ntpcTod!==undefined&&!isTod(input.regulatoryReview.ntpcTod))fail(label+'TOD條件');if(input.planningDefaults!==undefined&&!isGuidedInput(input))fail(label+'規劃預設值');};
+ if(clean['collective.input'])collective(clean['collective.input'],'集合住宅');
+ for(const p of clean['collective.scenarios']||[])collective(p.input,'集合住宅'+p.code);
  const activeScenario=clean['collective.scenarios']?.find(p=>p.id===clean['collective.active']);if(activeScenario)for(const k of ['input','name','district','tab'])if(!Object.hasOwn(clean,'collective.'+k))clean['collective.'+k]=structuredClone(activeScenario[k]);
  if(clean['collective.district']&&!['新北市','臺北市'].includes(clean['collective.district']))fail('集合住宅地區');
  const land=clean['land.assessment'];

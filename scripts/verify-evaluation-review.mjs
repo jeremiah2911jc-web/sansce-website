@@ -30,7 +30,7 @@ const testEntry=`import {renderToStaticMarkup} from 'react-dom/server';import {c
 const output=root+'qa/evaluation-preview-20261102/render-review.mjs';await build({stdin:{contents:testEntry,resolveDir:root,sourcefile:'render-review.mjs'},bundle:true,jsx:'automatic',platform:'node',format:'esm',outfile:output,packages:'external',plugins:[{name:'local-source',setup(build){build.onResolve({filter:/^\/src\//},args=>({path:root+args.path.slice(1)}));}}]});
 const {render}=await import(output+'?t='+Date.now());
 const simpleTaipei={...createInput(),...regionalInputPatch(createInput(),'臺北市')};
-const html=render('BonusAssessmentPanel',{input:simpleTaipei,edit:()=>{},financials:false});assert(!html.includes('明示'));assert(!html.includes('新北退縮'));assert(!html.includes('新北地方獎勵'));assert(!html.includes('value="ntpc"'));assert(html.includes('臺北市'));assert(html.includes('待補證明，先按規劃條件估算'));
+const html=render('BonusAssessmentPanel',{input:simpleTaipei,edit:()=>{},financials:false});assert(!html.includes('明示'));assert(!html.includes('新北退縮'));assert(!html.includes('新北地方獎勵'));assert(!html.includes('value="ntpc"'));assert(html.includes('臺北市'));assert(html.includes('待確認'));
 const htmlNtpc=render('BonusAssessmentPanel',{input:createInput(),edit:()=>{},financials:false});assert(htmlNtpc.includes('新北退縮'));assert(!htmlNtpc.includes('明示'));
 for(const [name,props]of [['IndustrialPanel',{value:newIndustrial(),onChange:()=>{}}],['DocumentCasePanel',{value:newDocumentCase(),onChange:()=>{}}],['MixedZonePanel',{value:newMixedSite(),onChange:()=>{}}],['CommercialIntensityPanel',{value:{...newCommercialIntensity(),city:'臺北市'},district:'臺北市',site:'2400',coverage:'50',onChange:()=>{}}],['LegalParkingPanel',{input:saved,edit:()=>{},result:evaluate(saved),section:'parking'}]]){const rendered=render(name,props);assert(!rendered.includes('明示'),name+' still contains internal assumption wording');writeFileSync(root+'qa/evaluation-preview-20261102/'+name+'.html',rendered);}
 writeFileSync(root+'qa/evaluation-preview-20261102/taipei-panel.html',html);writeFileSync(root+'qa/evaluation-preview-20261102/ntpc-panel.html',htmlNtpc);
@@ -74,9 +74,9 @@ for(const city of ['臺北市','新北市'])for(const route of ['renewal','dange
  const input=exampleInput();Object.assign(input,{site:'2400',far:'280',renewal:'10',danger:'10',tdr:'0',scale:'0'});input.parkingDesign.district=city;Object.assign(input.regulatoryReview,{renewalLimitPercent:'50',tdrLimitPercent:'30'});
  input.regulatoryReview.bonusAssessment={...routeAssessment(),route,renewalMode:mode,dangerMode:mode,dangerEligibleSite:'2400',dangerAdjacentSite:'0'};
  const frozen=structuredClone(input),values=evaluate(input),html=render('BonusAssessmentPanel',{input,edit:()=>{},financials:false});
- assert(html.includes('本次採用：'),JSON.stringify({city,route,mode,errors:values.errors,summary:html.match(/<p role="status">[^<]+/g)}));
- assert.equal(html.includes('都更額度依資格與核定文件確認。'),route==='renewal',[city,route,mode,'renewal source reminder']);
- assert.equal(html.includes('危老額度依資格與核定文件確認。'),route==='danger',[city,route,mode,'danger source reminder']);
+ assert(html.includes(input.planningDefaults?'本次先依目標條件初估':'獎勵適用條件與文件'),JSON.stringify({city,route,mode,errors:values.errors,summary:html.match(/<p role="status">[^<]+/g)}));
+ assert.equal(html.includes('aria-label="都更適用資格"'),route==='renewal',[city,route,mode,'renewal qualification']);
+ assert.equal(html.includes('aria-label="危老法定適用資格"'),route==='danger',[city,route,mode,'danger qualification']);
  assert.deepEqual(input,frozen);assert.deepEqual(evaluate(input),values);
 }
 console.log('PASS 12 active-route source reminders across two cities and quick/detail modes; no input or calculation changes.');

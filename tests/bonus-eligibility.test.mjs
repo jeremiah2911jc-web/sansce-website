@@ -1,3 +1,5 @@
+import {applyNtpcTod} from '../scripts/apply-ntpc-tod.mjs';
+import {applyEvaluationPanelCopy} from '../scripts/apply-evaluation-panel-copy.mjs';
 import {test} from 'node:test';import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync} from 'node:fs';import {execFileSync} from 'node:child_process';
 import {createInput} from '../src/land-evaluation/model.mjs';
@@ -7,12 +9,13 @@ import {regionalInputPatch} from '../src/land-evaluation/regional-input.mjs';
 import {collectiveDelivery,displayRuleVersion} from '../src/land-evaluation/delivery-model.mjs';
 import {serializeCase,parseCase} from '../src/land-evaluation/case-file.mjs';
 import {issueTarget} from '../src/land-evaluation/workspace-guidance.mjs';
+import {applyGuidedPlanning} from '../scripts/apply-guided-planning.mjs';
 import {applyBonusEligibility,applyBonusEligibilityPanel} from '../scripts/apply-bonus-eligibility.mjs';
 let code=readFileSync(new URL('../src/land-evaluation/generated/core.mjs',import.meta.url),'utf8');
-for(const path of ['taipei-renewal/model.mjs','bonus-eligibility.mjs'])code=code.replace(JSON.stringify('../'+path),JSON.stringify(new URL('../src/land-evaluation/'+path,import.meta.url).href));
+for(const path of ['taipei-renewal/model.mjs','bonus-eligibility.mjs','ntpc-tod.mjs'])code=code.replace(JSON.stringify('../'+path),JSON.stringify(new URL('../src/land-evaluation/'+path,import.meta.url).href));
 const core=await import('data:text/javascript;base64,'+Buffer.from(code+'\nexport {resolveBonusLimits,assessBonuses,newTdrApplication};').toString('base64'));
 export function legalFixture(){
- const i=createWorkspaceInput(createInput);Object.assign(i,{site:'1600',coverage:'50',far:'300',scale:'0',renewal:'50',tdr:'25',coverageUse:'80',volumeUse:'100',balcony:'5',roofFloors:'3',roofHeight:'3',unitPing:'30',storePercent:'0',motoPerUnit:'1',extraCars:'0',basementSalePercent:'100'});
+ const i=createWorkspaceInput(createInput);delete i.planningDefaults;Object.assign(i,{site:'1600',coverage:'50',far:'300',scale:'0',renewal:'50',tdr:'25',coverageUse:'80',volumeUse:'100',balcony:'5',roofFloors:'3',roofHeight:'3',unitPing:'30',storePercent:'0',motoPerUnit:'1',extraCars:'0',basementSalePercent:'100'});
  i.parkingDesign={...i.parkingDesign,demandMode:'per_unit',demandPerUnit:'1'};i.basementDemand={...i.basementDemand,allowAlternatives:false};
  Object.assign(i.roadConditions,{plannedWidth:'12',openedWidth:'12',frontage:'25',connected:'yes',status:'confirmed',source:'合成驗收圖說，非實際基地文件',checkedAt:'2026-11-02'});
  Object.assign(i.regulatoryReview,{renewalLimitPercent:'50',tdrLimitPercent:'30'});
@@ -49,7 +52,7 @@ test('report version and balcony denominator, no inactive danger text',()=>{cons
 test('other awards precede renewal inside50 cap; TDR separate',()=>{const i=legalFixture();i.scale='20';const z=evaluateActiveBonuses(i);assert.deepEqual(z.errors,[]);assert.equal(z.values.scaleApplied,20);assert.equal(z.values.renewalApplied,30);assert.equal(z.values.allowed,8400);});
 test('detail overlap deduction counted once',()=>{const i=legalFixture(),a=assess(i);i.tdr='0';a.renewalMode='detail';a.entries={'u-green':{choice:'2'},'u-smart':{choice:'2'}};Object.assign(a.conditions,{overlap:'deducted',entries:{'u-green':'yes','u-smart':'yes'}});a.deduction='4';assert.equal(evaluateActiveBonuses(i).values.renewalApplied,12);});
 test('TDR plaza and walk need separate range evidence',()=>{const i=legalFixture(),a=assess(i);a.route='none';a.tdrMode='detail';a.entries={'t-plaza':{choice:'1'},'t-walk':{choice:'1'}};a.conditions.entries={'t-plaza':'yes','t-walk':'yes'};delete a.conditions.overlap;assert.equal(evaluateActiveBonuses(i).values,null);Object.assign(a.conditions,{overlap:'distinct',overlapSource:'合成分開空間圖'});assert(evaluateActiveBonuses(i).values);});
-test('generated adapters reproducible; other shared functions preserved',()=>{for(const name of ['core','panels']){const path='src/land-evaluation/generated/'+name+'.mjs',before=execFileSync('git',['show','HEAD:'+path],{encoding:'utf8',maxBuffer:20e6});let expected=applyBonusEligibility(before);if(name==='panels')expected=applyBonusEligibilityPanel(expected);assert.equal(readFileSync(path,'utf8'),expected);assert.equal(applyBonusEligibility(expected),expected);}});
+test('generated adapters reproducible; other shared functions preserved',()=>{for(const name of ['core','panels']){const path='src/land-evaluation/generated/'+name+'.mjs',before=execFileSync('git',['show','HEAD:'+path],{encoding:'utf8',maxBuffer:20e6});let expected=applyBonusEligibility(before);if(name==='panels')expected=applyBonusEligibilityPanel(expected);expected=applyNtpcTod(applyGuidedPlanning(expected));if(name==='panels')expected=applyEvaluationPanelCopy(expected);assert.equal(readFileSync(path,'utf8'),expected);assert.equal(applyBonusEligibility(expected),expected);}});
 process.on('exit',()=>writeFileSync('qa/bonus-eligibility/results.json',JSON.stringify(out,null,2)));
 
 test('report retains stricter20 TDR cap and danger39 area/date basis',()=>{const i=legalFixture();Object.assign(i.regulatoryReview,{bonusLimitMode:'document',tdrLimitPercent:'20',renewalLimitPercent:'50',bonusSource:'合成限制20%'});const z=evaluateActiveBonuses(i),s=collectiveDelivery({input:i,result:z,district:'新北市'});assert(s.inputs.some(([k,v])=>k==='容移上限'&&v==='20%'));i.tdr='0';Object.assign(assess(i),{route:'danger',dangerEligibleSite:'1600',dangerAdjacentSite:'0'});i.danger='40';const d=collectiveDelivery({input:i,result:evaluateActiveBonuses(i),district:'新北市'});assert(d.inputs.some(([k,v])=>k==='本次危老獎勵上限'&&v==='39%'));assert(!d.sources.some(x=>x.startsWith('獎勵範圍及扣除依據')));assert(d.sources.some(x=>x.includes('D0070249')));assert(d.sources.some(x=>x.includes('D0070258')));});

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {serializeDraft,parseDraft,encodeValue,decodeValue,comparable,MAX_DRAFT_SIZE,persistDraft,DRAFT_KEY} from '../src/land-evaluation/local-draft.mjs';
 import {collectiveDelivery,landDelivery,layoutDelivery,readjustmentDelivery,displayNumber,displayRuleVersion} from '../src/land-evaluation/delivery-model.mjs';
 import {publicText} from '../src/land-evaluation/public-copy.mjs';
+import {todPendingNotice} from '../src/land-evaluation/ntpc-tod.mjs';
 import {createInput,exampleInput,evaluate} from '../src/land-evaluation/model.mjs';
 import {defaultBasementDemand} from '../src/land-evaluation/generated/core.mjs';
 import {newLandAssessment,newLandFact,newLegalInputs,evaluateLand,newLayout,newHouse,newFloor,calculateLayout} from '../src/land-evaluation/generated/land.mjs';
@@ -40,7 +41,7 @@ for(const i of [summaryFixture(),{...summaryFixture(),site:'1800',coverage:'50',
  test('collective output mapped without recalculation or mutation',()=>{assert.equal(s.metrics[0][1],r.values.salePing);assert.equal(s.createdAt,'2026-10-23T00:00:00Z');assert.deepEqual(r,before);assert(!s.ruleVersion.includes('待核'));});
  test('area chart uses nonoverlapping floor components',()=>assert(Math.abs(s.charts[1].rows.reduce((a,x)=>a+x[1],0)-r.values.total)<.02));
  test('volume chart preserves core precision',()=>assert(Math.abs(s.charts[0].rows.reduce((a,x)=>a+x[1],0)-r.values.allowed)<.02));
- test('regulatory conditions retained while approved implementation commentary is omitted',()=>{const necessary=r.notes.filter(note=>!note.startsWith('逐層表未提供圖說時')&&!note.startsWith('建築面積與等面積樓層為總量模型'));assert.deepEqual(new Set([...s.issues,...s.assumptions]),new Set(necessary.map(publicText)));assert(s.assumptions.every(x=>!s.issues.includes(x)));});
+ test('regulatory conditions retained with pending TOD reminder while approved implementation commentary is omitted',()=>{const necessary=r.notes.filter(note=>!note.startsWith('逐層表未提供圖說時')&&!note.startsWith('建築面積與等面積樓層為總量模型'));const todNotice=todPendingNotice(i);if(todNotice)necessary.push(todNotice);assert.deepEqual(new Set([...s.issues,...s.assumptions]),new Set(necessary.map(publicText)));assert(s.assumptions.every(x=>!s.issues.includes(x)));});
 }
 test('unknown values and small positives are distinct from zero',()=>{assert.equal(displayNumber(null),'待確認');assert.equal(displayNumber(NaN),'待確認');assert.equal(displayNumber(undefined),'待確認');assert.equal(displayNumber(0),'0');assert.equal(displayNumber(.001),'<0.01');});
 const a={...newLandAssessment('synthetic'),intendedUse:'housing',legalInputs:newLegalInputs(),routePlans:[],parcels:[{...newLandFact('unknown'),areaSqm:'300',landNumber:'模擬001'}]};

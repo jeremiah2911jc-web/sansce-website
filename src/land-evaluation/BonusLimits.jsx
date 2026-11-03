@@ -9,12 +9,12 @@ export function BonusLimits({input,edit,review}){
  const change=patch=>edit({regulatoryReview:{...p,...patch}});
  const field=(key,label)=> <label className="le-field" key={key}><span>{label.replace(/%([（(].*[）)])?$/,'$1')}</span><span className="le-number"><input aria-label={label} data-limit-key={key} type="number" min="0" step="any" placeholder="—" value={p[key]} onChange={e=>change({[key]:e.target.value})}/><span>%</span></span></label>;
  const row=(label,value,source,title)=><div key={label}><dt>{label}</dt><dd><output aria-label={label}>{value}</output>{source&&<a href={source} target="_blank" rel="noreferrer">{title}</a>}</dd></div>;
- const bonus=review?.regulatory?.bonus;
+ const bonus=review?.regulatory?.bonus,effectiveAssessment=review?.planningBonus??a;
  return <section className="le-bonus-limits" aria-label="獎勵與容移上限"><h3>獎勵與容移上限</h3>
  {limits&&<><p>上限依地區與適用條件帶入；本次採用比例由資格、評點及文件檢核結果決定。</p><dl className="le-statutory-limits">
  {renewal&&row('都更獎勵上限',limits.renewal+'%',limits.renewalSource,'都更法規')}
  {danger&&row('危老基本獎勵上限',a.conditions?.originalCap==='original115'?'依合法原容積115%核算':'30%',dangerLaw,'危老條例第6條')}
- {danger&&a.dangerMode==='quick'&&row('本次危老獎勵上限',a.dangerEligibleSite.trim()&&a.dangerAdjacentSite.trim()&&a.date?dangerLegalCap(a,{site:input.site,far:input.far}).toLocaleString('zh-TW',{maximumFractionDigits:4})+'%':'待確認',dangerLaw,'依日期與面積核算')}
+ {danger&&a.dangerMode==='quick'&&row('本次危老獎勵上限',effectiveAssessment.dangerEligibleSite.trim()&&effectiveAssessment.dangerAdjacentSite.trim()&&effectiveAssessment.date?dangerLegalCap(effectiveAssessment,{site:input.site,far:input.far}).toLocaleString('zh-TW',{maximumFractionDigits:4})+'%':'待確認',dangerLaw,'依日期與面積核算')}
  {tdr&&row('容移上限',Math.min(bonus?.application?.capPercent??Infinity,bonus?.tdrLimit??limits.tdr,document&&p.tdrLimitPercent!==''?Number(p.tdrLimitPercent):Infinity)+'%',limits.tdrSource,'容移法規')}
  {limits.combined!==null&&row('獎勵與容移合計上限',limits.combined+'%',limits.tdrSource,'特殊重建規定')}
  </dl>{danger&&<p>合法原容積較高、合併鄰地、時程及規模獎勵，依本次日期、面積與獎勵條件分別計算。</p>}

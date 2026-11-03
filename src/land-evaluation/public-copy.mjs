@@ -2,6 +2,12 @@ import {approvedEvaluationCopyEdits} from './approved-copy-edits.mjs';
 import {developmentServiceCopyEdits} from '../../shared/development-service-copy.mjs';
 // Website wording only. Keep the authoritative App inputs and calculation rules intact.
 export const publicCopyEdits = [
+ ['1. 土地分項與採計範圍','土地分項與採計範圍'],
+ ['2. 開發途徑及併用條件','開發途徑及併用條件'],
+ ['3. 獎勵、容移與重複扣除','獎勵、容移與重複扣除'],
+ ['4. 逐棟逐層用途配置','逐棟逐層用途配置'],
+ ['5. 立體化能源與容移基地條件','立體化能源與容移基地條件'],
+ ['6. 法規條件與採計文件','法規條件與採計文件'],
  ['額外市場汽車位','增設汽車位數'],
  ['，不套用新北危老容移例外。','。'],
  ['缺文件，依目標假設初估','待補文件，先按規劃條件估算'],

@@ -15,7 +15,8 @@ export function PublicSelect({children,...props}){
    const textWidth=context?.measureText(selected).width??0;
    setCaption(textWidth>available+1?selected:'');
    const parent=control.closest('label');
-   setLabel((parent?.querySelector('.le-label-text')??parent?.querySelector(':scope > span'))?.textContent?.trim()??'');
+   const heading=parent?.querySelector('.le-label-text')??parent?.querySelector(':scope > span');
+   setLabel(heading?.dataset.label??heading?.querySelector(':scope > span')?.textContent?.trim()??heading?.textContent?.trim()??'');
   }
   measure();
   const observer=new ResizeObserver(measure);observer.observe(control);

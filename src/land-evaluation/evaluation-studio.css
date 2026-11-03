@@ -223,3 +223,47 @@
 /* Numeric fields include a unit: draw one focus ring around the complete control. */
 .dev-tool-shell :is(.land-evaluation,.mixed-zone) :is(.le-number,.planning-number-unit) input:is(:focus-visible,.field-located) {outline:none!important;box-shadow:none}
 .dev-tool-shell :is(.land-evaluation,.mixed-zone) :is(.le-number,.planning-number-unit):has(input.field-located) {outline:2px solid #84583f;outline-offset:3px}
+
+/* Planning guidance stays with the field it explains. */
+.land-evaluation :is(.le-field-caption,.le-label-text){display:flex;align-items:center;align-self:stretch;justify-content:flex-start;text-align:left;flex-wrap:wrap;gap:6px 10px}
+.land-evaluation .le-field-state{flex:none;color:#805e40;font-style:normal;font-weight:400;font-size:12px;line-height:1.7;letter-spacing:.02em}
+.land-evaluation .le-field-caption:has(.le-field-state)>small{display:none}
+.land-evaluation .studio-base .le-field-state{color:#e1bb96}
+.dev-tool-shell .land-evaluation .le-help-trigger{display:inline-flex;align-items:center;justify-content:center;flex:none;width:28px;height:28px;min-height:28px;min-width:28px;padding:0;margin:0;border:1px solid #859a9c;border-radius:50%;background:transparent;color:#42666c;font:500 14px/1 sans-serif;letter-spacing:0;cursor:pointer;box-shadow:none;transform:none}
+.dev-tool-shell .land-evaluation .le-help-trigger:hover,.dev-tool-shell .land-evaluation .le-help-trigger[aria-expanded=true]{background:#dfeae8;color:#244f57;border-color:#42666c}
+.dev-tool-shell .land-evaluation .le-help-trigger:focus-visible{outline:2px solid #84583f;outline-offset:3px}
+.dev-tool-shell .land-evaluation .studio-base .le-help-trigger{color:#e6eeee;border-color:#b1c3c8}
+.dev-tool-shell .land-evaluation .studio-base .le-help-trigger:hover{color:#244f57}
+.le-help-popover{position:fixed;z-index:1000;box-sizing:border-box;width:min(340px,calc(100vw - 24px));max-height:calc(100vh - 24px);overflow:auto;padding:18px 20px;background:#edf4f2;border:1px solid #809b9b;border-radius:12px;color:#24474f;box-shadow:0 6px 22px #263d4b20;font-family:"Noto Sans TC",sans-serif;text-align:left;letter-spacing:.015em}
+.le-help-popover .le-help-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.le-help-popover .le-help-heading strong{font-size:14px;line-height:1.7;font-weight:600}
+.le-help-popover .le-help-heading button{flex:none;padding:3px 0;min-height:28px;background:none;border:0;color:#355f67;font:400 13px/1.7 sans-serif;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.le-help-popover p{margin:10px 0 0;font-size:14px;font-weight:400;line-height:1.85;white-space:normal;word-break:normal;overflow-wrap:anywhere}
+.le-help-popover button:focus-visible{outline:2px solid #84583f;outline-offset:3px}
+@media print{.le-help-popover,.le-help-trigger{display:none!important}}
+.land-evaluation .le-planning-start{margin:24px 0 34px;max-width:960px;font-size:15px;line-height:1.9;color:#53676a}
+.land-evaluation .le-planning-start>div{display:flex;align-items:flex-start;gap:30px;margin-top:10px}
+.land-evaluation .le-planning-start details{flex:1;min-width:0}
+.land-evaluation .le-planning-start summary,.land-evaluation .le-planning-result-basis summary{cursor:pointer;color:#805e40;font-size:14px}
+.land-evaluation .le-planning-start dl,.land-evaluation .le-planning-result-basis dl{display:grid;grid-template-columns:1fr 1fr;gap:12px 30px;margin-top:16px}
+.land-evaluation .le-planning-start dl>div,.land-evaluation .le-planning-result-basis dl>div{display:flex;justify-content:space-between;gap:16px}
+.land-evaluation .le-planning-start dd,.land-evaluation .le-planning-result-basis dd{margin:0}
+.land-evaluation .le-guided-eligibility{margin:20px 0}
+.land-evaluation .le-planning-result-basis{padding:28px 30px;background:#f1eee5;color:#324f59;line-height:1.9}
+.land-evaluation .le-planning-result-basis p{max-width:70ch;margin:10px 0}
+.land-evaluation .le-partial-result{margin:40px 0;padding:32px 0;color:#243f4b}
+.land-evaluation .le-partial-result>p{max-width:70ch;line-height:1.9}
+.land-evaluation .le-partial-result>dl{display:flex;flex-wrap:wrap;gap:32px 60px;margin:28px 0}
+.land-evaluation .le-partial-result dd{margin:10px 0 0;font-size:30px}
+
+/* Keep the date and award-document choice together, above the target amounts. */
+@media screen and (min-width:800px){
+ .dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:18px 24px}
+ .dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>*{grid-column:1/-1;margin-block:0}
+ .dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>.planning-field-grid:nth-of-type(-n+2){display:contents}
+ .dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>.planning-field-grid:nth-of-type(-n+2)>label{grid-column:span 2;grid-row:auto;display:flex;flex-direction:column;gap:8px;padding:0;min-width:0}
+ .dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>.planning-field-grid:nth-of-type(-n+2)>label:has(input[type=date]),.dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>.planning-field-grid:nth-of-type(2)>label{grid-column:span 3}
+ .dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>.planning-field-grid:nth-of-type(3){grid-template-columns:repeat(2,minmax(0,1fr));margin-top:8px}
+}
+
+.dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>.planning-field-grid:nth-of-type(-n+2)>label>.le-label-text{align-self:stretch}
