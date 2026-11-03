@@ -21,12 +21,14 @@ const fieldLabels={
 };
 const specialTargets=[
  {key:'basementReservePercent',label:'地下設備梯間預留比例',tab:'basement',terms:['地下預留比例']},
- {label:'危老合格原建築基地㎡（須依資料填寫）',tab:'base',terms:['危老原合格基地面積及鄰地面積']},
+ {label:'危老原建築基地面積',tab:'base',terms:['危老原合格基地面積及鄰地面積']},
  {label:'機電免計適用條件',tab:'above',terms:['直通樓梯','安全梯','機電免計']},
  {label:'預計報核／申請日期',tab:'base',terms:['報核日期','申請日期','申請期限']},
 ];
 const fields=planningFields.map(([key,label,,tab])=>({key,label:fieldLabels[key]||publicText(label),tab,terms:[label,publicText(label),fieldLabels[key]||publicText(label),(fieldLabels[key]||publicText(label)).replace(/%$/,'')]}));
 export function issueTarget(message,input={}){
+ if(/TOD.*合計上限/.test(message)&&input.regulatoryReview?.ntpcTod?.scope==='exception')return {tab:'base',summary:'獎勵與容移：快速估算／細項評定',label:'重建獎勵路徑'};
+ if(/TOD/.test(message))return {tab:'base',summary:'新北TOD增額容積與容移順序',label:/例外.*日期/.test(message)?'TOD例外的容移核准或都更報核日期':/例外.*依據|查詢依據/.test(message)?'TOD查詢或例外依據':/例外.*選擇/.test(message)?'TOD免優先申請的例外條件':/完整街廓/.test(message)?'TOD基地是否為完整街廓':/比例|合計上限|須先申請/.test(message)?'TOD增額容積比例':'TOD適用範圍與申請順序'};
  const detail=blockingFieldTarget(message,input);if(detail)return detail;
  const row=message.match(/^(.+?)(適用比例|第二計算量|第三計算量|計算量)(未填|不得)/);
  if(row)return {tab:'base',summary:row[1],label:row[1]+({適用比例:'適用基準容積比例',計算量:'計算量',第二計算量:'第二計算量',第三計算量:'第三計算量'}[row[2]])};
@@ -49,9 +51,19 @@ export function issueTarget(message,input={}){
 
 function blockingFieldTarget(message,input){
  const prerequisite=(label)=>({tab:'base',region:'獎勵適用條件',label});
+ if(message.startsWith('路寬查證來源'))return {tab:'base',summary:'基地道路條件',label:'路寬查證來源／圖資量測／文件'};
+ if(message.startsWith('個案開挖規定來源'))return {tab:'basement',label:input.basementDemand?.enabled?'法規依據、都市計畫或核准文件':'開挖率上限資料來源'};
+ if(message.startsWith('較嚴格開挖規定來源'))return {tab:'basement',summary:'個案都市計畫較嚴格規定',label:'較嚴格規定來源'};
+ if(message.startsWith('地下開挖規則依據'))return {tab:'basement',label:'法規依據、都市計畫或核准文件'};
+ if(message.startsWith('停車規則來源'))return {tab:'parking',summary:'停車規則來源',label:'法規／都市計畫書條文及查核來源'};
+ if(message.startsWith('自行車免計適用法令／核定資料'))return {tab:'basement',summary:'地下免計、反計及用途假設',label:'自行車免計適用法令／核定資料'};
+ if(message.startsWith('危老全體所有權人同意條件'))return prerequisite(bonusLabels.dangerConsent);
+ if(message.startsWith('全體同意協議合建條件'))return prerequisite(bonusLabels.agreementConsent);
+ if(message.startsWith('道路尚未足寬開闢連通'))return {tab:'base',summary:'基地道路條件',label:'足寬開闢道路之連通'};
+ if(message.startsWith('所選項目涉及同一空間'))return prerequisite(bonusLabels.overlapSource);
  if(/其他都市更新實施方式須|策略性更新加倍須依第12條/.test(message))return prerequisite(bonusLabels.implementation);
  if(/報核時程所選更新地區|第7條第1項第3款更新地區與報核/.test(message))return prerequisite(bonusLabels.renewalDistrict);
- if(/危老原合格基地及鄰地面積須/.test(message))return prerequisite('危老合格原建築基地㎡（須依資料填寫）');
+ if(/危老原合格基地及鄰地面積須/.test(message))return prerequisite('危老原建築基地面積');
  if(/危老資格與結構獎勵所選條件/.test(message))return prerequisite(bonusLabels.dangerCategory);
  if(/同一事項重複獎勵扣除比例/.test(message))return {tab:'base',label:'同一事項重複獎勵扣除（基準容積%）'};
  if(/其他獎勵已超過/.test(message))return {tab:'base',key:'scale',label:'土管／規模獎勵目標'};
@@ -97,9 +109,9 @@ function blockingFieldTarget(message,input){
   [/同路段基地面寬須/,{tab:'base',label:'同一路段基地面寬m'}],
   [/計畫路寬須|確認路寬須/,{tab:'base',label:'計畫道路寬度m'}],
   [/路寬查證日期/,{tab:'base',label:'路寬查證日期'}],
-  [/合法原容積須/,{tab:'base',label:'符合條件的合法原建築容積㎡（全合格原基地才核較高上限）'}],
-  [/合格原基地須/,{tab:'base',label:'危老合格原建築基地㎡（須依資料填寫）'}],
-  [/合併鄰地須/,{tab:'base',label:'合併鄰接基地㎡'}],
+  [/合法原容積須/,{tab:'base',label:'合法原建築容積面積'}],
+  [/合格原基地須/,{tab:'base',label:'危老原建築基地面積'}],
+  [/合併鄰地須/,{tab:'base',label:'合併鄰接基地面積'}],
   [/屋突總高度|屋突上限條件資料無效/,{tab:'above',key:'roofHeight',label:'屋突每層高度'}],
   [/屋突投影超出/,{tab:'above',label:'屋突投影條件'}],
   [/屋突用途不符合/,{tab:'above',summary:'屋突用途與登記假設',label:'屋突暫按符合樓梯、昇降機及機械房用途'}],

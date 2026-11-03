@@ -1,4 +1,5 @@
 import {reviewTaipeiRenewal,taipeiRenewalApplies,renewalArticle65,taipeiRenewalLaw} from './taipei-renewal/model.mjs';
+import {meaningfulEvidence} from './evidence-input.mjs';
 
 export const transferLaw='https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=D0070028&flno=8';
 export const ntpcTransferLaw='https://web.law.ntpc.gov.tw/Scripts/FLAWDAT0202.aspx?fcode=C0150015';
@@ -45,5 +46,5 @@ export function bonusPanelPatch(input,patch){
 export function caseLimitIssues(input){
  const limits=statutoryBonusLimits(input),p=input.regulatoryReview;
  if(!limits||bonusLimitMode(input,limits)!=='document')return [];
- return present(p.bonusSource)?[]:['個案上限的文件依據未填'];
+ return meaningfulEvidence(p.bonusSource)?[]:[present(p.bonusSource)?'個案上限的文件依據請填具體文件名稱、日期或文號及適用範圍':'個案上限的文件依據未填'];
 }

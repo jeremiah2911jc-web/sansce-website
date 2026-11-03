@@ -1,3 +1,5 @@
+import {applyNtpcTod,NTPC_TOD_PATCH_VERSION} from './apply-ntpc-tod.mjs';
+import {applyGuidedPlanning,GUIDED_PLANNING_PATCH_VERSION} from './apply-guided-planning.mjs';
 import {applyBonusEligibility,applyBonusEligibilityPanel,BONUS_ELIGIBILITY_PATCH_VERSION} from './apply-bonus-eligibility.mjs';
 import {applyDangerAreaFix,DANGER_AREA_FIX_VERSION} from './apply-danger-area-fix.mjs';
 import {applyTaipeiRenewalCore} from './apply-taipei-renewal-core.mjs';
@@ -86,7 +88,8 @@ for(const [name,contents]of [['core',core],['panels',ui+industrialUi],['land',la
  });}};
  const result=await build({stdin:{contents,resolveDir:app,loader:'tsx'},outfile:output,bundle:true,format:'esm',platform:'browser',target:'es2020',jsx:'automatic',external:['react','react/jsx-runtime','/src/land-evaluation/PublicSelect.jsx','/src/land-evaluation/PublicFields.jsx','/src/land-evaluation/RuleReference.jsx','/src/land-evaluation/public-copy.mjs'],plugins:name==='panels'?[publicUi]:[],metafile:true,treeShaking:true,minify:false,legalComments:'none'});
  const normalized=normalizeGeneratedSiteCopy(await readFile(output,'utf8'));
- const scoped=['core','panels'].includes(name)?applyBonusEligibility(applyDangerAreaFix(applyTaipeiRenewalCore(normalized))):normalized;
+ const scopedBase=['core','panels'].includes(name)?applyGuidedPlanning(applyBonusEligibility(applyDangerAreaFix(applyTaipeiRenewalCore(normalized)))):normalized;
+ const scoped=applyNtpcTod(scopedBase);
  const bundled=name==='panels'?applyBonusEligibilityPanel(applyTaipeiRenewalPanel(applyEvaluationPanelCopy(scoped))):scoped;
  await writeFile(output,bundled);
  if(/localStorage|sessionStorage|indexedDB|@tauri|fetch\(/.test(bundled))throw Error(name+' contains persistence, desktop or network calls');
@@ -104,5 +107,9 @@ const manifest={sourceCommit:execFileSync('git',['rev-parse','HEAD'],{cwd:app,en
 manifest.extensions=[{id:'taipei-renewal',version:'taipei-renewal.2026-11-02.v1',scope:'Taipei local renewal only',sources:await Promise.all(['src/land-evaluation/taipei-renewal/model.mjs','scripts/apply-taipei-renewal-core.mjs'].map(async path=>({path,sha256:createHash('sha256').update(await readFile(resolve(root,path))).digest('hex')})))}];
 manifest.extensions.push({id:'danger-area-validation',version:DANGER_AREA_FIX_VERSION,scope:'Active danger detailed-assessment missing eligible/adjacent areas only',sources:await Promise.all(['scripts/apply-danger-area-fix.mjs'].map(async path=>({path,sha256:createHash('sha256').update(await readFile(resolve(root,path))).digest('hex')})))});
 manifest.extensions.push({id:'bonus-eligibility',version:BONUS_ELIGIBILITY_PATCH_VERSION,scope:'UR implementation and award eligibility, overlap exclusion, TDR limit intersection and danger cap',sources:await Promise.all(['scripts/apply-bonus-eligibility.mjs','src/land-evaluation/bonus-eligibility.mjs'].map(async path=>({path,sha256:createHash('sha256').update(await readFile(resolve(root,path))).digest('hex')})))});
+manifest.extensions.push({id:'guided-planning',version:GUIDED_PLANNING_PATCH_VERSION,scope:'Labelled Taipei planning excavation reference and upstream validation messages during basement search; legal caps and quantity formulas unchanged',sources:await Promise.all(['scripts/apply-guided-planning.mjs','src/land-evaluation/guided-input.mjs','src/land-evaluation/evidence-input.mjs'].map(async path=>({path,sha256:createHash('sha256').update(await readFile(resolve(root,path))).digest('hex')})))});
 await writeFile(resolve(dir,'source-manifest.json'),JSON.stringify(manifest,null,2)+'\n');
 console.log('Shared App core and pure panels synchronized; no storage, desktop or network code. '+sources.size+' source files.');
+
+manifest.extensions.push({id:'ntpc-tod',version:NTPC_TOD_PATCH_VERSION,scope:'NTPC TOD precedence, separate increment and aggregate cap',sources:await Promise.all(['scripts/apply-ntpc-tod.mjs','src/land-evaluation/ntpc-tod.mjs'].map(async path=>({path,sha256:createHash('sha256').update(await readFile(resolve(root,path))).digest('hex')})))});
+await writeFile(resolve(dir,'source-manifest.json'),JSON.stringify(manifest,null,2)+'\n');

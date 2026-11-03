@@ -281,11 +281,45 @@
       "sources": [
         {
           "path": "scripts/apply-bonus-eligibility.mjs",
-          "sha256": "db7abffad956235521da296c15991a8a4c04679bd844be8fdd1eca87f1d412f4"
+          "sha256": "290d2dc2665d222e7b6a30eaf206b6dedf8fd6e3c2a0b94eb1a749b1e2d39aa4"
         },
         {
           "path": "src/land-evaluation/bonus-eligibility.mjs",
-          "sha256": "76d979c1ecc73081568d16ea8c3bafe6cd415c2ce038e4b7e2764be1dc90c5c8"
+          "sha256": "6233146fccd285b525829db9421001ac233a0e9e091d2dbf5571b5d0077baff9"
+        }
+      ]
+    },
+    {
+      "id": "guided-planning",
+      "version": "guided-planning.2026-11-03.v1",
+      "scope": "Labelled planning references and precise validation during basement search",
+      "sources": [
+        {
+          "path": "scripts/apply-guided-planning.mjs",
+          "sha256": "4aa30fc68076b92997d224dac7f1c75e48241696af77a6e779cc3ebc5741ec59"
+        },
+        {
+          "path": "src/land-evaluation/guided-input.mjs",
+          "sha256": "ae5f96974c390190d2624247d959dcbeacaedbb9467b444a8e625d947e33d862"
+        },
+        {
+          "path": "src/land-evaluation/evidence-input.mjs",
+          "sha256": "9fb9cb6b90d0e1fa593e3823c3e6f866017f4fd826cdbe2b6108f6d337760f51"
+        }
+      ]
+    },
+    {
+      "id": "ntpc-tod",
+      "version": "ntpc-tod.2026-05-20.v1",
+      "scope": "NTPC TOD priority, separate increment and aggregate cap; pending scope does not block planning",
+      "sources": [
+        {
+          "path": "scripts/apply-ntpc-tod.mjs",
+          "sha256": "bf6b5935c3e208dbcc9023d6089664e1991ebcb47ce67c7eaa723859e0312914"
+        },
+        {
+          "path": "src/land-evaluation/ntpc-tod.mjs",
+          "sha256": "c9dc86f44376f62ebd66d1f0365b955cee4f1fd0261e947c5065e14cc0cbc032"
         }
       ]
     }
