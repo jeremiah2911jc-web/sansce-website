@@ -1,4 +1,5 @@
 import {planningAssumptionsTemplate,planningFields} from './generated/core.mjs';
+import {planningFieldApplied} from './applied-planning-fields.mjs';
 
 export const GUIDED_INPUT_VERSION='planning-defaults.2026-11-03.v1';
 export const planningHelp={
@@ -64,8 +65,8 @@ export function defaultState(input,key){
 export function planningDefaultRows(input){
  if(!isGuidedInput(input))return [];
  const route=input.regulatoryReview?.bonusAssessment?.route;
- const flat=planningFields.filter(([key])=>defaultState(input,key)==='預設值'&&planningHelp[key]&&!(key==='renewal'&&route!=='renewal')&&!(key==='danger'&&route!=='danger')&&!(key==='scale'&&route==='danger')&&!['excavation','basementFloors','reserve'].includes(key)).map(([key,label,unit])=>[label,`${input[key]}${unit?' '+(key==='balcony'?'%各層樓板':unit):''}（規劃預設值）`]);
- return [...flat,...nestedFields.filter(([key])=>defaultState(input,key)==='預設值'&&!(key==='quantity.basementReservePercent'&&input.basementDemand?.enabled)).map(([key,,,,label,unit])=>[label,`${fieldValue(input,key)} ${unit}（規劃預設值）`])];
+ const flat=planningFields.filter(([key])=>defaultState(input,key)==='預設值'&&planningFieldApplied(input,key)&&planningHelp[key]&&!(key==='renewal'&&route!=='renewal')&&!(key==='danger'&&route!=='danger')&&!(key==='scale'&&route==='danger')&&!['excavation','basementFloors','reserve'].includes(key)).map(([key,label,unit])=>[label,`${input[key]}${unit?' '+(key==='balcony'?'%各層樓板':unit):''}（規劃預設值）`]);
+ return [...flat,...nestedFields.filter(([key])=>defaultState(input,key)==='預設值'&&planningFieldApplied(input,key)).map(([key,,,,label,unit])=>[label,`${fieldValue(input,key)} ${unit}（規劃預設值）`])];
 }
 
 // This calculation-only marker permits pending evidence in a labelled planning

@@ -1,8 +1,9 @@
 import {TOD_SOURCE,todScopes} from './ntpc-tod.mjs';
+import {planningFieldApplied} from './applied-planning-fields.mjs';
 import {defaultState} from './guided-input.mjs';
 import {BONUS_LEGAL_VERSION,BONUS_LEGAL_REVIEWED_AT,bonusLabels,dangerLegalCap} from './bonus-eligibility.mjs';
 import {taipeiRenewalLaw,taipeiRenewalTable} from './taipei-renewal/model.mjs';
-import {collectiveDisplayNotes,bonusResultRows,bonusInputVisible} from './collective-notes.mjs';
+import {collectiveDisplayNotes,bonusResultRows} from './collective-notes.mjs';
 import {commercialInputs} from './summary-presentation.mjs';
 import {landJudgement,readjustmentJudgement} from './judgement.mjs';
 import sourceManifest from './generated/source-manifest.json' with {type:'json'};
@@ -37,7 +38,7 @@ export function collectiveDelivery(snapshot){
  if(r.planningEstimate)s.conditions.push(['本次結果性質','依目標獎勵與規劃設定初估；申請資格及文件待查']);s.issues=s.assumptions.filter(x=>/待|未確認|未取得|另核|覆核|假設/.test(x));
  s.assumptions=s.assumptions.filter(x=>!s.issues.includes(x));
  const todSources=s.sources;s.sources=[...todSources,i.roadConditions?.source,i.excavationReference,i.parkingDesign?.reference,r.basementDemandReview?.source,i.basementDemand?.source,i.basementDemand?.stricterSource].filter(Boolean);
- const todInputs=s.inputs;s.inputs=planningFields.filter(([key])=>bonusInputVisible(i,key)).map(([key,label,unit])=>[label,i[key]===''?'未填／待確認':`${text(i[key])}${unit?' '+(key==='balcony'?'%各層樓板':unit):''}${defaultState(i,key)==='預設值'?'（規劃預設值）':''}`]);
+ const todInputs=s.inputs;s.inputs=planningFields.filter(([key])=>planningFieldApplied(i,key)).map(([key,label,unit])=>[label,i[key]===''?'未填／待確認':`${text(i[key])}${unit?' '+(key==='balcony'?'%各層樓板':unit):''}${defaultState(i,key)==='預設值'?'（規劃預設值）':''}`]);
  s.inputs.push(...todInputs);
  if(r.planningDefaults?.length){const labels=new Set(s.inputs.map(([label])=>publicText(label)));s.inputs.push(...r.planningDefaults.filter(([label])=>!labels.has(publicText(label))).map(([label,value])=>[publicText(label),value]));}
  s.inputs.push(['道路名稱',text(i.roadConditions?.roadName)],['計畫／開闢道路寬度',`${text(i.roadConditions?.plannedWidth)}／${text(i.roadConditions?.openedWidth)} m`],['同路段基地面寬',`${text(i.roadConditions?.frontage)} m`],['道路確認狀態',i.roadConditions?.status==='confirmed'?'已填查證，資格依檢核':i.roadConditions?.status==='assumed'?"暫用估計值，待文件確認":'待確認'],['路寬查證日期',text(i.roadConditions?.checkedAt)],['停車規則',i.parkingDesign?.mode==='general'?'地區通則初估':'本次個案條件'],['開挖率上限',r.basementDemandReview?`${displayNumber(r.basementDemandReview.capPercent)}%`:text(i.excavationCap)],['建築／容積使用比例',`${i.coverageUse}%／${i.volumeUse}%`]);
@@ -58,7 +59,7 @@ export function collectiveDelivery(snapshot){
  const conditions=a?.conditions;
  if(a&&a.awardBasis!=='permitted')s.inputs.push(['預計報核／申請日期',a.date+(defaultState(i,'bonus.date')==='預設值'?'（規劃預設值，可修改）':'')]);
  if(conditions)for(const key of ['tdrSource','renewalAreaSource','overlapSource','originalSource'])if(conditions[key]&&(key==='originalSource'?a.route==='danger':key==='overlapSource'?a.route==='renewal'||v.tdrApplied>0:v.tdrApplied>0))s.sources.push(bonusLabels[key]+'：'+conditions[key]);
- if(a?.route==='danger'&&a.awardBasis!=='permitted'){s.inputs.push(['危老合格原建築基地',a.dangerEligibleSite+'㎡'],['合併鄰接基地',a.dangerAdjacentSite+'㎡'],['預計申請日期',a.date]);if(a.dangerMode==='quick')s.inputs.push(['本次危老獎勵上限',displayNumber(dangerLegalCap(a,{site:i.site,far:i.far}),4)+'%'],['規模獎勵',conditions?.quickExtras==='yes'?'依合格面積計入':'本次不計']);}
+ if(a?.route==='danger'&&a.awardBasis!=='permitted'){s.inputs.push(['危老合格原建築基地',a.dangerEligibleSite+'㎡'],['合併鄰接基地',a.dangerAdjacentSite+'㎡']);if(a.dangerMode==='quick')s.inputs.push(['本次危老獎勵上限',displayNumber(dangerLegalCap(a,{site:i.site,far:i.far}),4)+'%'],['規模獎勵',conditions?.quickExtras==='yes'?'依合格面積計入':'本次不計']);}
  if(a?.route==='renewal'&&conditions)s.inputs.push(['都市更新實施措施',({rebuild:'重建',rehabilitation:'整建',maintenance:'維護'})[conditions.renewalWork]||'待確認'],['都市更新實施方式',({rights:'權利變換',agreement:'全體同意協議合建',public12:'依第12條第1項公辦方式',other:'其他方式'})[conditions.implementation]||'待確認']);
  const taipei=r.regulatory?.bonus?.assessment?.taipei;
  if(taipei?.active){

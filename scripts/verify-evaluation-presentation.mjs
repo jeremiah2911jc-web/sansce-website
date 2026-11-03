@@ -1,3 +1,4 @@
+import {applyReadjustmentDates} from './apply-readjustment-dates.mjs';
 import {applyNtpcTod} from './apply-ntpc-tod.mjs';
 import {applyGuidedPlanning} from './apply-guided-planning.mjs';
 import {applyBonusEligibility} from './apply-bonus-eligibility.mjs';
@@ -17,7 +18,9 @@ const baseline=p=>execFileSync('git',['show','origin/main:'+p],{cwd:root,encodin
 const protectedFiles=['src/land-evaluation/generated/core.mjs','src/land-evaluation/generated/land.mjs','src/land-evaluation/generated/readjustment.mjs','src/land-evaluation/generated/source-manifest.json','src/land-evaluation/generated/readjustment-manifest.json','src/land-evaluation/model.mjs'];
 for(const p of protectedFiles){
  if(p.endsWith('/generated/core.mjs'))assert.equal(read(p),applyNtpcTod(applyGuidedPlanning(applyBonusEligibility(applyDangerAreaFix(applyTaipeiRenewalCore(baseline(p)))))),'Only documented calculation adapters may change core.mjs');
- else if(p.endsWith('/source-manifest.json')){const current=JSON.parse(read(p)),original=JSON.parse(baseline(p));const {extensions,...base}=current;const {extensions:originalExtensions,...originalBase}=original;assert.deepEqual(base,originalBase);assert.deepEqual(extensions.map(x=>x.id),['taipei-renewal','danger-area-validation','bonus-eligibility','guided-planning','ntpc-tod']);if(originalExtensions)assert.deepEqual(extensions.filter(x=>!['bonus-eligibility','guided-planning','ntpc-tod'].includes(x.id)),originalExtensions.filter(x=>!['bonus-eligibility','ntpc-tod'].includes(x.id)),'Unchanged calculation extension hashes changed');}
+ else if(p.endsWith('/source-manifest.json')){const current=JSON.parse(read(p)),original=JSON.parse(baseline(p));const {extensions,...base}=current;const {extensions:originalExtensions,...originalBase}=original;assert.deepEqual(base,originalBase);assert.deepEqual(extensions.map(x=>x.id),['taipei-renewal','danger-area-validation','bonus-eligibility','guided-planning','ntpc-tod']);if(originalExtensions)assert.deepEqual(extensions.filter(x=>!['bonus-eligibility','guided-planning','ntpc-tod'].includes(x.id)),originalExtensions.filter(x=>!['bonus-eligibility','guided-planning','ntpc-tod'].includes(x.id)),'Unchanged calculation extension hashes changed');}
+ else if(p.endsWith('/generated/readjustment.mjs'))assert.equal(read(p),applyReadjustmentDates(baseline(p)),'Only case-document date validation may change readjustment.mjs');
+ else if(p.endsWith('/readjustment-manifest.json')){const current=JSON.parse(read(p)),original=JSON.parse(baseline(p));const {extensions,...base}=current;const {extensions:oldExtensions,...oldBase}=original;assert.deepEqual(base,oldBase);assert.deepEqual(extensions?.map(x=>x.id),['readjustment-dates']);}
  else assert.equal(read(p),baseline(p),'Protected calculation source changed: '+p);
 }
 const panels='src/land-evaluation/generated/panels.mjs',before=baseline(panels),after=read(panels);

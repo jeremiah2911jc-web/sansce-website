@@ -2988,7 +2988,8 @@ function newReadjustmentPlan(id, system = "public") {
 }
 var numeric = (v) => typeof v === "string" && /^(?:\d+(?:\.\d+)?|\.\d+)$/.test(v.trim()) && Number.isFinite(Number(v)) && Number(v) <= 1e12 ? Number(v) : null;
 var validDate = (v) => typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v) && Number.isFinite(Date.parse(v)) && (/* @__PURE__ */ new Date(v + "T00:00:00Z")).toISOString().slice(0, 10) === v;
-var dateReady = (date, referenceDate = REVIEWED_AT) => validDate(date) && validDate(referenceDate) && date <= referenceDate && date <= REVIEWED_AT;
+/* readjustment-case-dates */
+var dateReady = (date, referenceDate = REVIEWED_AT) => validDate(date) && validDate(referenceDate) && date <= referenceDate && date <= new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Taipei", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
 function evidenceReady(e, referenceDate = REVIEWED_AT) {
   return ["reviewed", "excluded"].includes(e?.state) && Boolean(e?.source?.trim()) && dateReady(e?.date, referenceDate);
 }
@@ -3001,7 +3002,7 @@ function evaluateReadjustment(p, land) {
   const ready = (e) => evidenceReady(e, p.referenceDate);
   const checkDate = (date, label) => {
     if (date && !validDate(date)) errors.push(label + "\u7121\u6548\u3002");
-    else if (date && !dateReady(date, p.referenceDate)) errors.push(label + "\u4E0D\u5F97\u665A\u65BC\u8A55\u4F30\u57FA\u6E96\u65E5\u6216\u8CC7\u6599\u67E5\u6838\u65E5\u3002");
+    else if (date && !dateReady(date, p.referenceDate)) errors.push(label + "不得晚於評估基準日或今天。");
   };
   if (!systems[p.system]) errors.push("\u958B\u767C\u5236\u5EA6\u5C1A\u672A\u9078\u5B9A\u3002");
   if (!perspectives[p.track]) errors.push("\u8A55\u4F30\u4E3B\u7DDA\u5C1A\u672A\u9078\u5B9A\u3002");

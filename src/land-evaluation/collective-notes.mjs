@@ -2,7 +2,7 @@ import {todPendingNotice} from './ntpc-tod.mjs';
 import {publicText} from './public-copy.mjs';
 
 // Only report text is selected here. Calculation output, candidates and gates are untouched.
-const processNotes=/^(?:坡道平面：至少|坡道機械：至少|升降機平面：至少|升降機機械：至少|選擇順序：|機械車位依需求搜尋：|逐層面積預算初估|逐層表未提供圖說時由App|建築面積與等面積樓層為總量模型)/;
+const processNotes=/^(?:坡道平面：至少|坡道機械：至少|升降機平面：至少|升降機機械：至少|選擇順序：|機械車位依需求搜尋：|逐層面積預算初估|逐層表未提供圖說時由App|建築面積與等面積樓層為總量模型|都更及容移均為規劃目標)/;
 const transferNotes=/^(?:容移|接受基地|送出地|法規地區|新北一般及窄路|新北：一般基地|新北特殊核准重建若選|新北：一般案件依量體評定|臺北第2-1、4條：|尚未選定取得方式|道路寬度未填|資格未知，依目標假設繼續|依規劃目標估算，容移資格待查證|都更及容移均為規劃目標)/;
 export const selectedBonusRoute=input=>input.regulatoryReview?.bonusAssessment?.route??(Number(input.danger)>0?'danger':'renewal');
 export function bonusResultRows(input,values){
