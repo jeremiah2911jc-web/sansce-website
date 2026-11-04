@@ -1,3 +1,4 @@
+import {multiBuildingShapeIssues} from './multi-building.mjs';
 import {isTod} from './ntpc-tod.mjs';
 import {encodeValue,decodeValue,inputOnly,parseDraft,serializeDraft,MAX_DRAFT_SIZE} from './local-draft.mjs';
 import {createInput} from './model.mjs';
@@ -21,7 +22,7 @@ function scalarMap(map,label){if(!object(map))fail(label);for(const row of Objec
 export function validateCaseData(data){
  // Reuse the draft envelope whitelist and lossless value codec before inspecting UI shapes.
  const clean=parseDraft(serializeDraft(data,'validation','validation')).data;
- const collective=(input,label)=>{like(input,createInput(),label);if(input.regulatoryReview?.ntpcTod!==undefined&&!isTod(input.regulatoryReview.ntpcTod))fail(label+'TOD條件');if(input.planningDefaults!==undefined&&!isGuidedInput(input))fail(label+'規劃預設值');};
+ const collective=(input,label)=>{like(input,createInput(),label);if(input.multiBuilding!==undefined&&multiBuildingShapeIssues(input.multiBuilding).length)fail(label+'分棟資料');if(input.regulatoryReview?.ntpcTod!==undefined&&!isTod(input.regulatoryReview.ntpcTod))fail(label+'TOD條件');if(input.planningDefaults!==undefined&&!isGuidedInput(input))fail(label+'規劃預設值');};
  if(clean['collective.input'])collective(clean['collective.input'],'集合住宅');
  for(const p of clean['collective.scenarios']||[])collective(p.input,'集合住宅'+p.code);
  const activeScenario=clean['collective.scenarios']?.find(p=>p.id===clean['collective.active']);if(activeScenario)for(const k of ['input','name','district','tab'])if(!Object.hasOwn(clean,'collective.'+k))clean['collective.'+k]=structuredClone(activeScenario[k]);

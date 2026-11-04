@@ -3,6 +3,7 @@ import {createPortal} from 'react-dom';
 import {planningFields} from './generated/core.mjs';
 import {isGuidedInput,defaultState,planningHelp,planningDefaultRows} from './guided-input.mjs';
 import {evidenceHelp} from './evidence-input.mjs';
+import {PlanningDefaultValues} from './PlanningDefaultValues.jsx';
 
 const Context=createContext(null);
 export function GuidedInputProvider({input,edit,children}){return <Context.Provider value={{input,edit}}>{children}</Context.Provider>;}
@@ -94,5 +95,5 @@ export function FieldGuidance({label,fieldKey,help:customHelp}){
 }
 export function PlanningDefaultsIntro({input,onApply}){
  const guided=isGuidedInput(input),rows=planningDefaultRows(input);
- return <section className="le-planning-start" aria-label="規劃預設值"><p>{guided?'先填基地面積、建蔽率、容積率與預計獎勵，其餘採規劃預設值。每欄可修改，結果會列出採用值與待查資料。':'可將空白的規劃欄位帶入參考值，先查看初估結果；已填數值保留。'}</p><div><button type="button" className="le-text-button" onClick={onApply}>{guided?'補入空白的規劃參考值':'採用規劃參考值'}</button>{guided&&<details><summary>查看本次預設值</summary><dl>{rows.map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><p>參考值沿用本工具的量體與配置設定。個案資格、道路與正式文件尚須查證；法定上限仍依地區及適用條件計算。</p></details>}</div></section>;
+ return <section className="le-planning-start" aria-label="規劃預設值"><p>{guided?'先填基地面積、建蔽率、容積率與預計獎勵，其餘欄位先帶入預設值。請依基地現況與預計配置調整，設定差異會影響面積、戶數及車位結果。':'可將空白的規劃欄位帶入參考值，先查看初估結果；已填數值保留。'}</p><div><button type="button" className="le-text-button" onClick={onApply}>{guided?'補入空白的規劃參考值':'採用規劃參考值'}</button>{guided&&<details><summary>查看本次預設值</summary><PlanningDefaultValues rows={rows}/><p className="le-default-values-scope">獎勵資格與道路條件須另查證。法定上限依地區及適用規定計算。</p></details>}</div></section>;
 }

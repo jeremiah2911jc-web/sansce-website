@@ -5215,3 +5215,5 @@ function assessBonuses(a,c,cash,updateArea){
  const result=assessBonusesBase(legal.assessment,c,cash,updateArea);
  return {...result,errors:[...new Set([...result.errors,...legal.errors])],notes:[...result.notes,...legal.notes]};
 }
+// multi-building shared kernel exports
+export { reviewAboveGround, reviewRoofEnvelope, reviewEscapeStairs, reviewBasementVolume, resolveBonusLimits, resolveCommonPolicy, resolveExcavationLimit };

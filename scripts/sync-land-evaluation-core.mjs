@@ -1,3 +1,4 @@
+import {exposeMultiBuildingKernel} from './expose-multi-building-kernel.mjs';
 import {applyNtpcTod,NTPC_TOD_PATCH_VERSION} from './apply-ntpc-tod.mjs';
 import {applyGuidedPlanning,GUIDED_PLANNING_PATCH_VERSION} from './apply-guided-planning.mjs';
 import {applyBonusEligibility,applyBonusEligibilityPanel,BONUS_ELIGIBILITY_PATCH_VERSION} from './apply-bonus-eligibility.mjs';
@@ -91,7 +92,7 @@ for(const [name,contents]of [['core',core],['panels',ui+industrialUi],['land',la
  const scopedBase=['core','panels'].includes(name)?applyGuidedPlanning(applyBonusEligibility(applyDangerAreaFix(applyTaipeiRenewalCore(normalized)))):normalized;
  const scoped=applyNtpcTod(scopedBase);
  const bundled=name==='panels'?applyBonusEligibilityPanel(applyTaipeiRenewalPanel(applyEvaluationPanelCopy(scoped))):scoped;
- await writeFile(output,bundled);
+ await writeFile(output,name==='core'?exposeMultiBuildingKernel(bundled):bundled);
  if(/localStorage|sessionStorage|indexedDB|@tauri|fetch\(/.test(bundled))throw Error(name+' contains persistence, desktop or network calls');
  for(const file of Object.keys(result.metafile.inputs)){
   if(file==='<stdin>')continue;
@@ -113,3 +114,7 @@ console.log('Shared App core and pure panels synchronized; no storage, desktop o
 
 manifest.extensions.push({id:'ntpc-tod',version:NTPC_TOD_PATCH_VERSION,scope:'NTPC TOD precedence, separate increment and aggregate cap',sources:await Promise.all(['scripts/apply-ntpc-tod.mjs','src/land-evaluation/ntpc-tod.mjs'].map(async path=>({path,sha256:createHash('sha256').update(await readFile(resolve(root,path))).digest('hex')})))});
 await writeFile(resolve(dir,'source-manifest.json'),JSON.stringify(manifest,null,2)+'\n');
+
+manifest.extensions.push({id:"multi-building",version:"multi-building.2026-11-03.v1",scope:"Per-building floor quantities, shared basements counted once, independent reference audit; legacy solver bodies unchanged",sources:await Promise.all(["scripts/expose-multi-building-kernel.mjs","src/land-evaluation/multi-building.mjs","src/land-evaluation/multi-building-delivery.mjs"].map(async path=>({path,sha256:createHash("sha256").update(await readFile(resolve(root,path))).digest("hex")})))});
+manifest.extensions.push({id:"volume-recount",version:"volume-recount.2026-11-04.v1",scope:"Display existing configured, exempt and counted areas with original FAR consumption; solver inputs unchanged",sources:await Promise.all(["src/land-evaluation/volume-recount.mjs"].map(async path=>({path,sha256:createHash("sha256").update(await readFile(resolve(root,path))).digest("hex")})))});
+await writeFile(resolve(dir,"source-manifest.json"),JSON.stringify(manifest,null,2)+"\n");

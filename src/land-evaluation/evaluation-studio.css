@@ -242,12 +242,21 @@
 .le-help-popover button:focus-visible{outline:2px solid #84583f;outline-offset:3px}
 @media print{.le-help-popover,.le-help-trigger{display:none!important}}
 .land-evaluation .le-planning-start{margin:24px 0 34px;max-width:960px;font-size:15px;line-height:1.9;color:#53676a}
-.land-evaluation .le-planning-start>div{display:flex;align-items:flex-start;gap:30px;margin-top:10px}
-.land-evaluation .le-planning-start details{flex:1;min-width:0}
+.land-evaluation .le-planning-start>div{display:flex;flex-direction:column;align-items:stretch;gap:8px;margin-top:10px}
+.land-evaluation .le-planning-start>div>button{align-self:flex-start}
+.land-evaluation .le-planning-start details{width:100%;min-width:0}
 .land-evaluation .le-planning-start summary,.land-evaluation .le-planning-result-basis summary{cursor:pointer;color:#805e40;font-size:14px}
-.land-evaluation .le-planning-start dl,.land-evaluation .le-planning-result-basis dl{display:grid;grid-template-columns:1fr 1fr;gap:12px 30px;margin-top:16px}
-.land-evaluation .le-planning-start dl>div,.land-evaluation .le-planning-result-basis dl>div{display:flex;justify-content:space-between;gap:16px}
-.land-evaluation .le-planning-start dd,.land-evaluation .le-planning-result-basis dd{margin:0}
+.land-evaluation .le-default-values{width:100%;margin:0 0 14px;min-width:0}
+.dev-tool-shell .land-evaluation .le-default-values-note{font-size:13px;line-height:1.8;margin:0 0 14px;color:#5b6c70}
+.dev-tool-shell .land-evaluation .le-default-values-table{width:100%;max-width:800px;border-collapse:collapse;table-layout:fixed;background:transparent;margin:0;text-align:left;font-size:14px;line-height:1.8}
+.dev-tool-shell .land-evaluation .le-default-values-table thead{background:#e9e4d9;color:#526568}
+.dev-tool-shell .land-evaluation .le-default-values-table :is(th,td){padding:10px 18px;vertical-align:middle;border:0;font-size:14px;line-height:1.8;text-align:left;color:#314c56;font-weight:400}
+.dev-tool-shell .land-evaluation .le-default-values-table thead th{font-size:12px;letter-spacing:.04em;background:#e9e4d9;color:#5b6c70}
+.dev-tool-shell .land-evaluation .le-default-values-table th:first-child{width:64%}
+.dev-tool-shell .land-evaluation .le-default-values-table tbody tr:nth-child(even){background:#ede9df80}
+.dev-tool-shell .land-evaluation .le-default-values-table td{white-space:nowrap;font-weight:500;font-variant-numeric:tabular-nums}
+.dev-tool-shell .land-evaluation .le-default-values-table small{display:block;font-size:12px;line-height:1.8;margin-top:2px;font-weight:400;color:#67767a}
+.dev-tool-shell .land-evaluation .le-planning-start .le-default-values-scope{font-size:12px;line-height:1.9;margin:14px 0 0;max-width:68ch;color:#67767a}
 .land-evaluation .le-guided-eligibility{margin:20px 0}
 .land-evaluation .le-planning-result-basis{padding:28px 30px;background:#f1eee5;color:#324f59;line-height:1.9}
 .land-evaluation .le-planning-result-basis p{max-width:70ch;margin:10px 0}

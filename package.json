@@ -31,7 +31,8 @@
     "verify:evaluation-review": "NODE_ENV=production node scripts/verify-evaluation-review.mjs",
     "verify:taipei-renewal": "NODE_ENV=production node scripts/verify-taipei-renewal.mjs",
     "verify:danger-area-fix": "node scripts/verify-danger-area-fix.mjs",
-    "verify:legacy-app": "node scripts/verify-legacy-app.mjs"
+    "verify:legacy-app": "node scripts/verify-legacy-app.mjs",
+    "verify:multi-building": "node --test tests/multi-building.test.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",
