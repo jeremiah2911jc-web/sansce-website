@@ -52,8 +52,9 @@ for(const city of ['臺北市','新北市'])for(const route of ['renewal','dange
 }
 const noteFixture={notes:['危老第3–6條合計0%，原合格基地NaN㎡','都更中央8%＋地方2%','基地道路資料待補','臺北地方獎勵採第2條附表一般條件']},frozenNoteFixture=structuredClone(noteFixture);
 for(const route of ['renewal','danger','none']){
- const input={tdr:'25',regulatoryReview:{bonusAssessment:{route}}},notes=collectiveDisplayNotes(input,noteFixture);
+ const input={tdr:'25',regulatoryReview:{bonusAssessment:{route,renewalMode:'detail',dangerMode:'detail'}}},notes=collectiveDisplayNotes(input,noteFixture);
  assert.equal(notes.some(x=>x.startsWith('危老第3')),route==='danger');assert.equal(notes.some(x=>x.startsWith('都更中央')),route==='renewal');assert(notes.includes('基地道路資料待補'));assert.deepEqual(noteFixture,frozenNoteFixture);
+ const quick={...input,regulatoryReview:{bonusAssessment:{route,renewalMode:'quick',dangerMode:'quick'}}};assert(!collectiveDisplayNotes(quick,noteFixture).some(x=>/^(危老第3|都更中央|臺北地方獎勵採)/.test(x)));
 }
 // The shared Taipei source note retains its transfer condition on the danger route.
 const taipeiSourceNote='目前非新北：新北地方都更獎勵、容移評點與代金倍數不套用。臺北容移另按資格、上限及取得方式評估，未建臺北地方都更獎勵細項。';

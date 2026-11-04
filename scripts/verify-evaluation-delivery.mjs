@@ -60,6 +60,7 @@ for(const city of ['新北市','臺北市'])for(const route of ['renewal','dange
  const r=evaluate(summaryFixture()),frozen=structuredClone(r),s=collectiveDelivery({input:i,result:r,district:city});
  const adopted=s.conditions.find(([key])=>key==='獎勵與容移')[1];
  assert.equal(adopted.includes('都更'),route==='renewal');assert.equal(adopted.includes('危老'),route==='danger');
- assert.equal(s.inputs.some(([label])=>label.includes('危老獎勵目標')),route==='danger');assert.equal(s.inputs.some(([label])=>label.includes('都更獎勵目標')),route==='renewal');assert.deepEqual(r,frozen);
+ assert.equal(s.inputs.some(([label])=>label==='危老採計方式'),route==='danger');assert.equal(s.inputs.some(([label])=>label==='都更採計方式'),route==='renewal');
+ assert(!s.inputs.some(([label])=>label.includes('危老獎勵目標')||label.includes('都更獎勵目標')));assert.deepEqual(r,frozen);
 }
 console.log('PASS six city/route report summaries: inactive reward totals and input rows omitted, all quantities unchanged.');
