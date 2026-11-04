@@ -6,6 +6,7 @@ import {regionalInputPatch} from '../src/land-evaluation/regional-input.mjs';
 import {collectiveDelivery} from '../src/land-evaluation/delivery-model.mjs';
 import {planningDefaultRows} from '../src/land-evaluation/guided-input.mjs';
 import {newMultiBuilding} from '../src/land-evaluation/multi-building.mjs';
+import {bonusItemMessages,bonusItemCondition,publicText} from '../src/land-evaluation/public-copy.mjs';
 
 function fixture(city,route,awardMode,tdrMode){
  const i=createWorkspaceInput(createInput);
@@ -59,4 +60,20 @@ test('a partial capacity report also omits inactive award notes and keeps the bl
  const s=collectiveDelivery({input:i,result:r,district:'新北市'}),text=JSON.stringify(s);
  assert(s.issues.includes('停車配置尚未完成'));assert(!text.includes('NaN'));assert(!text.includes('都更中央'));
  assert(text.includes('容移細項評定'));assert(!s.metrics.some(([label])=>label.includes('可售')));assert.equal(s.reviewedAt,'2026-11-03');
+});
+test('a road base uses the shared width for its missing-data explanation without changing12% calculation',()=>{
+ const i=fixture('新北市','renewal','quick','detail');i.regulatoryReview.bonusAssessment.entries['t-base'].amount='';
+ const {r}=report(i),row=r.regulatory.bonus.assessment.rows.find(row=>row.id==='t-base'),before=structuredClone(row);
+ assert.equal(r.values.tdrApplied,12);assert(row.messages.some(message=>message.startsWith('缺計算量')));
+ assert(!bonusItemMessages({id:'t-base'},row,i).some(message=>message.startsWith('缺計算量')));assert.deepEqual(row,before);
+ i.roadConditions.plannedWidth='';assert(bonusItemMessages({id:'t-base'},row,i).some(message=>message.includes('基地道路條件')));
+});
+test('the road-specific explanation preserves missing data for other award items',()=>{
+ const row={messages:['缺計算量，該項先0，其餘選項繼續加總','另須核對用途']};
+ assert.deepEqual(bonusItemMessages({id:'t-setback'},row,{roadConditions:{plannedWidth:'12'}}),row.messages);
+ assert.deepEqual(bonusItemMessages({id:'t-base'},row,{roadConditions:{plannedWidth:'12'}}),['另須核對用途']);
+});
+test('road and transfer instructions state the conditions directly',()=>{
+ assert.equal(bonusItemCondition({id:'t-base',condition:'不是地籍圖上名目路寬即合格。'},'ntpc'),'道路條件依實際開闢、連通及基地面寬核對。');
+ assert.equal(publicText('上限30%，不能把勾選視為核准。'),'上限30%；核准比例依主管機關文件確認。');
 });

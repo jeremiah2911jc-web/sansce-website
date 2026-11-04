@@ -1,4 +1,5 @@
 import {collectiveDisplayNotes} from '../src/land-evaluation/collective-notes.mjs';
+import {createWorkspaceInput} from '../src/land-evaluation/active-bonus-input.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {build} from 'esbuild';
@@ -32,6 +33,10 @@ const {render}=await import(output+'?t='+Date.now());
 const simpleTaipei={...createInput(),...regionalInputPatch(createInput(),'臺北市')};
 const html=render('BonusAssessmentPanel',{input:simpleTaipei,edit:()=>{},financials:false});assert(!html.includes('明示'));assert(!html.includes('新北退縮'));assert(!html.includes('新北地方獎勵'));assert(!html.includes('value="ntpc"'));assert(html.includes('臺北市'));assert(html.includes('待確認'));
 const htmlNtpc=render('BonusAssessmentPanel',{input:createInput(),edit:()=>{},financials:false});assert(htmlNtpc.includes('新北退縮'));assert(!htmlNtpc.includes('明示'));
+const roadNoteInput=createWorkspaceInput(exampleInput);roadNoteInput.roadConditions.plannedWidth='12';Object.assign(roadNoteInput.regulatoryReview.bonusAssessment,{tdrMode:'detail',entries:{'t-base':{choice:'yes',amount:''}}});
+const roadNoteBefore=structuredClone(roadNoteInput),roadNoteHtml=render('BonusAssessmentPanel',{input:roadNoteInput,edit:()=>{},financials:false});
+assert(roadNoteHtml.includes('連接道路基準量'));assert(!roadNoteHtml.includes('缺計算量'));assert(!roadNoteHtml.includes('請在「基地道路條件」填寫計畫道路寬度'));assert.deepEqual(roadNoteInput,roadNoteBefore);
+roadNoteInput.roadConditions.plannedWidth='';const emptyRoadHtml=render('BonusAssessmentPanel',{input:roadNoteInput,edit:()=>{},financials:false});assert(emptyRoadHtml.includes('請在「基地道路條件」填寫計畫道路寬度'));assert(!emptyRoadHtml.includes('缺計算量，該項先0'));
 for(const [name,props]of [['IndustrialPanel',{value:newIndustrial(),onChange:()=>{}}],['DocumentCasePanel',{value:newDocumentCase(),onChange:()=>{}}],['MixedZonePanel',{value:newMixedSite(),onChange:()=>{}}],['CommercialIntensityPanel',{value:{...newCommercialIntensity(),city:'臺北市'},district:'臺北市',site:'2400',coverage:'50',onChange:()=>{}}],['LegalParkingPanel',{input:saved,edit:()=>{},result:evaluate(saved),section:'parking'}]]){const rendered=render(name,props);assert(!rendered.includes('明示'),name+' still contains internal assumption wording');writeFileSync(root+'qa/evaluation-preview-20261102/'+name+'.html',rendered);}
 writeFileSync(root+'qa/evaluation-preview-20261102/taipei-panel.html',html);writeFileSync(root+'qa/evaluation-preview-20261102/ntpc-panel.html',htmlNtpc);
 console.log(`PASS region input switching, legacy conflicts, permitted-document reset, cached per-city inputs, commercial alignment, report metadata removal and ${rows.length} frozen-source wording replacements; Taipei/New Taipei rendered panels checked.`);

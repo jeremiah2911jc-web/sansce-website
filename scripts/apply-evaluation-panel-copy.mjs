@@ -50,6 +50,7 @@ function applyPanelLayout(code){
   if(panel==='BonusAssessmentPanel'&&node.type==='CallExpression'&&node.arguments[0]?.name==='TdrApplicationPanel'&&!node.arguments[1].properties.some(p=>p.key?.name==='site'))edits.push({start:node.arguments[1].start+1,end:node.arguments[1].start+1,text:'site:c.site,far:c.far,'});
   if(panel==='TdrApplicationPanel'&&node.type==='CallExpression'&&node.arguments[0]?.name==='TdrResult'&&!node.arguments[1].properties.some(p=>p.key?.name==='ready'))edits.push({start:node.arguments[1].start+1,end:node.arguments[1].start+1,text:'ready:site>0&&far>0,'});
   if(panel==='BonusAssessmentPanel'&&node.type==='MemberExpression'&&node.object.name==='d'&&node.property.name==='condition')edits.push({start:node.start,end:node.end,text:'bonusItemCondition(d,tdrCity)'});
+  if(panel==='BonusAssessmentPanel'&&node.type==='MemberExpression'&&node.object.name==='r'&&node.property.name==='messages')edits.push({start:node.start,end:node.end,text:'bonusItemMessages(d,r,input)'});
   if(panel==='BonusAssessmentPanel'&&node.type==='StringLiteral'&&node.value==='都更細項：中央獎勵＋新北地方獎勵')edits.push({start:node.start,end:node.end,text:'tdrCity === "ntpc" ? "都更細項：中央獎勵與新北地方獎勵" : "都更細項：中央獎勵"'});
   if(panel==='BonusAssessmentPanel'&&node.type==='CallExpression'&&/^jsx/.test(node.callee.name||'')&&node.arguments[0]?.value==='p'){
    const children=node.arguments[1]?.properties?.find(p=>p.key?.name==='children')?.value;
@@ -68,7 +69,8 @@ function applyPanelLayout(code){
  }
  visit(ast);
  for(const edit of edits.sort((a,b)=>b.start-a.start))code=code.slice(0,edit.start)+edit.text+code.slice(edit.end);
- if(!code.includes('import { bonusItemCondition }'))code='import { bonusItemCondition } from "/src/land-evaluation/public-copy.mjs";\n'+code;
+ if(!code.includes('import { bonusItemCondition'))code='import { bonusItemCondition, bonusItemMessages } from "/src/land-evaluation/public-copy.mjs";\n'+code;
+ else code=code.replace('import { bonusItemCondition }','import { bonusItemCondition, bonusItemMessages }');
  if(!code.includes('import { TdrResult }'))code='import { TdrResult } from "/src/land-evaluation/public-panel-runtime.mjs";\n'+code;
  return code;
 }
