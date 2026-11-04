@@ -2,6 +2,7 @@ import {planningFieldApplied} from './applied-planning-fields.mjs';
 import {TodPanel} from './TodPanel.jsx';
 import {todPendingNotice} from './ntpc-tod.mjs';
 import {GuidedInputProvider,FieldGuidance,FieldState,PlanningDefaultsIntro} from './GuidedFields.jsx';
+import {PlanningDefaultValues} from './PlanningDefaultValues.jsx';
 import {editGuidedInput,withPlanningDefaults} from './guided-input.mjs';
 import {collectiveDisplayNotes,selectedBonusRoute,bonusResultRows} from './collective-notes.mjs';
 import {industrialDelivery,renderIndustrialReport} from './industrial-report.mjs';
@@ -160,7 +161,7 @@ function ResultSheet({snapshot:s}){const [areaUnit,setAreaUnit]=useState('坪');
  {s.result.parking?.values?.smallSite&&<SmallSiteResult parking={s.result.parking.values} input={i}/>}
  <div className="le-volume-line"><span>允建容積 <strong>{f(v.allowed)}㎡</strong></span><span>地上計容 {f(v.aboveCounted)}㎡</span><span>地下計容 {f(v.basementCounted)}㎡</span><span>合計使用 <strong>{f(v.used)}㎡</strong></span><span>未使用容積 <strong>{f(v.unused)}㎡</strong></span></div>
  {v.unused>v.allowed*.01&&<p className="le-capacity-note">目前停車、地下層數及配置條件下，仍有{f(v.unused)}㎡容積未使用；本次未增加地下層數以用滿容積。</p>}
- {s.result.planningEstimate&&<div className="le-planning-result-basis"><strong>依目標條件初估</strong><p>獎勵與容移資格、道路及個案圖說仍待查證。本次使用的規劃預設值及待查事項會一併列入評估摘要。</p><details><summary>查看本次規劃預設值</summary><dl>{(s.result.planningDefaults||[]).map(([label,value])=><div key={label}><dt>{publicText(label)}</dt><dd>{value}</dd></div>)}</dl></details></div>}
+ {s.result.planningEstimate&&<div className="le-planning-result-basis"><strong>依目標條件初估</strong><p>預設值供初步試算，請依基地現況與預計配置調整；設定差異會影響面積、戶數及車位結果。獎勵資格、道路及圖說待查證，採用數值與待查事項列入評估摘要。</p><details><summary>查看本次規劃預設值</summary><PlanningDefaultValues rows={s.result.planningDefaults||[]}/></details></div>}
  <div className="le-capture-notes">{todPendingNotice(i)&&<p className="le-tod-reminder">{todPendingNotice(i)}</p>}<strong>本次主要假設與適用條件</strong><p>建築面積使用{f(Number(i.coverageUse))}%、容積使用{f(Number(i.volumeUse))}%、{s.result.basementDemandReview?`開挖上限${f(s.result.basementDemandReview.capPercent)}%、最大必要樓板比率${f(s.result.basementDemandReview.actualExcavationPercent)}%`:`開挖${f(Number(i.excavation))}%`}、地下{v.floors}層（{s.result.basementDemandReview||i.basementMode==='auto'?'依需求搜尋':'固定'}）、每戶{i.unitPing}坪、陽台占逐層樓板{i.balcony}%；地下設備梯間{s.result.basementDemandReview?"依分項共用設施及逐層設備房預留":`預留${i.quantityReserve.basementReservePercent}%`}（規劃假設）。屋突按{s.result.roofEnvelopeReview?.rate??'待核'}%投影、{i.roofFloors}層×{i.roofHeight}m，依用途與登記假設檢核。</p><p>道路：計畫{i.roadConditions.plannedWidth?`${i.roadConditions.plannedWidth}m`:'未填'}／實際開闢{i.roadConditions.openedWidth?`${i.roadConditions.openedWidth}m`:'未填'}／面寬{i.roadConditions.frontage?`${i.roadConditions.frontage}m`:'未填'}；{i.roadConditions.status==='confirmed'?'已填查證來源，資格仍依檢核':"尚屬未確認或暫用估計值，待文件確認"}。{i.parkingDesign.mode==='general'?'停車採地區通則初估，未核個案都市計畫。':'停車依本次個案輸入檢討。'}退縮、日照、限高、實際排位及登記仍須圖說覆核。</p></div>
  <footer className="le-report-foot"><span>三策專案管理顧問有限公司</span><span>土地開發評估 · 本次條件試算</span></footer></article>;
 }
