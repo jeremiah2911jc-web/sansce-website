@@ -57,6 +57,13 @@ test('special combined transfer cap explanation appears only for the selected sp
  const notes=collectiveDisplayNotes(i,r);assert(notes.some(n=>n.includes('合計上限50%')));assert(!notes.join('').includes('不因屬危老'));
  i.regulatoryReview.bonusAssessment.tdrProfile='general';assert(!collectiveDisplayNotes(i,r).some(n=>n.includes('特殊核准重建')));
 });
+test('Taipei floating residue is zero in the report calculation sentence as well as numeric fields',()=>{
+ const i=fixture('臺北市','renewal');i.site='3000';i.balcony='15';const r=evaluateActiveBonuses(i),frozen=structuredClone(r);
+ assert.deepEqual(r.errors,[]);assert(r.values.basementCounted<0&&r.values.basementCounted>-1e-9);
+ const s=collectiveDelivery({input:i,result:r,district:'臺北市'}),sentence=s.assumptions.find(n=>n.startsWith('地上計容'));
+ assert(sentence.includes('地下計容0.00㎡'));assert(!sentence.includes('地下計容-0.00㎡'));assert.deepEqual(r,frozen);
+ const negative=collectiveDisplayNotes(i,{notes:['地上計容100.00㎡＋地下計容-0.00㎡＝100.00㎡'],values:{basementCounted:-.001}});assert(negative.some(n=>n.includes('地下計容-0.00㎡')));
+});
 test('legacy direct-input model retains its active ratios and fixed basement settings',()=>{
  const i={regulatoryReview:{bonusAssessment:{route:'renewal'}},basementMode:'manual',parkingRule:'localUnit'};
  for(const key of ['equipment','lobby','roofRate','excavation','basementFloors','reserve','localParkingUnit'])assert(planningFieldApplied(i,key),key);
