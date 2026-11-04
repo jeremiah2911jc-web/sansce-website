@@ -24,6 +24,7 @@ jobs:
       - run: npm run verify:evaluation-copy
       - run: npm run build
       - run: npm run verify:evaluation-delivery
+      - run: npm run verify:evaluation-review
       - run: node --test tests/readjustment-names.test.mjs tests/active-bonus-input.test.mjs tests/workspace-guidance.test.mjs tests/postrelease-cleanup.test.mjs tests/bonus-report-selection.test.mjs
       - run: node --test tests/multi-building.test.mjs tests/number-format.test.mjs tests/preview-input.test.mjs tests/volume-recount.test.mjs tests/guided-input.test.mjs tests/statutory-bonus-limits.test.mjs tests/ntpc-tod.test.mjs
       - run: node --test tests/article-copy.test.mjs

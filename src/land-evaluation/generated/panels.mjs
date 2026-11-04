@@ -3,7 +3,7 @@ import {BonusEligibilityPanel} from "../BonusEligibilityPanel.jsx";
 import {reviewBonusConditions,dangerLegalCap,isBonusConditions} from "../bonus-eligibility.mjs";
 import { TaipeiRenewalPanel } from "/src/land-evaluation/taipei-renewal/TaipeiRenewalPanel.jsx";
 import { TdrResult } from "/src/land-evaluation/public-panel-runtime.mjs";
-import { bonusItemCondition } from "/src/land-evaluation/public-copy.mjs";
+import { bonusItemCondition, bonusItemMessages } from "/src/land-evaluation/public-copy.mjs";
 import { isTaipeiRenewal,taipeiRenewalApplies,applyTaipeiRenewal } from "../taipei-renewal/model.mjs";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -3113,7 +3113,7 @@ function BonusAssessmentPanel({
           }) })
         ] })
       ] }),
-      r.messages.map((m) => /* @__PURE__ */ jsx2("p", { role: "status", children: publicText2(m) }, m))
+      bonusItemMessages(d,r,input).map((m) => /* @__PURE__ */ jsx2("p", { role: "status", children: publicText2(m) }, m))
     ] }, d.id);
   }) });
   const qualification = (k, label) => /* @__PURE__ */ jsxs2("label", { children: [

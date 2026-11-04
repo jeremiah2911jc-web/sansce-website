@@ -2,6 +2,8 @@ import {approvedEvaluationCopyEdits} from './approved-copy-edits.mjs';
 import {developmentServiceCopyEdits} from '../../shared/development-service-copy.mjs';
 // Website wording only. Keep the authoritative App inputs and calculation rules intact.
 export const publicCopyEdits = [
+ ['不是地籍圖上名目路寬即合格。','道路條件依實際開闢、連通及基地面寬核對。'],
+ ['，不能把勾選視為核准。','；核准比例依主管機關文件確認。'],
  ['1. 土地分項與採計範圍','土地分項與採計範圍'],
  ['2. 開發途徑及併用條件','開發途徑及併用條件'],
  ['3. 獎勵、容移與重複扣除','獎勵、容移與重複扣除'],
@@ -161,8 +163,16 @@ export function publicText(value){let text=String(value??'');for(const [from,to]
 
 // Region-specific instructions only; the shared reward quantities stay unchanged.
 export function bonusItemCondition(item,city){
- if(item.id!=='u-illegal')return item.condition;
+ if(item.id!=='u-illegal')return publicText(item.condition);
  if(city==='taipei')return '中央第17條、臺北地方辦法第5條：舊違章建築戶限民國77年8月1日以前興建完成；事業計畫核定前檢附協議書、實測面積及房屋稅籍、門牌、水費或電費等證明。逐戶可獎勵面積與全案20%上限另依中央規定檢核。';
  if(city==='ntpc')return item.condition;
  return '中央第17條：處理占有他人土地之舊違章建築戶，須核對所在地認定日期、逐戶面積及協議文件；全案最高20%。';
+}
+
+// The road base reads the shared road field; its unused item amount is not missing data.
+export function bonusItemMessages(item,row,input){
+ if(item.id!=='t-base')return row.messages;
+ return row.messages.flatMap(message=>message.startsWith('缺計算量')
+  ? input.roadConditions?.plannedWidth?.trim()?[]:['請在「基地道路條件」填寫計畫道路寬度，這裡會帶入同一數值。']
+  :[message]);
 }
