@@ -9,6 +9,42 @@ import {comparisonMetrics} from '../src/land-evaluation/collective-comparison.mj
 import {serializeCase,parseCase} from '../src/land-evaluation/case-file.mjs';
 function fixture(){let i=createWorkspaceInput(createInput);i={...i,site:'1600',coverage:'50',far:'300',renewal:'50',tdr:'25',multiBuilding:newMultiBuilding()};const b=i.multiBuilding.buildings[0];b.footprint='400';b.floors[0]={...b.floors[0],to:'8',area:'400',equipment:'10',lobby:'20',balcony:'20',common:'20',units:'4'};return i;}
 const run=i=>evaluateActiveBonuses(i);
+test('impossible flat parking count cannot inflate the 40sqm allowance',()=>{
+ const i=fixture(),b=i.multiBuilding.basements[0];b.cars='1000';
+ const r=run(i);assert.equal(r.values,null);
+ assert(r.errors.some(x=>x.includes('1000位')&&x.includes('12,650㎡')));
+ assert.equal(r.multiBuilding.fieldIssues[0].field,b.id+':cars');
+});
+test('reduced-width stalls are limited to one fifth across the shared basement',()=>{
+ const i=fixture(),b=i.multiBuilding.basements[0];
+ Object.assign(b,{cars:'5',car:'63.25',ramp:'0',equipment:'0',other:'536.75',houseCommon:'0'});
+ assert(run(i).errors.some(x=>x.includes('合計至少需67.65㎡')));
+ Object.assign(b,{car:'67.65',other:'532.35'});
+ assert.deepEqual(run(i).errors,[]);
+});
+test('one fifth allowance may be distributed between basement floors',()=>{
+ const i=fixture(),a=i.multiBuilding.basements[0],b=newBasement();
+ Object.assign(a,{area:'12.65',cars:'1',car:'12.65',ramp:'0',equipment:'0',other:'0',houseCommon:'0'});
+ Object.assign(b,{level:'2',area:'55',cars:'4',car:'55',ramp:'0',equipment:'0',other:'0',houseCommon:'0'});
+ i.multiBuilding.basements=[a,b];const r=run(i);
+ assert.deepEqual(r.errors,[]);assert.equal(r.values.cars,5);assert.equal(r.multiBuilding.below.parkingCap,200);
+});
+test('unoccupied parking area on another floor cannot enlarge the reduced-width quota',()=>{
+ const i=fixture(),a=i.multiBuilding.basements[0],b=newBasement();
+ Object.assign(a,{area:'63.25',cars:'5',car:'63.25',ramp:'0',equipment:'0',other:'0',houseCommon:'0'});
+ Object.assign(b,{level:'2',area:'4.4',cars:'0',car:'4.4',ramp:'0',equipment:'0',other:'0',houseCommon:'0'});
+ i.multiBuilding.basements=[a,b];const r=run(i);assert.equal(r.values,null);
+ assert(r.errors.some(x=>x.includes('超過第60條全案最多1位')));
+});
+test('a car count without a stall area cannot be used as a quota',()=>{
+ const i=fixture(),b=i.multiBuilding.basements[0];Object.assign(b,{car:'0',other:'420'});
+ const r=run(i);assert.deepEqual(r.errors,[]);assert.equal(r.multiBuilding.below.parkingCap,0);
+ assert.equal(r.values.cars,15);assert(r.multiBuilding.checks.some(x=>x.includes('未增加每位40㎡')));
+});
+test('zero car count does not create a flat parking allowance',()=>{
+ const i=fixture();i.multiBuilding.basements[0].cars='0';const r=run(i);
+ assert.deepEqual(r.errors,[]);assert.equal(r.multiBuilding.below.parkingCap,0);assert.equal(r.multiBuilding.below.carExempt,0);
+});
 test('single tower quantities use repeat counts and one shared basement',()=>{const i=fixture(),before=structuredClone(i),r=run(i);assert.deepEqual(r.errors,[]);assert.equal(r.values.totalWithoutBalcony,3200+120+600);assert.equal(r.values.units,32);assert.equal(r.values.basement,600);assert.equal(r.values.sale,(400+20)*8+120+80);assert.equal(r.multiBuilding.above.equipmentExempt,80);assert.deepEqual(i,before);});
 test('unequal A B C towers sum independently without multiplying shared basement',()=>{const i=fixture(),a=i.multiBuilding.buildings[0],b=newBuilding('B棟'),c=newBuilding('C棟');b.floors[0].to='2';b.floors[0].area='300';c.floors[0].to='3';c.floors[0].area='100';c.footprint='100';c.floors[0].common='10';c.roof.projection='10';c.roof.levels='1';i.multiBuilding.buildings=[a,b,c];let r=run(i);assert.deepEqual(r.errors,[]);assert.equal(r.values.totalWithoutBalcony,3200+600+300+120+120+10+600);assert.equal(r.values.basement,600);assert.equal(r.multiBuilding.buildings[2].floors,3);assert.equal(r.values.units,32+8+12);});
 test('equipment cap applies to full site once, excess counts toward FAR',()=>{const i=fixture();i.site='100';i.far='100';i.renewal='0';i.tdr='0';i.multiBuilding.basements=[];const b=i.multiBuilding.buildings[0];b.floors[0]={...b.floors[0],to:'1',area:'100',equipment:'50',lobby:'0',balcony:'0',common:'0'};const c=structuredClone(b);c.id='other';c.name='B棟';c.floors[0].id='otherfloor';i.multiBuilding.buildings.push(c);const r=run(i);assert.equal(r.values.allowed,100);assert.equal(r.multiBuilding.equipmentCap,15);assert.equal(r.multiBuilding.above.equipmentExempt,15);assert.equal(r.values.aboveCounted,185);assert(r.multiBuilding.checks.some(x=>x.includes('超過允建')));});

@@ -108,16 +108,31 @@ export function calculateMultiBuilding(input){
   const served=b.car+b.motorcycle+b.bicycle+b.community,carRamp=served>0?b.ramp*b.car/served:b.ramp;
   if(b.houseCommon>b.area-b.car-carRamp+.001)errors.push('B'+level+'房屋共有分攤超過扣除汽車與其服務車道後的空間');
   if(excavation&&b.area>n(input.site)*excavation.cap/100+.01)checks.push('B'+level+'樓板超過本次地下開挖上限'+excavation.cap.toFixed(2)+'%，須調整配置或核對個案規定');
-  if(b.cars>0&&b.car===0)checks.push('B'+level+'已填汽車位，汽車空間面積待分列');
+  if(b.cars>0&&b.car===0)checks.push('B'+level+'已填汽車位，汽車空間面積待分列；本次這些車位未增加每位40㎡免計額度');
   if(b.motos>0&&b.motorcycle===0)checks.push('B'+level+'已填機車位，機車空間面積待分列');
   if(b.other===b.area&&b.area>0)checks.push('B'+level+'用途面積尚未分列；本次全層暫計容，房屋共有面積待補');
   basements.push(b);
  }
  if(errors.length)return fail();
+ // Article 60 permits a 0.2m width reduction for at most one fifth of indoor
+ // flat spaces. These are necessary stall-area lower bounds only; aisles,
+ // accessible spaces, wall clearance and an actual layout need separate review.
+ const parkingIssue=(message,index)=>{errors.push(message);fieldIssues.push({message,field:m.basements[index].id+':cars'});};
+ basements.forEach((b,index)=>{
+  const minimum=b.cars*2.3*5.5;
+  if(b.car>0&&b.car+.02<minimum)parkingIssue('B'+b.level+'平面汽車位'+b.cars+'位，汽車停車空間至少需'+minimum.toLocaleString('zh-TW',{maximumFractionDigits:2})+'㎡；請核對車位數或面積',index);
+ });
+ if(!errors.length){
+  const cars=sum(basements.filter(b=>b.car>0),'cars'),minimum=cars*2.5*5.5-Math.floor(cars/5)*.2*5.5;
+  if(sum(basements,'car')+.02<minimum)parkingIssue('平面汽車位合計'+cars+'位，依第60條車格尺寸及縮減寬度數量限制，汽車停車空間合計至少需'+minimum.toLocaleString('zh-TW',{maximumFractionDigits:2})+'㎡',basements.findIndex(b=>b.cars>0));
+  const reductions=basements.map(b=>b.car>0?Math.max(0,Math.ceil((b.cars*2.5*5.5-b.car-.02)/(.2*5.5))):0),required=reductions.reduce((t,x)=>t+x,0);
+  if(!errors.length&&required>Math.floor(cars/5))parkingIssue('各層汽車停車空間至少需'+required+'位縮減寬度車格，超過第60條全案最多'+Math.floor(cars/5)+'位；請增加對應樓層的停車面積或調整車位數',reductions.findIndex(x=>x>0));
+ }
+ if(errors.length)return fail();
  const basement=sum(basements,'area'),b1=basements.find(b=>b.level===1);
  const unallocatedRamp=basements.reduce((t,b)=>t+(b.car+b.motorcycle+b.bicycle+b.community===0?b.ramp:0),0);
  if(unallocatedRamp>0)checks.push('未分列停車服務用途的車道'+unallocatedRamp.toFixed(2)+'㎡先計容，補入用途後重新檢討');
- const pools={basement,carArea:sum(basements,'car'),motoArea:sum(basements,'motorcycle'),bikeArea:sum(basements,'bicycle'),communityArea:sum(basements,'community'),rampTotal:sum(basements,'ramp')-unallocatedRamp,lossArea:0,spareArea:sum(basements,'other')+unallocatedRamp,equipmentArea:sum(basements,'equipment'),cars:sum(basements,'cars'),undergroundFlatCars:sum(basements,'cars'),mechanicalArea:0};
+ const pools={basement,carArea:sum(basements,'car'),motoArea:sum(basements,'motorcycle'),bikeArea:sum(basements,'bicycle'),communityArea:sum(basements,'community'),rampTotal:sum(basements,'ramp')-unallocatedRamp,lossArea:0,spareArea:sum(basements,'other')+unallocatedRamp,equipmentArea:sum(basements,'equipment'),cars:sum(basements,'cars'),undergroundFlatCars:sum(basements.filter(b=>b.car>0),'cars'),mechanicalArea:0};
  const below=reviewBasementVolume({...regulatory,...(unallocatedRamp>0?{spareUse:'counted'}:{}),shelterArea:'0',shelterEquipment:'0'},pools,above.equipmentExempt,equipmentCap,{footprint,plate:b1?.area||0,equipmentPerFloor:b1?.equipment||0,shelterOnly:0});
  if(!below.balanced){errors.push('地下計容及免計面積合計不符樓板，請核對用途分項');return fail();}
  const aboveFloor=sum(rows,'area'),balcony=sum(rows,'balcony'),roof=sum(buildingRows,'roofArea'),roofSale=sum(buildingRows,'roofRegistered');
