@@ -8,6 +8,7 @@ import {regionalInputPatch} from '../src/land-evaluation/regional-input.mjs';
 import {collectiveDelivery} from '../src/land-evaluation/delivery-model.mjs';
 import {planningDefaultRows} from '../src/land-evaluation/guided-input.mjs';
 import {planningFieldApplied} from '../src/land-evaluation/applied-planning-fields.mjs';
+import {collectiveDisplayNotes} from '../src/land-evaluation/collective-notes.mjs';
 import {dateReady,evidenceReady,newReadjustmentPlan,evaluateReadjustment,REVIEWED_AT,documentItems} from '../src/land-evaluation/generated/readjustment.mjs';
 
 const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
@@ -43,11 +44,18 @@ for(const city of ['新北市','臺北市'])for(const route of ['renewal','dange
  const frozen=structuredClone(r),s=collectiveDelivery({input:i,result:r,district:city});
  assert.deepEqual(r,frozen);assert.deepEqual(i,before);
  const body=[...s.assumptions,...s.issues].join('\n');assert(!body.includes('都更及容移均為'));assert(!body.includes('都更50%依一般路徑'));
+ assert(!body.includes('新北特殊核准重建'));
  for(const key of ['equipment','lobby','roofRate','reserve','excavation','excavationCap','basementFloors','carPerUnit','carPing','motoSqm','localParkingUnit'])assert(!planningFieldApplied(i,key),key);
  assert(!s.inputs.some(([label])=>/^(?:機電等配置比例|梯廳配置比例|屋突單層投影比例|規劃開挖率|手動地下層數|地下設備、梯間等預留|每汽車位含車道面積|每機車位含通道面積|市場規劃汽車位需求|地方規定每戶汽車位數)/.test(label)));
  assert(!planningDefaultRows(i).some(([label])=>/^(?:機電等配置比例|梯廳配置比例|屋突單層投影比例|手動地下層數)/.test(label)));
  assert(s.inputs.some(([label,value])=>label.startsWith('每戶地上分攤')&&value.startsWith('25 ')));
  assert.equal(s.metrics[0][1],r.values.salePing);assert.equal(s.metrics[4][1],r.values.equivalentFloors);assert.equal(s.metrics[5][1],r.values.floors);
+});
+test('special combined transfer cap explanation appears only for the selected special profile',()=>{
+ const i=fixture('新北市','danger'),r={notes:['新北特殊核准重建若選免量體評定路徑，獎勵及容移合計限50%；依一般量體評定路徑者，不因屬危老就自動套用該特殊合計上限。']};
+ i.tdr='25';i.regulatoryReview.bonusAssessment.tdrProfile='special50';
+ const notes=collectiveDisplayNotes(i,r);assert(notes.some(n=>n.includes('合計上限50%')));assert(!notes.join('').includes('不因屬危老'));
+ i.regulatoryReview.bonusAssessment.tdrProfile='general';assert(!collectiveDisplayNotes(i,r).some(n=>n.includes('特殊核准重建')));
 });
 test('legacy direct-input model retains its active ratios and fixed basement settings',()=>{
  const i={regulatoryReview:{bonusAssessment:{route:'renewal'}},basementMode:'manual',parkingRule:'localUnit'};

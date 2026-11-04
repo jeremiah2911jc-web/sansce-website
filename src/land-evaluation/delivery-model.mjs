@@ -1,4 +1,5 @@
 import {volumeRecountSections} from './volume-recount.mjs';
+import {formatNumber} from './number-format.mjs';
 import {multiBuildingDelivery} from './multi-building-delivery.mjs';
 import {TOD_SOURCE,todScopes} from './ntpc-tod.mjs';
 import {planningFieldApplied} from './applied-planning-fields.mjs';
@@ -16,7 +17,7 @@ import {systems,perspectives,READJUSTMENT_VERSION,documentItems,getPublishedPlan
 import {publicText} from './public-copy.mjs';
 import {statutoryBonusLimits,bonusLimitMode,dangerLaw} from './statutory-bonus-limits.mjs';
 export function displayRuleVersion(value){const match=String(value||'').match(/(\d{4}-\d{2}-\d{2})\.(?:v)?(\d+)(?=\D|$)/i);return match?`${match[1]} · V${match[2]}`:'版本待確認';}
-export const displayNumber=(n,d=2)=>typeof n==='number'&&Number.isFinite(n)?(n>0&&n<10**-d?'<'+(10**-d):n.toLocaleString('zh-TW',{maximumFractionDigits:d})):'待確認';
+export const displayNumber=(n,d=2)=>formatNumber(n,d,true);
 const text=v=>v===null||v===undefined||v===''?'未填／待確認':String(v);
 const distinct=items=>[...new Set(items.filter(Boolean).map(publicText))];
 const summary=(kind,title,status,ruleVersion)=>({kind,title:title||'本次評估',status,ruleVersion:ruleVersion+'／來源 '+(kind==='市地重劃／區段徵收'?readjustmentManifest:sourceManifest).sourceCommit.slice(0,8),createdAt:new Date().toISOString(),reviewedAt:REVIEWED_AT,metrics:[],conditions:[],charts:[],issues:[],assumptions:[],sources:[],inputs:[]});
