@@ -12,20 +12,20 @@ export const comparisonMetrics=[
  {label:'公設比（估算）',unit:'%',value:s=>s.result.values.commonRatio},
  {label:'推估地上樓層',unit:'層',value:s=>s.result.values.equivalentFloors},
  {label:'規劃戶數',unit:'戶',value:s=>s.result.values.units},
- {label:'每戶地上分攤',unit:'坪／戶',value:s=>Number(s.input.unitPing),note:'含地上公設與陽台，不含屋突及地下室。'},
+ {label:'每戶地上分攤',unit:'坪／戶',value:s=>s.result.multiBuilding&&s.result.values.units>0?(s.result.values.aboveWithoutBalcony-s.result.values.roof+s.result.values.balcony)*.3025/s.result.values.units:Number(s.input.unitPing),note:'含地上公設與陽台，不含屋突及地下室。'},
  {label:'汽車位合計',unit:'位',value:s=>s.result.values.cars},
- {label:'平面車位',unit:'位',value:s=>s.result.parking?.values?.flatCars},
- {label:'機械車位',unit:'位',value:s=>s.result.parking?.values?.mechanicalCars},
+ {label:'平面車位',unit:'位',value:s=>s.result.multiBuilding?s.result.values.cars:s.result.parking?.values?.flatCars},
+ {label:'機械車位',unit:'位',value:s=>s.result.multiBuilding?0:s.result.parking?.values?.mechanicalCars},
  {label:'車戶比',unit:'位／戶',value:s=>s.result.values.units>0?s.result.values.cars/s.result.values.units:null},
  {label:'地下層數',unit:'層',value:s=>s.result.values.floors},
- {label:'最大必要地下樓板',unit:'㎡',value:s=>s.result.basementDemandReview?.actualMaxPlate??null,note:'需求搜尋時的最大必要樓板；固定模式請核對本案開挖設定。'},
+ {label:'最大必要地下樓板',unit:'㎡',value:s=>s.result.multiBuilding?Math.max(0,...s.result.multiBuilding.basements.map(b=>b.area)):s.result.basementDemandReview?.actualMaxPlate??null,note:'需求搜尋時的最大必要樓板；固定模式請核對本案開挖設定。'},
  {label:'地下總樓板',unit:'㎡',value:s=>s.result.values.basement},
  {label:'地下反計容積',unit:'㎡',value:s=>s.result.values.basementCounted},
  {label:'未使用容積',unit:'㎡',value:s=>s.result.values.unused}
 ];
 export function baseConditionsMatch(a,b){return JSON.stringify(encodeValue([a.district,...['site','coverage','far','commercialIntensity','mixedSite','roadConditions'].map(k=>a.input[k])]))===JSON.stringify(encodeValue([b.district,...['site','coverage','far','commercialIntensity','mixedSite','roadConditions'].map(k=>b.input[k])]));}
 const fields=[['site','基地面積','㎡'],['coverage','法定建蔽率','%'],['far','基準容積率','%'],['renewal','都更目標','%'],['tdr','容移目標','%'],['danger','危老目標','%'],['scale','規模獎勵目標','%'],['coverageUse','建築面積使用','%'],['volumeUse','容積使用','%'],['unitPing','每戶地上分攤','坪／戶'],['balcony','陽台比例','%'],['roofFloors','屋突層數','層'],['roofHeight','屋突每層高度','m'],['storePercent','店鋪配置比例','%'],['motoPerUnit','機車規劃需求','位／戶'],['extraCars','增設汽車位數','位'],['excavation','固定開挖率','%'],['excavationCap','個案開挖率上限','%'],['basementFloors','固定地下層數','層'],['basementSalePercent','地下設備梯間登記分攤','%']];
-const groups={commercialIntensity:'商業分區強度與用途',mixedSite:'混合分區條件',roadConditions:'道路條件與查證',parkingDesign:'停車方式與個案配置',basementDemand:'地下需求搜尋條件',quantityReserve:'量體與必要空間預留',areaReview:'逐層面積及登記',regulatoryReview:'獎勵、容移及法規設定'};
+const groups={multiBuilding:'分棟及共用空間',commercialIntensity:'商業分區強度與用途',mixedSite:'混合分區條件',roadConditions:'道路條件與查證',parkingDesign:'停車方式與個案配置',basementDemand:'地下需求搜尋條件',quantityReserve:'量體與必要空間預留',areaReview:'逐層面積及登記',regulatoryReview:'獎勵、容移及法規設定'};
 const inputText=(v,unit='')=>v===''||v===null||v===undefined?'未填／待確認':String(v)+(unit?' '+unit:'');
 export function scenarioDifferences(base,other){
  const rows=[];if(base.district!==other.district)rows.push(['評估地區',base.district,other.district]);

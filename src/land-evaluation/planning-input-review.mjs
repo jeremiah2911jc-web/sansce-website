@@ -23,12 +23,13 @@ export function bonusLimitIssues(input){
  if(input.commercialIntensity?.enabled){const review=calculateCommercialIntensity(input.commercialIntensity,input.site,input.coverage,true);if(review.errors.length)return [];far=String(review.effectiveFar);}
  if(['site','coverage'].some(key=>!Number.isFinite(Number(input[key]))||Number(input[key])<=0)||!Number.isFinite(Number(far))||Number(far)<=0)return [];
  const template=planningAssumptionsTemplate({input:{district:input.parkingDesign?.district??'新北市'}});
- const probe={...template,...input,far,quantityReserve:undefined,areaReview:undefined,spatial:undefined,basementDemand:undefined,commercialIntensity:undefined,basementMode:'auto',reserve:'0',excavation:'50'};
+ const probe={...template,...input,far,multiBuilding:undefined,quantityReserve:undefined,areaReview:undefined,spatial:undefined,basementDemand:undefined,commercialIntensity:undefined,basementMode:'auto',reserve:'0',excavation:'50'};
  for(const [key]of planningFields)if(blank(probe[key]))probe[key]=['renewal','danger','tdr','scale'].includes(key)?'0':template[key];
  return [...new Set(evaluate(probe).errors.filter(message=>limitError.test(message)))];
 }
 export function planningInputIssues(input){
  if(input.assessmentMode==='document'||input.mixedSite?.enabled)return [];
+ if(input.multiBuilding?.enabled)return caseLimitIssues(input);
  const errors=requiredPlanningFields(input).filter(([key])=>blank(input[key])).map(([,label])=>{const message=publicText(label)+'未填',target=issueTarget(message,input);return (target.label??publicText(label)).replace(/%$/,'')+'未填';});
  if(input.quantityReserve?.reservationMode==='legal_envelope'&&input.quantityReserve.basementEquipmentMode!=='named'&&!Number.isFinite(input.quantityReserve.basementReservePercent))errors.push('地下預留比例未填');
  return [...new Set([...errors,...caseLimitIssues(input),...bonusLimitIssues(input)])];

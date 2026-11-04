@@ -1,3 +1,4 @@
+import {exposeMultiBuildingKernel} from './expose-multi-building-kernel.mjs';
 import {applyNtpcTod} from './apply-ntpc-tod.mjs';
 import {applyGuidedPlanning} from './apply-guided-planning.mjs';
 import {confirmSyntheticBonusConditions} from '../tests/helpers/bonus-conditions.mjs';
@@ -73,7 +74,7 @@ const input={...createInput(),...exampleInput()};Object.assign(input,regionalInp
 confirmSyntheticBonusConditions(input);
 const scopedCode=readFileSync(new URL('../src/land-evaluation/generated/core.mjs',import.meta.url),'utf8').replace('"../taipei-renewal/model.mjs"',JSON.stringify(new URL('../src/land-evaluation/taipei-renewal/model.mjs',import.meta.url).href));
 const scopedLegalCode=scopedCode.replace('"../ntpc-tod.mjs"',JSON.stringify(new URL('../src/land-evaluation/ntpc-tod.mjs',import.meta.url).href)).replace('"../bonus-eligibility.mjs"',JSON.stringify(new URL('../src/land-evaluation/bonus-eligibility.mjs',import.meta.url).href));
-const lawCore=await import('data:text/javascript;base64,'+Buffer.from(scopedLegalCode+'\nexport {resolveBonusLimits,assessBonuses,isBonusAssessment};').toString('base64'));
+const lawCore=await import('data:text/javascript;base64,'+Buffer.from(scopedLegalCode+'\nexport {assessBonuses,isBonusAssessment};').toString('base64'));
 let integrated;
 test('full planning uses local1%',()=>{integrated=evaluate(input);assert.deepEqual(integrated.errors,[]);assert(integrated.values);assert.equal(integrated.regulatory.bonus.assessment.taipei.applied,1);assert.equal(integrated.values.renewalApplied,1);assert(Math.abs(integrated.values.allowed-6787.2)<1e-8);});
 test('planning blocks incomplete municipal selection',()=>{const x=structuredClone(input);x.regulatoryReview.bonusAssessment.taipei.items.rain.provided='';const r=evaluate(x);assert(r.errors.some(x=>x.includes('設置貯留量')));});
@@ -93,7 +94,8 @@ for(const file of ['core','panels'])test('bundle non-scoped functions intact '+f
  assert.deepEqual(funcs(current),funcs(applyNtpcTod(applyGuidedPlanning(previous))));
  const original=file==='panels'?execFileSync('git',['show','origin/main:'+path],{encoding:'utf8',maxBuffer:20e6}):previous;
  const corrected=applyBonusEligibility(applyDangerAreaFix(applyTaipeiRenewalCore(original)));
- const expected=applyNtpcTod(applyGuidedPlanning(file==='panels'?applyBonusEligibilityPanel(applyTaipeiRenewalPanel(applyEvaluationPanelCopy(corrected))):corrected));
+ let expected=applyNtpcTod(applyGuidedPlanning(file==='panels'?applyBonusEligibilityPanel(applyTaipeiRenewalPanel(applyEvaluationPanelCopy(corrected))):corrected));
+ if(file==='core')expected=exposeMultiBuildingKernel(expected);
  assert.equal(current,expected,'Bundle changes must match the scoped adapters exactly');
  assert.equal(applyTaipeiRenewalCore(current),current);assert.equal(applyDangerAreaFix(current),current);
  if(file==='panels')assert.equal(applyTaipeiRenewalPanel(current),current);

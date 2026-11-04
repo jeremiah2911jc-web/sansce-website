@@ -1,3 +1,4 @@
+import {calculateMultiBuilding} from './multi-building.mjs';
 import {publicText} from './public-copy.mjs';
 import {calculateCommercialIntensity,planningAssumptionsTemplate,defaultPlanningInput,calculatePlanning,newSiteRoadConditions} from './generated/core.mjs';
 export const ENGINE_BUILD='2026-10-19';
@@ -18,6 +19,7 @@ export function checkInput(input){
  return errors;
 }
 export function evaluate(input){
+ if(input.multiBuilding?.enabled)return calculateMultiBuilding(input);
  const errors=checkInput(input);if(errors.length)return {errors,notes:[],values:null};
  try{const result=calculatePlanning(input);return {...result,errors:result.errors.map(e=>publicText(e).replace("依需求檢討須先填個案開挖率上限及法規／基地資料來源；不自動套60%或80%","請填寫個案開挖率上限及適用法規。"))};}catch{return {errors:['目前條件無法完成計算，請檢查輸入數值。'],notes:[],values:null};}
 }

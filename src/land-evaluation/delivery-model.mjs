@@ -1,3 +1,5 @@
+import {volumeRecountSections} from './volume-recount.mjs';
+import {multiBuildingDelivery} from './multi-building-delivery.mjs';
 import {TOD_SOURCE,todScopes} from './ntpc-tod.mjs';
 import {planningFieldApplied} from './applied-planning-fields.mjs';
 import {defaultState} from './guided-input.mjs';
@@ -19,6 +21,7 @@ const text=v=>v===null||v===undefined||v===''?'未填／待確認':String(v);
 const distinct=items=>[...new Set(items.filter(Boolean).map(publicText))];
 const summary=(kind,title,status,ruleVersion)=>({kind,title:title||'本次評估',status,ruleVersion:ruleVersion+'／來源 '+(kind==='市地重劃／區段徵收'?readjustmentManifest:sourceManifest).sourceCommit.slice(0,8),createdAt:new Date().toISOString(),reviewedAt:REVIEWED_AT,metrics:[],conditions:[],charts:[],issues:[],assumptions:[],sources:[],inputs:[]});
 export function collectiveDelivery(snapshot){
+ if(snapshot.result.multiBuilding)return multiBuildingDelivery(snapshot);
  const {input:i,result:r}=snapshot,v=r.values;if(!v){
   const a=r.aboveGround;if(!a||!(a.allowed>0))return null;
   const partial=summary('集合住宅',snapshot.name,'容積初估；停車與完整配置待補',BONUS_LEGAL_VERSION);
@@ -74,6 +77,7 @@ export function collectiveDelivery(snapshot){
   s.issues=distinct([...s.issues,...taipei.errors]);
  }
  if(i.commercialIntensity?.enabled){s.inputs.push(...commercialInputs(i.commercialIntensity),['商業分區基準容積',displayNumber(r.commercialReview?.base)+'㎡']);s.sources.push(i.commercialIntensity.planSource,i.commercialIntensity.useSource,i.commercialIntensity.boundarySource,i.commercialIntensity.documentSource);}
+ s.sections=[...(s.sections||[]),...volumeRecountSections(r,displayNumber)];
  return s;
 }
 export function landDelivery(a,review){

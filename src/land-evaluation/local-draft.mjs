@@ -1,3 +1,4 @@
+import {multiBuildingShapeIssues} from './multi-building.mjs';
 import {isIndustrial,isDocumentCase,isMixedSite,isCommercialIntensity} from './generated/core.mjs';
 export const DRAFT_KEY='sanze:evaluation:local-draft:v1';
 export const DRAFT_SCHEMA=1;
@@ -44,6 +45,7 @@ export function parseDraft(text){
  if(data['collective.scenarios']){const plans=data['collective.scenarios'];if(!Array.isArray(plans)||plans.length>3||plans.some(p=>!p||typeof p.id!=='string'||!['A','B','C'].includes(p.code)||typeof p.title!=='string'||typeof p.name!=='string'||!['新北市','臺北市'].includes(p.district)||!p.input?.quantityReserve||!p.input?.roadConditions||!p.input?.parkingDesign)||new Set(plans.map(p=>p.id)).size!==plans.length||new Set(plans.map(p=>p.code)).size!==plans.length)throw Error('集合住宅方案無效。');if(plans.length&&!plans.some(p=>p.id===data['collective.active']))throw Error('目前集合住宅方案無效。');}
  if(data['land.assessment']&&(!Array.isArray(data['land.assessment'].parcels)||data['land.assessment'].parcels.length>100))throw Error('土地清冊無效。');
  if(data['collective.input']&&(!data['collective.input'].quantityReserve||!data['collective.input'].roadConditions||!data['collective.input'].parkingDesign))throw Error('集合住宅欄位不完整。');
+ for(const input of [data['collective.input'],...(data['collective.scenarios']||[]).map(p=>p.input)])if(input?.multiBuilding!==undefined&&multiBuildingShapeIssues(input.multiBuilding).length)throw Error('分棟資料格式或版本無效，原資料保留。');
  for(const input of [data['collective.input'],...(data['collective.scenarios']||[]).map(p=>p.input)]){if(input?.assessmentMode!==undefined&&!['planning','document'].includes(input.assessmentMode))throw Error('評估模式無效。');if(input?.documentCase!==undefined&&!isDocumentCase(input.documentCase))throw Error('文件覆核格式或版本無效。');}
  for(const input of [data['collective.input'],...(data['collective.scenarios']||[]).map(p=>p.input)])if(input?.mixedSite!==undefined&&!isMixedSite(input.mixedSite))throw Error('混合分區欄位或版本無效，原資料保留。');
  for(const input of [data['collective.input'],...(data['collective.scenarios']||[]).map(p=>p.input)])if(input?.commercialIntensity!==undefined&&!isCommercialIntensity(input.commercialIntensity))throw Error('商業分區欄位或版本無效。');

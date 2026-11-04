@@ -3,7 +3,7 @@
   "scope": "land identity, laws, routes, layout and efficiency only; no financial UI or case persistence",
   "source": "三策案件版",
   "sourceRoot": "/Users/jeremiah/Documents/Codex/2026-10-24/sanze-release-app",
-  "generatedAt": "2026-10-24T08:49:54.565Z",
+  "generatedAt": "2026-11-04T10:01:16.702Z",
   "method": "esbuild directly bundles original App exports; website has no separate calculation fork; App source is authoritative",
   "sources": [
     {
@@ -292,7 +292,7 @@
     {
       "id": "guided-planning",
       "version": "guided-planning.2026-11-03.v1",
-      "scope": "Labelled planning references and precise validation during basement search",
+      "scope": "Labelled Taipei planning excavation reference and upstream validation messages during basement search; legal caps and quantity formulas unchanged",
       "sources": [
         {
           "path": "scripts/apply-guided-planning.mjs",
@@ -305,17 +305,13 @@
         {
           "path": "src/land-evaluation/evidence-input.mjs",
           "sha256": "9fb9cb6b90d0e1fa593e3823c3e6f866017f4fd826cdbe2b6108f6d337760f51"
-        },
-        {
-          "path": "src/land-evaluation/applied-planning-fields.mjs",
-          "sha256": "ca0c3a14fb855ca6144d2c260630ab029c454a98c81f54a736761fe4a5e1f0b4"
         }
       ]
     },
     {
       "id": "ntpc-tod",
       "version": "ntpc-tod.2026-05-20.v1",
-      "scope": "NTPC TOD priority, separate increment and aggregate cap; pending scope does not block planning",
+      "scope": "NTPC TOD precedence, separate increment and aggregate cap",
       "sources": [
         {
           "path": "scripts/apply-ntpc-tod.mjs",
@@ -324,6 +320,36 @@
         {
           "path": "src/land-evaluation/ntpc-tod.mjs",
           "sha256": "c9dc86f44376f62ebd66d1f0365b955cee4f1fd0261e947c5065e14cc0cbc032"
+        }
+      ]
+    },
+    {
+      "id": "multi-building",
+      "version": "multi-building.2026-11-03.v1",
+      "scope": "Per-building floor quantities, shared basements counted once, independent reference audit; legacy solver bodies unchanged",
+      "sources": [
+        {
+          "path": "scripts/expose-multi-building-kernel.mjs",
+          "sha256": "99f394a58d8faad498d0264943415125e08a2a8e95fd32718bebb24b1def0db9"
+        },
+        {
+          "path": "src/land-evaluation/multi-building.mjs",
+          "sha256": "35b9e5edff9dcde514bfdd387a812eca55bb1b8baae672d14ca3e50c94af4740"
+        },
+        {
+          "path": "src/land-evaluation/multi-building-delivery.mjs",
+          "sha256": "d56201a560e75fd4febedc750a9e9307ba4f515276dc3b41ebce317870fe7366"
+        }
+      ]
+    },
+    {
+      "id": "volume-recount",
+      "version": "volume-recount.2026-11-04.v1",
+      "scope": "Display existing configured, exempt and counted areas with original FAR consumption; solver inputs unchanged",
+      "sources": [
+        {
+          "path": "src/land-evaluation/volume-recount.mjs",
+          "sha256": "d1f8255529217959bc8450e15158a95a1b00b8f6a8c1e57c32f37bbde35991d2"
         }
       ]
     }
