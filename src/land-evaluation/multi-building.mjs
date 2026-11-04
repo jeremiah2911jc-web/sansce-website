@@ -1,8 +1,8 @@
-import {reviewAboveGround,reviewRoofEnvelope,reviewBasementVolume,resolveBonusLimits,reviewEscapeStairs} from './generated/core.mjs';
+import {reviewAboveGround,reviewRoofEnvelope,reviewBasementVolume,resolveBonusLimits,reviewEscapeStairs,resolveExcavationLimit} from './generated/core.mjs';
 export const MULTI_BUILDING_VERSION='multi-building.2026-11-03.v1';
 const sum=(rows,key)=>rows.reduce((t,r)=>t+r[key],0);
 const n=x=>typeof x==='number'?x:Number(String(x).trim());
-const numeric=(x,max=1e7)=>x!==''&&x!==null&&x!==undefined&&Number.isFinite(n(x))&&n(x)>=0&&n(x)<=max;
+const numeric=(x,max=1e7)=>String(x).trim()!==''&&x!==null&&x!==undefined&&Number.isFinite(n(x))&&n(x)>=0&&n(x)<=max;
 const unique=a=>[...new Set(a.filter(Boolean))];
 export function newBuilding(name='A棟'){
  return {id:crypto.randomUUID(),name,group:name,footprint:'400',height:'49',stairs:'2',lifts:'2',roof:{projection:'40',levels:'3',height:'3',registered:'100',qualified:true,elevator:true},source:'',floors:[newFloorGroup()]};
@@ -52,7 +52,7 @@ export function calculateMultiBuilding(input){
  const bonus=resolveBonusLimits(regulatory,{renewal:n(input.renewal||0),danger:n(input.danger||0),tdr:n(input.tdr||0),scale:n(input.scale||0)},{site:n(input.site),far:n(input.far),district:input.parkingDesign?.district,tdrTarget:n(input.tdr||0),roadConditions:input.roadConditions});
  const base=n(input.site)*n(input.far)/100,allowed=base*(1+(bonus.renewal+bonus.danger+bonus.tdr+bonus.scale+(bonus.tod||0))/100);
  if(!Number.isFinite(allowed)||allowed<=0){errors.push(...bonus.errors,'容積條件尚未完整');return fail();}
- checks.push(...bonus.errors);notes.push(...bonus.notes);
+ if(bonus.errors.length){errors.push(...bonus.errors);return fail();}notes.push(...bonus.notes);
  const rows=[],buildingRows=[],coverageByGroup=new Map();
  let expandedFloors=0;
  const expand=(groups,owner,footprint,shared=false)=>{
@@ -94,8 +94,11 @@ export function calculateMultiBuilding(input){
  // One equipment allowance for the site, allocated over all towers and the common podium.
  if(input.stair==='single'&&(buildingRows.length!==1||buildingRows.some(b=>b.stairReview.aboveMinimum>1)))checks.push('本案棟數或樓梯需求與單棟單梯10%條件不同，請核對全案機電免計條件');
  const equipmentCap=allowed*(input.stair==='single'&&buildingRows.length===1?.10:.15);
- const above=reviewAboveGround({used:1e12,equipmentCap,footprint:n(input.site),review:{floors:rows.map(r=>({label:r.key,floorArea:r.area-r.parking,equipment:r.equipment,equipmentEligible:r.qualified?r.equipment:0,lobby:r.lobby,balcony:r.balcony,lobbyQualified:r.qualified,balconyQualified:r.qualified}))}});
+ const above=reviewAboveGround({used:1e12,equipmentCap,footprint:n(input.site),review:{floors:rows.map(r=>({label:r.key,floorArea:r.area,equipment:r.equipment,equipmentEligible:r.qualified?r.equipment:0,lobby:r.lobby,balcony:r.balcony,lobbyQualified:r.qualified,balconyQualified:r.qualified}))}});
  checks.push(...above.errors);
+ const aboveParkingCounted=sum(rows,'parking');if(aboveParkingCounted>0)checks.push('地上停車'+aboveParkingCounted.toFixed(2)+'㎡先計入容積；停車數量、用途及免計適用資料尚須另核');
+ const excavation=m.basements.length&&input.basementDemand?resolveExcavationLimit(input):null;
+ if(excavation){if(excavation.errors.length){errors.push(...excavation.errors);return fail();}notes.push(...excavation.notes);}
  const levels=new Set(),basements=[];
  for(const row of m.basements){
   const level=integer(row,'level','地下樓層',30);if(level<1||levels.has(level))errors.push('地下室樓層重複或無效');levels.add(level);
@@ -104,6 +107,7 @@ export function calculateMultiBuilding(input){
   if(Math.abs(b.car+b.motorcycle+b.bicycle+b.community+b.ramp+b.equipment+b.other-b.area)>.02)errors.push('B'+level+'用途分項合計須等於樓板面積');
   const served=b.car+b.motorcycle+b.bicycle+b.community,carRamp=served>0?b.ramp*b.car/served:b.ramp;
   if(b.houseCommon>b.area-b.car-carRamp+.001)errors.push('B'+level+'房屋共有分攤超過扣除汽車與其服務車道後的空間');
+  if(excavation&&b.area>n(input.site)*excavation.cap/100+.01)checks.push('B'+level+'樓板超過本次地下開挖上限'+excavation.cap.toFixed(2)+'%，須調整配置或核對個案規定');
   if(b.cars>0&&b.car===0)checks.push('B'+level+'已填汽車位，汽車空間面積待分列');
   if(b.motos>0&&b.motorcycle===0)checks.push('B'+level+'已填機車位，機車空間面積待分列');
   if(b.other===b.area&&b.area>0)checks.push('B'+level+'用途面積尚未分列；本次全層暫計容，房屋共有面積待補');
@@ -111,21 +115,23 @@ export function calculateMultiBuilding(input){
  }
  if(errors.length)return fail();
  const basement=sum(basements,'area'),b1=basements.find(b=>b.level===1);
- const pools={basement,carArea:sum(basements,'car'),motoArea:sum(basements,'motorcycle'),bikeArea:sum(basements,'bicycle'),communityArea:sum(basements,'community'),rampTotal:sum(basements,'ramp'),lossArea:0,spareArea:sum(basements,'other'),equipmentArea:sum(basements,'equipment'),cars:sum(basements,'cars'),undergroundFlatCars:sum(basements,'cars'),mechanicalArea:0};
- const below=reviewBasementVolume({...regulatory,shelterArea:'0',shelterEquipment:'0'},pools,above.equipmentExempt,equipmentCap,{footprint,plate:b1?.area||0,equipmentPerFloor:b1?.equipment||0,shelterOnly:0});
- if(!below.balanced)checks.push('地下計容及免計面積合計不符樓板，請核對用途分項');
+ const unallocatedRamp=basements.reduce((t,b)=>t+(b.car+b.motorcycle+b.bicycle+b.community===0?b.ramp:0),0);
+ if(unallocatedRamp>0)checks.push('未分列停車服務用途的車道'+unallocatedRamp.toFixed(2)+'㎡先計容，補入用途後重新檢討');
+ const pools={basement,carArea:sum(basements,'car'),motoArea:sum(basements,'motorcycle'),bikeArea:sum(basements,'bicycle'),communityArea:sum(basements,'community'),rampTotal:sum(basements,'ramp')-unallocatedRamp,lossArea:0,spareArea:sum(basements,'other')+unallocatedRamp,equipmentArea:sum(basements,'equipment'),cars:sum(basements,'cars'),undergroundFlatCars:sum(basements,'cars'),mechanicalArea:0};
+ const below=reviewBasementVolume({...regulatory,...(unallocatedRamp>0?{spareUse:'counted'}:{}),shelterArea:'0',shelterEquipment:'0'},pools,above.equipmentExempt,equipmentCap,{footprint,plate:b1?.area||0,equipmentPerFloor:b1?.equipment||0,shelterOnly:0});
+ if(!below.balanced){errors.push('地下計容及免計面積合計不符樓板，請核對用途分項');return fail();}
  const aboveFloor=sum(rows,'area'),balcony=sum(rows,'balcony'),roof=sum(buildingRows,'roofArea'),roofSale=sum(buildingRows,'roofRegistered');
  const aboveSale=rows.reduce((t,r)=>t+(r.area-r.parking+r.balcony)*r.sale/100,0),belowSale=sum(basements,'houseCommon');
  const sale=aboveSale+roofSale+belowSale,common=rows.reduce((t,r)=>t+(r.equipment+r.lobby+r.common)*r.sale/100,0)+roofSale+belowSale;
  const roofCounted=sum(buildingRows,'roofCounted'),counted=above.counted+below.counted+roofCounted,unused=allowed-counted;
  if(roofCounted>0)checks.push('未符合本次屋突免計條件的樓板'+roofCounted.toFixed(2)+'㎡暫計入容積，資格及修正配置待核對');
  if(unused<-.02)checks.push('分棟與共用地下室計容合計超過允建容積');
- const values={base,allowed,sale,salePing:sale*.3025,common,commonRatio:sale>0?common/sale*100:0,units:sum(rows,'units'),cars:pools.cars,motos:sum(basements,'motos'),floors:Math.max(0,...levels),equivalentFloors:Math.max(...buildingRows.map(b=>b.floors)),basement,roof,balcony,aboveWithoutBalcony:aboveFloor+roof,totalWithoutBalcony:aboveFloor+roof+basement,aboveCounted:above.counted+roofCounted,roofCounted,basementCounted:below.counted,unused,renewalApplied:bonus.renewal,dangerApplied:bonus.danger,tdrApplied:bonus.tdr,scaleApplied:bonus.scale,todApplied:bonus.tod||0};
+ const values={base,allowed,sale,salePing:sale*.3025,common,commonRatio:sale>0?common/sale*100:0,units:sum(rows,'units'),cars:pools.cars,motos:sum(basements,'motos'),floors:Math.max(0,...levels),equivalentFloors:Math.max(...buildingRows.map(b=>b.floors)),basement,roof,balcony,aboveWithoutBalcony:aboveFloor+roof,totalWithoutBalcony:aboveFloor+roof+basement,aboveCounted:above.counted+roofCounted,roofCounted,aboveParkingCounted,basementCounted:below.counted,unused,renewalApplied:bonus.renewal,dangerApplied:bonus.danger,tdrApplied:bonus.tdr,scaleApplied:bonus.scale,todApplied:bonus.tod||0};
  for(const b of buildingRows){const own=rows.filter(r=>r.owner===b.name);Object.assign(b,{floorArea:sum(own,'area'),balcony:sum(own,'balcony'),units:sum(own,'units'),sale:own.reduce((t,r)=>t+(r.area-r.parking+r.balcony)*r.sale/100,0)+b.roofRegistered});delete b.occupied;}
  const registration=m.registration?.rows?.length?{units:m.registration.rows.length,salePing:sum(m.registration.rows.map(r=>({ping:n(r.ping)})),'ping'),source:m.registration.source}:null;
  if(registration&&registration.salePing/.3025>aboveFloor+balcony+roof+basement+.02)checks.push('逐戶文件登記面積超過本次全案樓板及陽台，請核對版本及登記範圍');
  if(registration&&registration.units!==values.units)checks.push('逐戶文件戶數與分棟戶數不同');
  const pending=[...(m.uncertainties||[]),'預設值供初步配置，請依基地現況、預計戶數與停車方式調整','不同版本文件的面積分開比較；差異率僅檢查本次輸入的加總差異','逐層用途、免計資格及登記比例依圖說與分配文件核對','共用地下室只列入全案一次；房屋共有分攤依本次輸入列計','停車位採已填配置數量；各用途法定需求、無障礙、坡道及排位另依圖說核對'];
  if(!m.source.trim()||m.buildings.some(b=>!b.source.trim()))pending.push('部分面積採規劃預設值，來源文件待補');
- return {errors:[],values,notes:unique(notes),regulatory:{bonus},multiBuilding:{version:MULTI_BUILDING_VERSION,basis:m.basis||'configuration',buildings:buildingRows,shared:rows.filter(r=>r.shared),rows,basements,equipmentCap,above,below,checks:unique(checks),fieldIssues,pending,registration,reference:compareMultiReference(values,m.reference),referenceSets:[{title:'主要比較文件',source:m.reference.source,rows:compareMultiReference(values,m.reference)},...(m.referenceVersions||[]).map(r=>({title:r.title||'其他比較文件',source:r.source,rows:compareMultiReference(values,r)}))]}};
+ return {errors:[],values,notes:unique(notes),regulatory:{bonus},multiBuilding:{version:MULTI_BUILDING_VERSION,basis:m.basis||'configuration',buildings:buildingRows,shared:rows.filter(r=>r.shared),rows,basements,excavation,equipmentCap,above,below,checks:unique(checks),fieldIssues,pending,registration,reference:compareMultiReference(values,m.reference),referenceSets:[{title:'主要比較文件',source:m.reference.source,rows:compareMultiReference(values,m.reference)},...(m.referenceVersions||[]).map(r=>({title:r.title||'其他比較文件',source:r.source,rows:compareMultiReference(values,r)}))]}};
 }

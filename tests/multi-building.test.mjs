@@ -67,3 +67,38 @@ test('malformed stair counts and duplicate shared members fail safely',()=>{
  const i=fixture();i.multiBuilding.buildings[0].stairs='infinite';assert(run(i).errors.length);
  const j=fixture(),b=j.multiBuilding.buildings[0];j.multiBuilding.sharedFloors=[{...newFloorGroup(),members:[b.id,b.id]}];assert(run(j).errors.length);
 });
+
+test('ground parking with no exemption quantities stays counted and outside house sale',()=>{
+ const i=fixture(),b=i.multiBuilding.buildings[0];b.floors[0].parking='60';const r=run(i);
+ assert.deepEqual(r.errors,[]);assert.equal(r.values.aboveParkingCounted,480);
+ assert.equal(r.values.aboveCounted,3200+160-r.multiBuilding.above.equipmentExempt-r.multiBuilding.above.lobbyExempt-r.multiBuilding.above.balconyExempt);
+ assert.equal(r.values.sale,(400-60+20)*8+120+80);
+});
+test('unassigned ramp never disappears from basement counted or exempt area',()=>{
+ const i=fixture(),b=i.multiBuilding.basements[0];Object.assign(b,{cars:'0',car:'0',equipment:'80',other:'420',ramp:'100'});
+ const r=run(i);assert.deepEqual(r.errors,[]);assert.equal(r.multiBuilding.below.balanced,true);
+ assert.equal(r.multiBuilding.below.counted+r.multiBuilding.below.exempt,600);
+ assert.equal(r.multiBuilding.below.spareCounted,520);
+});
+test('bonus calculation errors block multi-building quantities',()=>{
+ const i=fixture();i.scale='80';const r=run(i);assert.equal(r.values,null);assert(r.errors.some(x=>x.includes('其他獎勵')));
+});
+test('each basement floor checks regional excavation cap',()=>{
+ const i=fixture();Object.assign(i.multiBuilding.basements[0],{area:'1300',other:'720'});
+ const r=run(i);assert.deepEqual(r.errors,[]);assert.equal(r.multiBuilding.excavation.cap,63.125);
+ assert(r.multiBuilding.checks.some(x=>x.includes('B1樓板超過本次地下開挖上限')));
+});
+test('blank whitespace quantities are invalid rather than zero',()=>{
+ const i=fixture();i.multiBuilding.buildings[0].floors[0].units='  ';const r=run(i);assert.equal(r.values,null);assert(r.errors.length);
+});
+test('purpose partition and recount conserve physical area over varied A B C floor inputs',()=>{
+ for(let k=0;k<30;k++){
+  const i=fixture();i.multiBuilding.buildings=[newBuilding('A棟'),newBuilding('B棟'),newBuilding('C棟')];
+  i.multiBuilding.buildings.forEach((b,j)=>{b.floors[0]={...b.floors[0],to:String(1+(k+j)%8),area:'300',equipment:String(10+k),lobby:String(5+j*10),balcony:String(k*2),parking:String(j*10),common:'20'};});
+  const r=run(i);assert.deepEqual(r.errors,[]);const a=r.multiBuilding.above;
+  assert(Math.abs(a.counted+a.equipmentExempt+a.lobbyExempt+a.balconyExempt-a.floorArea-a.balcony)<1e-8);
+  assert(Math.abs(r.values.aboveCounted+r.values.basementCounted+r.values.unused-r.values.allowed)<1e-8);
+  assert(r.values.sale<=r.values.totalWithoutBalcony+r.values.balcony+.001);
+  assert(r.values.common<=r.values.sale+.001);
+ }
+});

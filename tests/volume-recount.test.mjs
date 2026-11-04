@@ -24,3 +24,12 @@ test('multi-building roof failure and above/below recount each enter budget once
  near(x.counted,x.aboveCounted+r.values.basementCounted);assert.equal(volumeRecountSections(r,String).length,2);
 });
 test('missing or invalid calculation does not fabricate a zero-counted summary',()=>{assert.equal(volumeRecount({values:null}),null);assert.equal(volumeRecount({values:{allowed:100}}),null);});
+test('unqualified ground parking is disclosed once and consumes the ordinary floor budget',()=>{
+ const i={...fixture(),multiBuilding:newMultiBuilding()};
+ i.multiBuilding.buildings[0].floors[0].parking='40';
+ const r=evaluateActiveBonuses(i),x=volumeRecount(r),parking=x.rows.find(row=>row.id==='groundParking');
+ assert.equal(parking.adopted,600);assert.equal(parking.exempt,0);assert.equal(parking.counted,600);
+ near(x.counted,x.rows.reduce((sum,row)=>sum+row.counted,0));
+ near(x.ordinaryBudget,r.values.allowed-r.multiBuilding.above.countedExtras-600-r.values.roofCounted-r.values.basementCounted);
+ assert(volumeRecountSections(r,String)[0].rows.some(row=>row[0]==='地上停車空間'&&row[3]==='600'));
+});

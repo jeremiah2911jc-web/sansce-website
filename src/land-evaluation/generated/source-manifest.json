@@ -330,15 +330,15 @@
       "sources": [
         {
           "path": "scripts/expose-multi-building-kernel.mjs",
-          "sha256": "99f394a58d8faad498d0264943415125e08a2a8e95fd32718bebb24b1def0db9"
+          "sha256": "bba6ffc7cdbd4b74db34450850a8355f3d6631e5819d7cef6f031c3ab390d4e0"
         },
         {
           "path": "src/land-evaluation/multi-building.mjs",
-          "sha256": "35b9e5edff9dcde514bfdd387a812eca55bb1b8baae672d14ca3e50c94af4740"
+          "sha256": "d61e73976bd2fb808a41a996a2c1801502307b963e8f80f1d9d3b4d5abcede0c"
         },
         {
           "path": "src/land-evaluation/multi-building-delivery.mjs",
-          "sha256": "d56201a560e75fd4febedc750a9e9307ba4f515276dc3b41ebce317870fe7366"
+          "sha256": "d5b86cc33875af202fe68d7e4fa9f385dc7f4cf3bf5caf9d123a82b4aefbfb75"
         }
       ]
     },
@@ -349,7 +349,7 @@
       "sources": [
         {
           "path": "src/land-evaluation/volume-recount.mjs",
-          "sha256": "d1f8255529217959bc8450e15158a95a1b00b8f6a8c1e57c32f37bbde35991d2"
+          "sha256": "7c8342ba8dfd8cc840d8839c696be0c7155bf580cdcfc2d9f070ad02f318b9a6"
         }
       ]
     }

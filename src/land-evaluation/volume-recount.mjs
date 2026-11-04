@@ -11,6 +11,7 @@ export function volumeRecount(result){
  add('equipment','地上機電等共用空間',above.equipment,above.equipmentExempt,'符合用途的部分按全案免計額度分配；超額或用途未符合者計容。','equipment');
  add('lobby','地上梯廳',above.lobby,above.lobbyExempt,'逐層檢討10%，並與陽台合計檢討15%；淨深等資格另核。','lobby');
  add('balcony','陽台',above.balcony,above.balconyExempt,'逐層檢討10%，並與梯廳合計檢討15%；超額部分計容。','balcony');
+ if(multi&&v.aboveParkingCounted>0)add('groundParking','地上停車空間',v.aboveParkingCounted,0,'尚缺停車數量及免計適用資料，先計入容積；房屋可售面積另扣除停車空間。','parking');
  if(multi)add('roof','屋突',v.roof,v.roof-nonnegative(v.roofCounted),'按各幢投影、高度及用途檢核；本次未符合免計條件的屋突樓板暫計容。','roof');
  else if(result.roofEnvelopeReview&&!result.roofEnvelopeReview.errors.length)add('roof','屋突',v.roof,v.roof,'依本次投影、高度及用途條件採免計；實際圖說與登記另核。','roof');
  add('car','地下汽車與服務車道',below.carExempt+below.parkingCounted,below.carExempt,'非機械汽車按實設車位每位40㎡上限；機械停車依設備配置空間另核。','basement');
