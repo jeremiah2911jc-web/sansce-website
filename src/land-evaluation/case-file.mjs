@@ -55,7 +55,7 @@ export function serializeCase(data,rules,now=new Date().toISOString()){
 }
 export function parseCase(text){
  if(typeof text!=='string'||text.length>MAX_DRAFT_SIZE||new TextEncoder().encode(text).length>MAX_CASE_BYTES)throw Error('案件檔超過大小上限。');
- let e;try{e=JSON.parse(text);}catch{throw Error('檔案不是有效的三策案件檔。');}
+ let e;try{e=JSON.parse(text);}catch{throw Error('案件檔格式無效。請匯入評估工具下載的案件檔。');}
  if(e?.format!==CASE_FORMAT||e.version!==CASE_VERSION||typeof e.rules!=='string'||!Number.isFinite(Date.parse(e.createdAt)))throw Error('案件檔格式或版本不相容，請使用本工具下載的案件檔。');
  const raw=decodeValue(e.data);if(!object(raw))fail('案件內容');let data;try{data=validateCaseData(raw);}catch(error){throw Error(/[\u4e00-\u9fff]/.test(error.message)?error.message:'案件檔結構無法辨識；請使用本工具下載的案件檔。');}return {...e,data,counts:caseCounts(data)};
 }

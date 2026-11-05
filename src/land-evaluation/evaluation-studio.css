@@ -60,7 +60,6 @@
  .dev-tool-shell .land-evaluation .le-input-status summary strong {font-size:13px;color:#785623;font-weight:500}
  .dev-tool-shell .land-evaluation .le-input-status span {font-size:13px}
  .dev-tool-shell .land-evaluation .le-missing-links {justify-content:flex-start;gap:12px}
- .dev-tool-shell .land-evaluation .le-service-contact {font-size:13px;min-height:36px;padding-top:4px;flex:none}
  .dev-tool-shell .land-evaluation .le-form-section {width:100%;padding:0;scroll-margin-top:calc(var(--studio-header-height) + 80px)}
  .dev-tool-shell .land-evaluation .le-section-heading {padding:0;margin:0 0 20px;border:0}
  .interior-page .dev-tool-shell .land-evaluation .le-section-heading h2 {font:500 30px/1.6 "Songti TC","Noto Serif TC",serif;letter-spacing:.03em}
@@ -194,17 +193,6 @@
  .studio-overview .studio-launch-button small {display:block;font-size:12px;line-height:1.9;color:#626d71;font-weight:400}
  .studio-overview .studio-launch-button:hover {background:#e2d9c9;border-color:#84583f}
  .studio-overview .studio-launch :is(button,summary):focus-visible {outline:2px solid #84583f;outline-offset:4px}
- .studio-overview .studio-entry-notes {margin-top:18px;font-size:13px;color:#626d71}
- .studio-overview .studio-entry-notes>summary {cursor:pointer;display:flex;gap:12px;align-items:center;min-height:40px;list-style:none}
- .studio-overview .studio-entry-notes>summary::-webkit-details-marker {display:none}
- .studio-overview .studio-entry-notes>summary::after {content:'+';font-size:18px;color:#84583f}
- .studio-overview .studio-entry-notes[open]>summary::after {content:'−'}
- .studio-overview .studio-entry-notes>div {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px;padding:20px 0}
- .studio-overview .studio-entry-notes h3 {font-size:16px;line-height:1.8;margin:0 0 8px}
- .studio-overview .studio-entry-notes p {font-size:13px;line-height:1.9;margin:0 0 15px}
- .studio-overview .studio-entry-notes dl {font-size:13px;line-height:1.9;margin:0}
- .studio-overview .studio-entry-notes dt {color:#84583f}
- .studio-overview .studio-entry-notes dd {margin:0 0 10px}
  .studio-overview .dev-principles {padding-top:36px;padding-bottom:36px}
 }
 @media screen and (min-width:800px) and (max-width:1100px) {
@@ -216,8 +204,6 @@
  .studio-overview .studio-launch-groups>section:last-child {grid-column:1/-1}
  .studio-overview .studio-launch-groups>section:last-child .studio-launch-button {min-height:72px;display:flex;align-items:center;gap:24px}
  .studio-overview .studio-launch-groups>section:last-child .studio-launch-button strong {margin:0;flex:none}
- .studio-overview .studio-entry-notes>div {grid-template-columns:1fr;gap:20px}
- .studio-overview .studio-entry-notes p {font-size:14px}
 }
 
 /* Numeric fields include a unit: draw one focus ring around the complete control. */
@@ -244,7 +230,6 @@
 .land-evaluation .le-planning-start{margin:24px 0 34px;max-width:960px;font-size:15px;line-height:1.9;color:#53676a}
 .land-evaluation .le-planning-start>div{display:flex;flex-direction:column;align-items:stretch;gap:8px;margin-top:10px}
 .land-evaluation .le-planning-start>div>button{align-self:flex-start}
-.land-evaluation .le-planning-start details{width:100%;min-width:0}
 .land-evaluation .le-planning-start summary,.land-evaluation .le-planning-result-basis summary{cursor:pointer;color:#805e40;font-size:14px}
 .land-evaluation .le-default-values{width:100%;margin:0 0 14px;min-width:0}
 .dev-tool-shell .land-evaluation .le-default-values-note{font-size:13px;line-height:1.8;margin:0 0 14px;color:#5b6c70}
@@ -253,6 +238,8 @@
 .dev-tool-shell .land-evaluation .le-default-values-table :is(th,td){padding:10px 18px;vertical-align:middle;border:0;font-size:14px;line-height:1.8;text-align:left;color:#314c56;font-weight:400}
 .dev-tool-shell .land-evaluation .le-default-values-table thead th{font-size:12px;letter-spacing:.04em;background:#e9e4d9;color:#5b6c70}
 .dev-tool-shell .land-evaluation .le-default-values-table th:first-child{width:64%}
+.dev-tool-shell .land-evaluation .le-default-values-edit th:first-child{width:56%}
+.dev-tool-shell .land-evaluation .le-default-values-edit td:last-child button{white-space:nowrap;padding:6px 0}
 .dev-tool-shell .land-evaluation .le-default-values-table tbody tr:nth-child(even){background:#ede9df80}
 .dev-tool-shell .land-evaluation .le-default-values-table td{white-space:nowrap;font-weight:500;font-variant-numeric:tabular-nums}
 .dev-tool-shell .land-evaluation .le-default-values-table small{display:block;font-size:12px;line-height:1.8;margin-top:2px;font-weight:400;color:#67767a}
@@ -265,14 +252,16 @@
 .land-evaluation .le-partial-result>dl{display:flex;flex-wrap:wrap;gap:32px 60px;margin:28px 0}
 .land-evaluation .le-partial-result dd{margin:10px 0 0;font-size:30px}
 
-/* Keep the date and award-document choice together, above the target amounts. */
+/* Each planning field shares a row with the controls used by its selected route. */
 @media screen and (min-width:800px){
- .dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:18px 24px}
- .dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>*{grid-column:1/-1;margin-block:0}
- .dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>.planning-field-grid:nth-of-type(-n+2){display:contents}
- .dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>.planning-field-grid:nth-of-type(-n+2)>label{grid-column:span 2;grid-row:auto;display:flex;flex-direction:column;gap:8px;padding:0;min-width:0}
- .dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>.planning-field-grid:nth-of-type(-n+2)>label:has(input[type=date]),.dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>.planning-field-grid:nth-of-type(2)>label{grid-column:span 3}
- .dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>.planning-field-grid:nth-of-type(3){grid-template-columns:repeat(2,minmax(0,1fr));margin-top:8px}
+ .dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"] {display:grid;gap:14px}
+ .dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>* {margin-block:0}
+ .dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>.planning-field-grid {
+  grid-template-columns:repeat(auto-fit,minmax(154px,1fr));gap:12px 18px;margin:0;
+ }
+ .dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>.planning-field-grid:not(:has(>label)) {display:none}
+ .dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>.planning-field-grid>label {
+  display:flex;flex-direction:column;grid-row:auto;gap:8px;padding:0;min-width:0;
+ }
+ .dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>.planning-field-grid>label>.le-label-text {align-self:stretch}
 }
-
-.dev-tool-shell .land-evaluation section[aria-label="獎勵與容移評定"]>.planning-field-grid:nth-of-type(-n+2)>label>.le-label-text{align-self:stretch}

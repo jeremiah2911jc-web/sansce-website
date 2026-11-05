@@ -10,7 +10,7 @@ export function useFieldLocation(root){
   prepareDisclosureTarget(target);
   for(let p=target.parentElement;p&&p!==el;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;
   el.querySelectorAll('.field-located').forEach(e=>e.classList.remove('field-located'));
-  if(!pending.label)target.tabIndex=-1;target.classList.add('field-located');target.scrollIntoView({behavior:'instant',block:'center'});target.focus({preventScroll:true});setNotice('已定位「'+(pending.label||pending.heading)+'」，請依文件核對填寫。');
+  if(!pending.label)target.tabIndex=-1;target.classList.add('field-located');target.scrollIntoView({behavior:'instant',block:'center'});target.focus({preventScroll:true});setNotice('已定位「'+(pending.label||pending.heading)+'」。');
  });return()=>cancelAnimationFrame(frame);},[pending,root]);
  return {locate:target=>{setNotice('');setPending({...target});},notice};
 }

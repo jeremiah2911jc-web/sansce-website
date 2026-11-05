@@ -1,7 +1,7 @@
 import {createContext,useContext,useEffect,useId,useLayoutEffect,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
 import {planningFields} from './generated/core.mjs';
-import {isGuidedInput,defaultState,planningHelp,planningDefaultRows} from './guided-input.mjs';
+import {isGuidedInput,defaultState,planningHelp,planningDefaultEntries} from './guided-input.mjs';
 import {evidenceHelp} from './evidence-input.mjs';
 import {PlanningDefaultValues} from './PlanningDefaultValues.jsx';
 import {ReferenceDisclosure} from './DisclosureLayout.jsx';
@@ -9,19 +9,18 @@ import {ReferenceDisclosure} from './DisclosureLayout.jsx';
 const Context=createContext(null);
 export function GuidedInputProvider({input,edit,children}){return <Context.Provider value={{input,edit}}>{children}</Context.Provider>;}
 const byLabel={
- '本次獎勵適用依據':'填本案更新計畫、合法建物或結構安全評估文件的名稱、日期及適用範圍；尚未取得可留白列待查。選已核對符合資格時，須補入具體依據。',
- '容移資格與上限路徑依據':'填接受基地分區、建築線、道路開闢及移入資格的文件名稱、日期與適用地號；未取得可留白列待查。',
+ '本次獎勵適用依據':'都更可填更新單元劃定公告或都市更新事業計畫。危老可填使用執照、結構安全性能評估報告或主管機關限期拆除、補強通知。填寫所採名稱、日期或文號及適用範圍。',
+ '容移資格與上限路徑依據':'填接受基地的土地使用分區證明書、建築線指定圖或道路開闢查詢結果。有容積移轉許可函時，填文號、日期及適用地號。',
  '獎勵範圍及扣除依據':'填圖說編號、各獎勵對應的事項或空間範圍，以及重複部分的扣除方式；涉及同一空間的細項須先核對。',
  '合法原建築容積依據':'填原建照、使用執照或竣工圖容積表的文號、日期及原容積面積；採原容積115%上限時必填。',
  '更新地區劃定公告與基地範圍':'填劃定更新地區的公告文號、日期與本案地號範圍；新北1.3倍評點須有這項依據。',
- '重建獎勵資料來源':'新申請選目標或細項評定；已有核准函及核准面積時，再選既有核准獎勵供文件對照。',
- '計畫道路寬度':'填都市計畫或建築線文件記載的道路寬度；不清楚可留白，容移資格會列為待查。',
+ '計畫道路寬度':'填都市計畫圖或建築線指定圖標示的計畫路寬。未填時，結果列出尚缺計畫道路寬度。',
  '實際開闢道路寬度':'填道路已開闢、可通行部分的寬度；依現況測量或主管機關資料確認。留白先列待查。',
  '同一路段基地面寬':'填本基地沿同一路段的臨路長度；依地籍圖、建築線或測量圖確認，留白先列待查。',
  '本次檢討道路名稱':'填基地臨接的道路名稱。計畫路寬、開闢路寬與面寬請使用同一路段。',
  '足寬開闢道路之連通':'依道路現況及圖資選擇；尚未查證保留待確認，初估結果會列出容移資格待查。',
  '路寬確認狀態':'尚未取得資料時選待確認；選已確認須附計畫路寬、來源與日期。',
- '路寬查證日期':'填實際查閱圖資或文件的日期；道路狀態為待確認時可留白。',
+ '路寬查證日期':'填查閱都市計畫圖、建築線指定圖或道路開闢查詢結果的日期。',
  '預計報核／申請日期':'新案預設今天，請改為預計送件日期；此日期會影響時程獎勵及申請期限。',
  '地下開挖適用分區':'依使用分區證明或都市計畫選擇；尚未選定時先採規劃開挖參考值，結果列明待查。',
  '都市計畫開挖規定':'查閱基地主要、細部計畫的地下開挖條文；尚未查證保留待確認，可先看規劃初估。',
@@ -32,9 +31,9 @@ const byLabel={
  '容移接受基地、道路及移入資格':'依接受基地條件、道路及主管機關資料核對；未查證先按目標容移量估算，不符合時不採計。',
  '都市更新實施措施':'本頁試算重建量體；整建、維護使用其他評估方式。尚未選定時，先看重建目標的規劃初估。',
  '都市更新實施方式':'依本案計畫選權利變換、協議合建或公辦方式；尚未選定先列待查，方式限定的獎勵仍須個別核對。',
- '危老適用建築物條件':'依主管機關通知或結構安全性能評估報告選擇；文件未齊可保留待確認。',
- '危老全體所有權人同意':'依土地及合法建築物全體所有權人的同意文件核對；尚未取得時先列待查。',
- '危老基本獎勵上限方式':'預設以基準容積130%檢討；合法原容積115%的替代上限，須另填原容積與文件。',
+ '危老適用建築物條件':'依主管機關限期拆除或補強通知，或結構安全性能評估報告所載情形選擇。',
+ '危老全體所有權人同意':'依重建計畫範圍內土地及合法建築物全體所有權人的重建計畫同意書選擇。',
+ '危老基本獎勵上限方式':'預設按基準容積130%核算。採合法原建築容積115%時，填原建築容積面積及建造執照、使用執照或竣工圖所載依據。',
  '快速估算是否含危老規模獎勵':'預設不另計規模獎勵；已核對原基地及鄰地面積後，可改為計入規模獎勵。',
  '獎勵重複範圍核對':'依圖說標示各獎勵的事項及空間範圍；同一事項須填扣除比例。涉及重複空間的細項會要求先核對。',
  '更新前門牌戶數':'依更新前合法建物的門牌資料填戶數；協議合建獎勵須達20戶並符合全體同意條件。',
@@ -47,7 +46,7 @@ export function fieldHelp(label,key){
  if(planningHelp[key])return planningHelp[key];
  if(byLabel[clean])return byLabel[clean];
  if(/來源|依據|適用法令|圖資量測/.test(clean))return evidenceHelp+' 尚未取得資料可留白列待查；選擇已確認或個案規定時須填具體依據。';
- if(/申請條件$/.test(clean))return '依該項法規說明及本案資料選擇；待確認的項目依規劃條件估算，不符合的項目不採計。';
+ if(/申請條件$/.test(clean))return '依該項獎勵列出的法定條件選擇。選擇不符合時，本項獎勵不計入。';
  return '';
 }
 function guidanceKey(label,fieldKey){
@@ -116,7 +115,12 @@ export function FieldGuidance({label,fieldKey,help:customHelp}){
  if(!context||!help)return null;
  return <><button ref={trigger} type="button" className="le-help-trigger" aria-label={label+'填寫說明'} aria-expanded={open} aria-controls={open?id:undefined} onClick={e=>{e.preventDefault();e.stopPropagation();if(!open)document.dispatchEvent(new CustomEvent('sanze-field-help-open',{detail:id}));setPosition(null);setOpen(v=>!v);}}>?</button>{open&&createPortal(<aside ref={panel} id={id} role="note" aria-label={label+'填寫說明'} className="le-help-popover" style={{...position,visibility:position?'visible':'hidden'}}><div className="le-help-heading"><strong>{label}</strong><button type="button" aria-label="關閉填寫說明" onClick={()=>close(true)}>關閉</button></div><p>{help}</p></aside>,trigger.current?.closest('dialog')??document.body)}</>;
 }
-export function PlanningDefaultsIntro({input,onApply}){
- const guided=isGuidedInput(input),rows=planningDefaultRows(input);
- return <section className="le-planning-start" aria-label="規劃預設值"><p>{guided?'規劃預設值供初估。請依基地現況與預計配置調整，以免影響面積、戶數及車位估算。':'可將空白的規劃欄位帶入參考值，先查看初估結果；已填數值保留。'}</p><div><button type="button" className="le-text-button" onClick={onApply}>{guided?'補入空白值':'採用規劃參考值'}</button>{guided&&<ReferenceDisclosure title="本次規劃預設值"><PlanningDefaultValues rows={rows}/><p className="le-default-values-scope">獎勵資格與道路條件須另查證。法定上限依地區及適用規定計算。</p></ReferenceDisclosure>}</div></section>;
+export function PlanningDefaultsIntro({input,onApply,onEdit,showAwardFields}){
+ if(!isGuidedInput(input))return <section className="le-planning-start" aria-label="規劃預設值"><p>空白的規劃欄位可採用參考值。</p><button type="button" className="le-text-button" onClick={onApply}>採用規劃參考值</button></section>;
+ const rows=planningDefaultEntries(input).filter(([, ,key])=>showAwardFields||!['renewal','danger','tdr'].includes(key));
+ if(showAwardFields&&defaultState(input,'bonus.date')==='預設值')rows.unshift(['預計報核／申請日期',input.regulatoryReview.bonusAssessment.date,'bonus.date']);
+ return <section className="le-planning-start" aria-label="規劃預設值">
+  <p>規劃預設值供初估，可依基地現況及預計配置調整。</p>
+  <ReferenceDisclosure title="修正預設值" actionLabel="開啟"><PlanningDefaultValues rows={rows} onEdit={onEdit}/></ReferenceDisclosure>
+ </section>;
 }
