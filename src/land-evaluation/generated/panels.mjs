@@ -3239,17 +3239,7 @@ function BonusAssessmentPanel({
       ] }),
       /* @__PURE__ */ jsx2("p", { children: "\u5371\u8001\u8DEF\u5F91\u4E0D\u758A\u52A0\u90FD\u66F4\uFF0F\u571F\u7BA1\u734E\u52F5\uFF1B\u65B0\u5317\u7279\u6B8A\u91CD\u5EFA\u5BB9\u79FB\u5408\u8A0850%\u4ECD\u9808\u8986\u6838\u500B\u6848\u8DEF\u5F91\uFF1B\u5176\u4ED6\u5730\u5340\u4E0D\u5957\u7528\u65B0\u5317\u5BB9\u79FB\u9644\u8868\u3002" })
     ] }),
-    /* @__PURE__ */ jsxs2("details", { children: [
-      /* @__PURE__ */ jsx2("summary", { children: "容積獎勵與移轉的法令依據" }),
-      /* @__PURE__ */ jsxs2("label", { children: [
-        /* @__PURE__ */ jsx2("input", { type: "checkbox", checked: a.distinctSpaces ?? false, onChange: (e) => change({
-          distinctSpaces: e.target.checked
-        }) }),
-        "\u5DF2\u898F\u5283\u5340\u5206\u4E0D\u540C\u7BC4\u570D\uFF1A\u5730\u65B9\u9000\u7E2E\uFF0F\u5EE3\u5834\uFF0F\u901A\u9053\u8207\u5BB9\u79FB\u5404\u9805\u76EE\u4E0D\u91CD\u8907\u4F7F\u7528\u540C\u4E00\u9762\u7A4D\uFF08\u8ACB\u65BC\u4E0B\u65B9\u8AAA\u660E\uFF09"
-      ] }),
-      /* @__PURE__ */ null,
-      /* @__PURE__ */ jsx2("p", { children: "\u65B0\u5317\u5BB9\u79FB\u4E00\u822C\u8DEF\u5F91\u53CA\u4E00\u822C\u90FD\u66F4\u9805\u76EE\u70BA\u672C\u8868\u7BC4\u570D\uFF1B\u7279\u6B8A\u8DEF\u5F91\u3001\u904E\u6E21\u820A\u6CD5\u6216\u5176\u4ED6\u7E23\u5E02\u9808\u6539\u7528\u76F8\u61C9\u6CD5\u4EE4\u3002\u734E\u52F5\u53D6\u5F97\u5F8C\u4ECD\u53D7\u91CF\u9AD4\u3001\u505C\u8ECA\u8207\u5176\u4ED6\u5EFA\u7BC9\u9650\u5236\u3002" })
-    ] })
+    /* @__PURE__ */ null
   ,
     afterDisclosures
     ] })

@@ -38,7 +38,7 @@ const fmt=v=>v==null?'待確認':v.toLocaleString('zh-TW',{maximumFractionDigits
 
 export function ConsentFields({value:v={},result,change,Field,Choice}){
  const set=(k,x)=>change({...v,[k]:x}),rows=v.rows??[];
- return <EvaluationDisclosure className="ra-consent"><summary>自辦重劃同意人數與面積統計</summary><div className="lw-fields"><Choice label="啟用同意名冊核算" value={v.enabled?'yes':'no'} options={{no:'僅依文件核對',yes:'建立本次核算名冊'}} change={x=>set('enabled',x==='yes')}/></div>{v.enabled&&<>
+ return <section className="ra-consent le-inline-settings"><h4>自辦重劃同意人數與面積統計</h4><div className="lw-fields"><Choice label="啟用同意名冊核算" value={v.enabled?'yes':'no'} options={{no:'僅依文件核對',yes:'建立本次核算名冊'}} change={x=>set('enabled',x==='yes')}/></div>{v.enabled&&<>
  <ConsentRoster value={v} change={change} Field={Field} Choice={Choice}/>
  <p>以本程序完整名冊為分母。同一權利人多筆土地先按持分合併；公同共有、繼承及信託依實施辦法第15條整理為法定計算單位。使用本次匿名識別即可。</p>
  <div className="lw-fields"><Choice label="同意統計程序" value={v.procedure??'implementation'} options={consentProcedures} change={x=>set('procedure',x)}/><Field label="同意名冊基準日期" value={v.date??''} type="date" change={x=>set('date',x)}/></div>
@@ -46,5 +46,5 @@ export function ConsentFields({value:v={},result,change,Field,Choice}){
  <button className="le-secondary" onClick={()=>set('rows',[...rows,{id:crypto.randomUUID(),ownerId:'',area:'',ownership:'',eligibility:'',consent:'unknown',source:''}])}>新增權利人</button>
  <div className="lw-fields">{[['complete','全區名冊完整性'],['identityReview','權利人身分、共有及排除覆核'],['state','同意、撤銷及適用版本覆核']].map(([key,label])=><Choice key={key} label={label} value={v[key]??'pending'} options={{pending:'待確認',reviewed:'已覆核'}} change={x=>set(key,x)}/>)}<Field label="同意統計依據及適用程序" value={v.source??''} change={x=>set('source',x)} wide/></div>
  {result?.errors?.length>0?<ul className="ra-errors">{result.errors.map(e=><li key={e}>{e}</li>)}</ul>:result&&<div className="ra-consent-result"><p>有效同意 {result.agree}／{result.people}人 · {fmt(result.agreedArea)}／{fmt(result.area)}㎡</p><p>{result.threshold} · {result.singleOwnerBlocked?'單一權利人，一般自辦條件不成立；祭祀公業等例外另核':result.passes?'人數及面積達計算門檻，同意書效力依各筆簽署與權屬核對':'尚未同時達門檻'} · 排除{result.excluded}人</p></div>}
- </>}</EvaluationDisclosure>;
+ </>}</section>;
 }

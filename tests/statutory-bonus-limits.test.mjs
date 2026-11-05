@@ -36,7 +36,7 @@ test('danger case retains exact quantities with blank legal caps',()=>{
 test('targets above a statutory ceiling are still capped by the shared solver',()=>{const i=fixture();i.renewal='80';i.tdr='50';const r=evaluateActiveBonuses(i);assert(r.values);assert.equal(r.values.renewalApplied,50);assert.equal(r.values.tdrApplied,30);});
 test('case-specific legacy restrictions survive import and need an evidence destination',()=>{
  const i=fixture();Object.assign(i.regulatoryReview,{renewalLimitPercent:'40',tdrLimitPercent:'20',totalBonusLimitPercent:'55'});
- assert.equal(bonusLimitMode(i),'document');assert(evaluateActiveBonuses(i).errors.includes('個案上限的文件依據未填'));assert.equal(issueTarget('個案上限的文件依據未填',i).label,'個案上限的文件依據');
+ assert.equal(bonusLimitMode(i),'document');assert(evaluateActiveBonuses(i).errors.includes('另定上限依據未填'));assert.equal(issueTarget('另定上限依據未填',i).label,'另定上限依據');
  i.regulatoryReview.bonusSource='合成個案限制文件';i.regulatoryReview.bonusLimitMode='document';const restored=parseCase(serializeCase({'collective.input':i},'驗收')).data['collective.input'];assert.deepEqual(restored,i);assert.deepEqual(evaluateActiveBonuses(restored).values,evaluate(activeBonusInput(i)).values);
 });
 test('report records the effective caps and retains the explicit case eligibility',()=>{

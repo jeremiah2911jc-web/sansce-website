@@ -55,7 +55,9 @@ export function collectiveDelivery(snapshot){
   if(route==='renewal')s.inputs.push(['都更獎勵上限',`${displayNumber(bonus.renewalLimit)}%`]);
   if(v.tdrApplied>0)s.inputs.push(['容移上限',`${displayNumber(Math.min(bonus.application?.capPercent??Infinity,bonus.tdrLimit))}%`]);
   if(bonus.totalLimit!==null&&bonus.totalLimit!==undefined)s.inputs.push(['獎勵與容移合計上限',`${displayNumber(bonus.totalLimit)}%`]);
-  s.inputs.push(['上限採用方式',bonusLimitMode(i)==='document'?'依個案文件；'+i.regulatoryReview.bonusSource:'依地區與適用法規帶入']);
+  const caseLimit=bonusLimitMode(i)==='document';
+  s.inputs.push(['上限採用方式',caseLimit?'依基地適用的另定上限':'依地區與適用法規帶入']);
+  if(caseLimit)s.inputs.push(['另定上限依據',i.regulatoryReview.bonusSource]);
   if(route==='renewal')s.sources.push('都更獎勵上限：'+limits.renewalSource);
   if(route==='danger')s.sources.push('危老獎勵上限：'+dangerLaw,'危老重建容積獎勵辦法：https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0070258');
   if(v.tdrApplied>0)s.sources.push('容移上限：'+limits.tdrSource);
