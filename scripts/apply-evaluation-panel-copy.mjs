@@ -41,6 +41,13 @@ function applyPlanningAwardPresentation(code){
  }
  function visit(n){
   if(!n||typeof n!=='object')return;
+  if(n.type==='CallExpression'&&n.arguments[0]?.value==='details'){
+   const heading=n.arguments[1]?.properties?.find(p=>p.key.name==='children')?.value.elements?.[0];
+   if(heading?.arguments?.[0]?.value==='summary'&&heading.arguments[1].properties.find(p=>p.key.name==='children')?.value.value==='容積獎勵與移轉的法令依據'){
+    edits.push({start:n.start,end:n.end,text:'null'});
+    return;
+   }
+  }
   if(n.type==='CallExpression'&&n.arguments[0]?.value==='small'){
    const note=n.arguments[1]?.properties?.find(p=>p.key.name==='children')?.value;
    if(note?.type==='ConditionalExpression'&&note.alternate?.alternate?.alternate?.value?.startsWith('規劃目標')){

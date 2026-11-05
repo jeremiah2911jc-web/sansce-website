@@ -214,3 +214,16 @@
  .dev-tool-shell .land-evaluation .le-workspace-tools:not(:has(>.le-workspace-action))>.studio-modes {grid-column:1/-1}
  .dev-tool-shell .land-evaluation .le-planning-start {align-items:flex-start;gap:10px;flex-direction:column}
 }
+
+.dev-tool-shell .land-evaluation .le-inline-settings {
+ border-top:1px solid var(--line,#d9d5ca);padding:16px 0;margin:12px 0;
+}
+.dev-tool-shell .land-evaluation .le-inline-settings>h4 {
+ margin:0 0 10px;font-size:15px;
+}
+.dev-tool-shell .land-evaluation .le-inline-settings>.le-field {
+ max-width:520px;
+}
+.dev-tool-shell .land-evaluation .le-inline-settings-note {
+ color:#50636b;font-size:13px;
+}

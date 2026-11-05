@@ -50,7 +50,7 @@ for(const city of ['臺北市','新北市'])for(const route of ['renewal','dange
  assert.equal(/<summary[^>]*>都更細項/.test(html),route==='renewal'&&awardBasis!=='permitted',[city,route,mode,awardBasis,'renewal panel']);
  assert.equal(/<summary[^>]*>危老細項/.test(html),route==='danger'&&awardBasis!=='permitted',[city,route,mode,awardBasis,'danger panel']);
  assert(html.includes('容移取得條件與資格檢核'));
- assert(!/重建獎勵資料來源|核准基準容積㎡|獎勵核准日期|獎勵核准文號及來源|（資格待查證）/.test(html),[city,route,mode,awardBasis]);
+ assert(!/重建獎勵資料來源|核准基準容積㎡|獎勵核准日期|獎勵核准文號及來源|容積獎勵與移轉的法令依據|（資格待查證）/.test(html),[city,route,mode,awardBasis]);
  assert.equal(html.includes('改用規劃試算'),awardBasis==='permitted');
  assert.equal(html.includes('aria-label="都更快速目標%"'),route==='renewal'&&mode==='quick'&&awardBasis==='target');
  assert.equal(html.includes('aria-label="危老快速目標%"'),route==='danger'&&mode==='quick'&&awardBasis==='target');

@@ -46,5 +46,5 @@ export function bonusPanelPatch(input,patch){
 export function caseLimitIssues(input){
  const limits=statutoryBonusLimits(input),p=input.regulatoryReview;
  if(!limits||bonusLimitMode(input,limits)!=='document')return [];
- return meaningfulEvidence(p.bonusSource)?[]:[present(p.bonusSource)?'個案上限的文件依據請填具體文件名稱、日期或文號及適用範圍':'個案上限的文件依據未填'];
+ return meaningfulEvidence(p.bonusSource)?[]:[present(p.bonusSource)?'另定上限依據須填計畫名稱、條文或頁次':'另定上限依據未填'];
 }
