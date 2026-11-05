@@ -26,7 +26,15 @@ const specialTargets=[
  {label:'預計報核／申請日期',tab:'base',terms:['報核日期','申請日期','申請期限']},
 ];
 const fields=planningFields.map(([key,label,,tab])=>({key,label:fieldLabels[key]||publicText(label),tab,terms:[label,publicText(label),fieldLabels[key]||publicText(label),(fieldLabels[key]||publicText(label)).replace(/%$/,'')]}));
+export function planningDefaultTarget(key,input){
+ if(key==='bonus.date')return {tab:'base',label:'預計報核／申請日期'};
+ if(key==='quantity.basementReservePercent')return {tab:'basement',key:'basementReservePercent'};
+ if(key==='parking.floorHeight')return {tab:'basement',label:input.basementDemand?.enabled?'一般方案地下層高（設備另檢查）':'地下室每層高度'};
+ if(key==='parking.loss')return {tab:'basement',label:'柱網及轉彎額外預留'};
+ return fields.find(field=>field.key===key);
+}
 export function issueTarget(message,input={}){
+ if(input.regulatoryReview?.bonusAssessment?.awardBasis==='permitted'&&/既有核准獎勵|獎勵核准|既有獎勵核准/.test(message))return {tab:'base',key:'legacyAward'};
  if(/TOD.*合計上限/.test(message)&&input.regulatoryReview?.ntpcTod?.scope==='exception')return {tab:'base',summary:'獎勵與容移：快速估算／細項評定',label:'重建獎勵路徑'};
  if(/TOD/.test(message))return {tab:'base',summary:'新北TOD增額容積與容移順序',label:/例外.*日期/.test(message)?'TOD例外的容移核准或都更報核日期':/例外.*依據|查詢依據/.test(message)?'TOD查詢或例外依據':/例外.*選擇/.test(message)?'TOD免優先申請的例外條件':/完整街廓/.test(message)?'TOD基地是否為完整街廓':/比例|合計上限|須先申請/.test(message)?'TOD增額容積比例':'TOD適用範圍與申請順序'};
  const detail=blockingFieldTarget(message,input);if(detail)return detail;
@@ -51,7 +59,7 @@ export function issueTarget(message,input={}){
 
 function blockingFieldTarget(message,input){
  const prerequisite=(label)=>({tab:'base',region:'獎勵適用條件',label});
- if(message.startsWith('路寬查證來源'))return {tab:'base',summary:'基地道路條件',label:'路寬查證來源／圖資量測／文件'};
+ if(message.startsWith('路寬查證來源'))return {tab:'base',summary:'基地道路條件',label:publicText('路寬查證來源／圖資量測／文件')};
  if(message.startsWith('個案開挖規定來源'))return {tab:'basement',label:input.basementDemand?.enabled?'法規依據、都市計畫或核准文件':'開挖率上限資料來源'};
  if(message.startsWith('較嚴格開挖規定來源'))return {tab:'basement',summary:'個案都市計畫較嚴格規定',label:'較嚴格規定來源'};
  if(message.startsWith('地下開挖規則依據'))return {tab:'basement',label:'法規依據、都市計畫或核准文件'};
@@ -89,9 +97,7 @@ function blockingFieldTarget(message,input){
   [/請先選擇重建獎勵路徑/,{tab:'base',label:'重建獎勵路徑'}],
   [/所選獎勵超過個案合計上限/,{tab:'base',region:'獎勵與容移上限',label:'個案獎勵及容移合計上限%（無資料留白）'}],
   [/法規檢討資料格式無效/,{tab:'base',invalidOption:true,entries:Object.entries(input.regulatoryReview?.bonusAssessment?.entries??{}).map(([key,value])=>({label:bonusIssueLabels[key]+'目標條件',choice:value.choice})),heading:'獎勵與容移：快速估算／細項評定'}],
-  [/既有許可移入容積須/,{tab:'base',summary:'容移取得條件與資格檢核',label:'既有許可移入容積㎡'}],
-  [/須填既有容移許可文號/,{tab:'base',summary:'容移取得條件與資格檢核',label:'既有容移許可文號及文件來源'}],
-  [/既有許可對照須/,{tab:'base',summary:'容移取得條件與資格檢核',label:'既有許可文件確認'}],
+  [/既有許可移入容積須|既有容移許可文號|既有許可對照須|填容積移轉許可函|已取得容積移轉許可時/,{tab:'base',summary:'容移取得條件與資格檢核',key:'legacyTransfer'}],
   [/代金比例須|混合方式.*比例/,{tab:'base',summary:'容移取得條件與資格檢核',label:'代金占當次移入容積比例%（非金額比）'}],
   [/代金每容積.*估價須/,{tab:'base',key:'tdrValuationUnitPrice',label:'每容積㎡代金估價'}],
   [/請選擇本案使用分區類型/,{tab:'base',region:'臺北市地方都更獎勵',label:'使用分區類型'}],
@@ -122,8 +128,8 @@ function blockingFieldTarget(message,input){
   [/個案上限的文件依據/,{tab:'base',summary:'個案文件另訂上限',label:'個案上限的文件依據'}],
   [/一般都更50%上限|一般容移30%上限/,{tab:'base',summary:input.regulatoryReview?.bonusAssessment?'個案文件另訂上限':'上限適用依據',label:input.regulatoryReview?.bonusAssessment?'個案上限的文件依據':'上限、評點及特殊適用依據'}],
   [/個案獎勵及容移合計上限/,{tab:'base',region:'獎勵與容移上限',label:'個案獎勵及容移合計上限%（無資料留白）'}],
-  [/地下層高無效/,{tab:'basement',label:input.basementDemand?.enabled?'一般方案地下層高（設備另檢查）':'地下室每層高度'}],
-  [/柱網與轉彎預留比例無效/,{tab:'basement',label:'柱網及轉彎額外預留 %'}],
+  [/地下層高無效/,planningDefaultTarget('parking.floorHeight',input)],
+  [/柱網與轉彎預留比例無效/,planningDefaultTarget('parking.loss',input)],
   [/規劃開挖率超出個案上限/,{tab:'basement',key:'excavation',label:'規劃開挖率'}],
   [/既有核准獎勵.*日期|獎勵核准日期/,{tab:'base',label:'獎勵核准日期'}],
   [/核准基準容積與獎勵面積/,{tab:'base',label:'核准基準容積㎡'}],

@@ -50,9 +50,24 @@ for(const city of ['臺北市','新北市'])for(const route of ['renewal','dange
  assert.equal(/<summary[^>]*>都更細項/.test(html),route==='renewal'&&awardBasis!=='permitted',[city,route,mode,awardBasis,'renewal panel']);
  assert.equal(/<summary[^>]*>危老細項/.test(html),route==='danger'&&awardBasis!=='permitted',[city,route,mode,awardBasis,'danger panel']);
  assert(html.includes('容移取得條件與資格檢核'));
+ assert(!/重建獎勵資料來源|核准基準容積㎡|獎勵核准日期|獎勵核准文號及來源|（資格待查證）/.test(html),[city,route,mode,awardBasis]);
+ assert.equal(html.includes('改用規劃試算'),awardBasis==='permitted');
+ assert.equal(html.includes('aria-label="都更快速目標%"'),route==='renewal'&&mode==='quick'&&awardBasis==='target');
+ assert.equal(html.includes('aria-label="危老快速目標%"'),route==='danger'&&mode==='quick'&&awardBasis==='target');
+ assert(html.includes('aria-label="容移快速目標%"'));
+ assert(html.includes('le-tdr-setup'));
+ assert(!html.includes('value="permitted"'));
+ assert.deepEqual(input,frozen,'Rendering cannot clear inactive input values');
+ const assessment=input.regulatoryReview.bonusAssessment;
+ assessment.tdrMode='detail';
+ assessment.tdrApplication={city:city==='臺北市'?'taipei':'ntpc',method:'unselected',quantityBasis:awardBasis,permittedSqm:'123',senderParcels:[]};
+ const beforeTransfer=structuredClone(input),transferHtml=render('BonusAssessmentPanel',{input,edit:()=>{},financials:false});
+ assert(!/既有許可移入容積㎡|既有容移許可文號|既有許可文件確認|aria-label="容移快速目標%"/.test(transferHtml));
+ assert.equal(transferHtml.includes('改用規劃移入量'),awardBasis==='permitted');
+ assert.equal(transferHtml.includes('aria-label="移入容積採計方式"'),awardBasis==='target');
+ assert.deepEqual(input,beforeTransfer);
  assert.equal(html.includes('臺北市地方都更獎勵'),city==='臺北市'&&route==='renewal'&&awardBasis!=='permitted');
  assert.equal(html.includes('新北退縮與設計方案'),city==='新北市'&&route==='renewal'&&awardBasis!=='permitted');
- assert.deepEqual(input,frozen,'Rendering cannot clear inactive input values');
  routeChecks.push({city,route,mode,awardBasis,renewalVisible:route==='renewal'&&awardBasis!=='permitted',dangerVisible:route==='danger'&&awardBasis!=='permitted'});
 }
 const noteFixture={notes:['危老第3–6條合計0%，原合格基地NaN㎡','都更中央8%＋地方2%','基地道路資料待補','臺北地方獎勵採第2條附表一般條件']},frozenNoteFixture=structuredClone(noteFixture);
@@ -80,7 +95,7 @@ for(const city of ['臺北市','新北市'])for(const route of ['renewal','dange
  const input=exampleInput();Object.assign(input,{site:'2400',far:'280',renewal:'10',danger:'10',tdr:'0',scale:'0'});input.parkingDesign.district=city;Object.assign(input.regulatoryReview,{renewalLimitPercent:'50',tdrLimitPercent:'30'});
  input.regulatoryReview.bonusAssessment={...routeAssessment(),route,renewalMode:mode,dangerMode:mode,dangerEligibleSite:'2400',dangerAdjacentSite:'0'};
  const frozen=structuredClone(input),values=evaluate(input),html=render('BonusAssessmentPanel',{input,edit:()=>{},financials:false});
- assert(html.includes(input.planningDefaults?'本次先依目標條件初估':'獎勵適用條件與文件'),JSON.stringify({city,route,mode,errors:values.errors,summary:html.match(/<p role="status">[^<]+/g)}));
+ assert(html.includes(input.planningDefaults?'容積獎勵與移轉資格':'容積獎勵申請資格'));
  assert.equal(html.includes('aria-label="都更適用資格"'),route==='renewal',[city,route,mode,'renewal qualification']);
  assert.equal(html.includes('aria-label="危老法定適用資格"'),route==='danger',[city,route,mode,'danger qualification']);
  assert.deepEqual(input,frozen);assert.deepEqual(evaluate(input),values);

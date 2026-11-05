@@ -24,6 +24,18 @@ function displayRow(label,value){
  return {name:title,note,value:text};
 }
 
-export function PlanningDefaultValues({rows}){
- return <div className="le-default-values"><p className="le-default-values-note">以下數值供初步試算，請依基地現況與預計的建築、戶數及停車配置調整。</p>{rows.length?<table className="le-default-values-table"><thead><tr><th scope="col">試算項目</th><th scope="col">本次數值</th></tr></thead><tbody>{rows.map(([label,value])=>{const row=displayRow(label,value);return <tr key={label}><th scope="row">{row.name}{row.note&&<small>{row.note}</small>}</th><td>{row.value}</td></tr>;})}</tbody></table>:<p>目前沒有採用預設值的欄位。</p>}</div>;
+export function PlanningDefaultValues({rows,onEdit}){
+ return <div className="le-default-values">
+  {rows.length>0?<><p className="le-default-values-note">{onEdit?'選擇項目後可到對應欄位修改。':'以下列出本次試算採用的規劃預設值。'}</p>
+   <table className={'le-default-values-table'+(onEdit?' le-default-values-edit':'')}>
+    <thead><tr><th scope="col">試算項目</th><th scope="col">本次數值</th>{onEdit&&<th scope="col">調整欄位</th>}</tr></thead>
+    <tbody>{rows.map(([label,value,key])=>{
+     const row=displayRow(label,value);
+     return <tr key={label}><th scope="row">{row.name}{row.note&&<small>{row.note}</small>}</th><td>{row.value}</td>
+      {onEdit&&<td><button type="button" className="le-text-button" aria-label={'修改'+row.name} onClick={()=>onEdit(key)}>修改</button></td>}
+     </tr>;
+    })}</tbody>
+   </table>
+  </>:<p>本方案目前未採用規劃預設值。</p>}
+ </div>;
 }

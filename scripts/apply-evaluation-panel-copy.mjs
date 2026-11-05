@@ -23,7 +23,78 @@ export function applyEvaluationPanelCopy(code){
   }
  }
  visit(ast);for(const edit of edits.sort((a,b)=>b.start-a.start))code=code.slice(0,edit.start)+edit.text+code.slice(edit.end);
- return applyBonusRouteVisibility(code);
+ return applyTransferPresentation(applyPlanningAwardPresentation(applyBonusRouteVisibility(code)));
+}
+
+function applyPlanningAwardPresentation(code){
+ const panel=parse(code,{sourceType:'module'}).program.body.find(n=>n.type==='FunctionDeclaration'&&n.id.name==='BonusAssessmentPanel');
+ if(!panel)return code;
+ const children=panel.body.body.find(n=>n.type==='ReturnStatement').argument.arguments[1].properties.find(p=>p.key.name==='children').value.elements;
+ const selector=children.findIndex(n=>n?.type==='CallExpression'&&code.slice(n.start,n.end).includes('awardBasis: e.target.value'));
+ const edits=[];
+ if(selector>=0){
+  const next=children[selector+1];
+  if(next?.type!=='LogicalExpression'||next.left.name!=='permitted')throw Error('Approved award fields missing');
+  edits.push({start:children[selector].start,end:children[selector+2].start,text:'permitted && jsxs2("div",{className:"le-legacy-award",children:[jsx2("p",{children:"此案件檔採用既有核定或核准的獎勵面積。"}),jsx2("button",{type:"button",className:"le-text-button","data-planning-key":"legacyAward",onClick:()=>change({awardBasis:"target"}),children:"改用規劃試算"})]}),\n    '});
+  const approval=panel.body.body.find(n=>n.type==='VariableDeclaration'&&n.declarations.some(d=>d.id.name==='approval'));
+  edits.push({start:approval.declarations[0].end,end:approval.end-1,text:''});
+ }
+ function visit(n){
+  if(!n||typeof n!=='object')return;
+  if(n.type==='CallExpression'&&n.arguments[0]?.value==='small'){
+   const note=n.arguments[1]?.properties?.find(p=>p.key.name==='children')?.value;
+   if(note?.type==='ConditionalExpression'&&note.alternate?.alternate?.alternate?.value?.startsWith('規劃目標')){
+    edits.push({start:n.start,end:n.end,text:'m === "detail" && !(permitted && key !== "tdr") && jsx2("small",{children:"依細項評定"})'});
+    return;
+   }
+  }
+  for(const [k,v]of Object.entries(n)){
+   if(['loc','extra','comments','tokens'].includes(k))continue;
+   if(Array.isArray(v))v.forEach(visit);else if(v&&typeof v==='object')visit(v);
+  }
+ }
+ children.forEach(visit);
+ for(const e of edits.sort((a,b)=>b.start-a.start))code=code.slice(0,e.start)+e.text+code.slice(e.end);
+ return code
+  .replace('.filter(([, , ,active]) => active).map(([key, label, m, active])', '.filter(([key, ,mode,active]) => active && mode === "quick" && !(permitted && key !== "tdr")).map(([key, label, m, active])')
+  .replace(',\n      /* @__PURE__ */ m === "detail" && !(permitted && key !== "tdr") && jsx2("small",{children:"依細項評定"})','');
+}
+
+function applyTransferPresentation(code){
+ const panel=parse(code,{sourceType:'module'}).program.body.find(n=>n.type==='FunctionDeclaration'&&n.id.name==='TdrApplicationPanel');
+ if(!panel)return code;
+ const props=node=>node.arguments[1].properties;
+ const property=(node,key)=>props(node).find(p=>(p.key.name??p.key.value)===key);
+ const children=node=>property(node,'children').value.elements;
+ const section=panel.body.body.find(n=>n.type==='ReturnStatement').argument;
+ const className=property(section,'className').value;
+ if(className.value.includes('le-tdr-application'))return code;
+ const [title,intro,setup,permit,review,permitStage,resultDetails]=children(section);
+ const basis=children(setup)[2];
+ const selector=children(basis)[1],options=children(selector);
+ const approved=options.find(n=>property(n,'value').value.value==='permitted');
+ const reviewBlocks=children(review);
+ const [localRules,road,eligibility]=reviewBlocks;
+ const methodNotice=reviewBlocks.at(-1);
+ const cashHelp=property(children(reviewBlocks.at(-2).right)[2],'children').value;
+ const eligibilityHeading=children(eligibility)[0];
+ const edits=[
+  {start:className.start,end:className.end,text:'"area-review-panel le-tdr-application"'},
+  {start:title.start,end:setup.start,text:''},
+  {start:property(setup,'className').value.start,end:property(setup,'className').value.end,text:'"planning-field-grid le-tdr-setup"'},
+  {start:basis.start,end:basis.start,text:'t.quantityBasis !== "permitted" && '},
+  {start:approved.start,end:options[options.indexOf(approved)+1].start,text:''},
+  {start:permit.start,end:permit.end,text:'t.quantityBasis === "permitted" && jsxs("div",{className:"le-legacy-award",children:[jsx("p",{children:"此案件檔採用原容積移轉許可量。"}),jsx("button",{type:"button",className:"le-text-button","data-planning-key":"legacyTransfer",onClick:()=>edit({quantityBasis:"target"}),children:"改用規劃移入量"})]})'},
+  {start:localRules.start,end:road.start,text:''},
+  {start:reviewBlocks.at(-2).end,end:methodNotice.end,text:''},
+  {start:cashHelp.start,end:cashHelp.start,text:'financials ? '},
+  {start:cashHelp.end,end:cashHelp.end,text:' : "按申請量試算時，填預計以代金取得的移入容積，單位為平方公尺。"'},
+  {start:permitStage.start,end:resultDetails.start,text:''},
+  {start:road.start,end:road.end,text:'jsxs("p",{className:"le-tdr-road",children:["計畫道路寬度 ",t.roadWidth ? t.roadWidth+" m" : "未填"," · 同一路段基地面寬 ",t.roadFrontage ? t.roadFrontage+" m" : "未填","。可在基地道路條件修改。"]})'},
+  {start:eligibilityHeading.end,end:eligibilityHeading.end,text:',\n        '+code.slice(intro.start,intro.end)+',\n        '+code.slice(localRules.start,localRules.end)},
+ ];
+ for(const e of edits.sort((a,b)=>b.start-a.start))code=code.slice(0,e.start)+e.text+code.slice(e.end);
+ return code;
 }
 
 // Structural changes are confined to named UI panels and JSX runtime imports.
@@ -61,7 +132,7 @@ function applyPanelLayout(code){
   }
   if(panel==='TdrApplicationPanel'&&node.type==='CallExpression'&&/^jsx/.test(node.callee.name||'')){
    const props=node.arguments[1]?.properties||[],label=props.find(p=>p.key?.value==='aria-label')?.value?.value;
-   if(label==='容移法規地區'&&node.arguments[0]?.name==='PublicSelect'){edits.push({start:node.start,end:node.end,text:'jsx("output", {"aria-label":"容移法規地區",children:district})'});return;}
+   if(['容移法規地區','容積移轉適用地區'].includes(label)&&node.arguments[0]?.name==='PublicSelect'){edits.push({start:node.start,end:node.end,text:'jsx("output", {"aria-label":"容積移轉適用地區",children:district})'});return;}
    if(props.some(p=>p.key?.name==='dangerouslySetInnerHTML')){edits.push({start:node.start,end:node.end,text:'jsx(TdrResult, {ready:site>0&&far>0,review:r,application:t})'});return;}
   }
   if(panel==='TdrApplicationPanel'&&node.type==='ArrayExpression'&&node.elements.some(n=>n?.type==='ArrayExpression'&&n.elements[0]?.value==='playground')&&!code.slice(node.end,node.end+15).startsWith('.filter(')){edits.push({start:node.start,end:node.end,text:code.slice(node.start,node.end)+'.filter(([kind]) => t.city === "ntpc" || !["playground","sport","other_public"].includes(kind))'});return;}

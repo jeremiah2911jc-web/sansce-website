@@ -63,7 +63,7 @@ for(const [name,contents]of [['core',core],['panels',ui+industrialUi],['land',la
   text=text.replaceAll('都市更新（不疊加危老）','都市更新').replaceAll('危老重建（不疊加都更及土管獎勵）','危老重建')
    .replaceAll('一般都更上限50%不代表已取得50%。','都更額度依資格與核定文件確認。')
    .replaceAll('選擇上限路徑是資格假設，並非核定。','本次上限路徑採規劃假設，資格待核對。')
-   .replaceAll('規劃目標，非核定','規劃目標（資格待查證）')
+   .replaceAll('規劃目標，非核定','規劃目標')
    .replaceAll('目前為規劃初估，未核定。','依本次條件進行規劃初估。')
    .replaceAll('僅供既有許可案件對照，不代表符合現行新申請資格。','既有許可案件依文件對照；新申請案件依現行資格檢核。')
 

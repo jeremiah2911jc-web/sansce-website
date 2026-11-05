@@ -23,7 +23,7 @@ for(const row of blockingIssueCatalog)test(`error owner ${row.owner}:${row.line}
  assert(row.target.label||row.target.summary||row.target.region||row.target.heading);
  for(const term of row.terms){const target=issueTarget(displayIssue(term));assert(target.label||target.summary||target.region||target.heading);assert(['base','above','parking','basement'].includes(target.tab));}
 });
-for(const [text,label]of [['地下層高無效','地下室每層高度'],['柱網與轉彎預留比例無效','柱網及轉彎額外預留 %'],['路寬查證日期不得晚於目前日期','路寬查證日期'],['合法原容積須為非負數','合法原建築容積面積'],['合併鄰地須為非負數','合併鄰接基地面積']])test(`specific correction destination: ${text}`,()=>assert.equal(issueTarget(text).label,label));
+for(const [text,label]of [['地下層高無效','地下室每層高度'],['柱網與轉彎預留比例無效','柱網及轉彎額外預留'],['路寬查證日期不得晚於目前日期','路寬查證日期'],['合法原容積須為非負數','合法原建築容積面積'],['合併鄰地須為非負數','合併鄰接基地面積']])test(`specific correction destination: ${text}`,()=>assert.equal(issueTarget(text).label,label));
 import {collectBonusLabels} from '../scripts/planning-issue-catalog.mjs';
 import {bonusIssueLabels} from '../src/land-evaluation/blocking-issue-catalog.mjs';
 test('bonus choice labels follow the existing calculator definitions',()=>assert.deepEqual(bonusIssueLabels,collectBonusLabels(readFileSync(new URL('../src/land-evaluation/generated/core.mjs',import.meta.url),'utf8'))));

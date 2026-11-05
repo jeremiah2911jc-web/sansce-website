@@ -1,7 +1,7 @@
 import {parse} from '@babel/parser';
 export const GUIDED_PLANNING_PATCH_VERSION='guided-planning.2026-11-03.v1';
 export function applyGuidedPlanning(code){
- if(code.includes('/* guided-planning-hook */'))return code;
+ if(code.includes('/* guided-planning-hook */'))return code.replace('input.planningDefaults ? jsx2("p", {role:"status",children:"本次先依目標條件初估；資格與文件列入結果的待查事項。"}) : summaryIncomplete ?', 'input.planningDefaults ? null : summaryIncomplete ?');
  const ast=parse(code,{sourceType:'module'}),edits=[];
  const fn=name=>ast.program.body.find(n=>n.type==='FunctionDeclaration'&&n.id.name===name);
  const resolve=fn('resolveExcavationLimit');if(!resolve)return code;
@@ -26,5 +26,5 @@ export function applyGuidedPlanning(code){
     ${original.replace('if (!selected) ','')}
   }`});
  for(const e of edits.sort((a,b)=>b.start-a.start))code=code.slice(0,e.start)+e.text+code.slice(e.end);
- return code.replace('summaryIncomplete ? jsx2("p", {role:"status",children:"請完成基地資料、獎勵適用條件與本次採用比例。"})', 'input.planningDefaults ? jsx2("p", {role:"status",children:"本次先依目標條件初估；資格與文件列入結果的待查事項。"}) : summaryIncomplete ? jsx2("p", {role:"status",children:"請完成基地資料、獎勵適用條件與本次採用比例。"})');
+ return code.replace('summaryIncomplete ? jsx2("p", {role:"status",children:"請完成基地資料、獎勵適用條件與本次採用比例。"})', 'input.planningDefaults ? null : summaryIncomplete ? jsx2("p", {role:"status",children:"請完成基地資料、獎勵適用條件與本次採用比例。"})');
 }

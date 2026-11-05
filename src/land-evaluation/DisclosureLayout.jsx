@@ -12,7 +12,7 @@ export function useDisclosureLayout(){
    return parents.get(owner);
   };
   const decorate=()=>{
-   document.querySelectorAll('.dev-tool-shell details:not(.mb-help),.studio-entry-notes').forEach(detail=>{
+   document.querySelectorAll('.dev-tool-shell details:not(.mb-help)').forEach(detail=>{
     detail.name=group(detail);
     const title=detail.querySelector(':scope > summary')?.textContent??'';
     const kind=/細項|TOD/.test(title)?'award':/文件|資格|依據|來源|法規|條件核對/.test(title)?'evidence':'planning';
@@ -48,7 +48,7 @@ export function useDisclosureLayout(){
  },[]);
 }
 
-export function ReferenceDisclosure({title,children,className=''}){
+export function ReferenceDisclosure({title,children,className='',actionLabel='查看'}){
  const ref=useRef(null),trigger=useRef(null),id=useId();
  const unlock=()=>releaseDisclosureWindow(ref.current);
  useEffect(()=>{
@@ -58,7 +58,7 @@ export function ReferenceDisclosure({title,children,className=''}){
  function open(){openDisclosureWindow(ref.current);}
  function close(){ref.current.close();}
  return <div className={'le-reference-entry '+className}>
-  <button ref={trigger} type="button" className="le-reference-trigger" aria-haspopup="dialog" aria-controls={id} onClick={open}><span>{title}</span><span className="le-reference-action">查看</span></button>
+  <button ref={trigger} type="button" className="le-reference-trigger" aria-haspopup="dialog" aria-controls={id} onClick={open}><span>{title}</span><span className="le-reference-action">{actionLabel}</span></button>
   <dialog ref={ref} id={id} aria-labelledby={id+'-title'} className="le-reference-drawer" onClick={event=>{if(event.target===event.currentTarget){const box=event.currentTarget.getBoundingClientRect();if(event.clientX<box.left||event.clientX>box.right)close();}}} onClose={event=>{unlock();restoreDisclosureFocus(event.currentTarget,trigger.current);}}>
    <header className="le-reference-heading"><div><span>參考資料</span><h2 id={id+'-title'}>{title}</h2></div><button type="button" onClick={close} autoFocus>關閉</button></header>
    <div className="le-reference-content"><InDisclosureWindow.Provider value={true}>{children}</InDisclosureWindow.Provider></div>

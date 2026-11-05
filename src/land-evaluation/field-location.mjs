@@ -1,5 +1,5 @@
 export function landFindingTarget(f,parcelId){
- const fields={identity:'土地查證文件、文號、網址及範圍',regime:'土地管制體系',urban:'都市計畫名稱（都計內）',housing:'使用地編定（非都市土地）','ag-scope':'預定用途',community:'全案規劃戶數',sensitive:'道路、環境敏感與其他限制'};
+ const fields={identity:'地籍或分區依據',regime:'土地管制體系',urban:'都市計畫名稱（都計內）',housing:'使用地編定（非都市土地）','ag-scope':'預定用途',community:'全案規劃戶數',sensitive:'道路、環境敏感與其他限制'};
  return fields[f.id]?{module:'land',parcelId,label:fields[f.id]}:null;
 }
 export function readjustmentFindingTarget(f,p,land,documents){
