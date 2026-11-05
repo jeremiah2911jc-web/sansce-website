@@ -1,4 +1,5 @@
 import {jsx as reactJsx,jsxs as reactJsxs,Fragment} from 'react/jsx-runtime';
+import {EvaluationDisclosure} from './EvaluationDisclosure.jsx';
 import {publicText} from './public-copy.mjs';
 export {Fragment};
 
@@ -10,8 +11,8 @@ export function displayChildren(value){
  return value;
 }
 const propsForDisplay=props=>{if(!props)return props;const visible={...props};if(Object.hasOwn(props,'children'))visible.children=displayChildren(props.children);for(const key of ['aria-label','title','placeholder'])if(typeof visible[key]==='string')visible[key]=publicText(visible[key]);return visible;};
-export const jsx=(type,props,key)=>reactJsx(type,propsForDisplay(props),key);
-export const jsxs=(type,props,key)=>Array.isArray(props?.children)?reactJsxs(type,propsForDisplay(props),key):reactJsx(type,propsForDisplay(props),key);
+export const jsx=(type,props,key)=>reactJsx(type==='details'?EvaluationDisclosure:type,propsForDisplay(props),key);
+export const jsxs=(type,props,key)=>Array.isArray(props?.children)?reactJsxs(type==='details'?EvaluationDisclosure:type,propsForDisplay(props),key):reactJsx(type==='details'?EvaluationDisclosure:type,propsForDisplay(props),key);
 
 const number=value=>Number.isFinite(value)?value.toLocaleString('zh-TW',{maximumFractionDigits:2}):'待確認';
 const unique=values=>[...new Set(values.filter(Boolean).map(publicText))];

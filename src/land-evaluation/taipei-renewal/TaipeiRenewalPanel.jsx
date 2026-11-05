@@ -1,3 +1,4 @@
+import {EvaluationDisclosure} from '../EvaluationDisclosure.jsx';
 import {PublicSelect} from '../PublicSelect.jsx';
 import {FieldLabel,PublicNumber} from '../PublicFields.jsx';
 import {taipeiRenewalItems,newTaipeiRenewal,newTaipeiOldBuilding,reviewTaipeiRenewal,taipeiRenewalLaw,taipeiRenewalTable,renewalArticle65} from './model.mjs';
@@ -32,7 +33,7 @@ export function TaipeiRenewalPanel({assessment:a,context,change}){
     {m.capRoute==='originalPlusHalf'&&<>{number('合法原建築容積（㎡）','originalVolume')}{input('原容積合法性、範圍及文件依據','originalSource')}</>}
    </div>}
    {m.mode==='housing'?<>{condition('已有市府核定整建住宅更新單元文件','housingApproved')}<p>採第3條地方獎勵20%，本次不加計第2條附表九項獎勵。</p></>:
-    <div className="bonus-item-list">{taipeiRenewalItems.map(item=>{const x=m.items[item.id],r=review.rows.find(row=>row.id===item.id);return <details key={item.id} open={x.enabled}>
+    <div className="bonus-item-list">{taipeiRenewalItems.map(item=>{const x=m.items[item.id],r=review.rows.find(row=>row.id===item.id);return <EvaluationDisclosure key={item.id} open={x.enabled}>
      <summary>{item.title} · {x.enabled?(r?.percent==null?'待補資料':fmt(r.percent)+'%'):'未選取'}</summary>
      <p>{item.rule}</p><label className="taipei-enable"><input type="checkbox" checked={x.enabled} onChange={e=>edit(item.id,{enabled:e.target.checked})}/>採用本項獎勵</label>
      {x.enabled&&<><div className="taipei-fields">{item.fields.map(field=><div key={field.key}>{field.type==='condition'?condition(field.label,field.key,x[field.key],v=>edit(item.id,{[field.key]:v})):number(field.label,field.key,x[field.key],v=>edit(item.id,{[field.key]:v}))}</div>)}</div>
@@ -43,12 +44,12 @@ export function TaipeiRenewalPanel({assessment:a,context,change}){
       </div><button type="button" className="secondary-btn" onClick={()=>edit(item.id,{buildings:x.buildings.filter(v=>v.id!==b.id)})}>移除此棟</button></fieldset>)}<button type="button" className="secondary-btn" onClick={()=>edit(item.id,{buildings:[...x.buildings,newTaipeiOldBuilding()]})}>新增建物</button></>}
       {r&&<p className="taipei-result">{r.basis} 獎勵{fmt(r.quantity)}㎡；{r.status}。</p>}
      </>}
-    </details>;})}</div>}
+    </EvaluationDisclosure>;})}</div>}
    {m.mode!=='housing'&&<>
     {m.items.design1.enabled&&m.items.design1.passage==='yes'&&m.items.walk.enabled&&<div className="taipei-fields">{select('通道與沿街人行空間的採用範圍','spaceMode',[['unknown','請確認範圍'],['distinct','分屬不同範圍，附圖說'],['design1','同一範圍採設計（一），設計（三）採0'],['design3','同一範圍採設計（三），通道不列設計（一）']])}</div>}
     {m.items.green.enabled&&!!a.entries?.['u-green']?.choice&&a.entries?.['u-green']?.status!=='excluded'&&<div className="taipei-fields">{select('地方綠化與中央綠建築的植栽範圍','greenMode',[['unknown','請確認植栽範圍'],['distinct','植栽範圍分開，附圖說'],['central','同批植栽採中央，地方本項採0']])}</div>}
     {(m.spaceMode==='distinct'||m.greenMode==='distinct')&&input('範圍分開劃設的圖說依據','separationSource')}
-    <details><summary>地方獎勵重複面積扣除</summary><p>填入尚未於各項計算扣除的重複獎勵面積。中央、地方或其他獎勵之間的重複，另在上方「同一事項重複獎勵扣除」填寫百分比。</p><div className="taipei-fields">{number('地方獎勵應扣除面積（㎡）','localDeduction')}{input('重複項目與扣除依據','deductionSource')}</div></details>
+    <EvaluationDisclosure><summary>地方獎勵重複面積扣除</summary><p>填入尚未於各項計算扣除的重複獎勵面積。中央、地方或其他獎勵之間的重複，另在上方「同一事項重複獎勵扣除」填寫百分比。</p><div className="taipei-fields">{number('地方獎勵應扣除面積（㎡）','localDeduction')}{input('重複項目與扣除依據','deductionSource')}</div></EvaluationDisclosure>
    </>}
    {review.errors.length>0?<ul className="taipei-gaps" aria-label="臺北地方獎勵待補資料">{[...new Set(review.errors)].map(e=><li key={e}>{e}</li>)}</ul>:<p className="taipei-result" role="status">地方細項合計{fmt(review.raw)}%，{review.multiplier===2?'加倍後':''}採用{fmt(review.applied)}%（{fmt(review.base*review.applied/100)}㎡）；地方上限{review.localCap}%。</p>}
    <p>中央與地方都更獎勵合計，依本次路徑採{fmt(review.totalCap)}%上限。各項估算與最終核定額度，依案件文件分別確認。</p>

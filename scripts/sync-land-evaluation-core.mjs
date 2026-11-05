@@ -1,4 +1,5 @@
 import {exposeMultiBuildingKernel} from './expose-multi-building-kernel.mjs';
+import {applyDisclosureLayout} from './apply-disclosure-layout.mjs';
 import {applyNtpcTod,NTPC_TOD_PATCH_VERSION} from './apply-ntpc-tod.mjs';
 import {applyGuidedPlanning,GUIDED_PLANNING_PATCH_VERSION} from './apply-guided-planning.mjs';
 import {applyBonusEligibility,applyBonusEligibilityPanel,BONUS_ELIGIBILITY_PATCH_VERSION} from './apply-bonus-eligibility.mjs';
@@ -91,7 +92,7 @@ for(const [name,contents]of [['core',core],['panels',ui+industrialUi],['land',la
  const normalized=normalizeGeneratedSiteCopy(await readFile(output,'utf8'));
  const scopedBase=['core','panels'].includes(name)?applyGuidedPlanning(applyBonusEligibility(applyDangerAreaFix(applyTaipeiRenewalCore(normalized)))):normalized;
  const scoped=applyNtpcTod(scopedBase);
- const bundled=name==='panels'?applyBonusEligibilityPanel(applyTaipeiRenewalPanel(applyEvaluationPanelCopy(scoped))):scoped;
+ const bundled=name==='panels'?applyDisclosureLayout(applyBonusEligibilityPanel(applyTaipeiRenewalPanel(applyEvaluationPanelCopy(scoped)))):scoped;
  await writeFile(output,name==='core'?exposeMultiBuildingKernel(bundled):bundled);
  if(/localStorage|sessionStorage|indexedDB|@tauri|fetch\(/.test(bundled))throw Error(name+' contains persistence, desktop or network calls');
  for(const file of Object.keys(result.metafile.inputs)){

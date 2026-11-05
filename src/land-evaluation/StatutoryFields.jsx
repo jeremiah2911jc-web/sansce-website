@@ -1,3 +1,4 @@
+import {EvaluationDisclosure} from './EvaluationDisclosure.jsx';
 import {ConsentRoster} from './ConsentRoster.jsx';
 import {roadBurdenScale,cornerRoadPercent,consentProcedures,formulaSources} from './generated/readjustment.mjs';
 
@@ -20,7 +21,7 @@ export function StatutoryFields({plan:p,result,change,Field,Choice}){
   </>:<>
    <div className="lw-fields">{field('generalCoefficient','本區一般負擔係數 B（非平均負擔率）')}{field('expenseCoefficient','本區費用負擔係數 C（小數）')}{field('districtBurdenRate','全區折價抵付共同負擔土地比率（%）')}{Number(v.districtBurdenRate)>45&&<Choice label="超過45%的同意依據" value={v.excessConsentState??'pending'} options={{pending:'待確認',reviewed:'人數及面積同意依據已覆核'}} change={x=>set('excessConsentState',x)}/>}</div>
    {rows.map((r,i)=>{const setRow=(k,x)=>patch(r.id,k,x),f=(k,label,type='number')=><Field key={k} label={'核算第'+(i+1)+'宗'+label} value={r[k]??''} type={type} change={x=>setRow(k,x)}/>;return <div className="ra-formula-row" key={r.id}><h4>核算第{i+1}宗土地</h4><p>填宗地全筆納入面積及完整分配幾何，計算後再乘本方案持分。</p><div className="lw-fields">{f('name','地號或範圍識別','text')}{f('area','重劃前宗地面積 a（㎡）')}{f('numerator','本案持分分子')}{f('denominator','本案持分分母')}<Choice label={'核算第'+(i+1)+'宗分配位置'} value={r.locationMode??''} options={{'':'尚未選定',same:'原街廓',moved:'調整至其他街廓'}} change={x=>setRow('locationMode',x)}/>{r.locationMode==='moved'&&f('relocationRatio','原位置／分配街廓重劃前單價比')}{f('appreciation','分配位置地價上漲率 A（後／前單價）')}{f('frontWidth','正街實際分配寬度 S（m）')}{f('frontScale','正面道路負擔尺度 ℓ₂（m）')}{f('sideLength','街角第一筆側面臨街長度 F（m，無則填0）')}{f('sideScale','側面道路負擔尺度 ℓ₁（m，無則填0）')}{f('cornerPercent','街角側面負擔 Rw（%，無則填0）')}</div>
-    <details><summary>道路尺度與街角表查算</summary><RoadHelper Field={Field} row={r} onChange={setRow}/></details>
+    <EvaluationDisclosure><summary>道路尺度與街角表查算</summary><RoadHelper Field={Field} row={r} onChange={setRow}/></EvaluationDisclosure>
     <button className="le-text-button" onClick={()=>set('rows',rows.filter(x=>x.id!==r.id))}>移除此核算宗地</button></div>;})}
    <button className="le-secondary" onClick={()=>set('rows',[...rows,{id:crypto.randomUUID(),name:'',area:'',numerator:'',denominator:'',locationMode:'',appreciation:'',frontWidth:'',frontScale:'',sideLength:'',sideScale:'',cornerPercent:''}])}>新增核算宗地</button>
    {result?.rows?.length>0&&<div className="lw-table"><table><thead><tr><th>宗地</th><th>一般負擔項（㎡）</th><th>臨街負擔項（㎡）</th><th>費用折抵面積（㎡）</th><th>宗地G（㎡）</th><th>本案持分分配（㎡）</th></tr></thead><tbody>{result.rows.map((r,i)=><tr key={r.id}><th>{r.name||'第'+(i+1)+'宗'}</th><td>{fmt(r.result.steps?.generalBurden)}</td><td>{fmt(r.result.steps? r.result.steps.frontBurden+r.result.steps.sideBurden:null)}</td><td>{fmt(r.result.steps?.expenseBurden)}</td><td>{fmt(r.result.parcelArea)}</td><td>{fmt(r.result.area)}</td></tr>)}</tbody></table></div>}
@@ -29,7 +30,7 @@ export function StatutoryFields({plan:p,result,change,Field,Choice}){
   <div className="lw-fields"><Choice label="公式資料覆核狀態" value={v.state??'pending'} options={{pending:'待確認',reviewed:'本案資料已覆核'}} change={x=>set('state',x)}/>{field('date','公式資料查證日期','date')}<Choice label="本區減免及特別調整" value={v.specialCases??'pending'} options={{pending:'尚待逐項核對',reviewed:'已核對，適用本公式範圍'}} change={x=>set('specialCases',x)}/><Field label="公式資料來源、頁次及權利範圍" value={v.source??''} change={x=>set('source',x)} wide/></div>
   {result?.errors?.length>0&&<ul className="ra-errors">{result.errors.map(e=><li key={e}>{e}</li>)}</ul>}
   {result?.area!=null&&<p className="ra-formula-total">核算面積 <strong>{fmt(result.area)}㎡</strong> · 待分配文件對照</p>}
-  <details><summary>與分配文件面積對照</summary><div className="lw-fields">{field('comparisonArea','同一權利範圍文件分配面積（㎡）')}{field('comparisonDate','對照分配文件日期','date')}<Field label="對照分配文件來源與頁次" value={v.comparisonSource??''} change={x=>set('comparisonSource',x)} wide/>{result?.difference!=null&&Math.abs(result.difference)>0.01&&<><Choice label="面積差異覆核" value={v.differenceState??'pending'} options={{pending:'待確認',reviewed:'已覆核差異依據'}} change={x=>set('differenceState',x)}/><Field label="核定調整、取整及面積差異原因" value={v.differenceReason??''} change={x=>set('differenceReason',x)} wide/></>}</div>{result?.difference!=null&&<p>核算面積減文件面積：{fmt(result.difference)}㎡。文件值保留原紀錄。</p>}</details>
+  <EvaluationDisclosure><summary>與分配文件面積對照</summary><div className="lw-fields">{field('comparisonArea','同一權利範圍文件分配面積（㎡）')}{field('comparisonDate','對照分配文件日期','date')}<Field label="對照分配文件來源與頁次" value={v.comparisonSource??''} change={x=>set('comparisonSource',x)} wide/>{result?.difference!=null&&Math.abs(result.difference)>0.01&&<><Choice label="面積差異覆核" value={v.differenceState??'pending'} options={{pending:'待確認',reviewed:'已覆核差異依據'}} change={x=>set('differenceState',x)}/><Field label="核定調整、取整及面積差異原因" value={v.differenceReason??''} change={x=>set('differenceReason',x)} wide/></>}</div>{result?.difference!=null&&<p>核算面積減文件面積：{fmt(result.difference)}㎡。文件值保留原紀錄。</p>}</EvaluationDisclosure>
  </div>;
 }
 function RoadHelper({Field,row:r,onChange}){const width=r.helperRoadWidth??'',w=r.helperW??'',scale=width?roadBurdenScale(width):null,rw=w?cornerRoadPercent(w):null;return <><p>參與重劃路寬依第26、27條核對。已開闢公有道路及不列共同負擔的情形不適用一般尺度；側面尺度為正面的一半。</p><div className="lw-fields"><Field label="查算參與重劃路寬（m）" value={width} type="number" change={x=>onChange('helperRoadWidth',x)}/><Field label="查算分配土地寬度 W（m）" value={w} type="number" change={x=>onChange('helperW',x)}/></div><p>一般正面尺度：{fmt(scale?.scale)}m；街角 Rw：{rw===null?'依附件表及本案核定資料另核':rw+'%'}。側面尺度與分配幾何須分別核對。</p></>;}
@@ -37,7 +38,7 @@ const fmt=v=>v==null?'待確認':v.toLocaleString('zh-TW',{maximumFractionDigits
 
 export function ConsentFields({value:v={},result,change,Field,Choice}){
  const set=(k,x)=>change({...v,[k]:x}),rows=v.rows??[];
- return <details className="ra-consent"><summary>自辦重劃同意人數與面積統計</summary><div className="lw-fields"><Choice label="啟用同意名冊核算" value={v.enabled?'yes':'no'} options={{no:'僅依文件核對',yes:'建立本次核算名冊'}} change={x=>set('enabled',x==='yes')}/></div>{v.enabled&&<>
+ return <EvaluationDisclosure className="ra-consent"><summary>自辦重劃同意人數與面積統計</summary><div className="lw-fields"><Choice label="啟用同意名冊核算" value={v.enabled?'yes':'no'} options={{no:'僅依文件核對',yes:'建立本次核算名冊'}} change={x=>set('enabled',x==='yes')}/></div>{v.enabled&&<>
  <ConsentRoster value={v} change={change} Field={Field} Choice={Choice}/>
  <p>以本程序完整名冊為分母。同一權利人多筆土地先按持分合併；公同共有、繼承及信託依實施辦法第15條整理為法定計算單位。使用本次匿名識別即可。</p>
  <div className="lw-fields"><Choice label="同意統計程序" value={v.procedure??'implementation'} options={consentProcedures} change={x=>set('procedure',x)}/><Field label="同意名冊基準日期" value={v.date??''} type="date" change={x=>set('date',x)}/></div>
@@ -45,5 +46,5 @@ export function ConsentFields({value:v={},result,change,Field,Choice}){
  <button className="le-secondary" onClick={()=>set('rows',[...rows,{id:crypto.randomUUID(),ownerId:'',area:'',ownership:'',eligibility:'',consent:'unknown',source:''}])}>新增權利人</button>
  <div className="lw-fields">{[['complete','全區名冊完整性'],['identityReview','權利人身分、共有及排除覆核'],['state','同意、撤銷及適用版本覆核']].map(([key,label])=><Choice key={key} label={label} value={v[key]??'pending'} options={{pending:'待確認',reviewed:'已覆核'}} change={x=>set(key,x)}/>)}<Field label="同意統計依據及適用程序" value={v.source??''} change={x=>set('source',x)} wide/></div>
  {result?.errors?.length>0?<ul className="ra-errors">{result.errors.map(e=><li key={e}>{e}</li>)}</ul>:result&&<div className="ra-consent-result"><p>有效同意 {result.agree}／{result.people}人 · {fmt(result.agreedArea)}／{fmt(result.area)}㎡</p><p>{result.threshold} · {result.singleOwnerBlocked?'單一權利人，一般自辦條件不成立；祭祀公業等例外另核':result.passes?'數值達門檻，文件效力另核':'尚未同時達門檻'} · 排除{result.excluded}人</p></div>}
- </>}</details>;
+ </>}</EvaluationDisclosure>;
 }

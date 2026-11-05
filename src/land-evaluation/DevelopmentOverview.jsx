@@ -1,3 +1,4 @@
+import {EvaluationDisclosure} from './EvaluationDisclosure.jsx';
 import './development-overview.css';
 import {DevelopmentModel as LandScene} from './DevelopmentModel.jsx';
 export const developmentTools={industrial:{title:"工業土地與廠房開發",family:"建築規劃",description:"核對工業用途、都更、立體化、容移及配置。"},land:{title:'土地用途與變更',family:'土地條件',description:'核對土地身分、預定用途與變更途徑。'},layout:{title:'透天配置與坪效',family:'建築規劃',description:'依基地條件，建立單棟或聯排配置並比較坪效。'},collective:{title:'集合住宅規劃',family:'建築規劃',description:'檢討開發強度、地上量體、戶數與地下停車配置。'},readjustment:{title:'市地重劃／區段徵收',family:'整體開發',description:'從公告計畫與本案權利，核對地主或收購的評估條件。'}};
@@ -12,7 +13,7 @@ function DirectOverview({onEnter,caseControls}){
   <div className="studio-overview-top"><p className="dev-kicker">三策開發評估工具</p>{caseControls}</div>
   <section className="studio-overview-intro" aria-labelledby="dev-title"><div><h1 id="dev-title">土地開發評估</h1><p className="dev-lead">土地條件、建築坪效與重劃徵收評估</p><p className="dev-hero-note">檢核土地用途與變更途徑，試算透天、集合住宅的開發面積、戶數與停車需求。整合公告計畫，核對市地重劃與區段徵收的地主分配、收購及權利承接條件。</p><a className="dev-service-link" href="#development-evaluation-service">三策開發評估服務</a></div><figure><LandScene kind="overview"/><figcaption>既有與規劃量體、基地與臨路 · 概念示意</figcaption></figure></section>
   <section className="studio-launch" id="dev-directions" aria-labelledby="dev-direction-title"><h2 id="dev-direction-title" tabIndex={-1}>評估項目</h2><div className="studio-launch-groups"><section><h3>土地條件</h3>{launch('land')}</section><section className="studio-building-group"><h3>建築規劃</h3><div>{['industrial','collective','layout'].map(launch)}</div></section><section><h3>整體開發</h3>{launch('readjustment')}</section></div>
-   <details className="studio-entry-notes"><summary>準備資料與評估成果</summary><div>{Object.entries(directions).map(([id,d])=><section key={id}><h3>{d.label}</h3><p>{d.text}</p><dl><div><dt>準備資料</dt><dd>{d.inputs}</dd></div><div><dt>評估成果</dt><dd>{d.outputs.join('、')}</dd></div></dl></section>)}</div></details>
+   <EvaluationDisclosure className="studio-entry-notes"><summary>準備資料與評估成果</summary><div className="studio-entry-columns">{Object.entries(directions).map(([id,d])=><section key={id}><h3>{d.label}</h3><p>{d.text}</p><dl><div><dt>準備資料</dt><dd>{d.inputs}</dd></div><div><dt>評估成果</dt><dd>{d.outputs.join('、')}</dd></div></dl></section>)}</div></EvaluationDisclosure>
   </section>
 
  </div>;
