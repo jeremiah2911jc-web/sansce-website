@@ -44,28 +44,18 @@
  .dev-tool-shell .land-evaluation .le-planning-start>div {flex-direction:row;align-items:center;justify-content:space-between;gap:20px}
  .dev-tool-shell .land-evaluation .le-planning-start>div>button {align-self:center}
 }
-/* Long reference material is read in a bounded side window, not in the form flow. */
+/* Reference material shares the centered evaluation window. */
 .le-reference-entry {min-width:0}
 .dev-tool-shell .le-reference-trigger {display:flex;align-items:center;justify-content:flex-start;gap:12px;width:100%;min-height:54px;padding:12px 16px;box-sizing:border-box;border:1px solid #a8bbc5;border-radius:8px;background:#e8eff4;color:#35556c;box-shadow:none;font-family:inherit;font-size:14px;font-weight:500;line-height:1.8;text-align:left;cursor:pointer}
 .dev-tool-shell .le-reference-action {flex:none;padding:0 10px;border:1px solid #617e91;border-radius:14px;font-size:12px;line-height:26px;background:#ffffffa0}
 .dev-tool-shell .le-reference-trigger:focus-visible {outline:2px solid #84583f;outline-offset:3px}
 .dev-tool-shell .le-reference-trigger:hover {background:#dae6ed}
 .dev-tool-shell .le-planning-start .le-reference-trigger {width:auto;min-height:40px;padding:6px 14px}
-.le-reference-drawer {inset:0 0 0 auto;box-sizing:border-box;width:min(860px,92vw);height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;border-left:1px solid #8fa5af;border-radius:0;background:#f7f9f8;color:#263d4b;box-shadow:-10px 0 36px #142e4229}
-.le-reference-drawer[open] {display:flex;flex-direction:column}
-.le-reference-drawer::backdrop {background:#132c3c66}
-.dev-tool-shell .le-reference-heading {display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:24px 28px;background:#e5edf2;border-bottom:1px solid #a8bbc5;flex:none}
-.dev-tool-shell .le-reference-heading span {font-size:12px;color:#526c7c}
-.dev-tool-shell .le-reference-heading h2 {font-size:22px;line-height:1.6;margin:5px 0 0;color:#263d4b}
-.dev-tool-shell .le-reference-heading button {min-height:40px;flex:none;padding:7px 18px;border:1px solid #5b7889;border-radius:20px;background:white;color:#35556c;font-family:inherit;font-size:14px;font-weight:500;line-height:1.6;cursor:pointer}
-.dev-tool-shell .le-reference-content {overflow:auto;min-height:0;padding:24px 28px 40px;overscroll-behavior:contain}
-.dev-tool-shell .le-reference-content p {font-size:14px;line-height:1.9}
-.dev-tool-shell .le-reference-content .le-default-values-table {max-width:none;font-size:14px}
-.dev-tool-shell .le-reference-content :is(th,td) {padding:10px 12px}
-.dev-tool-shell .le-reference-content .official-query-list {margin:12px 0;padding:0;list-style:none}
-.dev-tool-shell .le-reference-content .official-query-list li {display:grid;grid-template-columns:1fr;gap:6px;padding:18px 0;border-bottom:1px solid #c5d0d2}
-.dev-tool-shell .le-reference-content .official-query-list a {color:#325f78;text-decoration:underline;text-underline-offset:4px}
-.dev-tool-shell .le-reference-content .official-query-list small {display:block;color:#627780;font-size:12px}
+.le-reference-entry>.le-reference-window {--window-width:760px}
+.le-reference-entry:is(.official-query,.le-full-notes)>.le-reference-window {--window-width:960px}
+.interior-page .le-reference-window .le-disclosure-window-heading {padding-block:14px}
+.interior-page .le-reference-window .le-disclosure-window-heading h2 {margin:0}
+.dev-tool-shell .le-reference-window .le-default-values {margin-bottom:0}
 @media screen and (min-width:800px) and (max-width:1000px) {
  .dev-tool-shell :is(.land-evaluation,.mixed-zone) details:not(.mb-help)>summary {font-size:13px;gap:8px;padding:10px 12px}
  .dev-tool-shell .land-evaluation .le-workspace-tools,.dev-tool-shell .land-evaluation .le-workspace-tools:has(details[open]) {grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -82,7 +72,7 @@
  .evaluation-summary-document details[open]>summary::after {content:'− 收合'}
  .evaluation-summary-document summary:focus-visible {outline:2px solid #84583f;outline-offset:3px}
 }
-@media print {.le-reference-trigger,.le-reference-drawer{display:none!important}}
+@media print {.le-reference-trigger{display:none!important}}
 
 /* A compact launcher stays in place while its contents occupy one modal window. */
 @media screen and (min-width:800px) {
@@ -101,8 +91,8 @@
  .dev-tool-shell .land-evaluation .le-help-trigger {width:22px;height:22px;min-width:22px;min-height:22px;font-size:12px}
  .dev-tool-shell .land-evaluation :is(.le-fields,.planning-field-grid,.site-road-fields,.burden-fields,.lw-fields) {gap:14px 22px}
 }
-.le-disclosure-modal>dialog.le-disclosure-window {
- position:fixed;inset:0;box-sizing:border-box;width:min(1080px,calc(100vw - 72px));height:auto;max-width:none;max-height:calc(100dvh - 64px);margin:auto;padding:0;border:1px solid #93a9b0;border-radius:14px;background:#f8faf9;color:#263d4b;box-shadow:0 18px 70px #132d3b40;overflow:clip;
+dialog.le-disclosure-window {
+ position:fixed;inset:0;box-sizing:border-box;width:min(var(--window-width,1080px),calc(100vw - 72px));height:auto;max-width:none;max-height:calc(100dvh - 64px);margin:auto;padding:0;border:1px solid #93a9b0;border-radius:14px;background:#f8faf9;color:#263d4b;box-shadow:0 18px 70px #132d3b40;overflow:clip;
 }
 .le-disclosure-window[open] {display:flex;flex-direction:column}
 .le-disclosure-window::backdrop {background:#142d3c80;backdrop-filter:blur(2px)}
@@ -122,14 +112,14 @@
 .dev-tool-shell :is(.land-evaluation,.mixed-zone) details[data-disclosure-kind=award]>.le-disclosure-window :is(.le-disclosure-window-heading,.le-disclosure-window-footer) {background:#f0e8dc;border-color:#c8b397}
 .dev-tool-shell :is(.land-evaluation,.mixed-zone) details[data-disclosure-kind=planning]>.le-disclosure-window :is(.le-disclosure-window-heading,.le-disclosure-window-footer) {background:#e7efea;border-color:#b2c2bd}
 @media screen and (max-width:1000px) {
- .le-disclosure-modal>dialog.le-disclosure-window {width:calc(100vw - 40px);max-height:calc(100dvh - 40px)}
+ dialog.le-disclosure-window {width:min(var(--window-width,1080px),calc(100vw - 40px));max-height:calc(100dvh - 40px)}
  .le-disclosure-window-heading,.le-disclosure-window-content {padding:18px 20px}
  .le-disclosure-window-footer {padding:12px 20px}
 }
 @media print {.le-disclosure-window{display:none!important}}
 @media screen and (min-width:800px) {
  .dev-tool-shell :is(.land-evaluation,.mixed-zone) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=hidden]),select) {height:42px;min-height:42px;border-radius:10px;font-size:15px;padding:0 12px}
- .le-disclosure-modal>dialog.le-disclosure-window {inset:50% 0 auto;transform:translateY(-50%);height:fit-content;margin-block:0}
+ dialog.le-disclosure-window {inset:50% 0 auto;transform:translateY(-50%);height:fit-content;margin-block:0}
  .le-disclosure-window-footer {border-radius:0}
  .le-disclosure-window-heading {min-height:0}
 }

@@ -59,9 +59,9 @@ export function ReferenceDisclosure({title,children,className='',actionLabel='�
  function close(){ref.current.close();}
  return <div className={'le-reference-entry '+className}>
   <button ref={trigger} type="button" className="le-reference-trigger" aria-haspopup="dialog" aria-controls={id} onClick={open}><span>{title}</span><span className="le-reference-action">{actionLabel}</span></button>
-  <dialog ref={ref} id={id} aria-labelledby={id+'-title'} className="le-reference-drawer" onClick={event=>{if(event.target===event.currentTarget){const box=event.currentTarget.getBoundingClientRect();if(event.clientX<box.left||event.clientX>box.right)close();}}} onClose={event=>{unlock();restoreDisclosureFocus(event.currentTarget,trigger.current);}}>
-   <header className="le-reference-heading"><div><span>參考資料</span><h2 id={id+'-title'}>{title}</h2></div><button type="button" onClick={close} autoFocus>關閉</button></header>
-   <div className="le-reference-content"><InDisclosureWindow.Provider value={true}>{children}</InDisclosureWindow.Provider></div>
+  <dialog ref={ref} id={id} aria-labelledby={id+'-title'} className="le-disclosure-window le-reference-window" onClick={event=>{if(event.target===event.currentTarget){const box=event.currentTarget.getBoundingClientRect();if(event.clientX<box.left||event.clientX>box.right)close();}}} onClose={event=>{unlock();restoreDisclosureFocus(event.currentTarget,trigger.current);}}>
+   <header className="le-disclosure-window-heading"><h2 id={id+'-title'}>{title}</h2><button type="button" onClick={close} autoFocus>關閉</button></header>
+   <div className="le-disclosure-window-content"><InDisclosureWindow.Provider value={true}>{children}</InDisclosureWindow.Provider></div>
   </dialog>
  </div>;
 }

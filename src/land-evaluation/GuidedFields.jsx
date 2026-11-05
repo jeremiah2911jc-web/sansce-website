@@ -75,7 +75,7 @@ export function FieldGuidance({label,fieldKey,help:customHelp}){
   const place=()=>{
    const anchor=trigger.current,popover=panel.current;
    const dialog=anchor.closest('dialog');
-   const content=anchor.closest('.le-disclosure-window-content,.le-reference-content')??dialog;
+   const content=anchor.closest('.le-disclosure-window-content')??dialog;
    const bounds=content?.getBoundingClientRect()??{left:0,top:0,right:window.innerWidth,bottom:window.innerHeight};
    const r=anchor.getBoundingClientRect();
    if(r.bottom<=bounds.top||r.top>=bounds.bottom){close();return;}
