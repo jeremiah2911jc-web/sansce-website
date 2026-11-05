@@ -33,6 +33,7 @@ export function SummaryPreview({summary:rawSummary,onClose,onDownload}){
  const s=summaryForDisplay(rawSummary);
  const ref=useRef(null),previous=useRef(document.activeElement),printing=useRef(false);
  useEffect(()=>{
+  for(const active of document.querySelectorAll('dialog[open]'))active.close();
   const dialog=ref.current,overflow=document.body.style.overflow,root=document.getElementById('root'),wasInert=root?.inert,pageX=window.scrollX,pageY=window.scrollY;
   // Keep preview focus modal without a browser top layer, so Safari prints normal document flow.
   if(root)root.inert=true;

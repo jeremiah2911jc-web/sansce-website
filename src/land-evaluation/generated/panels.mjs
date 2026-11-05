@@ -2987,7 +2987,8 @@ import { Fragment as Fragment2, jsx as jsx2, jsxs as jsxs2 } from "/src/land-eva
 function BonusAssessmentPanel({
   input,
   edit,
-  financials = true
+  financials = true,
+  afterDisclosures = null
 }) {
   const p = input.regulatoryReview ?? defaultRegulatoryReview(), a = p.bonusAssessment ?? newBonusAssessment(Number(input.danger) > 0), c = {
     site: Number(input.site),
@@ -3204,7 +3205,9 @@ function BonusAssessmentPanel({
       }) }),
       /* @__PURE__ */ jsx2("small", { children: permitted && key !== "tdr" ? "\u4F9D\u6838\u51C6\u6587\u4EF6\u9762\u7A4D\u63A1\u8A08" : !active ? "\u672A\u63A1\u7528" : m === "detail" ? "\u4F9D\u7D30\u9805\u8A55\u5B9A" : "\u898F\u5283\u76EE\u6A19\uFF08\u8CC7\u683C\u5F85\u67E5\u8B49\uFF09" })
     ] }, key)) }),
-    /* bonus-eligibility-panel-hook */ jsxs2("div", {children:[jsx2(BonusEligibilityPanel,{input,edit}), input.planningDefaults ? jsx2("p", {role:"status",children:"本次先依目標條件初估；資格與文件列入結果的待查事項。"}) : summaryIncomplete ? jsx2("p", {role:"status",children:"請完成基地資料、獎勵適用條件與本次採用比例。"}) : jsx2("p", {children:[a.route==="renewal"?"都更 "+f8(effective.renewal)+"%":a.route==="danger"?"危老 "+f8(effective.danger)+"%":"未採重建獎勵",effective.tdr>0?"容移 "+f8(effective.tdr)+"%":""].filter(Boolean).join("；")})]}),
+    /* bonus-eligibility-panel-hook */ input.planningDefaults ? jsx2("p", {role:"status",children:"本次先依目標條件初估；資格與文件列入結果的待查事項。"}) : summaryIncomplete ? jsx2("p", {role:"status",children:"請完成基地資料、獎勵適用條件與本次採用比例。"}) : jsx2("p", {children:[a.route==="renewal"?"都更 "+f8(effective.renewal)+"%":a.route==="danger"?"危老 "+f8(effective.danger)+"%":"未採重建獎勵",effective.tdr>0?"容移 "+f8(effective.tdr)+"%":""].filter(Boolean).join("；")}),
+    jsxs2("header", {className:"le-disclosure-heading",children:[jsx2("h4",{children:"細項設定與資料查證"}),jsx2("p",{children:"選一項開啟視窗，查看或修改後返回表單。"})]}),
+    jsxs2("div", {className:"le-disclosure-grid",children:[jsx2(BonusEligibilityPanel,{input,edit}),
     /* @__PURE__ */ jsxs2("details", { className: "le-advanced", children: [
       /* @__PURE__ */ jsx2("summary", { children: "\u5BB9\u79FB\u53D6\u5F97\u689D\u4EF6\u8207\u8CC7\u683C\u6AA2\u6838" }),
       /* @__PURE__ */ jsx2(TdrApplicationPanel, {site:c.site,far:c.far, roadConditions: input.roadConditions, assessment: a, district: c.district ?? "", review: effective.application, change, financials })
@@ -3326,6 +3329,9 @@ function BonusAssessmentPanel({
       ] }),
       /* @__PURE__ */ null,
       /* @__PURE__ */ jsx2("p", { children: "\u65B0\u5317\u5BB9\u79FB\u4E00\u822C\u8DEF\u5F91\u53CA\u4E00\u822C\u90FD\u66F4\u9805\u76EE\u70BA\u672C\u8868\u7BC4\u570D\uFF1B\u7279\u6B8A\u8DEF\u5F91\u3001\u904E\u6E21\u820A\u6CD5\u6216\u5176\u4ED6\u7E23\u5E02\u9808\u6539\u7528\u76F8\u61C9\u6CD5\u4EE4\u3002\u734E\u52F5\u53D6\u5F97\u5F8C\u4ECD\u53D7\u91CF\u9AD4\u3001\u505C\u8ECA\u8207\u5176\u4ED6\u5EFA\u7BC9\u9650\u5236\u3002" })
+    ] })
+  ,
+    afterDisclosures
     ] })
   ] });
 }
@@ -6520,7 +6526,7 @@ function AreaReviewPanel({
       ] }) }),
       /* @__PURE__ */ jsxs6("details", { children: [
         /* @__PURE__ */ jsxs6("summary", { children: [
-          "\u5C55\u958B\u5730\u4E0A\u9010\u5C64\u514D\u8A08\u6AA2\u8A0E\uFF08",
+          "地上逐層免計檢討（",
           floors.length,
           "\u5C64\uFF09"
         ] }),

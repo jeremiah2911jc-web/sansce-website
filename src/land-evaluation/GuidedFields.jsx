@@ -4,6 +4,7 @@ import {planningFields} from './generated/core.mjs';
 import {isGuidedInput,defaultState,planningHelp,planningDefaultRows} from './guided-input.mjs';
 import {evidenceHelp} from './evidence-input.mjs';
 import {PlanningDefaultValues} from './PlanningDefaultValues.jsx';
+import {ReferenceDisclosure} from './DisclosureLayout.jsx';
 
 const Context=createContext(null);
 export function GuidedInputProvider({input,edit,children}){return <Context.Provider value={{input,edit}}>{children}</Context.Provider>;}
@@ -73,11 +74,33 @@ export function FieldGuidance({label,fieldKey,help:customHelp}){
  useLayoutEffect(()=>{
   if(!open||!trigger.current||!panel.current)return;
   const place=()=>{
-   const r=trigger.current.getBoundingClientRect(),height=panel.current.offsetHeight,width=panel.current.offsetWidth;
-   if(r.bottom<0||r.top>window.innerHeight){close();return;}
-   const left=Math.max(12,Math.min(r.left,window.innerWidth-width-12));
-   const below=r.bottom+10,top=below+height<=window.innerHeight-12?below:Math.max(12,r.top-height-10);
-   setPosition({left,top});
+   const anchor=trigger.current,popover=panel.current;
+   const dialog=anchor.closest('dialog');
+   const content=anchor.closest('.le-disclosure-window-content,.le-reference-content')??dialog;
+   const bounds=content?.getBoundingClientRect()??{left:0,top:0,right:window.innerWidth,bottom:window.innerHeight};
+   const r=anchor.getBoundingClientRect();
+   if(r.bottom<=bounds.top||r.top>=bounds.bottom){close();return;}
+   const padding=12,gap=10;
+   popover.style.maxWidth=Math.max(0,bounds.right-bounds.left-2*padding)+'px';
+   popover.style.maxHeight=Math.max(0,bounds.bottom-bounds.top-2*padding)+'px';
+   const {offsetHeight:height,offsetWidth:width}=popover;
+   const below=r.bottom+gap,above=r.top-height-gap;
+   const fitsBelow=below+height<=bounds.bottom-padding;
+   const fitsAbove=above>=bounds.top+padding;
+   let left=Math.max(bounds.left+padding,Math.min(r.left,bounds.right-width-padding));
+   let preferredTop=fitsBelow?below:above;
+   if(!fitsBelow&&!fitsAbove){
+    preferredTop=r.top;
+    if(r.right+gap+width<=bounds.right-padding)left=r.right+gap;
+    else if(r.left-gap-width>=bounds.left+padding)left=r.left-gap-width;
+   }
+   const top=Math.max(bounds.top+padding,Math.min(preferredTop,bounds.bottom-height-padding));
+   const frame=dialog?.getBoundingClientRect();
+   setPosition({
+    left:left-(frame?frame.left+dialog.clientLeft:0),
+    top:top-(frame?frame.top+dialog.clientTop:0),
+    position:dialog?'absolute':'fixed',
+   });
   };
   place();window.addEventListener('resize',place);document.addEventListener('scroll',place,true);
   return()=>{window.removeEventListener('resize',place);document.removeEventListener('scroll',place,true);};
@@ -91,9 +114,9 @@ export function FieldGuidance({label,fieldKey,help:customHelp}){
   return()=>{document.removeEventListener('pointerdown',dismiss);document.removeEventListener('keydown',keyboard);document.removeEventListener('sanze-field-help-open',another);};
  },[open]);
  if(!context||!help)return null;
- return <><button ref={trigger} type="button" className="le-help-trigger" aria-label={label+'填寫說明'} aria-expanded={open} aria-controls={open?id:undefined} onClick={e=>{e.preventDefault();e.stopPropagation();if(!open)document.dispatchEvent(new CustomEvent('sanze-field-help-open',{detail:id}));setPosition(null);setOpen(v=>!v);}}>?</button>{open&&createPortal(<aside ref={panel} id={id} role="note" aria-label={label+'填寫說明'} className="le-help-popover" style={{left:position?.left??12,top:position?.top??12,visibility:position?'visible':'hidden'}}><div className="le-help-heading"><strong>{label}</strong><button type="button" aria-label="關閉填寫說明" onClick={()=>close(true)}>關閉</button></div><p>{help}</p></aside>,document.body)}</>;
+ return <><button ref={trigger} type="button" className="le-help-trigger" aria-label={label+'填寫說明'} aria-expanded={open} aria-controls={open?id:undefined} onClick={e=>{e.preventDefault();e.stopPropagation();if(!open)document.dispatchEvent(new CustomEvent('sanze-field-help-open',{detail:id}));setPosition(null);setOpen(v=>!v);}}>?</button>{open&&createPortal(<aside ref={panel} id={id} role="note" aria-label={label+'填寫說明'} className="le-help-popover" style={{...position,visibility:position?'visible':'hidden'}}><div className="le-help-heading"><strong>{label}</strong><button type="button" aria-label="關閉填寫說明" onClick={()=>close(true)}>關閉</button></div><p>{help}</p></aside>,trigger.current?.closest('dialog')??document.body)}</>;
 }
 export function PlanningDefaultsIntro({input,onApply}){
  const guided=isGuidedInput(input),rows=planningDefaultRows(input);
- return <section className="le-planning-start" aria-label="規劃預設值"><p>{guided?'先填基地面積、建蔽率、容積率與預計獎勵，其餘欄位先帶入預設值。請依基地現況與預計配置調整，設定差異會影響面積、戶數及車位結果。':'可將空白的規劃欄位帶入參考值，先查看初估結果；已填數值保留。'}</p><div><button type="button" className="le-text-button" onClick={onApply}>{guided?'補入空白的規劃參考值':'採用規劃參考值'}</button>{guided&&<details><summary>查看本次預設值</summary><PlanningDefaultValues rows={rows}/><p className="le-default-values-scope">獎勵資格與道路條件須另查證。法定上限依地區及適用規定計算。</p></details>}</div></section>;
+ return <section className="le-planning-start" aria-label="規劃預設值"><p>{guided?'規劃預設值供初估。請依基地現況與預計配置調整，以免影響面積、戶數及車位估算。':'可將空白的規劃欄位帶入參考值，先查看初估結果；已填數值保留。'}</p><div><button type="button" className="le-text-button" onClick={onApply}>{guided?'補入空白值':'採用規劃參考值'}</button>{guided&&<ReferenceDisclosure title="本次規劃預設值"><PlanningDefaultValues rows={rows}/><p className="le-default-values-scope">獎勵資格與道路條件須另查證。法定上限依地區及適用規定計算。</p></ReferenceDisclosure>}</div></section>;
 }

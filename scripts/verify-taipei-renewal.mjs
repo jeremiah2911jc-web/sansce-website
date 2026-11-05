@@ -3,6 +3,7 @@ import {applyNtpcTod} from './apply-ntpc-tod.mjs';
 import {applyGuidedPlanning} from './apply-guided-planning.mjs';
 import {confirmSyntheticBonusConditions} from '../tests/helpers/bonus-conditions.mjs';
 import {applyBonusEligibility,applyBonusEligibilityPanel} from './apply-bonus-eligibility.mjs';
+import {applyDisclosureLayout} from './apply-disclosure-layout.mjs';
 import {applyDangerAreaFix} from './apply-danger-area-fix.mjs';
 import {execFileSync} from 'node:child_process';
 import {applyEvaluationPanelCopy} from './apply-evaluation-panel-copy.mjs';
@@ -96,6 +97,7 @@ for(const file of ['core','panels'])test('bundle non-scoped functions intact '+f
  const corrected=applyBonusEligibility(applyDangerAreaFix(applyTaipeiRenewalCore(original)));
  let expected=applyNtpcTod(applyGuidedPlanning(file==='panels'?applyBonusEligibilityPanel(applyTaipeiRenewalPanel(applyEvaluationPanelCopy(corrected))):corrected));
  if(file==='core')expected=exposeMultiBuildingKernel(expected);
+ if(file==='panels')expected=applyDisclosureLayout(expected);
  assert.equal(current,expected,'Bundle changes must match the scoped adapters exactly');
  assert.equal(applyTaipeiRenewalCore(current),current);assert.equal(applyDangerAreaFix(current),current);
  if(file==='panels')assert.equal(applyTaipeiRenewalPanel(current),current);
