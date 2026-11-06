@@ -6,7 +6,7 @@ const quantity=v=>displayNumber(v);
 const modes={planning:'規劃試算',document:'依文件覆核'},cities={unknown:'尚未選定',taipei:'臺北市',ntpc:'新北市'},regimes={unknown:'尚未確認',urban:'都市計畫工業區',nonurban:'非都市土地分區與編定',park:'園區／特別計畫'};
 const purposes={unknown:'尚未選定',factory:'生產／工廠',warehouse:'倉儲',research:'研發',office:'辦公',exhibition:'展售',ancillary:'附屬設施',dorm:'員工宿舍',housing:'一般住宅',shared:'共用空間'};
 const awardKinds={unknown:'未分類',renewal:'都市更新',f1:'立體化：新增投資',f2:'立體化：能源管理',f3:'立體化：營運總部',feedback:'立體化：回饋／捐贈空間',other:'其他獎勵',tdr:'容積移轉'};
-const checks={plan:'土地身分與計畫範圍',use:'行業、用途與總量管制',original:'原合法容積與採用路徑',renewal:'更新資格與獎勵',vertical:'立體化條件與回饋',tdr:'容移與接受基地',layout:'建蔽、退縮及配置',combined:'併用規定與合併上限'};
+const checks={plan:'土地身分與計畫範圍',use:'行業、用途與總量管制',original:'合法原建築容積及計算方式',renewal:'更新資格與獎勵',vertical:'立體化條件與回饋',tdr:'容移與接受基地',layout:'建蔽、退縮及配置',combined:'併用規定與合併上限'};
 const conditionLabels={road:'連接道路寬度（m）',front:'同路段面寬（m）',opened:'足寬開闢及連通道路寬度（m）',slope:'山坡地身分',nonOpen:'非五項開放性公設來源額度（㎡）',iso:'ISO50001',solar:'太陽能水平投影比例（%）',dc:'DC充電專用車位比例（%）',ems:'能源管理系統',storage:'儲能容量（kWh）',hq:'營運總部認定及登記地址',taipeiLocation:'臺北容移位置條件',distance:'至捷運或公園距離（m）',parkArea:'公園面積（公頃）',secondRoad:'第二條已開闢道路寬度（m）'};
 const allocationLabels={exempt:'免計容實體樓板',rent:'出租專用',self:'自用專用',donated:'捐贈',common:'共用',vacant:'未配置',registered:'文件登記'};
 const constraintKinds={coverage:'建蔽／建築面積',excavation:'開挖',height:'高度',yard:'退縮與院落',parking:'停車',loading:'裝卸及車道',fire:"消防及共用設施空間",quota:'工業使用總量',permission:'用途與行業許可'};
@@ -38,8 +38,8 @@ export function industrialDelivery(m,r,createdAt=new Date().toISOString()){
   return [[p.name||'未命名土地',p.zone||'分區待填'].join('／'),value(p.area),value(p.excluded),quantity(result?.site),quantity(result?.base),quantity(result?.adopted)];
  }))];
  sections.push(section('土地原容積與容移設定',['土地組','基準容積率（%）','原容積採用方式','原合法容積（㎡）','容移上限（%）'],m.parcels.map(p=>[p.name||'未命名土地',value(p.far),({unknown:'尚未選定',none:'不採原容積',replace:'以合法原容積替代'})[p.originalMode],p.originalMode==='none'&&!p.original?'本案不採用':value(p.original),m.transferMode==='none'&&!p.tdrRate?'本案不申請':value(p.tdrRate)])));
- sections.push(section('開發途徑與額度設定',['項目','本次輸入'],[['都更上限路徑',({unknown:'尚未選定',base:'基準容積1.5倍',original30:'原容積加基準0.3倍',original120:'原容積1.2倍',hazard130:'經認定危險原容積1.3倍',strategic:'策略性更新專案'})[m.originalRoute]],['獎勵採計方式',({unknown:'尚未選定',none:'不申請獎勵',items:'逐項填寫'})[m.awardMode]],['容移採計方式',({unknown:'尚未選定',none:'不申請容移',items:'逐項填寫'})[m.transferMode]],['立體化申請日',value(m.applicationDate)],['新增投資（億元，不含土地）',value(m.investment)],['合併審查全案上限（㎡）',value(m.combinedCap)],['容移核定／適用上限（㎡）',value(m.tdrCap)],['容移代金取得額度（㎡）',value(m.tdrCash)],['同版本文件總計（㎡）',value(m.declared)]].filter(([label])=>{
-  if(label==='都更上限路徑')return m.route==='renewal';
+ sections.push(section('開發方式與額度設定',['項目','本次輸入'],[['都更獎勵上限計算方式',({unknown:'尚未選定',base:'基準容積1.5倍',original30:'原容積加基準0.3倍',original120:'原容積1.2倍',hazard130:'經認定危險原容積1.3倍',strategic:'策略性更新專案'})[m.originalRoute]],['獎勵採計方式',({unknown:'尚未選定',none:'不申請獎勵',items:'逐項填寫'})[m.awardMode]],['容移採計方式',({unknown:'尚未選定',none:'不申請容移',items:'逐項填寫'})[m.transferMode]],['立體化申請日',value(m.applicationDate)],['新增投資（億元，不含土地）',value(m.investment)],['合併審查全案上限（㎡）',value(m.combinedCap)],['容移核定／適用上限（㎡）',value(m.tdrCap)],['容移代金取得額度（㎡）',value(m.tdrCash)],['同版本文件總計（㎡）',value(m.declared)]].filter(([label])=>{
+  if(label==='都更獎勵上限計算方式')return m.route==='renewal';
   if(['立體化申請日','新增投資（億元，不含土地）'].includes(label))return m.vertical==='ntpc'||Boolean(m.applicationDate||m.investment);
   if(label==='合併審查全案上限（㎡）')return Boolean(m.combinedCap)||[...r.errors,...r.missing].some(t=>t.includes('合併審查'));
   if(label==='容移核定／適用上限（㎡）')return m.transferMode==='items'||Boolean(m.tdrCap);

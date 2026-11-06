@@ -847,15 +847,23 @@ dialog.le-disclosure-window:not(.le-reference-window):has(.le-tdr-application, .
   grid-template-columns: repeat(2, minmax(0, 245px));
 }
 .dev-tool-shell .land-evaluation :is(.le-above-task,.le-parking-controls) label:not(:has(>input[type=checkbox])) { padding-bottom: 0; }
-.dev-tool-shell .land-evaluation .legal-parking-panel .le-parking-controls {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 205px), 1fr));
-  gap: 8px 16px;
+.dev-tool-shell .land-evaluation .le-parking-task {
   max-inline-size: 760px;
-  margin-block: 12px;
+  border-top: 1px solid var(--studio-line);
+  margin-block-start: 18px;
+  padding-block-start: 14px;
 }
-@media (min-width: 1250px) {
-  .dev-tool-shell .land-evaluation .le-form-section > .le-parking-quantities {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    max-inline-size: 850px;
-  }
+.dev-tool-shell .land-evaluation .le-parking-task > h3 {
+  margin: 0;
+  font-size: 18px;
+}
+.dev-tool-shell .land-evaluation .le-parking-task :is(.le-parking-quantities,.le-parking-controls) {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 280px));
+  align-items: end;
+  max-inline-size: 578px;
+  margin-block: 12px;
+  gap: 10px 18px;
+}
+.dev-tool-shell .land-evaluation .le-parking-task .planning-mode-result {
+  margin-block: 12px;
 }

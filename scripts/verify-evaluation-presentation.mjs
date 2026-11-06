@@ -36,7 +36,7 @@ fixture.development={version:'industrial.layout.v1',operation:'mixed',applicantU
 const result=calculateIndustrial(fixture),frozen=structuredClone({fixture,result}),summary=industrialDelivery(fixture,result,'2026-11-02T05:00:00Z');
 assert.deepEqual(result.errors,[]);assert.deepEqual(result.missing,[]);assert.equal(result.quantities.site,900);assert.equal(result.quantities.base,1890);assert.equal(result.quantities.design,1800);
 assert.equal(result.development.ready,true);assert.equal(summary.sections.find(x=>x.title==='實體面積與登記分項').rows[0].length,8);
-assert.equal(summary.sections.find(x=>x.title==='資料依據').rows.length,2);assert.equal(summary.sourceLinks.length,1);assert.equal(summary.sourceHeading,'法規依據');assert.equal(summary.sections.find(x=>x.title==='開發途徑與額度設定').rows.length,2);
+assert.equal(summary.sections.find(x=>x.title==='資料依據').rows.length,2);assert.equal(summary.sourceLinks.length,1);assert.equal(summary.sourceHeading,'法規依據');assert.equal(summary.sections.find(x=>x.title==='開發方式與額度設定').rows.length,2);
 assert.deepEqual(summary.metrics.map(r=>r[1]),Object.values(result.quantities));assert.deepEqual({fixture,result},frozen);
 const svg=read('public/images/evaluation-watermark-09.svg'),html=renderIndustrialReport(summary,svg);
 assert(html.includes('data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg)));assert(!/<pre\b|&quot;(?:conditions|quantities|parcelResults)&quot;/.test(html));
