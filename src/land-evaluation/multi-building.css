@@ -11,3 +11,148 @@
 .dev-tool-shell .land-evaluation.mb-workspace .mb-control input[type=number]{appearance:textfield;-moz-appearance:textfield}
 .dev-tool-shell .land-evaluation.mb-workspace .mb-control input::-webkit-inner-spin-button,.dev-tool-shell .land-evaluation.mb-workspace .mb-control input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 .mb-guidance{font-size:14px;line-height:1.8;color:#655947;margin:20px 0}.mb-basis{max-width:560px;margin-top:24px}.mb-issues button{border:0;background:transparent;color:inherit;text-align:left;font:inherit;line-height:1.8;padding:6px 0}.mb-issues button span{margin-left:16px;text-decoration:underline;text-underline-offset:4px;font-size:13px}
+
+.dev-tool-shell .land-evaluation.mb-workspace .mb-heading {
+  gap: 10px 24px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.dev-tool-shell .land-evaluation.mb-workspace .mb-heading p { margin: 4px 0; }
+
+.dev-tool-shell .land-evaluation.mb-workspace .mb-project {
+  max-inline-size: 750px;
+  padding: 16px 20px;
+  border-radius: 12px;
+}
+.dev-tool-shell .land-evaluation.mb-workspace :is(.mb-project,.mb-project-settings,.mb-calculate) h2 {
+  margin: 0 0 12px;
+  font-size: 19px;
+}
+.dev-tool-shell .land-evaluation.mb-workspace .mb-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 148px), 1fr));
+  max-inline-size: 850px;
+  align-items: end;
+  gap: 12px 16px;
+  margin: 12px 0;
+}
+.dev-tool-shell .land-evaluation.mb-workspace .mb-site-fields { margin: 0; }
+.dev-tool-shell .land-evaluation.mb-workspace .mb-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  margin: 0;
+}
+.dev-tool-shell .land-evaluation.mb-workspace .mb-field > :is(span:first-child,.mb-label) {
+  min-height: 24px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.dev-tool-shell .land-evaluation.mb-workspace .mb-field > span:first-child { align-content: end; }
+.dev-tool-shell .land-evaluation.mb-workspace .mb-control {
+  box-sizing: border-box;
+  min-height: 42px;
+  height: 42px;
+  padding-inline: 12px;
+  border-radius: 10px;
+  background: var(--studio-paper);
+}
+.dev-tool-shell .land-evaluation.mb-workspace .mb-numeric-field .mb-control { max-inline-size: 9rem; }
+.dev-tool-shell .land-evaluation.mb-workspace .mb-control input {
+  height: 40px;
+  min-height: 0;
+  padding: 0 !important;
+  font-size: 15px;
+}
+.dev-tool-shell .land-evaluation.mb-workspace .mb-control small { font-size: 12px; }
+.dev-tool-shell .land-evaluation.mb-workspace .mb-field select {
+  box-sizing: border-box;
+  min-height: 42px;
+  max-inline-size: 100%;
+  font-size: 15px;
+}
+.dev-tool-shell .land-evaluation.mb-workspace :is(.mb-settings-controls,.mb-calculate-controls) {
+  display: flex;
+  align-items: end;
+  gap: 12px 16px;
+  flex-wrap: wrap;
+}
+.dev-tool-shell .land-evaluation.mb-workspace .mb-project-settings { margin: 20px 0; }
+.dev-tool-shell .land-evaluation.mb-workspace .mb-settings-controls > .mb-field { inline-size: min(100%, 240px); }
+.dev-tool-shell .land-evaluation.mb-workspace .mb-settings-controls > details { margin: 0; }
+.dev-tool-shell .land-evaluation.mb-workspace .mb-navigation { margin: 16px 0; max-inline-size: 850px; }
+.dev-tool-shell .land-evaluation.mb-workspace .mb-navigation > button:last-child { margin: 0; }
+.dev-tool-shell .land-evaluation.mb-workspace .mb-building-tabs > button {
+  min-height: 42px;
+  padding: 7px 14px;
+  margin: 0;
+  border: 1px solid var(--studio-line);
+  border-radius: 10px;
+  background: var(--studio-paper);
+  color: var(--studio-ink);
+  box-shadow: none;
+  font: inherit;
+  font-size: 13px;
+}
+.dev-tool-shell .land-evaluation.mb-workspace .mb-building-tabs > button[aria-pressed="true"] {
+  border-color: var(--studio-ink);
+  background: var(--studio-ink);
+  color: var(--studio-paper);
+}
+.dev-tool-shell .land-evaluation.mb-workspace .mb-task :is(.mb-building-top, .mb-floor-heading) {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+}
+.dev-tool-shell .land-evaluation.mb-workspace .mb-task h2 { margin-block: 0; font-size: 22px; }
+.dev-tool-shell .land-evaluation.mb-workspace .mb-floor { max-inline-size: 850px; margin-block: 16px; }
+.dev-tool-shell .land-evaluation.mb-workspace .mb-floor-heading strong { font-size: 16px; }
+.dev-tool-shell .land-evaluation.mb-workspace .mb-calculate {
+  max-inline-size: 850px;
+  border-top: 1px solid var(--studio-line);
+  padding-top: 16px;
+  margin-top: 24px;
+}
+.dev-tool-shell .land-evaluation.mb-workspace .mb-calculate .mb-text-field { inline-size: min(100%, 250px); }
+.dev-tool-shell .land-evaluation.mb-workspace .mb-calculate .le-primary { min-height: 42px; }
+
+.interior-page .dev-tool-shell .land-evaluation.mb-workspace .mb-heading h1 {
+  margin: 4px 0;
+  font: 500 36px/1.5 "Songti TC","Noto Serif TC",serif;
+  letter-spacing: .04em;
+}
+.dev-tool-shell .land-evaluation.mb-workspace .mb-heading > button {
+  min-height: 42px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+.dev-tool-shell .land-evaluation.mb-workspace .mb-building-fields {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-inline-size: 570px;
+}
+.dev-tool-shell .land-evaluation.mb-workspace .mb-shared-task > h2:not(:first-child) {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--studio-line);
+}
+.dev-tool-shell .land-evaluation.mb-workspace .mb-reference-controls {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-block: 14px;
+}
+.dev-tool-shell .land-evaluation.mb-workspace .mb-reference-controls > .mb-field {
+  inline-size: min(100%, 360px);
+}
+.dev-tool-shell .land-evaluation.mb-workspace :is(.mb-reference-controls,.mb-task,.mb-floor) > button.le-secondary {
+  min-height: 42px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+.dev-tool-shell .land-evaluation.mb-workspace .mb-excavation-fields {
+  grid-template-columns: minmax(0, 145px) minmax(0, 360px);
+}
