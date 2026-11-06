@@ -60,8 +60,8 @@ export function issueTarget(message,input={}){
 function blockingFieldTarget(message,input){
  const prerequisite=(label)=>({tab:'base',region:'獎勵適用條件',label});
  if(message.startsWith('路寬查證來源'))return {tab:'base',summary:'基地道路條件',label:publicText('路寬查證來源／圖資量測／文件')};
- if(message.startsWith('個案開挖規定來源'))return {tab:'basement',label:input.basementDemand?.enabled?'法規依據、都市計畫或核准文件':'開挖率上限資料來源'};
- if(message.startsWith('較嚴格開挖規定來源'))return {tab:'basement',summary:'個案都市計畫較嚴格規定',label:'較嚴格規定來源'};
+ if(message.startsWith('個案開挖規定來源'))return {tab:'basement',label:input.basementDemand?.enabled?'開挖限制資料來源':'開挖率上限資料來源'};
+ if(message.startsWith('較嚴格開挖規定來源'))return {tab:'basement',summary:'個案都市計畫較嚴格規定',label:'個案都市計畫來源'};
  if(message.startsWith('地下開挖規則依據'))return {tab:'basement',label:'法規依據、都市計畫或核准文件'};
  if(message.startsWith('停車規則來源'))return {tab:'parking',summary:'停車規則來源',label:'法規／都市計畫書條文及查核來源'};
  if(message.startsWith('自行車免計適用法令／核定資料'))return {tab:'basement',summary:'地下免計、反計及用途假設',label:'自行車免計適用法令／核定資料'};
@@ -137,7 +137,7 @@ function blockingFieldTarget(message,input){
   [/既有核准獎勵.*來源/,{tab:'base',label:'獎勵核准文號及來源'}],
   [/都市計畫是否另訂地下開挖|都市計畫開挖規定/,{tab:'basement',region:'地下需求檢討',label:'都市計畫開挖規定'}],
   [/地下開挖.*分區|地下開挖適用分區/,{tab:'basement',label:'地下開挖適用分區'}],
-  [/較嚴格開挖率.*來源/,{tab:'basement',summary:'個案都市計畫較嚴格規定',label:'較嚴格規定來源'}],
+  [/較嚴格開挖率.*來源/,{tab:'basement',summary:'個案都市計畫較嚴格規定',label:'個案都市計畫來源'}],
   [/較嚴格開挖率須/,{tab:'basement',summary:'個案都市計畫較嚴格規定',label:'個案較嚴格開挖率上限%'}],
   [/個案開挖率上限及適用法規/,{tab:'basement',label:'個案開挖率上限%'}],
   [/南港.*重建類別|已採都更.*開挖規則/,{tab:'basement',region:'地下需求檢討',label:'地下開挖規則'}],

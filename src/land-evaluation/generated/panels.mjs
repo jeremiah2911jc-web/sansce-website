@@ -2961,7 +2961,8 @@ function BonusAssessmentPanel({
   input,
   edit,
   financials = true,
-  afterDisclosures = null
+  afterDisclosures = null,
+  scaleField = null
 }) {
   const p = input.regulatoryReview ?? defaultRegulatoryReview(), a = p.bonusAssessment ?? newBonusAssessment(Number(input.danger) > 0), c = {
     site: Number(input.site),
@@ -3095,9 +3096,9 @@ function BonusAssessmentPanel({
     ] })
   ] });
   return /* @__PURE__ */ jsxs2("section", { className: "area-review-panel", "aria-label": "\u734E\u52F5\u8207\u5BB9\u79FB\u8A55\u5B9A", children: [
-    /* @__PURE__ */ jsx2("h3", { children: "\u734E\u52F5\u8207\u5BB9\u79FB\uFF1A\u5FEB\u901F\u4F30\u7B97\uFF0F\u7D30\u9805\u8A55\u5B9A" }),
-    /* @__PURE__ */ jsx2("p", { children: "\u586B\u5165\u76EE\u6A19\u6BD4\u4F8B\uFF0C\u6216\u4F9D\u734E\u52F5\u689D\u4EF6\u9010\u9805\u8A55\u5B9A\u3002" }),
-    /* @__PURE__ */ jsxs2("div", { className: "planning-field-grid", children: [
+   jsxs2("div",{className:"le-award-settings",children:[
+    jsxs2("header",{className:"le-award-heading",children:[jsx2("h3", { children: "\u734E\u52F5\u8207\u5BB9\u79FB\uFF1A\u5FEB\u901F\u4F30\u7B97\uFF0F\u7D30\u9805\u8A55\u5B9A" }),jsx2("p", { children: "\u586B\u5165\u76EE\u6A19\u6BD4\u4F8B\uFF0C\u6216\u4F9D\u734E\u52F5\u689D\u4EF6\u9010\u9805\u8A55\u5B9A\u3002" })]}),
+    jsxs2("div", { className: "planning-field-grid le-award-methods", children: [
       /* @__PURE__ */ jsxs2("label", { children: [
         /* @__PURE__ */ jsx2(FieldLabel2, { children: "\u91CD\u5EFA\u734E\u52F5\u8DEF\u5F91" }),
         /* @__PURE__ */ jsxs2(PublicSelect2, { "aria-label": "\u91CD\u5EFA\u734E\u52F5\u8DEF\u5F91", value: a.route, onChange: (e) => change({
@@ -3118,21 +3119,28 @@ function BonusAssessmentPanel({
         }) })
       ] })
     ] }),
-    /* @__PURE__ */ permitted && jsxs2("div",{className:"le-legacy-award",children:[jsx2("p",{children:"此案件檔採用既有核定或核准的獎勵面積。"}),jsx2("button",{type:"button",className:"le-text-button","data-planning-key":"legacyAward",onClick:()=>change({awardBasis:"target"}),children:"改用規劃試算"})]}),
-    jsx2("div", { className: "planning-field-grid", children: [["renewal", "\u90FD\u66F4\u5FEB\u901F\u76EE\u6A19%", a.renewalMode, a.route === "renewal"], ["tdr", "\u5BB9\u79FB\u5FEB\u901F\u76EE\u6A19%", a.tdrMode, true], ["danger", "\u5371\u8001\u5FEB\u901F\u76EE\u6A19%", a.dangerMode, a.route === "danger"]].filter(([key, ,mode,active]) => active && mode === "quick" && !(permitted && key !== "tdr")).map(([key, label, m, active]) => /* @__PURE__ */ jsxs2("label", { children: [
+    permitted && jsxs2("div",{className:"le-legacy-award",children:[jsx2("p",{children:"此案件檔採用既有核定或核准的獎勵面積。"}),jsx2("button",{type:"button",className:"le-text-button","data-planning-key":"legacyAward",onClick:()=>change({awardBasis:"target"}),children:"改用規劃試算"})]}),
+    jsx2("div", { className: "planning-field-grid le-award-targets", children: [scaleField, ... [["renewal", "\u90FD\u66F4\u5FEB\u901F\u76EE\u6A19%", a.renewalMode, a.route === "renewal"], ["tdr", "\u5BB9\u79FB\u5FEB\u901F\u76EE\u6A19%", a.tdrMode, true], ["danger", "\u5371\u8001\u5FEB\u901F\u76EE\u6A19%", a.dangerMode, a.route === "danger"]].filter(([key, ,mode,active]) => active && mode === "quick" && !(permitted && key !== "tdr")).map(([key, label, m, active]) => /* @__PURE__ */ jsxs2("label", { children: [
       /* @__PURE__ */ jsx2(FieldLabel2, { children: label }),
       /* @__PURE__ */ jsx2(PublicNumber2, { "aria-label": label, type: "number", min: "0", step: "any", disabled: m !== "quick" || !active || permitted && key !== "tdr", value: input[key], onChange: (e) => change({}, {
         [key]: e.target.value
       }) })
-    ] }, key)) }),
-    /* bonus-eligibility-panel-hook */ input.planningDefaults ? null : summaryIncomplete ? jsx2("p", {role:"status",children:"請完成基地資料、獎勵適用條件與本次採用比例。"}) : jsx2("p", {children:[a.route==="renewal"?"都更 "+f8(effective.renewal)+"%":a.route==="danger"?"危老 "+f8(effective.danger)+"%":"未採重建獎勵",effective.tdr>0?"容移 "+f8(effective.tdr)+"%":""].filter(Boolean).join("；")}),
-    jsxs2("header", {className:"le-disclosure-heading",children:[jsx2("h4",{children:"申請資格、獎勵與容積移轉細項"})]}),
-    jsxs2("div", {className:"le-disclosure-grid",children:[jsx2(BonusEligibilityPanel,{input,edit}),
-    /* @__PURE__ */ jsxs2("details", { className: "le-advanced", children: [
+    ] }, key))] }),
+    input.planningDefaults ? null : summaryIncomplete ? jsx2("p", {role:"status",children:"請完成基地資料、獎勵適用條件與本次採用比例。"}) : jsx2("p", {children:[a.route==="renewal"?"都更 "+f8(effective.renewal)+"%":a.route==="danger"?"危老 "+f8(effective.danger)+"%":"未採重建獎勵",effective.tdr>0?"容移 "+f8(effective.tdr)+"%":""].filter(Boolean).join("；")})
+   ]}),
+   jsxs2("section",{className:"le-award-details",children:[
+    jsxs2("header", {className:"le-disclosure-heading",children:[jsx2("h3",{children:"申請與評定細項"})]}),
+    jsxs2("div",{className:"le-award-detail-group",children:[
+    jsx2("h4",{children:"申請條件"}),
+    jsxs2("div",{className:"le-disclosure-grid",children:[jsx2(BonusEligibilityPanel,{input,edit}),
+    jsxs2("details", { className: "le-advanced", children: [
       /* @__PURE__ */ jsx2("summary", { children: "\u5BB9\u79FB\u53D6\u5F97\u689D\u4EF6\u8207\u8CC7\u683C\u6AA2\u6838" }),
       /* @__PURE__ */ jsx2(TdrApplicationPanel, {site:c.site,far:c.far, roadConditions: input.roadConditions, assessment: a, district: c.district ?? "", review: effective.application, change, financials })
-    ] }),
-    /* @__PURE__ */ a.route === "renewal" && !permitted && jsxs2("details", { open: a.renewalMode === "detail", children: [
+    ] })]})
+   ]}),
+    jsxs2("div",{className:"le-award-detail-group",children:[
+    jsx2("h4",{children:"分項評定"}),
+    jsxs2("div",{className:"le-disclosure-grid",children:[a.route === "renewal" && !permitted && jsxs2("details", { open: a.renewalMode === "detail", children: [
       /* @__PURE__ */ jsx2("summary", { children: tdrCity === "ntpc" ? "都更細項：中央獎勵與新北地方獎勵" : tdrCity === "taipei" ? "都更細項：中央與臺北地方獎勵" : "都更細項：中央獎勵" }),
       /* @__PURE__ */ jsxs2("p", { children: a.renewalMode === "quick" ? "本次依上方獎勵目標試算；改用細項評定後，依下列條件計算。" : [
         "\u7D30\u9805\u5408\u8A08 ",
@@ -3213,7 +3221,7 @@ function BonusAssessmentPanel({
         "\u3002"
       ] })
     ] }),
-    /* @__PURE__ */ a.route === "danger" && !permitted && jsxs2("details", { open: a.dangerMode === "detail", children: [
+    a.route === "danger" && !permitted && jsxs2("details", { open: a.dangerMode === "detail", children: [
       /* @__PURE__ */ jsx2("summary", { children: "危老細項：資格、基本獎勵、時程及規模" }),
       null,
       /* @__PURE__ */ jsx2("p", { children: "都市計畫內合法建築，非指定歷史文化等價值，符合危老條例第3條危險／耐震條件，並取得全體土地及合法建物所有權人同意。申請期限現行為2027-05-31；危老資格另依結構評估及適用文件確認。一般基本獎勵上限為基準130%或合法原容積115%，時程及規模合計另限10%。本表採獎勵細項加總；依原容積直接建築，請另依個案文件評估。含鄰地或部分合格基地時，依可獎勵基地比例及一般30%基本獎勵上限計算。" }),
@@ -3239,10 +3247,10 @@ function BonusAssessmentPanel({
       ] }),
       /* @__PURE__ */ jsx2("p", { children: "\u5371\u8001\u8DEF\u5F91\u4E0D\u758A\u52A0\u90FD\u66F4\uFF0F\u571F\u7BA1\u734E\u52F5\uFF1B\u65B0\u5317\u7279\u6B8A\u91CD\u5EFA\u5BB9\u79FB\u5408\u8A0850%\u4ECD\u9808\u8986\u6838\u500B\u6848\u8DEF\u5F91\uFF1B\u5176\u4ED6\u5730\u5340\u4E0D\u5957\u7528\u65B0\u5317\u5BB9\u79FB\u9644\u8868\u3002" })
     ] }),
-    /* @__PURE__ */ null
-  ,
-    afterDisclosures
-    ] })
+    null,
+    afterDisclosures]})
+   ]})
+   ]})
   ] });
 }
 
@@ -3657,15 +3665,16 @@ function BasementDemandPanel({
   }) : null;
   const showLimit = Boolean(hasBase && limit && !limit.errors.length && Number.isFinite(limit.cap));
   return /* @__PURE__ */ jsxs3("section", { className: "area-review-panel basement-demand-panel", "aria-label": "\u5730\u4E0B\u9700\u6C42\u6AA2\u8A0E", children: [
-    /* @__PURE__ */ jsx3("h3", { children: "\u4F9D\u57FA\u5730\u8207\u505C\u8ECA\u9700\u6C42\u6AA2\u8A0E\u5730\u4E0B\u5BA4" }),
-    /* @__PURE__ */ jsxs3("div", { className: "planning-field-grid", children: [
+    jsxs3("section",{className:"basement-excavation",children:[
+    jsx3("h3",{children:"地下配置與開挖"}),
+    jsxs3("div", { className: "planning-field-grid basement-rule-fields", children: [
       /* @__PURE__ */ jsxs3("label", { children: [
         /* @__PURE__ */ jsx3(FieldLabel3, { children: "\u5730\u4E0B\u914D\u7F6E\u6AA2\u8A0E\u65B9\u5F0F" }),
         /* @__PURE__ */ jsxs3(PublicSelect3, { "aria-label": "\u5730\u4E0B\u914D\u7F6E\u6AA2\u8A0E\u65B9\u5F0F", value: input.basementDemand?.enabled ? "demand" : "fixed", onChange: (e) => patch({
           enabled: e.target.value === "demand"
         }), children: [
-          /* @__PURE__ */ jsx3("option", { value: "demand", children: "\u4F9D\u57FA\u5730\u9650\u5236\u3001\u9700\u6C42\u8207\u66FF\u4EE3\u65B9\u5F0F\u641C\u5C0B" }),
-          /* @__PURE__ */ jsx3("option", { value: "fixed", children: "\u81EA\u884C\u6307\u5B9A\u958B\u6316\u7BC4\u570D\u8207\u5730\u4E0B\u5C64\u6578" })
+          /* @__PURE__ */ jsx3("option", { value: "demand", children: "依停車需求試算" }),
+          /* @__PURE__ */ jsx3("option", { value: "fixed", children: "指定開挖與層數" })
         ] })
       ] }),
       d.enabled && /* @__PURE__ */ jsxs3(Fragment3, { children: [
@@ -3683,7 +3692,7 @@ function BasementDemandPanel({
           /* @__PURE__ */ jsxs3(PublicSelect3, { "aria-label": "\u5730\u4E0B\u958B\u6316\u898F\u5247", value: d.rule, onChange: (e) => patch({
             rule: e.target.value
           }), children: [
-            (/新北/.test(input.parkingDesign?.district ?? "") || d.rule === "ntpc_general") && /* @__PURE__ */ jsx3("option", { value: "ntpc_general", children: "\u65B0\u5317\u5E02\u4E00\u822C\u898F\u5B9A\uFF1A\u4F9D\u57FA\u5730\u9762\u7A4D\u81EA\u52D5\u8A08\u7B97" }),
+            (/新北/.test(input.parkingDesign?.district ?? "") || d.rule === "ntpc_general") && /* @__PURE__ */ jsx3("option", { value: "ntpc_general", children: "新北市一般開挖規定" }),
             /* @__PURE__ */ jsx3("option", { value: "documented", children: "\u4F9D\u500B\u6848\u90FD\u5E02\u8A08\u756B\u3001\u7279\u6B8A\u8A08\u756B\u6216\u6838\u51C6\u8CC7\u6599" }),
             (/臺北|台北/.test(input.parkingDesign?.district ?? "") || d.rule.startsWith("nangang")) && /* @__PURE__ */ jsxs3(Fragment3, { children: [
               /* @__PURE__ */ jsx3("option", { value: "taipei_general", children: "\u81FA\u5317\u5E02\u90FD\u5BE9\u901A\u5247\uFF1A\u4F9D\u4F7F\u7528\u5206\u5340\u8A08\u7B97" }),
@@ -3757,23 +3766,19 @@ function BasementDemandPanel({
         }) })
       ] })
     ] }),
-    d.enabled && /* @__PURE__ */ jsxs3(Fragment3, { children: [
-      d.rule === "taipei_general" ? /* @__PURE__ */ jsx3(Fragment3, { children: /* @__PURE__ */ jsxs3("div", { className: "planning-field-grid", children: [
+    d.enabled && d.rule === "taipei_general" ? /* @__PURE__ */ jsx3(Fragment3, { children: /* @__PURE__ */ jsxs3("div", { className: "planning-field-grid", children: [
         /* @__PURE__ */ jsxs3("label", { children: [
           /* @__PURE__ */ jsx3(FieldLabel3, { children: "\u6CD5\u898F\u958B\u6316\u7387\u4E0A\u9650%" }),
-          /* @__PURE__ */ jsx3(PublicNumber3, { "aria-label": "\u6CD5\u898F\u958B\u6316\u7387\u4E0A\u9650%", type: "number", readOnly: true, value: showLimit ? limit.cap : "" })
+          /* @__PURE__ */ jsx3("output", { className:"basement-cap-value", "aria-label":"法規開挖率上限", children:showLimit ? f(limit.cap) + "%" : hasBase ? "待選適用條件" : "待填基地面積及建蔽率" })
         ] }),
         /* @__PURE__ */ jsx3(RuleReference, { source: hasBase ? TAIPEI_EXCAVATION_SOURCE : void 0 })
-      ] }) }) : d.rule === "ntpc_general" ? /* @__PURE__ */ jsxs3(Fragment3, { children: [
-        /* @__PURE__ */ jsxs3("div", { className: "planning-field-grid", children: [
+      ] }) }) : d.rule === "ntpc_general" ? /* @__PURE__ */ jsxs3(Fragment3,{children:[jsxs3("div",{className:"basement-cap-row",children:[jsxs3("div", { className: "planning-field-grid", children: [
           /* @__PURE__ */ jsxs3("label", { children: [
             /* @__PURE__ */ jsx3(FieldLabel3, { children: "\u6CD5\u898F\u958B\u6316\u7387\u4E0A\u9650%" }),
-            /* @__PURE__ */ jsx3(PublicNumber3, { "aria-label": "\u6CD5\u898F\u958B\u6316\u7387\u4E0A\u9650%", type: "number", readOnly: true, value: showLimit ? Number(limit.cap.toFixed(2)) : "" })
+            /* @__PURE__ */ jsx3("output", { className:"basement-cap-value", "aria-label":"法規開挖率上限", children:showLimit ? f(limit.cap) + "%" : hasBase ? "待選適用條件" : "待填基地面積及建蔽率" })
           ] }),
           /* @__PURE__ */ jsx3(RuleReference, { source: hasBase ? NTPC_EXCAVATION_SOURCE : void 0 })
-        ] }),
-        hasBase && /* @__PURE__ */ jsx3("p", { children: "\u65B0\u5E02\u93AE\u3001\u6377\u904B\u958B\u767C\u53CA\u6838\u51C6\u4F8B\u5916\uFF0C\u8ACB\u9078\u64C7\u500B\u6848\u898F\u5B9A\u3002" }),
-        /* @__PURE__ */ jsxs3("details", { children: [
+        ] }),jsxs3("details", { children: [
           /* @__PURE__ */ jsx3("summary", { children: "\u500B\u6848\u90FD\u5E02\u8A08\u756B\u8F03\u56B4\u683C\u898F\u5B9A" }),
           /* @__PURE__ */ jsxs3("div", { className: "planning-field-grid", children: [
             /* @__PURE__ */ jsxs3("label", { children: [
@@ -3790,8 +3795,7 @@ function BasementDemandPanel({
             ] })
           ] }),
           /* @__PURE__ */ jsx3("p", { children: "\u7559\u767D\u4F9D\u4E00\u822C\u898F\u5B9A\uFF1B\u586B\u5165\u8F03\u4F4E\u4E0A\u9650\u6642\uFF0C\u63A1\u500B\u6848\u898F\u5B9A\u8A08\u7B97\u3002" })
-        ] })
-      ] }) : d.rule === "documented" ? /* @__PURE__ */ jsxs3("div", { className: "planning-field-grid", children: [
+        ] })]}),hasBase && /* @__PURE__ */ jsx3("p", { children: "\u65B0\u5E02\u93AE\u3001\u6377\u904B\u958B\u767C\u53CA\u6838\u51C6\u4F8B\u5916\uFF0C\u8ACB\u9078\u64C7\u500B\u6848\u898F\u5B9A\u3002" })]}) : d.rule === "documented" ? /* @__PURE__ */ jsxs3("div", { className: "planning-field-grid", children: [
         /* @__PURE__ */ jsxs3("label", { children: [
           /* @__PURE__ */ jsx3(FieldLabel3, { children: "\u500B\u6848\u958B\u6316\u7387\u4E0A\u9650%" }),
           /* @__PURE__ */ jsx3(PublicNumber3, { "aria-label": "\u500B\u6848\u958B\u6316\u7387\u4E0A\u9650%", type: "number", min: "0", max: "100", value: input.excavationCap, onChange: (e) => edit({
@@ -3815,13 +3819,17 @@ function BasementDemandPanel({
         /* @__PURE__ */ jsx3("a", { href: "https://laws.gov.taipei/law/File/0000336021", children: "\u5357\u6E2F\u958B\u6316\u898F\u5247" }),
         /* @__PURE__ */ jsx3("span", { className: "sr-only", children: NANGANG_EXCAVATION_SOURCE })
       ] }),
-      /* @__PURE__ */ jsxs3("label", { className: "planning-checkbox", children: [
+    d.enabled && !review && limit?.errors.map((e) => /* @__PURE__ */ jsx3("p", { className: "planning-inline-error", children: e.replace("請填寫個案開挖率上限及適用法規。", "\u8ACB\u586B\u5BEB\u500B\u6848\u958B\u6316\u7387\u4E0A\u9650\u53CA\u9069\u7528\u6CD5\u898F\u3002") }, e))
+  ]}),
+    d.enabled && jsxs3("section",{className:"basement-alternatives",children:[
+    jsx3("h3",{children:"停車設備與替代方案"}),
+    jsxs3("label", { className: "planning-checkbox", children: [
         /* @__PURE__ */ jsx3("input", { type: "checkbox", checked: d.allowAlternatives, onChange: (e) => patch({
           allowAlternatives: e.target.checked
         }) }),
-        "\u6BD4\u8F03\u6C7D\u8ECA\u5347\u964D\u6A5F\u8207\u6A5F\u68B0\u505C\u8ECA\uFF1B\u7121\u969C\u7919\u8ECA\u4F4D\u4F8B\u5916\u7559\u5730\u9762"
+        "比較汽車升降機與機械停車"
       ] }),
-      /* @__PURE__ */ jsxs3("label", { children: [
+    jsxs3("div",{className:"basement-equipment-actions",children:[jsxs3("label", { children: [
         /* @__PURE__ */ jsx3(FieldLabel3, { children: "\u6A5F\u68B0\u505C\u8ECA\u8A2D\u5099\u985E\u578B" }),
         /* @__PURE__ */ jsxs3(PublicSelect3, { "aria-label": "\u6A5F\u68B0\u505C\u8ECA\u8A2D\u5099\u985E\u578B", value: d.mechanicalType ?? "stacked", onChange: (e) => patch({
           mechanicalType: e.target.value
@@ -3829,21 +3837,7 @@ function BasementDemandPanel({
           /* @__PURE__ */ jsx3("option", { value: "stacked", children: "\u5806\u758A\u6A21\u7D44\u5F0F" }),
           /* @__PURE__ */ jsx3("option", { value: "warehouse", children: "\u5009\u5132\u5F0F\u81EA\u52D5\u505C\u8ECA\uFF08\u8A2D\u5099\u5C3A\u5BF8\u5047\u8A2D\uFF09" })
         ] })
-      ] }),
-      d.mechanicalType === "warehouse" && /* @__PURE__ */ jsxs3("details", { open: true, children: [
-        /* @__PURE__ */ jsx3("summary", { children: "\u5009\u5132\u5F0F\u8A2D\u5099\u5C3A\u5BF8\u5047\u8A2D" }),
-        /* @__PURE__ */ jsx3("p", { children: "\u642C\u904B\u901A\u9053\u8207\u51FA\u5165\u5EAB\u5C3A\u5BF8\u4F9D\u6240\u9078\u8A2D\u5099\u8A2D\u5B9A\u3002\u8ACB\u4F9D\u8A2D\u5099\u898F\u683C\u8ABF\u6574\u5C3A\u5BF8\uFF1B\u8A2D\u5099\u53E6\u8A2D\u7D50\u69CB\u6A13\u677F\u6642\uFF0C\u4E00\u4F75\u8A08\u5165\u7E3D\u6A13\u5730\u677F\u6AA2\u8A0E\u3002" }),
-        /* @__PURE__ */ jsx3("div", { className: "planning-field-grid", children: [["aisleWidth", "\u5009\u5132\u642C\u904B\u901A\u9053\u5BEC\u5EA6m"], ["transferArea", "\u6BCF\u5C64\u5009\u5132\u51FA\u5165\u5EAB\u5E73\u53F0\u33A1"], ["equipmentArea", "\u6BCF\u5C64\u5009\u5132\u8A2D\u5099\u7DAD\u4FEE\u7A7A\u9593\u33A1"], ["levels", "\u5009\u5132\u5782\u76F4\u5132\u8ECA\u5C64\u6578"], ["equipmentHeight", "\u5009\u5132\u8A2D\u5099\u7E3D\u9AD8\u5EA6m"]].map(([key, label]) => /* @__PURE__ */ jsxs3("label", { children: [
-          /* @__PURE__ */ jsx3(FieldLabel3, { children: label }),
-          /* @__PURE__ */ jsx3(PublicNumber3, { "aria-label": label, type: "number", min: "0", step: "any", value: warehouse[key], onChange: (e) => patch({
-            warehouse: {
-              ...warehouse,
-              [key]: Number(e.target.value)
-            }
-          }) })
-        ] }, key)) })
-      ] }),
-      /* @__PURE__ */ jsxs3("details", { children: [
+      ] }),jsxs3("details", { children: [
         /* @__PURE__ */ jsx3("summary", { children: "\u8A2D\u5099\u3001\u52D5\u7DDA\u8207\u641C\u5C0B\u7BC4\u570D" }),
         /* @__PURE__ */ jsx3("p", { children: "\u5404\u5C64\u6838\u5FC3\u3001\u8A2D\u5099\u623F\u53CA\u8A2D\u5099\u5C3A\u5BF8\u63A1\u898F\u5283\u9810\u7559\u3002\u5347\u964D\u6A5F\u65B9\u6848\u9808\u53E6\u7559\u5730\u9762\u7121\u969C\u7919\u8ECA\u4F4D\u53CA\u9023\u7E8C\u901A\u8DEF\uFF1B\u6A5F\u68B0\u5C64\u9AD8\u4F9D\u6240\u9078\u8A2D\u5099\u9AD8\u5EA6\u3001\u6881\u53CA\u6A5F\u5751\u689D\u4EF6\u6AA2\u67E5\u3002" }),
         /* @__PURE__ */ jsxs3("div", { className: "planning-field-grid", children: [
@@ -3881,8 +3875,22 @@ function BasementDemandPanel({
           q ? quantityLiftSpaces(q).basementCore : 54,
           "\u33A1\uFF1B\u6C7D\u8ECA\u5347\u964D\u6A5F\u53E6\u8A08\u3002\u5730\u9762\u50C5\u4F8B\u5916\u7559\u5FC5\u8981\u7121\u969C\u7919\u8ECA\u4F4D\uFF0C\u4E26\u8207\u7B49\u5019\u5340\u3001\u5165\u53E3\u53CA\u8F49\u5411\u5206\u5225\u9810\u7559\uFF1B\u5BE6\u969B\u4F4D\u7F6E\u9808\u6392\u4F4D\u5716\u8986\u6838\u3002"
         ] })
-      ] }),
-      review && /* @__PURE__ */ jsxs3(Fragment3, { children: [
+      ] })]}),
+    d.mechanicalType === "warehouse" && /* @__PURE__ */ jsxs3("details", { open: true, children: [
+        /* @__PURE__ */ jsx3("summary", { children: "\u5009\u5132\u5F0F\u8A2D\u5099\u5C3A\u5BF8\u5047\u8A2D" }),
+        /* @__PURE__ */ jsx3("p", { children: "\u642C\u904B\u901A\u9053\u8207\u51FA\u5165\u5EAB\u5C3A\u5BF8\u4F9D\u6240\u9078\u8A2D\u5099\u8A2D\u5B9A\u3002\u8ACB\u4F9D\u8A2D\u5099\u898F\u683C\u8ABF\u6574\u5C3A\u5BF8\uFF1B\u8A2D\u5099\u53E6\u8A2D\u7D50\u69CB\u6A13\u677F\u6642\uFF0C\u4E00\u4F75\u8A08\u5165\u7E3D\u6A13\u5730\u677F\u6AA2\u8A0E\u3002" }),
+        /* @__PURE__ */ jsx3("div", { className: "planning-field-grid", children: [["aisleWidth", "\u5009\u5132\u642C\u904B\u901A\u9053\u5BEC\u5EA6m"], ["transferArea", "\u6BCF\u5C64\u5009\u5132\u51FA\u5165\u5EAB\u5E73\u53F0\u33A1"], ["equipmentArea", "\u6BCF\u5C64\u5009\u5132\u8A2D\u5099\u7DAD\u4FEE\u7A7A\u9593\u33A1"], ["levels", "\u5009\u5132\u5782\u76F4\u5132\u8ECA\u5C64\u6578"], ["equipmentHeight", "\u5009\u5132\u8A2D\u5099\u7E3D\u9AD8\u5EA6m"]].map(([key, label]) => /* @__PURE__ */ jsxs3("label", { children: [
+          /* @__PURE__ */ jsx3(FieldLabel3, { children: label }),
+          /* @__PURE__ */ jsx3(PublicNumber3, { "aria-label": label, type: "number", min: "0", step: "any", value: warehouse[key], onChange: (e) => patch({
+            warehouse: {
+              ...warehouse,
+              [key]: Number(e.target.value)
+            }
+          }) })
+        ] }, key)) })
+      ] })
+  ]}),
+    d.enabled && (review && /* @__PURE__ */ jsxs3(Fragment3, { children: [
         /* @__PURE__ */ jsxs3("p", { children: [
           "\u63A1",
           review.mode,
@@ -3911,9 +3919,7 @@ function BasementDemandPanel({
           ] }, t.mode)) })
         ] }) }),
         /* @__PURE__ */ jsx3("p", { children: "\u65B9\u6848\u4F9D\u5761\u9053\u5E73\u9762\u914D\u7F6E\u6AA2\u6838\uFF0C\u63A1\u7B26\u5408\u9700\u6C42\u4E14\u5730\u4E0B\u5C64\u6578\u8F03\u5C11\u8005\uFF1B\u540C\u5C64\u6578\u4F9D\u6A5F\u68B0\u8ECA\u4F4D\u8F03\u5C11\u3001\u5761\u9053\u65B9\u6848\u7684\u9806\u5E8F\u9078\u53D6\u3002\u65E2\u6709\u5EFA\u7167\u7684\u8ECA\u4F4D\u3001\u6A13\u677F\u8207\u5730\u4E0B\u5C64\u6578\u50C5\u4F9B\u5C0D\u7167\u3002" })
-      ] }),
-      !review && limit?.errors.map((e) => /* @__PURE__ */ jsx3("p", { className: "planning-inline-error", children: e.replace("請填寫個案開挖率上限及適用法規。", "\u8ACB\u586B\u5BEB\u500B\u6848\u958B\u6316\u7387\u4E0A\u9650\u53CA\u9069\u7528\u6CD5\u898F\u3002") }, e))
-    ] })
+      ] }))
   ] });
 }
 
@@ -5767,7 +5773,8 @@ function LegalParkingPanel({
   ] });
   return /* @__PURE__ */ jsxs4("div", { className: "legal-parking-panel", children: [
     section === "parking" && /* @__PURE__ */ jsxs4(Fragment4, { children: [
-      /* @__PURE__ */ jsxs4("label", { children: [
+      /* @__PURE__ */ jsxs4("div",{className:"planning-field-grid le-parking-controls",children:[
+   jsxs4("label", { children: [
         /* @__PURE__ */ jsx4(FieldLabel4, { children: "\u5E02\u5834\u6C7D\u8ECA\u9700\u6C42" }),
         /* @__PURE__ */ jsxs4(PublicSelect4, { value: p.demandMode ?? "legal", onChange: (e) => patch({
           demandMode: e.target.value
@@ -5776,13 +5783,7 @@ function LegalParkingPanel({
           /* @__PURE__ */ jsx4("option", { value: "per_unit", children: "\u53E6\u6309\u6BCF\u6236\u9700\u6C42\uFF08\u8207\u6CD5\u5B9A\u53D6\u8F03\u9AD8\uFF09" })
         ] })
       ] }),
-      p.demandMode === "per_unit" && /* @__PURE__ */ jsxs4("label", { children: [
-        /* @__PURE__ */ jsx4(FieldLabel4, { children: "\u5E02\u5834\u6BCF\u6236\u6C7D\u8ECA\u9700\u6C42" }),
-        /* @__PURE__ */ jsx4(PublicNumber4, { type: "number", min: "0", step: "any", value: p.demandPerUnit ?? "1", onChange: (e) => patch({
-          demandPerUnit: e.target.value
-        }) })
-      ] }),
-      /* @__PURE__ */ jsxs4("label", { children: [
+   jsxs4("label", { children: [
         /* @__PURE__ */ jsx4(FieldLabel4, { children: "\u505C\u8ECA\u8A08\u7B97\u65B9\u5F0F" }),
         /* @__PURE__ */ jsxs4(PublicSelect4, { value: p.mode ?? "case", onChange: (e) => edit({
           parkingDesign: {
@@ -5794,6 +5795,13 @@ function LegalParkingPanel({
           /* @__PURE__ */ jsx4("option", { value: "case", children: "\u500B\u6848\u898F\u5247\u8986\u6838" })
         ] })
       ] }),
+   p.demandMode === "per_unit" && /* @__PURE__ */ jsxs4("label", { children: [
+        /* @__PURE__ */ jsx4(FieldLabel4, { children: "\u5E02\u5834\u6BCF\u6236\u6C7D\u8ECA\u9700\u6C42" }),
+        /* @__PURE__ */ jsx4(PublicNumber4, { type: "number", min: "0", step: "any", value: p.demandPerUnit ?? "1", onChange: (e) => patch({
+          demandPerUnit: e.target.value
+        }) })
+      ] })
+  ]}),
       general ? /* @__PURE__ */ jsx4("p", { className: "planning-mode-result", children: taipei ? "\u4F9D\u81FA\u5317\u5E02\u571F\u7BA186-1\u689D\u521D\u4F30\u4F4F\u5B85\u8207\u7B2C\u4E09\u985E\u96F6\u552E\u5E97\u8216\uFF1B\u5BE6\u969B\u7528\u9014\u53CA\u500B\u6848\u90FD\u5E02\u8A08\u756B\u4ECD\u9808\u8986\u6838\u3002" : "\u76EE\u524D\u63A1\u4F4F\u5B85\u505C\u8ECA\u901A\u5247\u53CA\u65B0\u5317\u5E02\u8ECA\u683C\u3001\u8D70\u9053\u6A19\u6E96\u521D\u4F30\uFF1B\u500B\u6848\u5206\u5340\u8CC7\u6599\u53EF\u65BC\u5F8C\u7E8C\u88DC\u5165\u8986\u6838\u3002" }) : /* @__PURE__ */ jsxs4(Fragment4, { children: [
         /* @__PURE__ */ jsx4("h3", { children: "\u500B\u6848\u505C\u8ECA\u4F9D\u64DA" }),
         /* @__PURE__ */ jsxs4("div", { className: "burden-fields", children: [
@@ -5866,7 +5874,7 @@ function LegalParkingPanel({
       ] })
     ] }),
     section === "basement" && input.quantityReserve && /* @__PURE__ */ jsxs4("section", { className: "area-review-panel", "aria-label": "\u8F09\u4EBA\u96FB\u68AF\u914D\u7F6E", children: [
-      /* @__PURE__ */ jsx4("h3", { children: "載人電梯與共用樓梯與電梯空間" }),
+      /* @__PURE__ */ jsx4("h3", { children: "載人電梯與樓梯空間" }),
       /* @__PURE__ */ jsx4("div", { className: "planning-field-grid", children: /* @__PURE__ */ jsxs4("label", { children: [
         /* @__PURE__ */ jsx4(FieldLabel4, { children: "\u8F09\u4EBA\u96FB\u68AF\u5EA7\u6578" }),
         /* @__PURE__ */ jsxs4(PublicSelect4, { "aria-label": "\u8F09\u4EBA\u96FB\u68AF\u5EA7\u6578", value: input.quantityReserve.passengerLiftCount ?? 2, onChange: (e) => edit({
@@ -5892,7 +5900,7 @@ function LegalParkingPanel({
     ] }),
     section === "basement" && /* @__PURE__ */ jsxs4("section", { className: "area-review-panel", "aria-label": "\u7121\u5761\u9053\u7121\u969C\u7919\u6AA2\u8A0E", children: [
       /* @__PURE__ */ jsx4("h3", { children: "\u7121\u5761\u9053\u6642\u7684\u5730\u9762\u7121\u969C\u7919\u8ECA\u4F4D" }),
-      /* @__PURE__ */ jsx4("p", { children: "\u4E00\u822C\u8ECA\u4F4D\u4ECD\u8A2D\u5730\u4E0B\uFF1B\u63A1\u6C7D\u8ECA\u5347\u964D\u6A5F\u6642\uFF0C\u4F9D\u672C\u6B21\u7121\u969C\u7919\u9700\u6C42\u53E6\u7559\u5730\u9762\u5E73\u9762\u8ECA\u4F4D\uFF0C\u5305\u542B\u65BC\u6C7D\u8ECA\u7E3D\u6578\u3002\u7121\u969C\u7919\u901A\u8DEF\u9808\u53E6\u884C\u6AA2\u6838\u3002" }),
+      /* @__PURE__ */ jsx4("p", { children: "採無坡道的汽車升降機方案時，所需無障礙車位設於地面，計入汽車位總數。" }),
       /* @__PURE__ */ jsxs4("div", { className: "planning-field-grid", children: [
         /* @__PURE__ */ jsxs4("label", { children: [
           /* @__PURE__ */ jsx4(FieldLabel4, { children: "\u5730\u9762\u7121\u969C\u7919\u914D\u7F6E\u689D\u4EF6" }),
@@ -5923,7 +5931,7 @@ function LegalParkingPanel({
           /* @__PURE__ */ jsx4("small", { children: "\u7559\u767D\u63A1\u672C\u6B21\u898F\u5283\u5EFA\u7BC9\u9762\u7A4D\uFF0C\u53EF\u4F9D\u914D\u7F6E\u7BC4\u570D\u8ABF\u4F4E\uFF1B\u9000\u7E2E\u53CA\u6CD5\u5B9A\u7A7A\u5730\u4E0D\u5F97\u5360\u7528\u3002" })
         ] })
       ] }),
-      /* @__PURE__ */ jsx4("p", { children: "\u8ECA\u683C\u63093.5\xD76m\uFF0C\u53E6\u8A08\u8ECA\u9053\u8207\u7368\u7ACB\u901A\u8DEF\uFF1B\u7B49\u5019\u5340\u3001\u6A5F\u9053\u3001\u9580\u5EF3\u53CA\u5176\u4ED6\u7528\u9014\u4E0D\u91CD\u758A\u3002\u901A\u8DEF\u9810\u8A2D1.5m\xD74m\u3001\u5176\u4ED6\u7528\u901454\u33A1\u70BA\u898F\u5283\u5047\u8A2D\uFF1B\u6392\u4F4D\u5716\u5C1A\u5F85\u78BA\u8A8D\u3002\u5DF2\u77E5\u7121\u6CD5\u914D\u7F6E\u6642\uFF0C\u4E0D\u56E0\u53E6\u6709\u5BA2\u7528\u96FB\u68AF\u800C\u901A\u904E\u3002" })
+      /* @__PURE__ */ jsx4("p", { children: "車格按 3.5 × 6 m 試算。車道、連續無障礙通路、升降機等候區與機道、門廳等用途分別計入地面面積。請依配置圖核對車格位置及通路連續性。" })
     ] }),
     section === "basement" && !input.basementDemand?.enabled && /* @__PURE__ */ jsxs4("section", { className: "small-site-parking", "aria-label": "\u5C0F\u57FA\u5730\u66FF\u4EE3\u914D\u7F6E", children: [
       /* @__PURE__ */ jsx4("h3", { children: "\u505C\u8ECA\u65B9\u5F0F\u8207\u5206\u5C64\u914D\u7F6E" }),
@@ -7113,9 +7121,9 @@ function DocumentCasePanel({ value: m, onChange, onReport }) {
     /* @__PURE__ */ jsx10("h2", { children: "\u539F\u5BB9\u7A4D\u3001\u734E\u52F5\u3001\u5BB9\u79FB\u8207\u7528\u9014\u914D\u7F6E" }),
     /* @__PURE__ */ jsx10("p", { children: "依建造執照、核定計畫書或建築圖說核對面積、用途及法規條件。" }),
     /* @__PURE__ */ jsxs10("div", { className: "mz-fields", children: [
-      field("\u8986\u6838\u6848\u4EF6\u540D\u7A31", m.name, (v) => onChange({ ...m, name: v })),
       field("計畫書、建造執照或圖說的版本／文號", m.edition, (v) => onChange({ ...m, edition: v })),
       field("計畫書、建造執照或圖說來源", m.source, (v) => onChange({ ...m, source: v })),
+      field("\u8986\u6838\u6848\u4EF6\u540D\u7A31", m.name, (v) => onChange({ ...m, name: v })),
       field("\u8A55\u4F30\u57FA\u6E96\u65E5", m.assessmentDate, (v) => onChange({ ...m, assessmentDate: v }), "date"),
       /* @__PURE__ */ jsxs10("label", { children: [
         "\u898F\u5283\u65B9\u78BA\u8A8D\u7528\u9014",
@@ -7876,36 +7884,7 @@ function MixedZonePanel({ value: m, onChange, onReport }) {
       /* @__PURE__ */ jsx14("h2", { children: "\u91CD\u5EFA\u7BC4\u570D\u3001\u516C\u8A2D\u7528\u5730\u8207\u5206\u5340\u8A55\u4F30" }),
       /* @__PURE__ */ jsx14("p", { children: "\u4E00\u6848\u4FDD\u7559\u5404\u5206\u5340\u8207\u516C\u8A2D\u7528\u5730\u539F\u59CB\u689D\u4EF6\u3002\u5148\u7B97\u571F\u5730\u958B\u767C\u91CF\uFF0C\u518D\u4F9D\u5BE6\u969B\u7528\u9014\u3001\u5E62\u5225\u6AA2\u8A0E\u914D\u7F6E\u8207\u505C\u8ECA\uFF1B\u55AE\u4E00\u5546\u696D\u5206\u5340\u4E5F\u53EF\u5728\u6B64\u7368\u7ACB\u8A55\u4F30\u3002" })
     ] }),
-    /* @__PURE__ */ jsxs14("div", { className: "mz-fields", children: [
-      /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
-        /* @__PURE__ */ jsx14("span", { children: "\u898F\u5283\u65B9\u9810\u5B9A\u8A2D\u8A08\u6A21\u5F0F" }),
-        /* @__PURE__ */ jsxs14("select", { "aria-label": "\u898F\u5283\u65B9\u9810\u5B9A\u8A2D\u8A08\u6A21\u5F0F", value: m.designMode ?? "unknown", onChange: (e) => edit({ designMode: e.target.value }), children: [
-          /* @__PURE__ */ jsx14("option", { value: "unknown", children: "\u5C1A\u672A\u78BA\u8A8D\u898F\u5283\u9700\u6C42" }),
-          /* @__PURE__ */ jsx14("option", { value: "residential", children: "\u7D14\u4F4F\u5B85" }),
-          /* @__PURE__ */ jsx14("option", { value: "mixed", children: "\u4F4F\u5B85\u8207\u5546\u696D\u6DF7\u5408" }),
-          /* @__PURE__ */ jsx14("option", { value: "nonresidential", children: "\u7D14\u975E\u4F4F\u5B85\uFF08\u9010\u9805\u7528\u9014\u6AA2\u6838\uFF09" })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsx14(Text, { label: "\u5206\u5340\u8A55\u4F30\u540D\u7A31", value: m.name, onChange: (name) => edit({ name }) }),
-      /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
-        /* @__PURE__ */ jsx14("span", { children: "\u8A55\u4F30\u57FA\u6E96\u65E5" }),
-        /* @__PURE__ */ jsx14("input", { "aria-label": "\u8A55\u4F30\u57FA\u6E96\u65E5", type: "date", value: m.assessmentDate, onChange: (e) => edit({ assessmentDate: e.target.value }) })
-      ] }),
-      /* @__PURE__ */ jsx14(Text, { label: "\u66F4\u65B0\uFF0F\u91CD\u5EFA\u7BC4\u570D\u7533\u5831\u9762\u7A4D\uFF08\u33A1\uFF09", numeric: true, value: m.declaredArea, onChange: (declaredArea) => edit({ declaredArea }) })
-    ] }),
-    /* @__PURE__ */ jsx14(EvidenceFields, { label: "\u7BC4\u570D\u76E4\u67E5", value: m.boundary, onChange: (boundary) => edit({ boundary }) }),
-    /* @__PURE__ */ jsxs14("div", { className: "mz-joint", children: [
-      /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
-        /* @__PURE__ */ jsx14("span", { children: "\u540C\u4E00\u5EFA\u7BC9\u57FA\u5730\u5171\u540C\u958B\u767C" }),
-        /* @__PURE__ */ jsxs14("select", { "aria-label": "\u540C\u4E00\u5EFA\u7BC9\u57FA\u5730\u5171\u540C\u958B\u767C", value: m.joint, onChange: (e) => edit({ joint: e.target.value }), children: [
-          /* @__PURE__ */ jsx14("option", { value: "unknown", children: "\u5F85\u78BA\u8A8D" }),
-          /* @__PURE__ */ jsx14("option", { value: "allowed", children: "\u689D\u4EF6\u5141\u8A31\uFF0C\u5217\u660E\u4F9D\u64DA" }),
-          /* @__PURE__ */ jsx14("option", { value: "forbidden", children: "\u5DF2\u78BA\u8A8D\u4E0D\u7B26" })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsx14(EvidenceFields, { label: "\u5171\u540C\u958B\u767C", value: m.jointEvidence, onChange: (jointEvidence) => edit({ jointEvidence }) })
-    ] }),
-    /* @__PURE__ */ jsxs14("div", { className: "mz-section-title", children: [
+    jsxs14("div", { className: "mz-section-title", children: [
       /* @__PURE__ */ jsxs14("div", { children: [
         /* @__PURE__ */ jsx14("h3", { children: "\u571F\u5730\u5206\u5340\u7BC4\u570D" }),
         /* @__PURE__ */ jsx14("p", { children: "\u540C\u4E00\u5730\u865F\u8DE8\u5206\u5340\u9808\u62C6\u5217\u9762\u7A4D\uFF1B\u672A\u7D0D\u5165\u90E8\u5206\u53E6\u5217\u6392\u9664\u7BC4\u570D\u3002\u5DF2\u77E5\u6C92\u6709\u734E\u52F5\u6216\u56DE\u994B\u624D\u9078\u7121\uFF0F\u586B0\u3002" })
@@ -8013,6 +7992,35 @@ function MixedZonePanel({ value: m, onChange, onReport }) {
         m.allocations.some((a) => a.zoneId === z.id) ? "\uFF08\u5148\u79FB\u9664\u5F15\u7528\u914D\u7F6E\uFF09" : ""
       ] })
     ] }, z.id)),
+    jsxs14("div", { className: "mz-fields", children: [
+      /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+        /* @__PURE__ */ jsx14("span", { children: "\u898F\u5283\u65B9\u9810\u5B9A\u8A2D\u8A08\u6A21\u5F0F" }),
+        /* @__PURE__ */ jsxs14("select", { "aria-label": "\u898F\u5283\u65B9\u9810\u5B9A\u8A2D\u8A08\u6A21\u5F0F", value: m.designMode ?? "unknown", onChange: (e) => edit({ designMode: e.target.value }), children: [
+          /* @__PURE__ */ jsx14("option", { value: "unknown", children: "\u5C1A\u672A\u78BA\u8A8D\u898F\u5283\u9700\u6C42" }),
+          /* @__PURE__ */ jsx14("option", { value: "residential", children: "\u7D14\u4F4F\u5B85" }),
+          /* @__PURE__ */ jsx14("option", { value: "mixed", children: "\u4F4F\u5B85\u8207\u5546\u696D\u6DF7\u5408" }),
+          /* @__PURE__ */ jsx14("option", { value: "nonresidential", children: "\u7D14\u975E\u4F4F\u5B85\uFF08\u9010\u9805\u7528\u9014\u6AA2\u6838\uFF09" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx14(Text, { label: "\u5206\u5340\u8A55\u4F30\u540D\u7A31", value: m.name, onChange: (name) => edit({ name }) }),
+      /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+        /* @__PURE__ */ jsx14("span", { children: "\u8A55\u4F30\u57FA\u6E96\u65E5" }),
+        /* @__PURE__ */ jsx14("input", { "aria-label": "\u8A55\u4F30\u57FA\u6E96\u65E5", type: "date", value: m.assessmentDate, onChange: (e) => edit({ assessmentDate: e.target.value }) })
+      ] }),
+      /* @__PURE__ */ jsx14(Text, { label: "\u66F4\u65B0\uFF0F\u91CD\u5EFA\u7BC4\u570D\u7533\u5831\u9762\u7A4D\uFF08\u33A1\uFF09", numeric: true, value: m.declaredArea, onChange: (declaredArea) => edit({ declaredArea }) })
+    ] }),
+    jsx14(EvidenceFields, { label: "\u7BC4\u570D\u76E4\u67E5", value: m.boundary, onChange: (boundary) => edit({ boundary }) }),
+    jsxs14("div", { className: "mz-joint", children: [
+      /* @__PURE__ */ jsxs14("label", { className: "mz-field", children: [
+        /* @__PURE__ */ jsx14("span", { children: "\u540C\u4E00\u5EFA\u7BC9\u57FA\u5730\u5171\u540C\u958B\u767C" }),
+        /* @__PURE__ */ jsxs14("select", { "aria-label": "\u540C\u4E00\u5EFA\u7BC9\u57FA\u5730\u5171\u540C\u958B\u767C", value: m.joint, onChange: (e) => edit({ joint: e.target.value }), children: [
+          /* @__PURE__ */ jsx14("option", { value: "unknown", children: "\u5F85\u78BA\u8A8D" }),
+          /* @__PURE__ */ jsx14("option", { value: "allowed", children: "\u689D\u4EF6\u5141\u8A31\uFF0C\u5217\u660E\u4F9D\u64DA" }),
+          /* @__PURE__ */ jsx14("option", { value: "forbidden", children: "\u5DF2\u78BA\u8A8D\u4E0D\u7B26" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx14(EvidenceFields, { label: "\u5171\u540C\u958B\u767C", value: m.jointEvidence, onChange: (jointEvidence) => edit({ jointEvidence }) })
+    ] }),
     /* @__PURE__ */ jsxs14("fieldset", { className: "mz-zone", children: [
       /* @__PURE__ */ jsx14("legend", { children: "\u8DE8\u5206\u5340\u914D\u7F6E\u9069\u7528\u898F\u5247" }),
       /* @__PURE__ */ jsx14("p", { children: "\u7B2C29\u689D\u5141\u8A31\u7A7A\u5730\u6574\u9AD4\u914D\u7F6E\uFF1B\u7B2C165\u689D\u5728\u9069\u7528\u7BC4\u570D\u5167\u4E5F\u5141\u8A31\u6A13\u5730\u677F\u6574\u9AD4\u914D\u7F6E\u3002\u984D\u5EA6\u4ECD\u4F9D\u4F86\u6E90\u5206\u5340\u8A08\u7B97\uFF1B\u7528\u9014\u53CA\u5730\u65B9\u571F\u7BA1\u4E0D\u56E0\u6B64\u653E\u5BEC\u3002\u8CA0\u7684\u5206\u5340\u5DEE\u984D\u4E0D\u7B49\u65BC\u9055\u6CD5\uFF0C\u61C9\u770B\u914D\u7F6E\u898F\u5247\u8207\u5168\u6848\u7E3D\u91CF\u3002" }),
@@ -8680,7 +8688,7 @@ var quantityLabels = { site: "\u6263\u9664\u5F8C\u57FA\u5730\u9762\u7A4D", base:
 
 // ../../../2026-10-24/sanze-release-app/src/components/industrial/IndustrialPanel.tsx
 import { Fragment as Fragment10, jsx as jsx16, jsxs as jsxs16 } from "/src/land-evaluation/public-panel-runtime.mjs";
-function IndustrialPanel({ value: m, onChange, onReport }) {
+function IndustrialPanel({ value: m, onChange, onReport , renderSources }) {
   const [snapshot, setSnapshot] = useState5(null), signature = JSON.stringify(m), r = snapshot?.signature === signature ? snapshot.result : null;
   const edit = (p) => onChange({ ...m, ...p });
   const field = (label, value2, change, type = "text") => /* @__PURE__ */ jsxs16("label", { className: "mz-field", children: [
@@ -8702,21 +8710,14 @@ function IndustrialPanel({ value: m, onChange, onReport }) {
   ] });
   const fmt = (n) => n === null ? "\u8CC7\u6599\u672A\u9F4A" : n.toLocaleString("zh-TW", { maximumFractionDigits: 2 }) + " \u33A1";
   return /* @__PURE__ */ jsxs16("section", { className: "mixed-zone", "aria-label": "\u5DE5\u696D\u571F\u5730\u8207\u5EE0\u623F\u958B\u767C", children: [
-    /* @__PURE__ */ jsx16("h2", { children: "\u5DE5\u696D\u571F\u5730\u8207\u5EE0\u623F\u958B\u767C" }),
-    /* @__PURE__ */ jsx16("p", { children: "依土地身分與預定用途核對開發途徑，再計算原容積、獎勵、容移及逐層配置。" }),
-    /* @__PURE__ */ jsxs16("div", { className: "mz-fields", children: [
-      select("\u5DE5\u696D\u8A55\u4F30\u6A21\u5F0F", m.mode, { planning: "\u898F\u5283\u8A66\u7B97", document: "\u4F9D\u6587\u4EF6\u8986\u6838" }, (mode) => edit({ mode })),
-      field("\u5DE5\u696D\u6848\u4EF6\u540D\u7A31", m.name, (name) => edit({ name })),
-      field("\u540C\u4E00\u4EFD\u8CC7\u6599\u7248\u672C\uFF0F\u6587\u865F", m.edition, (edition) => edit({ edition })),
-      field("\u5DE5\u696D\u8A55\u4F30\u65E5", m.date, (date) => edit({ date }), "date"),
-      select("\u5DE5\u696D\u57FA\u5730\u57CE\u5E02", m.city, { unknown: "\u5C1A\u672A\u9078\u5B9A", taipei: "\u81FA\u5317\u5E02", ntpc: "\u65B0\u5317\u5E02" }, (city) => edit({ city })),
-      select("\u571F\u5730\u5236\u5EA6", m.regime, { unknown: "\u5C1A\u672A\u78BA\u8A8D", urban: "\u90FD\u5E02\u8A08\u756B\u5DE5\u696D\u5340", nonurban: "\u975E\u90FD\u5E02\u571F\u5730\u5206\u5340\u8207\u7DE8\u5B9A", park: "\u5712\u5340\uFF0F\u7279\u5225\u8A08\u756B" }, (regime) => edit({ regime }))
-    ] }),
-    /* @__PURE__ */ jsx16("p", { children: m.mode === "planning" ? "\u4F9D\u898F\u5283\u689D\u4EF6\u6BD4\u8F03\u958B\u767C\u65B9\u6848\u3002" : "採同一版本的計畫書、建造執照或建築圖說。" }),
-    /* @__PURE__ */ jsxs16("details", { open: true, children: [
-      /* @__PURE__ */ jsx16("summary", { children: "土地分項與採計範圍" }),
-      /* @__PURE__ */ jsx16("p", { children: "\u7E3D\u9762\u7A4D\u8207\u6392\u9664\u9762\u7A4D\u5206\u586B\u3002\u66F4\u65B0\u7BC4\u570D\u3001\u5EFA\u7BC9\u57FA\u5730\u3001\u5BB9\u7A4D\u63A1\u8A08\u7BC4\u570D\u4E0D\u80FD\u6DF7\u70BA\u4E00\u8AC7\u3002\u516C\u8A2D\u3001\u9053\u8DEF\u3001\u5EE2\u5DF7\u4F9D\u8B8A\u66F4\u53CA\u6838\u5B9A\u6587\u4EF6\u6C7A\u5B9A\u63A1\u8A08\uFF0C\u4E0D\u4E00\u5F8B\u7D0D\u5165\u6216\u522A\u9664\u3002" }),
-      m.parcels.map((p, i) => {
+    jsx16("h1", { children: "\u5DE5\u696D\u571F\u5730\u8207\u5EE0\u623F\u958B\u767C" }),
+    jsx16("p", { children: "依土地身分與預定用途核對開發途徑，再計算原容積、獎勵、容移及逐層配置。" }),
+    jsxs16("section", { className:"industrial-first-step", children:[
+  jsx16("h3",{children:"工業基地與土地分項"}),
+  jsxs16("div",{className:"mz-fields industrial-location",children:[select("\u5DE5\u696D\u57FA\u5730\u57CE\u5E02", m.city, { unknown: "\u5C1A\u672A\u9078\u5B9A", taipei: "\u81FA\u5317\u5E02", ntpc: "\u65B0\u5317\u5E02" }, (city) => edit({ city })),select("\u571F\u5730\u5236\u5EA6", m.regime, { unknown: "\u5C1A\u672A\u78BA\u8A8D", urban: "\u90FD\u5E02\u8A08\u756B\u5DE5\u696D\u5340", nonurban: "\u975E\u90FD\u5E02\u571F\u5730\u5206\u5340\u8207\u7DE8\u5B9A", park: "\u5712\u5340\uFF0F\u7279\u5225\u8A08\u756B" }, (regime) => edit({ regime }))]}),
+  jsxs16("div",{className:"lw-first-actions",children:[jsx16("button", { onClick: () => edit({ parcels: [...m.parcels, newParcel()] }), children: "\u65B0\u589E\u5DE5\u696D\u571F\u5730\u5206\u9805" }),renderSources?.(m.city)]}),
+  jsx16("p",{children:"依土地登記謄本填地號與登記面積，並核對都市計畫書或非都市土地使用地編定。總面積與不採計面積分填。"}),
+  m.parcels.map((p, i) => {
         const change = (v) => edit({ parcels: m.parcels.map((x) => x.id === p.id ? { ...p, ...v } : x) });
         return /* @__PURE__ */ jsxs16("fieldset", { children: [
           /* @__PURE__ */ jsxs16("legend", { children: [
@@ -8740,9 +8741,10 @@ function IndustrialPanel({ value: m, onChange, onReport }) {
           ] })
         ] }, p.id);
       }),
-      /* @__PURE__ */ jsx16("button", { onClick: () => edit({ parcels: [...m.parcels, newParcel()] }), children: "\u65B0\u589E\u5DE5\u696D\u571F\u5730\u5206\u9805" })
-    ] }),
-    /* @__PURE__ */ jsxs16("details", { open: true, children: [
+  m.parcels.length > 0 && jsx16("p", { children: "更新範圍、建築基地與容積採計範圍分列。公共設施用地、道路及廢巷依個案變更公告或核定計畫書填寫採計範圍。" })
+ ]}),
+    jsxs16("section",{className:"le-industrial-group",children:[jsx16("h3",{children:"開發途徑與樓層配置"}),jsxs16("div",{className:"le-settings-grid",children:[
+    jsxs16("details", { open: true, children: [
       /* @__PURE__ */ jsx16("summary", { children: "開發途徑及併用條件" }),
       /* @__PURE__ */ jsxs16("div", { className: "mz-fields", children: [
         select("\u91CD\u5EFA\u9014\u5F91", m.route, { unknown: "\u5C1A\u672A\u78BA\u8A8D", ordinary: "\u4E00\u822C\u65B0\u6539\u5EFA", renewal: "\u90FD\u5E02\u66F4\u65B0" }, (route) => edit({ route })),
@@ -8758,7 +8760,7 @@ function IndustrialPanel({ value: m, onChange, onReport }) {
       ] }),
       /* @__PURE__ */ jsx16("p", { children: "\u65B0\u5317\u7ACB\u9AD4\u5316\u53EF\u4F75\u884C\u90FD\u66F4\uFF1B\u9808\u5148\u7533\u8ACB\u5176\u4ED6\u6A5F\u95DC\u734E\u52F5\u4E26\u6263\u9664\u91CD\u8907\u90E8\u5206\u3002\u7ACB\u9AD4\u5316\uFF0B\u5BB9\u79FB\u53E6\u6AA2\u67E550%\u4E0A\u9650\u53CA\u7B49\u984D\u56DE\u994B\u3002\u81FA\u5317\u5BB9\u79FB\u768450%\u5408\u8A08\u4E0A\u9650\u4E0D\u542B\u90FD\u66F4\u734E\u52F5\uFF0C\u4E0D\u80FD\u5C07\u4E0D\u540C\u898F\u5B9A\u7684\u4E0A\u9650\u76F4\u63A5\u76F8\u52A0\u3002" })
     ] }),
-    /* @__PURE__ */ jsxs16("details", { open: true, children: [
+    jsxs16("details", { open: true, children: [
       /* @__PURE__ */ jsx16("summary", { children: "獎勵、容移與重複扣除" }),
       /* @__PURE__ */ jsxs16("div", { className: "mz-fields", children: [
         select("工業獎勵採計方式", m.awardMode, { unknown: "\u5C1A\u672A\u78BA\u8A8D", none: "\u660E\u78BA\u4E0D\u7533\u8ACB\u734E\u52F5", items: "\u9010\u9805\u586B\u5BEB" }, (awardMode) => edit({ awardMode })),
@@ -8792,7 +8794,12 @@ function IndustrialPanel({ value: m, onChange, onReport }) {
         field("\u5408\u4F75\u5BE9\u67E5\u5168\u6848\u4E0A\u9650\u33A1\uFF08\u4F75\u884C\u90FD\u66F4\u7ACB\u9AD4\u5316\u6216\u5176\u4ED6\u734E\u52F5\u6642\u5FC5\u586B\uFF09", m.combinedCap, (combinedCap) => edit({ combinedCap }), "number")
       ] })
     ] }),
-    /* @__PURE__ */ jsxs16("details", { open: true, children: [
+    jsxs16("details", { children: [
+      /* @__PURE__ */ jsx16("summary", { children: "立體化能源與容移基地條件" }),
+      /* @__PURE__ */ jsx16("p", { children: "\u4F9D\u6240\u9078\u9014\u5F91\u586B\u5BEB\u3002\u662F\uFF0F\u5426\u8ACB\u660E\u586B\uFF1B\u4E0D\u9069\u7528\u7684\u6578\u91CF\u7531\u4F7F\u7528\u8005\u78BA\u8A8D\u5F8C\u586B0\u300240%\u5BB9\u79FB\u9808\u9644\u6307\u5B9A\u5730\u5340\u7BC4\u570D\u4F9D\u64DA\uFF1B\u8DE8\u7BC4\u570D\u4E0D\u80FD\u5168\u6848\u5957\u8F03\u9AD8\u6BD4\u4F8B\u3002" }),
+      /* @__PURE__ */ jsx16("div", { className: "mz-fields", children: Object.entries(conditionFields).map(([k, label]) => /* @__PURE__ */ jsx16("div", { children: field(label, m.conditions[k], (v) => edit({ conditions: { ...m.conditions, [k]: v } })) }, k)) })
+    ] }),
+    jsxs16("details", { open: true, children: [
       /* @__PURE__ */ jsx16("summary", { children: "逐棟逐層用途配置" }),
       /* @__PURE__ */ jsx16("p", { children: "每列只填同一用途。附屬辦公、一般辦公、員工宿舍、一般住宅的規則不同；各列來源須說明用途許可及工業使用總量採計。立體化增量填本列各層合計；層數與每層計容面積分欄填寫。" }),
       m.floors.map((f8, i) => {
@@ -8820,42 +8827,42 @@ function IndustrialPanel({ value: m, onChange, onReport }) {
       }),
       /* @__PURE__ */ jsx16("button", { onClick: () => edit({ floors: [...m.floors, newFloor()] }), children: "\u65B0\u589E\u5DE5\u696D\u7528\u9014\u914D\u7F6E" }),
       m.mode === "document" && field("\u540C\u7248\u672C\u6587\u4EF6\u7E3D\u8A08\u33A1", m.declared, (declared) => edit({ declared }), "number")
-    ] }),
-    /* @__PURE__ */ jsxs16("details", { children: [
-      /* @__PURE__ */ jsx16("summary", { children: "立體化能源與容移基地條件" }),
-      /* @__PURE__ */ jsx16("p", { children: "\u4F9D\u6240\u9078\u9014\u5F91\u586B\u5BEB\u3002\u662F\uFF0F\u5426\u8ACB\u660E\u586B\uFF1B\u4E0D\u9069\u7528\u7684\u6578\u91CF\u7531\u4F7F\u7528\u8005\u78BA\u8A8D\u5F8C\u586B0\u300240%\u5BB9\u79FB\u9808\u9644\u6307\u5B9A\u5730\u5340\u7BC4\u570D\u4F9D\u64DA\uFF1B\u8DE8\u7BC4\u570D\u4E0D\u80FD\u5168\u6848\u5957\u8F03\u9AD8\u6BD4\u4F8B\u3002" }),
-      /* @__PURE__ */ jsx16("div", { className: "mz-fields", children: Object.entries(conditionFields).map(([k, label]) => /* @__PURE__ */ jsx16("div", { children: field(label, m.conditions[k], (v) => edit({ conditions: { ...m.conditions, [k]: v } })) }, k)) })
-    ] }),
-    /* @__PURE__ */ jsxs16("details", { children: [
+    ] })
+    ]})]}),
+    jsxs16("section",{className:"le-industrial-group",children:[jsx16("h3",{children:"案件資料與法規依據"}),jsxs16("div",{className:"le-settings-grid",children:[
+    jsxs16("details",{children:[
+  jsx16("summary",{children:"案件名稱、評估日期與採用版本"}),
+  jsxs16("div",{className:"mz-fields",children:[select("\u5DE5\u696D\u8A55\u4F30\u6A21\u5F0F", m.mode, { planning: "\u898F\u5283\u8A66\u7B97", document: "\u4F9D\u6587\u4EF6\u8986\u6838" }, (mode) => edit({ mode })),field("\u5DE5\u696D\u6848\u4EF6\u540D\u7A31", m.name, (name) => edit({ name })),field("\u5DE5\u696D\u8A55\u4F30\u65E5", m.date, (date) => edit({ date }), "date"),field(m.mode === "document" ? "計畫書、建造執照或圖說的版本／文號" : "規劃資料版本", m.edition, (edition) => edit({ edition }))]}),
+  jsx16("p", { children: m.mode === "planning" ? "\u4F9D\u898F\u5283\u689D\u4EF6\u6BD4\u8F03\u958B\u767C\u65B9\u6848\u3002" : "採同一版本的計畫書、建造執照或建築圖說。" })
+ ]}),
+    jsxs16("details", { children: [
       /* @__PURE__ */ jsx16("summary", { children: "法規條件與採計文件" }),
       Object.entries(checks).map(([k, label]) => /* @__PURE__ */ jsxs16("fieldset", { children: [
         /* @__PURE__ */ jsx16("legend", { children: label }),
         ev2(m.reviews[k], (e) => edit({ reviews: { ...m.reviews, [k]: e } }))
       ] }, k))
     ] }),
-    /* @__PURE__ */ jsxs16("details", { children: [
+    jsxs16("details", { children: [
       /* @__PURE__ */ jsx16("summary", { children: "\u5DF2\u6838\u5C0D\u7684\u6CD5\u898F\u53CA\u7248\u672C" }),
       /* @__PURE__ */ jsx16("p", { children: "\u6838\u5C0D\u65E5\u671F\uFF1A2026-10-24\u3002\u81FA\u5317\u7B2C\u4E8C\u7A2E\uFF0F\u7B2C\u4E09\u7A2E\u5DE5\u696D\u5340\u4E00\u822C\u5EFA\u853D\u8207\u5BB9\u7A4D\u70BA45%\uFF0F200%\u300155%\uFF0F300%\uFF1B\u653E\u5BEC\u5EFA\u853D\u8207\u500B\u5225\u8A08\u756B\u9808\u53E6\u6838\u5C0D\uFF0C\u65B0\u5317\u4F9D\u65BD\u884C\u7D30\u5247\u53CA\u500B\u5225\u8A08\u756B\u3002\u81FA\u5317\u672A\u4EE5\u65B0\u5317\u7ACB\u9AD4\u5316\u65B9\u6848\u4F5C\u70BA\u901A\u7528\u4F9D\u64DA\u3002" }),
       sources.map(([n, u]) => /* @__PURE__ */ jsx16("p", { children: /* @__PURE__ */ jsx16("a", { href: u, target: "_blank", rel: "noreferrer", children: n }) }, u))
-    ] }),
-    /* @__PURE__ */ jsx16(DevelopmentPanel, { model: m, onChange }),
-    /* @__PURE__ */ jsxs16("div", { className: "mz-actions", children: [
+    ] })
+    ]})]}),
+    jsxs16("section",{className:"industrial-development-task",children:[
+  jsx16("p",{children:"逐棟逐層用途配置填樓板面積。下方另填出租、自用、捐贈及共用面積的分配。"}),
+  jsx16(DevelopmentPanel, { model: m, onChange })
+ ]}),
+    jsxs16("div", { className: "mz-actions", children: [
       /* @__PURE__ */ jsx16("button", { className: "mz-primary", onClick: () => setSnapshot({ signature, result: calculateIndustrial(m) }), children: "\u8A08\u7B97\u5DE5\u696D\u8A55\u4F30\u7D50\u679C" }),
       snapshot && !r && /* @__PURE__ */ jsx16("p", { role: "status", children: "\u8ACB\u91CD\u65B0\u8A08\u7B97\u3002" })
     ] }),
     r && /* @__PURE__ */ jsxs16("section", { className: "mz-results", "aria-label": "\u5DE5\u696D\u8A55\u4F30\u7D50\u679C", children: [
-      /* @__PURE__ */ jsx16("h3", { children: r.status }),
-      /* @__PURE__ */ jsx16("p", { children: /* @__PURE__ */ jsx16("strong", { children: m.name || "\u672A\u547D\u540D\u5DE5\u696D\u8A55\u4F30" }) }),
-      /* @__PURE__ */ jsxs16("p", { children: [
-        m.mode === "planning" ? "\u898F\u5283\u8A66\u7B97" : "\u4F9D\u6587\u4EF6\u8986\u6838",
-        " \xB7 ",
-        m.edition || "\u7248\u672C\u672A\u586B"
-      ] }),
-      /* @__PURE__ */ jsx16("dl", { className: "mz-totals", children: Object.entries(r.quantities).map(([k, v]) => /* @__PURE__ */ jsxs16("div", { children: [
-        /* @__PURE__ */ jsx16("dt", { children: quantityLabels[k] }),
-        /* @__PURE__ */ jsx16("dd", { children: fmt(v) })
-      ] }, k)) }),
-      r.development && /* @__PURE__ */ jsxs16("section", { children: [
+    jsx16("h3", { children: r.status }),
+    (r.errors.length>0||r.missing.length>0) && jsxs16("div",{className:"industrial-input-gaps",children:[
+   jsx16("h4",{children:"基地、開發途徑與採計依據"}),
+   jsx16("ul", { children: [...r.errors, ...r.missing].map((x, i) => /* @__PURE__ */ jsx16("li", { children: publicText(x) }, i)) })
+  ]}),
+    r.development && /* @__PURE__ */ jsxs16("section", { className:"industrial-development-status",children: [
         /* @__PURE__ */ jsxs16("h4", { children: [
           "\u5DE5\u696D\u5C08\u5C6C\u914D\u7F6E\uFF1A",
           r.development.ready ? "\u5206\u9805\u6578\u91CF\u6AA2\u67E5\u901A\u904E" : "\u5C1A\u672A\u5B8C\u6210"
@@ -8878,7 +8885,17 @@ function IndustrialPanel({ value: m, onChange, onReport }) {
         ] }),
         /* @__PURE__ */ jsx16("ul", { children: r.development.issues.map((x, i) => /* @__PURE__ */ jsx16("li", { children: publicText(x) }, i)) })
       ] }),
-      r.items.map((a, i) => /* @__PURE__ */ jsxs16("p", { children: [
+    jsx16("p", { children: /* @__PURE__ */ jsx16("strong", { children: m.name || "\u672A\u547D\u540D\u5DE5\u696D\u8A55\u4F30" }) }),
+    jsxs16("p", { children: [
+        m.mode === "planning" ? "\u898F\u5283\u8A66\u7B97" : "\u4F9D\u6587\u4EF6\u8986\u6838",
+        " \xB7 ",
+        m.edition || "\u7248\u672C\u672A\u586B"
+      ] }),
+    Object.values(r.quantities).some(Number.isFinite) && jsx16("dl", { className: "mz-totals", children: Object.entries(r.quantities).filter(([,value])=>Number.isFinite(value)).map(([k, v]) => /* @__PURE__ */ jsxs16("div", { children: [
+        /* @__PURE__ */ jsx16("dt", { children: quantityLabels[k] }),
+        /* @__PURE__ */ jsx16("dd", { children: fmt(v) })
+      ] }, k)) }),
+    r.items.map((a, i) => /* @__PURE__ */ jsxs16("p", { children: [
         a.name,
         "\uFF1A",
         fmt(a.gross),
@@ -8887,7 +8904,7 @@ function IndustrialPanel({ value: m, onChange, onReport }) {
         " \uFF1D ",
         fmt(a.net)
       ] }, i)),
-      r.limits.map((l, i) => /* @__PURE__ */ jsxs16("p", { children: [
+    r.limits.map((l, i) => /* @__PURE__ */ jsxs16("p", { children: [
         l.label,
         "\uFF1A\u672C\u6B21 ",
         fmt(l.used),
@@ -8896,10 +8913,9 @@ function IndustrialPanel({ value: m, onChange, onReport }) {
         " \xB7 ",
         l.pass ? "\u6578\u91CF\u672A\u8D85\u904E" : "\u8D85\u9650"
       ] }, i)),
-      /* @__PURE__ */ jsx16("ul", { children: [...r.errors, ...r.missing].map((x, i) => /* @__PURE__ */ jsx16("li", { children: publicText(x) }, i)) }),
-      r.notes.map((x, i) => /* @__PURE__ */ jsx16("p", { children: publicText(x) }, i)),
-      onReport && /* @__PURE__ */ jsx16("button", { onClick: () => onReport(m, r), children: "預覽工業評估報告" })
-    ] })
+    r.notes.map((x, i) => /* @__PURE__ */ jsx16("p", { children: publicText(x) }, i)),
+    onReport && /* @__PURE__ */ jsx16("button", { onClick: () => onReport(m, r), children: "預覽工業評估報告" })
+   ] })
   ] });
 }
 export {

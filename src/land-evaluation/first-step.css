@@ -1,0 +1,861 @@
+.dev-tool-shell .land-evaluation .le-first-heading {
+  display: block;
+  margin-bottom: 18px;
+}
+
+.dev-tool-shell .land-evaluation .le-first-base {
+  padding: clamp(18px, 2vw, 26px);
+  border-radius: 16px;
+  max-inline-size: 790px;
+  margin-bottom: 16px;
+}
+
+.dev-tool-shell > .le-entry-section h1 {
+  scroll-margin-top: calc(var(--studio-header-height, 94px) + 24px);
+}
+
+.le-first-base-top,
+.lw-first-step .lw-section-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px 20px;
+}
+
+.dev-tool-shell .le-first-base .le-first-base-top > .official-query,
+.dev-tool-shell .lw-first-actions > .official-query {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.dev-tool-shell .land-evaluation .le-first-base .le-section-heading {
+  margin-bottom: 12px;
+}
+
+.dev-tool-shell .land-evaluation .le-first-base .le-base-fields {
+  margin-bottom: 0;
+}
+
+.dev-tool-shell .land-evaluation .le-alternate-tools {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+
+.dev-tool-shell .land-evaluation .le-alternate-tools > :is(details, .le-workspace-action) {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.lw-first-actions,
+.ra-plan-action {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 8px 14px;
+}
+
+.lw-start-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 12px;
+  font-size: 13px;
+}
+
+.dev-tool-shell .le-land-workspace .lw-first-step,
+.dev-tool-shell .industrial-first-step {
+  border-block: 1px solid #d5d2c9;
+  padding-block: 16px 20px;
+}
+
+.dev-tool-shell .lw-first-step .lw-start-fields {
+  max-width: 620px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.dev-tool-shell .industrial-first-step {
+  grid-column: 1 / -1;
+}
+
+.dev-tool-shell .industrial-first-step .industrial-location,
+.dev-tool-shell .ra-workspace .ra-plan-selection {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.dev-tool-shell .mixed-zone .industrial-first-step .lw-first-actions > button {
+  min-height: 42px;
+  background: #263d4b;
+  border-color: #263d4b;
+  color: #fffdf8;
+}
+
+.dev-tool-shell .ra-workspace .ra-plan-search {
+  grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+}
+
+.ra-plan-action {
+  margin-block: 12px;
+}
+
+.ra-plan-action .le-field {
+  width: min(100%, 210px);
+}
+
+.dev-tool-shell .ra-workspace .ra-search-empty {
+  margin-block: 12px;
+  padding: 10px 0;
+  border-block: 1px solid #d5d2c9;
+}
+
+@media (max-width: 1100px) {
+  .dev-tool-shell .ra-workspace .ra-plan-search {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.dev-tool-shell .le-land-workspace .lw-first-step {
+  border-top: 0;
+  padding-top: 4px;
+}
+
+.dev-tool-shell .industrial-first-step .industrial-location {
+  max-width: 700px;
+}
+
+.dev-tool-shell .ra-workspace .ra-manual-plan {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.dev-tool-shell .ra-manual-plan > .le-disclosure-window {
+  max-width: 620px;
+}
+
+.ra-manual-plan .le-disclosure-window-content > .le-primary {
+  margin-top: 14px;
+}
+
+/* Keep controls sized for their content and let related actions share a row. */
+@media screen and (min-width: 800px) {
+  .dev-tool-shell :is(.land-evaluation, .mixed-zone) details.le-disclosure-modal {
+    inline-size: fit-content;
+    max-inline-size: 100%;
+  }
+
+  .dev-tool-shell :is(.land-evaluation, .mixed-zone) details:not(.mb-help) > summary,
+  .dev-tool-shell .land-evaluation .le-workspace-tools > details.le-disclosure-modal > summary {
+    min-height: 42px;
+    height: auto;
+    padding: 7px 12px;
+    font-size: 13px;
+    line-height: 1.55;
+    gap: 8px;
+  }
+
+  .dev-tool-shell :is(.land-evaluation, .mixed-zone) details:not(.mb-help) > summary::after {
+    padding: 0 3px;
+  }
+
+  .dev-tool-shell .land-evaluation .le-base-actions,
+  .dev-tool-shell .le-settings-grid,
+  .dev-tool-shell .le-disclosure-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    align-items: stretch;
+    gap: 8px 12px;
+    max-inline-size: 820px;
+  }
+
+  .dev-tool-shell .land-evaluation .le-base-actions {
+    max-inline-size: 540px;
+    margin-block: 12px 18px;
+  }
+
+  .dev-tool-shell .land-evaluation .le-base-actions:not(:has(> .studio-roads)) {
+    display: flex;
+    max-inline-size: fit-content;
+  }
+
+  .dev-tool-shell :is(.le-base-actions, .le-settings-grid, .le-disclosure-grid) > details.le-disclosure-modal {
+    inline-size: 100%;
+    box-sizing: border-box;
+    margin: 0;
+  }
+
+  .dev-tool-shell :is(.le-base-actions, .le-settings-grid, .le-disclosure-grid) > details.le-disclosure-modal > summary {
+    height: 100%;
+  }
+
+  .dev-tool-shell .le-settings-grid {
+    margin-block: 12px 20px;
+  }
+
+  .dev-tool-shell .official-query {
+    inline-size: fit-content;
+    max-inline-size: 100%;
+  }
+
+  .dev-tool-shell .le-reference-trigger {
+    width: auto;
+    max-width: 100%;
+    min-height: 42px;
+    padding: 7px 12px;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .dev-tool-shell .le-reference-action {
+    padding-inline: 7px;
+    font-size: 11px;
+    line-height: 22px;
+  }
+
+  .dev-tool-shell .land-evaluation .le-planning-start .le-reference-trigger {
+    min-height: 42px;
+  }
+
+  .dev-tool-shell :is(.land-evaluation, .mixed-zone) :is(.le-number, .planning-number-unit, .mb-unit),
+  .dev-tool-shell :is(.land-evaluation, .mixed-zone) label > input[type="number"] {
+    max-inline-size: min(100%, 9rem);
+  }
+
+  .dev-tool-shell :is(.land-evaluation, .mixed-zone) label > input[type="date"] {
+    max-inline-size: min(100%, 10rem);
+  }
+
+  .dev-tool-shell :is(.land-evaluation, .mixed-zone) label > select {
+    max-inline-size: min(100%, 22rem);
+  }
+
+  .dev-tool-shell :is(.land-evaluation, .mixed-zone) :is(td, th) label > select {
+    max-inline-size: none;
+  }
+
+  .dev-tool-shell .land-evaluation .le-first-base .le-base-fields {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    max-inline-size: 730px;
+    align-items: start;
+    margin-top: 12px;
+    gap: 10px 18px;
+  }
+
+  .dev-tool-shell .land-evaluation .le-first-base .le-base-fields > label {
+    display: flex;
+    flex-direction: column;
+    grid-row: auto;
+    gap: 6px;
+    padding-bottom: 0;
+  }
+
+  .dev-tool-shell .land-evaluation .le-first-base .le-base-fields > label > :first-child {
+    align-self: start;
+  }
+
+  .dev-tool-shell .land-evaluation .le-field-block > input[type="range"] {
+    max-inline-size: min(100%, 9rem);
+  }
+
+  .dev-tool-shell .land-evaluation .ra-plan-search > .le-field:first-child input {
+    max-inline-size: 22rem;
+  }
+
+  .dev-tool-shell .land-evaluation .ra-plan-selection > .le-field > select {
+    max-inline-size: none;
+  }
+}
+
+dialog.le-disclosure-window:not(.le-reference-window) {
+  --window-width: 760px;
+}
+
+dialog.le-disclosure-window:not(.le-reference-window):has(.le-tdr-application, .lw-table, .mz-table, .le-detail-table, .mb-table) {
+  --window-width: 900px;
+}
+
+:is(.studio-modes, .studio-scenarios, .ra-manual-plan) > dialog.le-disclosure-window:not(.le-reference-window) {
+  --window-width: 620px;
+}
+
+.dev-tool-shell .le-disclosure-window-content details:not(.mb-help):not([open]) {
+  inline-size: fit-content;
+  max-inline-size: 100%;
+}
+
+@media screen and (min-width: 800px) {
+  .dev-tool-shell .le-disclosure-window .le-disclosure-window-heading,
+  .dev-tool-shell .le-disclosure-window .le-disclosure-window-footer {
+    padding-block: 12px;
+  }
+
+  .dev-tool-shell .le-disclosure-window .le-disclosure-window-content {
+    padding-block: 16px 20px;
+  }
+
+  .dev-tool-shell .land-evaluation .le-disclosure-window-content :is(.site-road-fields, .le-fields, .burden-fields) > label:not(:has(> input[type="checkbox"])) {
+    display: flex;
+    flex-direction: column;
+    grid-row: auto;
+    align-self: end;
+    gap: 6px;
+    padding-bottom: 0;
+  }
+
+  .dev-tool-shell .land-evaluation .le-disclosure-window-content :is(.site-road-fields, .le-fields, .burden-fields) > label > :is(.le-label-text, span:first-child) {
+    align-self: stretch;
+    text-align: left;
+  }
+
+  .dev-tool-shell .land-evaluation .le-disclosure-window-content .site-road-fields {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px 16px;
+    margin-block: 10px 14px;
+  }
+
+  .dev-tool-shell .land-evaluation .le-disclosure-window-content .site-road-fields:not(.le-road-verification) > label:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .dev-tool-shell .land-evaluation .site-road-fields:not(.le-road-verification) > label:first-child > input {
+    max-inline-size: 22rem;
+  }
+}
+
+@media screen and (min-width: 800px) {
+  .dev-tool-shell .land-evaluation .le-first-base-top {
+    justify-content: flex-start;
+    align-items: start;
+    gap: 8px 22px;
+  }
+
+  .dev-tool-shell .land-evaluation .le-first-base .le-section-heading h2 {
+    font-size: 24px;
+    margin-block: 0 4px;
+  }
+
+  .dev-tool-shell .land-evaluation .le-first-base .le-region-note {
+    margin: 10px 0 0;
+    color: #d9e0e1;
+    font-size: 12px;
+  }
+
+  .dev-tool-shell .land-evaluation .le-first-base .le-region-field {
+    width: min(100%, 9rem);
+  }
+
+  .dev-tool-shell .land-evaluation .le-first-base .le-base-fields .le-field-caption {
+    min-height: 24px;
+  }
+
+  .interior-page .dev-tool-shell .land-evaluation.le-land-workspace .le-intro,
+  .interior-page .dev-tool-shell .mixed-zone:has(> .industrial-first-step) > h1 {
+    margin-block: 0 12px;
+  }
+
+  .interior-page .dev-tool-shell .mixed-zone:has(> .industrial-first-step) > h1 {
+    font-family: "Songti TC", "Noto Serif TC", serif;
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  .interior-page .dev-tool-shell .mixed-zone:has(> .industrial-first-step) > p {
+    margin: 0 0 16px;
+    font-size: 14px;
+  }
+
+  .dev-tool-shell .le-industrial-group {
+    margin-block: 18px 22px;
+  }
+
+  .dev-tool-shell .le-industrial-group > h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+  }
+
+  .dev-tool-shell .le-industrial-group > .le-settings-grid {
+    margin: 0;
+  }
+
+  .dev-tool-shell .le-industrial-group > .le-settings-grid:has(> :nth-child(4):last-child) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-inline-size: 570px;
+  }
+
+  .dev-tool-shell .lw-first-step .lw-section-top:has(.lw-first-actions) {
+    justify-content: flex-start;
+    align-items: center;
+  }
+}
+
+@media screen and (min-width: 800px) and (max-width: 980px) {
+  .dev-tool-shell .land-evaluation .le-first-base .le-base-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-inline-size: 420px;
+  }
+}
+
+/* Each section has a distinct purpose: inputs, disclosures, then applicable limits. */
+.dev-tool-shell .land-evaluation :is(.le-award-settings, .le-award-details, .le-bonus-limits) {
+  max-inline-size: 930px;
+  box-sizing: border-box;
+}
+
+.dev-tool-shell .land-evaluation .le-award-settings {
+  background: #f9f6ef;
+  border-top: 2px solid #a28566;
+  padding: 18px clamp(16px, 2vw, 26px) 20px;
+}
+
+.dev-tool-shell .land-evaluation :is(.le-award-heading, .le-award-details, .le-bonus-limits) h3 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.dev-tool-shell .land-evaluation .le-award-heading > p,
+.dev-tool-shell .land-evaluation .le-bonus-limits > p {
+  margin: 5px 0 0;
+  line-height: 1.65;
+  max-inline-size: 58ch;
+}
+
+.dev-tool-shell .land-evaluation .le-award-settings > .le-award-methods {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 175px), 1fr));
+  margin-block: 15px 12px;
+  gap: 10px 16px;
+}
+
+.dev-tool-shell .land-evaluation .le-award-settings > .le-award-targets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  gap: 12px 22px;
+  margin-block: 0;
+}
+
+.dev-tool-shell .land-evaluation .le-award-settings > .le-award-targets > :is(label, .le-field-block),
+.dev-tool-shell .land-evaluation .le-award-settings > .le-award-methods > label {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  grid-row: auto;
+  gap: 6px;
+  padding: 0;
+}
+
+.dev-tool-shell .land-evaluation .le-award-settings .le-award-targets :is(.le-field-caption, .le-label-text) {
+  min-block-size: 24px;
+  align-self: start;
+}
+
+.dev-tool-shell .land-evaluation .le-award-settings .le-award-methods label > :first-child {
+  align-self: start;
+}
+
+.dev-tool-shell .land-evaluation .le-award-settings > .le-award-targets .le-field-block > label {
+  gap: 6px;
+}
+
+.dev-tool-shell .land-evaluation .le-award-details {
+  margin-block: 24px 0;
+  padding-block: 16px 0;
+  border-top: 1px solid #c5ced0;
+}
+
+.dev-tool-shell .land-evaluation .le-award-details > .le-disclosure-heading {
+  margin: 0 0 10px;
+}
+
+/* Use smaller action rows beneath the two task labels. */
+.dev-tool-shell .land-evaluation .le-award-detail-group {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin-block: 5px;
+}
+
+.dev-tool-shell .land-evaluation .le-award-detail-group > h4 {
+  flex: 0 0 9rem;
+  margin: 0;
+  font-size: 13px;
+  color: #52656c;
+}
+
+.dev-tool-shell .land-evaluation .le-award-detail-group > .le-disclosure-grid {
+  display: flex;
+  flex: 1 1 470px;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0;
+}
+
+.dev-tool-shell .land-evaluation .le-award-detail-group > .le-disclosure-grid > details:not(.mb-help) {
+  inline-size: fit-content;
+  border: 0;
+  border-bottom: 1px solid var(--disclosure-line);
+  border-radius: 0;
+  background: transparent;
+}
+
+.dev-tool-shell .land-evaluation .le-award-detail-group details:not(.mb-help) > summary {
+  min-height: 38px;
+  padding: 5px 4px;
+  background: transparent;
+}
+
+.dev-tool-shell .land-evaluation .le-award-detail-group details:not(.mb-help) > summary:is(:hover,:focus-visible) {
+  background: var(--disclosure-head);
+}
+
+.dev-tool-shell .land-evaluation .le-bonus-limits {
+  margin-block: 24px 0;
+  padding: 16px clamp(16px, 2vw, 26px);
+  background: #ece7dc;
+  border-top: 2px solid #a28566;
+}
+
+.dev-tool-shell .land-evaluation .le-bonus-limits .le-statutory-limits output {
+  line-height: 1.25;
+}
+
+.dev-tool-shell .land-evaluation .le-bonus-limits > .le-inline-settings {
+  margin-block: 10px 0;
+  padding-block: 10px 0;
+  border-color: #cdc4b6;
+}
+
+.dev-tool-shell .land-evaluation .le-limit-overview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px 32px;
+}
+
+.dev-tool-shell .land-evaluation .le-limit-overview header > p {
+  margin: 5px 0 0;
+  line-height: 1.65;
+}
+
+.dev-tool-shell .land-evaluation .le-limit-overview > .le-statutory-limits {
+  gap: 12px 28px;
+  margin: 0;
+}
+
+.dev-tool-shell .land-evaluation .le-bonus-limits:not(:has(.le-inline-settings > .le-fields)) {
+  inline-size: fit-content;
+}
+
+@media screen and (min-width: 800px) {
+  .interior-page .dev-tool-shell .le-land-workspace .lw-section > .lw-fields:not(.ra-plan-search),
+  .dev-tool-shell .land-evaluation .le-form-section > .le-fields,
+  .dev-tool-shell .mixed-zone:has(> .industrial-first-step) .industrial-first-step > .mz-fields {
+    max-inline-size: 760px;
+  }
+
+  .dev-tool-shell :is(.le-land-workspace, .mixed-zone) :is(.lw-section, .industrial-first-step) > :is(label, .lw-fields > label) textarea {
+    max-inline-size: min(100%, 610px);
+  }
+
+  .dev-tool-shell .le-land-workspace .lw-section-top:has(> button) {
+    justify-content: flex-start;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+  }
+
+  .dev-tool-shell .land-evaluation .le-calculate {
+    max-inline-size: 930px;
+  }
+
+  .dev-tool-shell:not([hidden]) + .development-service-tool {
+    margin-top: 16px;
+    padding-top: 32px;
+  }
+
+  .dev-tool-shell:not([hidden]) + .development-service-tool .ds-service-scope dl > div {
+    padding-block: 15px;
+  }
+}
+
+@media screen and (min-width: 800px) {
+  .dev-tool-shell .dev-workspace-end {
+    grid-column: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px 24px;
+    border-top: 1px solid var(--studio-line);
+    padding-block: 12px;
+  }
+
+  .dev-tool-shell .dev-workspace-end :is(a,button) {
+    color: var(--studio-ink);
+    font: inherit;
+    font-size: 13px;
+    text-underline-offset: 4px;
+  }
+
+  .dev-tool-shell:not([hidden]) + .development-service-tool {
+    margin-top: 30px;
+  }
+
+  .dev-tool-shell .land-evaluation .le-calculate-group {
+    display: block;
+    max-inline-size: 620px;
+    padding-block: 16px 6px;
+    margin-block: 22px 0;
+  }
+
+  .dev-tool-shell .land-evaluation .le-calculate-group h2 {
+    margin: 0 0 8px;
+    font-size: 19px;
+  }
+
+  .le-calculate-controls {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+  }
+
+  .dev-tool-shell .land-evaluation .le-calculate-controls > .le-identity {
+    display: block;
+    width: min(100%, 290px);
+    margin: 0;
+  }
+
+  .dev-tool-shell .land-evaluation .le-calculate-controls .le-calculate-actions {
+    flex: 0 1 auto;
+    justify-content: flex-start;
+  }
+
+  .dev-tool-shell .land-evaluation .le-calculate-controls .le-primary {
+    min-height: 42px;
+    padding-block: 7px;
+  }
+
+  .dev-tool-shell .land-evaluation .le-calculate-group > p {
+    margin-block: 8px 0;
+  }
+
+  .dev-tool-shell .land-evaluation .le-result-scenarios {
+    margin-block: 12px 0;
+  }
+
+  .dev-tool-shell .land-evaluation .le-mode-heading {
+    padding-block: 0 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--studio-line);
+  }
+
+  .dev-tool-shell .land-evaluation .le-mode-heading > :is(h1,p) {
+    margin: 0;
+  }
+
+  .dev-tool-shell .land-evaluation .le-mode-heading > p {
+    margin-top: 6px;
+  }
+
+  .dev-tool-shell .land-evaluation .lw-review-fields > .le-field:nth-child(-n+3) {
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+  }
+
+  .dev-tool-shell .land-evaluation .lw-review-fields > .le-field:nth-child(-n+3) > span:first-child {
+    align-self: end;
+  }
+
+  .dev-tool-shell .land-evaluation .lw-check-next {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 5px 16px;
+    margin-block: 10px 16px;
+    padding: 10px 14px;
+    background: #f1ece0;
+    width: fit-content;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .dev-tool-shell .land-evaluation .lw-check-next ul {
+    flex: 1 0 100%;
+    margin: 0;
+  }
+
+  .dev-tool-shell .land-evaluation .lw-layout-task {
+    border-top: 1px solid var(--studio-line);
+    margin-block: 12px;
+    padding-block: 10px 0;
+    max-inline-size: 850px;
+  }
+
+  .dev-tool-shell .land-evaluation .lw-layout-task > h4 {
+    margin: 0 0 6px;
+  }
+
+  .lw-layout-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+  }
+
+  .dev-tool-shell .land-evaluation .lw-layout-links > :is(details,button,p) {
+    margin: 0;
+  }
+
+  .dev-tool-shell .ra-case-summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 10px 24px;
+    width: fit-content;
+    max-width: 100%;
+    background: #e8eff0;
+    border-top: 2px solid #a8bbc5;
+    padding: 14px 18px;
+    margin-block: 10px 22px;
+  }
+
+  .dev-tool-shell .ra-case-summary div > :is(h3,p) {
+    margin: 0;
+  }
+
+  .dev-tool-shell .ra-case-summary > details {
+    margin: 0;
+  }
+
+  .dev-tool-shell .ra-plan-conditions,
+  .dev-tool-shell .industrial-development-task {
+    padding-block: 12px 0;
+    margin-block: 16px 0;
+    border-top: 1px solid var(--studio-line);
+  }
+
+  .dev-tool-shell .industrial-input-gaps,
+  .dev-tool-shell .industrial-development-status:has(ul > li) {
+    margin-block: 10px;
+    border-left: 2px solid #af977b;
+    padding: 7px 14px;
+    max-width: 760px;
+  }
+
+  .dev-tool-shell :is(.industrial-input-gaps,.industrial-development-status) > h4 {
+    margin: 0 0 4px;
+  }
+}
+
+/* Keep excavation, equipment and allocation readable as separate tasks. */
+.dev-tool-shell .land-evaluation .le-basement-flow {
+  max-inline-size: 940px;
+}
+.dev-tool-shell .land-evaluation .le-basement-flow :is(.basement-excavation,.basement-alternatives,.le-basement-fixed,.le-basement-allocation) {
+  padding: 16px 20px;
+  margin-block: 16px;
+  border: 1px solid var(--studio-line);
+  border-radius: 10px;
+  background: var(--studio-paper);
+}
+.dev-tool-shell .land-evaluation .le-basement-flow :is(h2,h3) { margin-block: 0 10px; }
+.dev-tool-shell .land-evaluation .le-basement-flow h3 { font-size: 18px; }
+.dev-tool-shell .land-evaluation .le-basement-flow .area-review-panel {
+  margin-top: 16px;
+  padding-top: 0;
+}
+.dev-tool-shell .land-evaluation .le-basement-flow :is(.planning-field-grid,.le-fields) {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+  gap: 7px 16px;
+  margin-block: 10px;
+}
+.dev-tool-shell .land-evaluation .basement-demand-panel .basement-rule-fields {
+  grid-template-columns: minmax(0, 250px) minmax(0, 150px) minmax(0, 320px);
+}
+.dev-tool-shell .land-evaluation .basement-excavation .planning-field-grid > label > input:not([type]) {
+  max-inline-size: 150px;
+}
+.dev-tool-shell .land-evaluation .le-basement-flow :is(.planning-field-grid,.le-fields) > label:not(:has(> input[type=checkbox])) {
+  padding-bottom: 0;
+  margin: 0;
+}
+.dev-tool-shell .land-evaluation .basement-excavation .planning-field-grid:has(> .le-rule-reference) {
+  grid-template-columns: minmax(0, 155px) minmax(0, 1fr);
+}
+.dev-tool-shell .land-evaluation .basement-excavation .le-rule-reference { grid-row: span 3; align-self: center; }
+.dev-tool-shell .land-evaluation .basement-equipment-actions {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-top: 12px;
+}
+.dev-tool-shell .land-evaluation .basement-equipment-actions > label {
+  inline-size: min(100%, 280px);
+  margin: 0;
+}
+.dev-tool-shell .land-evaluation .le-basement-flow details:not(.mb-help) { margin-block: 8px 0; }
+.dev-tool-shell .land-evaluation .basement-equipment-actions > details:not(.mb-help) { margin: 0; }
+.dev-tool-shell .land-evaluation .le-basement-flow .planning-checkbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+@media (max-width: 1040px) {
+  .dev-tool-shell .land-evaluation .basement-demand-panel .basement-rule-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .dev-tool-shell .land-evaluation .basement-demand-panel .basement-rule-fields > label:last-child:not(:first-child) {
+    grid-column: span 2;
+  }
+}
+
+.dev-tool-shell .land-evaluation .basement-cap-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 8px 18px;
+}
+.dev-tool-shell .land-evaluation .basement-cap-row > .planning-field-grid { margin-block: 0; }
+.dev-tool-shell .land-evaluation .basement-cap-value {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.dev-tool-shell .land-evaluation .basement-cap-row > details:not(.mb-help) { margin: 0; }
+.dev-tool-shell .land-evaluation .le-planning-start > p { flex: 0 1 auto; }
+.dev-tool-shell .land-evaluation .le-above-task {
+  max-inline-size: 850px;
+  border-top: 1px solid var(--studio-line);
+  margin-top: 20px;
+  padding-top: 14px;
+}
+.dev-tool-shell .land-evaluation .le-above-task > h3 { margin: 0; font-size: 18px; }
+.dev-tool-shell .land-evaluation .le-above-task > .le-fields { margin-block: 12px; gap: 8px 16px; }
+.dev-tool-shell .land-evaluation .le-above-task > .le-fields:has(select) {
+  grid-template-columns: repeat(2, minmax(0, 245px));
+}
+.dev-tool-shell .land-evaluation :is(.le-above-task,.le-parking-controls) label:not(:has(>input[type=checkbox])) { padding-bottom: 0; }
+.dev-tool-shell .land-evaluation .legal-parking-panel .le-parking-controls {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 205px), 1fr));
+  gap: 8px 16px;
+  max-inline-size: 760px;
+  margin-block: 12px;
+}
+@media (min-width: 1250px) {
+  .dev-tool-shell .land-evaluation .le-form-section > .le-parking-quantities {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    max-inline-size: 850px;
+  }
+}

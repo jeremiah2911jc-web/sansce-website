@@ -68,7 +68,7 @@
 .land-evaluation .le-section-heading{padding-bottom:18px;margin-bottom:24px;border-bottom:1px solid var(--le-line)}
 .land-evaluation .le-section-heading p{margin-top:8px}
 .land-evaluation :is(.le-fields,.planning-field-grid,.burden-fields,.site-road-fields){display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:24px;row-gap:24px;margin:20px 0 26px;align-items:start}
-.land-evaluation .le-fields:has(>.le-field:nth-child(4)):not(:has(>.le-field:nth-child(5))){grid-template-columns:repeat(2,minmax(0,1fr))}
+.land-evaluation .le-fields:where(:not(.le-base-fields)):has(>.le-field:nth-child(4)):not(:has(>.le-field:nth-child(5))){grid-template-columns:repeat(2,minmax(0,1fr))}
 @supports(grid-template-rows:subgrid){
  .land-evaluation :is(.le-fields,.planning-field-grid,.burden-fields,.site-road-fields){row-gap:8px}
  .land-evaluation :is(.le-fields,.planning-field-grid,.burden-fields,.site-road-fields)>label:not(:has(>input[type=checkbox])){display:grid;grid-template-rows:subgrid;grid-row:span 3;align-items:start;row-gap:8px;padding-bottom:14px}

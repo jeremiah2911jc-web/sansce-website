@@ -70,7 +70,6 @@ for(const [name,contents]of [['core',core],['panels',ui+industrialUi],['land',la
    .replaceAll('未選方式不代表已取得，來源與核准分開。','取得方式尚未選定。');
   if(path.endsWith('/TdrApplicationPanel.tsx'))text=text.replace('renderTdrApplication(t,r,financials).replaceAll(', 'renderTdrApplication(t,r,financials).replaceAll("未選方式不代表已取得，來源與核准分開。","取得方式尚未選定。").replaceAll(');
   if(path.endsWith('/BasementDemandPanel.tsx'))text=text.replace('{e}</p>', '{e.replace("依需求檢討須先填個案開挖率上限及法規／基地資料來源；不自動套60%或80%","請填寫個案開挖率上限及適用法規。")}</p>');
-  text=text.replaceAll('；未取得排位圖，不宣稱已確認可排。已知無法配置時，不因另有客用電梯而通過。','；實際排位及通路待圖說核對。');
   text=publicText(text);
   text="import {publicText} from '/src/land-evaluation/public-copy.mjs';\n"+text;
   text=text.replaceAll('{n}</li>','{publicText(n)}</li>').replaceAll('{m}</p>','{publicText(m)}</p>');

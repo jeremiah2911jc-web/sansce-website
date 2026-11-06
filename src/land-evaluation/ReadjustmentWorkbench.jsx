@@ -20,12 +20,14 @@ const format=n=>n===null||n===undefined?'待確認':n.toLocaleString('zh-TW',{ma
 const editionLabel=e=>/文件索引/.test(e.label)?'官方文件（適用公告待核對）':e.label;
 const stateLabels={pending:'待確認',recorded:'已記錄依據',review:'專案覆核',blocked:'條件不成立'};
 function Field({label,value,change,type='text',wide=false}){const props={'aria-label':label,value,onChange:e=>change(e.target.value),...(type==='date'?{onInput:e=>change(e.currentTarget.value)}:{}),autoComplete:'off'};return <label className={'le-field'+(wide?' lw-wide':'')}><span>{label}</span>{wide?<textarea {...props}/>:<input {...props} type={type} {...(type==='number'?{min:0,step:'any'}:{})}/>}</label>;}
-function Choice({label,value,options,change}){return <label className="le-field"><span>{label}</span><PublicSelect aria-label={label} value={value} onChange={e=>change(e.target.value)}>{Object.entries(options).map(([key,text])=><option key={key} value={key}>{publicText(text)}</option>)}</PublicSelect></label>;}
+function Choice({label,value,options,change,placeholder}){return <label className="le-field"><span>{label}</span><PublicSelect aria-label={label} value={value} onChange={e=>change(e.target.value)}>{placeholder&&<option value="">{placeholder}</option>}{Object.entries(options).map(([key,text])=><option key={key} value={key}>{publicText(text)}</option>)}</PublicSelect></label>;}
 function Evidence({title,detail,value={},change}){return <EvaluationDisclosure className="ra-evidence"><summary>{title} · {evidenceStates[value.state]??'待確認'}</summary><p>{detail}</p><div className="lw-fields"><Choice label={title+'核對狀態'} value={value.state??'pending'} options={evidenceStates} change={state=>change({...value,state})}/><Field label={title+'查證日期'} value={value.date??''} type="date" change={date=>change({...value,date})}/><Field label={title+'依據、頁次與適用範圍'} value={value.source??''} change={source=>change({...value,source})} wide/></div></EvaluationDisclosure>;}
 export function ReadjustmentWorkbench({land,onLand,onLandDraft,initialTrack='owner',itemsValue,activeValue,onItemsChange,onActiveChange}){
  const workRoot=useRef(null),fieldLocation=useFieldLocation(workRoot);
  const [search,setSearch]=useDraftState('readjustment.search',''),[scope,setScope]=useDraftState('readjustment.scope','active');
  const [city,setCity]=useDraftState('readjustment.city','新北市'),[system,setSystem]=useDraftState('readjustment.system','public'),[catalogId,setCatalogId]=useDraftState('readjustment.catalogId',''),[editionId,setEditionId]=useDraftState('readjustment.editionId',''),[ownItems,setOwnItems]=useDraftState('readjustment.items',[]),[ownActive,setOwnActive]=useDraftState('readjustment.active',''),[message,setMessage]=useState(''),[remove,setRemove]=useState(false);
+ const [manualName,setManualName]=useState(''),[creationTrack,setCreationTrack]=useState(null);
+ const track=creationTrack??(initialTrack==='acquisition'?'acquisition':'owner');
  const items=itemsValue??ownItems,active=activeValue??ownActive,setItems=onItemsChange??setOwnItems,setActive=onActiveChange??setOwnActive;
  const entry=publishedPlans.find(x=>x.id===catalogId),edition=entry?.versions.find(x=>x.id===editionId),item=items.find(x=>x.input.id===active),p=item?.input;
  const result=p?evaluateReadjustment(p,land):null,signature=p?readjustmentSignature(p,land):'',published=p?getPublishedPlan(p.catalogId,p.catalogVersion):null;const resultMotion=useResultMotion(signature);
@@ -36,27 +38,69 @@ export function ReadjustmentWorkbench({land,onLand,onLandDraft,initialTrack='own
   setItems(xs=>xs.map(x=>x.input.id===active?{...x,input:{...x.input,name:readjustmentNameForTrack(x.input)}}:x));
  },[active,p?.name,p?.track,p?.system,p?.planName,setItems]);
  const filtered=publishedPlans.filter(x=>x.city===city&&x.system===system&&(scope==='all'||x.assessmentReview?.scope===scope)&&[publicText(x.name),x.name,x.district,...(x.aliases??[])].join(' ').toLowerCase().includes(search.trim().toLowerCase()));
- function create(){if(items.length>=30){setMessage('已達30個評估方案，既有資料保留。');return;}if(catalogId&&(!entry||!edition)){setMessage('公告版本尚未選定。');return;}const input=newReadjustmentPlan(crypto.randomUUID(),system);input.referenceDate=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());input.track=initialTrack==='acquisition'?'acquisition':'owner';input.name=systems[system]+'／'+perspectives[input.track];if(entry)Object.assign(input,{catalogId:entry.id,catalogVersion:edition.id,planName:entry.name,authority:entry.authority,name:entry.name+'／'+perspectives[input.track]});setItems(xs=>[...xs,{input,history:[]}]);setActive(input.id);setMessage('');}
+ function create(manual=false){
+  if(items.length>=30){setMessage('已達30個評估方案，既有資料保留。');return;}
+  if(manual&&!manualName.trim())return;
+  if(!manual&&(!entry||!edition))return;
+  const input=newReadjustmentPlan(crypto.randomUUID(),system);
+  input.referenceDate=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+  input.track=track;
+  input.planName=manual?manualName.trim():entry.name;
+  input.name=readjustmentNameForTrack(input);
+  if(!manual)Object.assign(input,{catalogId:entry.id,catalogVersion:edition.id,authority:entry.authority});
+  setItems(xs=>[...xs,{input,history:[]}]);
+  setActive(input.id);
+  if(manual)setManualName('');
+  setMessage('');
+  fieldLocation.locate({heading:'地號與納入範圍'});
+ }
  function confirm(){if(!result?.canRecord)return;if(item.history.some(s=>s.signature===signature)){setMessage('本次條件已有核對結果。');return;}if(item.history.length>=20){setMessage('本方案已達20個本次核對版本。');return;}const snap={id:crypto.randomUUID(),confirmed:result.canConfirm,signature,input:structuredClone(p),result:structuredClone(result),context:structuredClone(land),published:structuredClone(published),createdAt:new Date().toISOString()};setItems(xs=>xs.map(x=>x.input.id===active?{...x,history:[...x.history,snap]}:x));setMessage(result.canConfirm?'已記錄本案採用的計畫公告、地號及分配面積。':'已保留待核結果；缺件及障礙仍列於本次結果。');}
  function draftLand(){const latest=item.history.at(-1);if(!latest?.confirmed||latest.signature!==signature||!result.canCreateLand){setMessage('確認前須核對納入地號與個別分配面積。');return;}onLandDraft({area:result.allocationArea,location:p.location,zone:p.zone,planName:p.planName,source:p.areaSource,date:p.areaDate,originalIds:p.parcelIds,scenarioId:p.id,version:READJUSTMENT_VERSION});}
  useEffect(()=>{const restore=e=>{if(e.persisted)setItems(items=>items.map(item=>({...item,history:[]})));};window.addEventListener('pageshow',restore);return()=>window.removeEventListener('pageshow',restore);},[]);
  return <div className="ra-workspace" ref={workRoot}>
-  <section className="lw-section"><h2>公告計畫與評估方案</h2><p>依重劃或徵收計畫書、範圍圖與地號清冊核對納入範圍。持分與權利狀態依土地登記謄本核對。</p>
-   <div className="lw-fields"><Field label="搜尋計畫名稱或行政區" value={search} change={v=>{setSearch(v);setCatalogId('');setEditionId('');}}/><Choice label="案件狀態範圍" value={scope} options={{active:'近期辦理中',tracking:'規劃與待查進度',all:'全部歷史資料'}} change={v=>{setScope(v);setCatalogId('');setEditionId('');}}/></div>
-   <div className={"lw-fields"+(entry?" ra-catalog-version":"")}><Choice label="公告計畫縣市" value={city} options={Object.fromEntries(localCatalog.map(x=>[x.city,x.city]))} change={v=>{setCity(v);setCatalogId('');setEditionId('');}}/><Choice label="整體開發制度" value={system} options={systems} change={v=>{setSystem(v);setCatalogId('');setEditionId('');}}/><Choice label="已發布計畫" value={catalogId} options={{'':'其他計畫',...Object.fromEntries(filtered.map(x=>[x.id,x.name+' · '+(x.assessmentReview?.stage??publicationStates[x.publicationState])]))}} change={v=>{setCatalogId(v);setEditionId(publishedPlans.find(x=>x.id===v)?.versions[0]?.id??'');}}/>{entry&&<Choice label="公告與文件" value={editionId} options={Object.fromEntries(entry.versions.map(x=>[x.id,editionLabel(x)]))} change={setEditionId}/>}</div>
-
-   <OfficialSources city={city}/>
-   {entry&&edition&&<PlanSources plan={{...entry,edition}}/>}
-   <button className="le-primary" onClick={create}>{entry?'建立本計畫評估':'新增評估方案'}</button>
+  <section className="lw-section lw-first-step">
+   <h2>查找公告計畫</h2>
+   <p>依重劃或區段徵收計畫書、範圍圖及地號清冊核對土地納入範圍。</p>
+   <div className="lw-fields ra-plan-search">
+    <Field label="搜尋計畫名稱或行政區" value={search} change={v=>{setSearch(v);setCatalogId('');setEditionId('');}}/>
+    <Choice label="公告計畫縣市" value={city} options={Object.fromEntries(localCatalog.map(x=>[x.city,x.city]))} change={v=>{setCity(v);setCatalogId('');setEditionId('');}}/>
+    <Choice label="整體開發制度" value={system} options={systems} change={v=>{setSystem(v);setCatalogId('');setEditionId('');}}/>
+    <Choice label="案件狀態範圍" value={scope} options={{active:'近期辦理中',tracking:'規劃與待查進度',all:'全部歷史資料'}} change={v=>{setScope(v);setCatalogId('');setEditionId('');}}/>
+   </div>
+   {filtered.length?<div className="lw-fields ra-plan-selection">
+    <Choice label="已發布計畫" value={catalogId} placeholder="選擇計畫" options={Object.fromEntries(filtered.map(x=>[x.id,x.name+' · '+(x.assessmentReview?.stage??publicationStates[x.publicationState])]))} change={v=>{setCatalogId(v);setEditionId('');}}/>
+    {entry&&<Choice label="公告版本" value={editionId} placeholder="選擇公告版本" options={Object.fromEntries(entry.versions.map(x=>[x.id,editionLabel(x)]))} change={setEditionId}/>}
+   </div>:<p className="ra-search-empty" role="status">目前目錄沒有符合篩選條件的計畫。可切換案件狀態範圍，或手動輸入公告計畫。</p>}
+   <div className="ra-plan-action">
+    <Choice label="評估視角" value={track} options={perspectives} change={setCreationTrack}/>
+    {entry&&<button type="button" className="le-primary" disabled={!edition} onClick={()=>create()}>建立本計畫評估</button>}
+   </div>
+   {entry&&edition&&<EvaluationDisclosure className="ra-selected-source"><summary>查閱所選公告版本</summary><PlanSources plan={{...entry,edition}}/></EvaluationDisclosure>}
+   <EvaluationDisclosure className="ra-manual-plan">
+    <summary>手動輸入公告計畫</summary>
+    <p>依重劃或區段徵收計畫書填計畫名稱。建立方案後，再記錄公告文號或日期、範圍圖及地號清冊。</p>
+    <Field label="公告計畫名稱" value={manualName} change={setManualName}/>
+    <button type="button" className="le-primary" disabled={!manualName.trim()} onClick={e=>{if(items.length<30)e.currentTarget.closest('dialog')?.close();create(true);}}>建立手動評估方案</button>
+   </EvaluationDisclosure>
   </section>
-  {items.length>0&&<section className="lw-section"><div className="lw-section-top"><h2>本次評估範圍</h2><button className="le-text-button" onClick={()=>setRemove(true)}>移除目前評估方案</button></div><div className="lw-fields"><Choice label="目前評估方案" value={active} options={Object.fromEntries(items.map(x=>[x.input.id,x.input.name]))} change={v=>{setActive(v);setRemove(false);setMessage('');}}/>{p&&<><Field label="評估方案名稱" value={p.name} change={v=>edit('name',v)}/><Choice label="評估目的" value={p.track} options={perspectives} change={v=>edit('track',v)}/></>}</div>
+  {items.length>0&&<section className="lw-section"><h2>本次評估範圍</h2>
+   {p&&<div className="ra-case-summary">
+    <div><p>{systems[p.system]} · {perspectives[p.track]}</p><h3>{p.planName||'計畫名稱待填'}</h3><p>{published?.edition?editionLabel(published.edition):'手動輸入計畫條件'}</p></div>
+    <EvaluationDisclosure><summary>方案管理</summary><div className="lw-fields">
+     {items.length>1&&<Choice label="目前評估方案" value={active} options={Object.fromEntries(items.map(x=>[x.input.id,x.input.name]))} change={v=>{setActive(v);setRemove(false);setMessage('');}}/>}
+     <Field label="評估方案名稱" value={p.name} change={v=>edit('name',v)}/>
+     <Choice label="評估目的" value={p.track} options={perspectives} change={v=>edit('track',v)}/>
+     <Field label="整體開發計畫名稱" value={p.planName} change={v=>edit('planName',v)}/>
+    </div><button className="le-text-button" type="button" onClick={e=>{e.currentTarget.closest('dialog')?.close();setRemove(true);}}>移除目前評估方案</button></EvaluationDisclosure>
+   </div>}
    {remove&&<div className="lw-message" role="alertdialog" aria-label="移除評估方案"><p>移除本方案及本次核對版本；共用土地與其他方案保留。</p><button className="le-secondary" onClick={()=>{const next=items.filter(x=>x.input.id!==active);setItems(next);setActive(next[0]?.input.id??'');setRemove(false);}}>確認移除評估方案</button><button className="le-text-button" onClick={()=>setRemove(false)}>取消移除</button></div>}
-   {p&&<><p><strong>{systems[p.system]} · {perspectives[p.track]}</strong> · {p.catalogId?'採公告計畫版本':'自填計畫條件'}。</p><div className="lw-fields ra-plan-meta"><Field label="整體開發計畫名稱" value={p.planName} change={v=>edit('planName',v)}/><Field label="辦理單位／主管機關" value={p.authority} change={v=>edit('authority',v)}/><Choice label="本案辦理階段" value={p.stage} options={stages} change={v=>edit('stage',v)}/><Field label="評估基準日" value={p.referenceDate} type="date" change={v=>edit('referenceDate',v)}/></div>
-    {published&&<><EvaluationDisclosure><summary>本方案的計畫書圖與公告</summary><PlanSources plan={published}/></EvaluationDisclosure><h3>本計畫適用條件</h3><p>逐項記錄本案適用、例外或不適用依據。</p>{published.edition.conditions.map(rule=><Evidence key={rule.id} title={rule.title} detail={rule.detail+'（'+rule.locator+'）'} value={p.planChecks[rule.id]} change={v=>edit('planChecks',{...p.planChecks,[rule.id]:v})}/>)}</>}
-    <h3>地號與納入範圍</h3><p>逐筆填寫納入面積、持分及查證依據。</p><button className="le-text-button" onClick={onLand}>查看土地用途與變更</button>
+   {p&&<>
+    <h3>地號與納入範圍</h3><p>依範圍圖與地號清冊核對納入面積，依土地登記謄本填持分。</p><div className="lw-first-actions"><button className="le-text-button" onClick={onLand}>查看土地用途與變更</button><OfficialSources city={published?.city??''}/></div>
     {land.parcels.length>0?<div className="lw-table"><table><thead><tr><th>納入</th><th>共用土地</th><th>登記面積（㎡）</th><th>查證狀態</th></tr></thead><tbody>{land.parcels.map((x,i)=><tr key={x.id}><td><input aria-label={'納入第'+(i+1)+'筆土地'} type="checkbox" checked={p.parcelIds.includes(x.id)} onChange={e=>edit('parcelIds',e.target.checked?[...p.parcelIds,x.id]:p.parcelIds.filter(id=>id!==x.id))}/></td><th>{[x.city,x.district,x.section,x.landNumber].filter(Boolean).join(' ')||'第'+(i+1)+'筆土地'}</th><td>{x.areaSqm||'待補'}</td><td>{x.status==='verified'?'資料已查證':'待核對／假設'}</td></tr>)}</tbody></table></div>:<p>本次尚無共用土地；可先填本案納入面積及依據，地號與範圍仍須查證。</p>}
     {land.parcels.filter(x=>p.parcelIds.includes(x.id)).map((parcel,index)=><ParcelRights key={parcel.id} parcel={parcel} index={index} value={p.parcelRights?.[parcel.id]??{}} result={result.parcelResults.find(x=>x.id===parcel.id)} change={value=>edit('parcelRights',{...p.parcelRights,[parcel.id]:value})}/>)}
     <div className="lw-fields">{!p.parcelIds.length&&<><Field label="本案納入面積（㎡）" value={p.manualArea} type="number" change={v=>edit('manualArea',v)}/><Field label="手動納入面積依據" value={p.manualSource} change={v=>edit('manualSource',v)}/><Field label="評估持分分子" value={p.shareNumerator} type="number" change={v=>edit('shareNumerator',v)}/><Field label="評估持分分母" value={p.shareDenominator} type="number" change={v=>edit('shareDenominator',v)}/></>}<Field label="納入範圍與持分依據" value={p.scopeSource} change={v=>edit('scopeSource',v)} wide/><Choice label="本案地號納入計畫範圍" value={p.membership} options={{unknown:'待查證',in:'依文件確認納入',out:'依文件確認不在範圍'}} change={v=>edit('membership',v)}/><Field label="納入範圍查證日期" value={p.membershipDate} type="date" change={v=>edit('membershipDate',v)}/><Field label="範圍圖、清冊與地號查證依據" value={p.membershipSource} change={v=>edit('membershipSource',v)} wide/></div>
+    <EvaluationDisclosure className="ra-case-meta"><summary>辦理單位、階段及評估日期</summary><div className="lw-fields ra-plan-meta"><Field label="辦理單位／主管機關" value={p.authority} change={v=>edit('authority',v)}/><Choice label="本案辦理階段" value={p.stage} options={stages} change={v=>edit('stage',v)}/><Field label="評估基準日" value={p.referenceDate} type="date" change={v=>edit('referenceDate',v)}/></div></EvaluationDisclosure>
+    {published&&<section className="ra-plan-conditions"><h3>公告書圖與適用條件</h3><EvaluationDisclosure><summary>本方案的計畫書圖與公告</summary><PlanSources plan={published}/></EvaluationDisclosure><p>逐項記錄本案適用、例外或不適用依據。</p>{published.edition.conditions.map(rule=><Evidence key={rule.id} title={rule.title} detail={rule.detail+'（'+rule.locator+'）'} value={p.planChecks[rule.id]} change={v=>edit('planChecks',{...p.planChecks,[rule.id]:v})}/>)}</section>}
    </>}
   </section>}
   {p&&<>
@@ -77,7 +121,13 @@ export function ReadjustmentWorkbench({land,onLand,onLandDraft,initialTrack='own
    </section>
    <section {...resultMotion} className="lw-section ra-results result-motion"><div className="lw-section-top"><div><h2>本次條件核對</h2><p role="status">{result.status} · 文件依據 {result.recorded}／{result.documentCount}項 · 待確認 {result.pending}項 · 障礙 {result.blocked}項</p></div><button className={result.canConfirm?"le-primary":"le-secondary"} onClick={confirm} disabled={!result.canRecord}>{result.canConfirm?'確認本次核對結果':'保留待核結果'}</button></div>
     {result.errors.length>0&&<ul className="ra-errors" role="alert">{result.errors.map(x=><li key={x}>{publicText(x)}</li>)}</ul>}
-    <div className={"ra-measures"+(p.parcelIds.length?" ra-four-measures":"")}>{p.parcelIds.length>0&&<div><span>納入地號登記面積合計</span><strong>{format(result.registeredArea)}<small>㎡</small></strong></div>}<div><span>本方案納入面積</span><strong>{format(result.includedArea)}<small>㎡</small></strong></div><div><span>持分換算權利範圍</span><strong>{format(result.rightsArea)}<small>㎡</small></strong></div><div><span>{publicText(result.areaLabel)}</span><strong>{format(result.allocationArea)}<small>㎡</small></strong></div></div>
+    {!result.canConfirm&&<div className="lw-check-next"><strong>優先核對</strong>
+     <button type="button" className="le-text-button" onClick={()=>fieldLocation.locate({heading:'地號與納入範圍'})}>地號與納入範圍</button>
+     <button type="button" className="le-text-button" onClick={()=>fieldLocation.locate({label:'公告沿革與適用版本依據、頁次與適用範圍'})}>公告沿革與適用版本</button>
+     <button type="button" className="le-text-button" onClick={()=>fieldLocation.locate({heading:p.track==='owner'?'地主權益與程序事項':'取得標的與權利承接'})}>個案權利資料</button>
+    </div>}
+    {[result.registeredArea,result.includedArea,result.rightsArea,result.allocationArea].some(Number.isFinite)&&
+<div className={"ra-measures"+(p.parcelIds.length?" ra-four-measures":"")}>{p.parcelIds.length>0&&<div><span>納入地號登記面積合計</span><strong>{format(result.registeredArea)}<small>㎡</small></strong></div>}<div><span>本方案納入面積</span><strong>{format(result.includedArea)}<small>㎡</small></strong></div><div><span>持分換算權利範圍</span><strong>{format(result.rightsArea)}<small>㎡</small></strong></div><div><span>{publicText(result.areaLabel)}</span><strong>{format(result.allocationArea)}<small>㎡</small></strong></div></div>}
     <div className="lw-table"><table><thead><tr><th>核對項目</th><th>狀態</th><th>本案條件與缺件</th></tr></thead><tbody>{result.findings.map(x=><tr key={x.id}><th>{x.title}</th><td><span className={'ra-status ra-'+x.state}>{stateLabels[x.state]}</span></td><td>{publicText(x.detail)}</td></tr>)}</tbody></table></div>
     <FieldLocationNotice>{fieldLocation.notice}</FieldLocationNotice><JudgementPanel model={readjustmentJudgement(p,land,result)} onLocate={target=>target.module==='land'?onLand(target):fieldLocation.locate(target)}/>
     <EvaluationDelivery getSummary={()=>readjustmentDelivery(p,land,result)} charts={readjustmentDelivery(p,land,result).charts}/>
