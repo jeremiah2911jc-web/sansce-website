@@ -14,9 +14,9 @@ export function missingBaseFields(input){
 }
 const fieldLabels={
  renewal:'都更快速目標%',danger:'危老快速目標%',tdr:'容移快速目標%',
- unitPing:'每戶地上分攤面積',storePercent:'店舖等第一類用途比例',motoPerUnit:'每戶機車需求',
+ unitPing:'每戶地上分攤面積',storePercent:'店舖等第一類用途占比',motoPerUnit:'每戶機車需求',
  roofHeight:'屋突每層高度',balcony:'陽台占各層樓板比例',basementSalePercent:'地下設備梯間計入房屋公設',
- basementFloors:'地下層數',excavationCap:'個案開挖率上限',carPerUnit:'市場汽車需求',
+ basementFloors:'地下層數',excavationCap:'個案開挖率上限',carPerUnit:'汽車位需求估算',
  reserve:'地下設備梯間預留比例',extraCars:'增設汽車位數',
 };
 const specialTargets=[
@@ -35,7 +35,7 @@ export function planningDefaultTarget(key,input){
 }
 export function issueTarget(message,input={}){
  if(input.regulatoryReview?.bonusAssessment?.awardBasis==='permitted'&&/既有核准獎勵|獎勵核准|既有獎勵核准/.test(message))return {tab:'base',key:'legacyAward'};
- if(/TOD.*合計上限/.test(message)&&input.regulatoryReview?.ntpcTod?.scope==='exception')return {tab:'base',summary:'獎勵與容移：快速估算／細項評定',label:'重建獎勵路徑'};
+ if(/TOD.*合計上限/.test(message)&&input.regulatoryReview?.ntpcTod?.scope==='exception')return {tab:'base',summary:'獎勵與容移：快速估算／細項評定',label:'重建獎勵類別'};
  if(/TOD/.test(message))return {tab:'base',summary:'新北TOD增額容積與容移順序',label:/例外.*日期/.test(message)?'TOD例外的容移核准或都更報核日期':/例外.*依據|查詢依據/.test(message)?'TOD查詢或例外依據':/例外.*選擇/.test(message)?'TOD免優先申請的例外條件':/完整街廓/.test(message)?'TOD基地是否為完整街廓':/比例|合計上限|須先申請/.test(message)?'TOD增額容積比例':'TOD適用範圍與申請順序'};
  const detail=blockingFieldTarget(message,input);if(detail)return detail;
  const row=message.match(/^(.+?)(適用比例|第二計算量|第三計算量|計算量)(未填|不得)/);
@@ -44,7 +44,7 @@ export function issueTarget(message,input={}){
  if(exact)return exact;
  const field=fields.filter(x=>x.terms.some(t=>message.includes(t))||new RegExp('(^|[^a-zA-Z])'+x.key+'([^a-zA-Z]|$)').test(message)).sort((a,b)=>Math.max(...b.terms.map(t=>t.length))-Math.max(...a.terms.map(t=>t.length)))[0];
  if(field)return field;
- const catalog=blockingIssueCatalog.flatMap(x=>x.terms.filter(t=>message.includes(publicText(t))).map(term=>({...x,length:term.length}))).sort((a,b)=>b.length-a.length)[0];
+ const catalog=blockingIssueCatalog.flatMap(x=>x.terms.filter(t=>message.includes(t)||message.includes(publicText(t))).map(term=>({...x,length:term.length}))).sort((a,b)=>b.length-a.length)[0];
  if(catalog)return {...catalog.target,source:catalog.owner};
  const groups=[
   {tab:'base',heading:'基地與開發強度',terms:['基地','建蔽','容積率']},
@@ -94,7 +94,7 @@ function blockingFieldTarget(message,input){
 
  for(const item of taipeiRenewalItems){if(message.includes(item.title)){const field=item.fields.find(f=>message.includes(f.label));return {tab:'base',region:'臺北市地方都更獎勵',summary:item.title,...(field?{label:field.label}:{})};}}
  const rules=[
-  [/請先選擇重建獎勵路徑/,{tab:'base',label:'重建獎勵路徑'}],
+  [/請先選擇重建獎勵(?:類別|路徑)/,{tab:'base',label:'重建獎勵類別'}],
   [/所選獎勵超過個案合計上限/,{tab:'base',region:'獎勵與容移上限',label:'個案獎勵及容移合計上限%（無資料留白）'}],
   [/法規檢討資料格式無效/,{tab:'base',invalidOption:true,entries:Object.entries(input.regulatoryReview?.bonusAssessment?.entries??{}).map(([key,value])=>({label:bonusIssueLabels[key]+'目標條件',choice:value.choice})),heading:'獎勵與容移：快速估算／細項評定'}],
   [/既有許可移入容積須|既有容移許可文號|既有許可對照須|填容積移轉許可函|已取得容積移轉許可時/,{tab:'base',summary:'容移取得條件與資格檢核',key:'legacyTransfer'}],
@@ -108,7 +108,7 @@ function blockingFieldTarget(message,input){
   [/策略性更新加倍/,{tab:'base',region:'臺北市地方都更獎勵',label:'更新單元面積（㎡）'}],
   [/地下層數超出本網站|地下層數須為|分層配置地下層數/,{tab:'basement',key:'basementFloors',label:'地下層數'}],
   [/地區.*重設|係數.*重設地區|所在地.*一致/,{tab:'base',scope:'editor',label:'評估地區'}],
-  [/純住宅設計.*非住宅比例/,{tab:'parking',key:'storePercent',label:'店舖等第一類用途比例'}],
+  [/純住宅設計.*非住宅比例/,{tab:'parking',key:'storePercent',label:'店舖等第一類用途占比'}],
   [/每戶面積/,{tab:'parking',key:'unitPing',label:'每戶地上分攤面積'}],
   [/指定增設車位須為|增設汽車位數.*整數/,{tab:'parking',key:'extraCars',label:'增設汽車位數'}],
   [/實際開闢寬度須/,{tab:'base',label:'實際開闢道路寬度m'}],
@@ -123,7 +123,7 @@ function blockingFieldTarget(message,input){
   [/屋突用途不符合/,{tab:'above',summary:'屋突用途與登記假設',label:'屋突暫按符合樓梯、昇降機及機械房用途'}],
   [/R2.R3.*昇降機|9m屋突假設不允許/,{tab:'above',summary:'屋突用途與登記假設',label:'昇降機出入口只設於屋頂層，不設R2／R3'}],
   [/普通計容樓板公設比例/,{tab:'basement',summary:'普通計容樓板內的公設分類假設',label:'普通樓板內計容公設比例%'}],
-  [/都更獎勵上限/,{tab:'base',region:'獎勵與容移上限',label:'本次都更路徑獎勵上限%'}],
+  [/都更獎勵上限/,{tab:'base',region:'獎勵與容移上限',label:'都更獎勵上限%'}],
   [/^容移上限/,{tab:'base',region:'獎勵與容移上限',label:'本次容移上限%'}],
   [/另定上限依據|個案上限的文件依據/,{tab:'base',region:'獎勵與容移上限',label:'另定上限依據'}],
   [/一般都更50%上限|一般容移30%上限/,{tab:'base',...(input.regulatoryReview?.bonusAssessment?{region:'獎勵與容移上限',label:'另定上限依據'}:{summary:'上限適用依據',label:'上限、評點及特殊適用依據'})}],

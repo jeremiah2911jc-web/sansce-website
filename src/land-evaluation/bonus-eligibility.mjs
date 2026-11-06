@@ -3,7 +3,7 @@ import {bonusIssueLabels} from './blocking-issue-catalog.mjs';
 // Legal eligibility is checked before quantities are adopted. No storage or UI dependencies.
 export const BONUS_LEGAL_VERSION='bonus-legal.2026-11-03.v2';
 export const BONUS_LEGAL_REVIEWED_AT='2026-11-03';
-export const bonusLabels={renewalWork:'都市更新實施措施',implementation:'都市更新實施方式',source:'本次獎勵適用依據',article7District:'第7條第1項第3款更新地區',renewalDistrict:'是否已劃定應實施更新地區',greenMinimum:'法定最低綠建築等級',agreementDoors:'更新前門牌戶數',agreementConsent:'報核時全體同意協議合建',overlap:'獎勵重複範圍核對',overlapSource:'獎勵範圍及扣除依據',renewalAreaSource:'更新地區劃定公告與基地範圍',quickExtras:'快速估算是否含危老規模獎勵',originalCap:'危老基本獎勵上限方式',originalSource:'合法原建築容積依據',dangerCategory:'危老適用建築物條件',dangerConsent:'危老全體所有權人同意',tdrResource:'公共設施或保存建物採用方式',tdrSource:'容移資格與上限路徑依據'};
+export const bonusLabels={renewalWork:'都市更新實施措施',implementation:'都市更新實施方式',source:'本次獎勵適用依據',article7District:'第7條第1項第3款更新地區',renewalDistrict:'是否已劃定應實施更新地區',greenMinimum:'法定最低綠建築等級',agreementDoors:'更新前門牌戶數',agreementConsent:'報核時全體同意協議合建',overlap:'獎勵重複範圍核對',overlapSource:'獎勵範圍及扣除依據',renewalAreaSource:'更新地區劃定公告與基地範圍',quickExtras:'快速估算是否含危老規模獎勵',originalCap:'危老基本獎勵上限方式',originalSource:'合法原建築容積依據',dangerCategory:'危老適用建築物條件',dangerConsent:'危老全體所有權人同意',tdrResource:'公共設施或保存建物採用方式',tdrSource:'容積移轉資格及適用上限依據'};
 export const validLegalDate=x=>typeof x==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(x)&&Number.isFinite(Date.parse(x))&&new Date(x).toISOString().slice(0,10)===x;
 const present=x=>typeof x==='string'&&!!x.trim();
 export function isBonusConditions(g){

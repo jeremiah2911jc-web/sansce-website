@@ -52,7 +52,7 @@ export function TaipeiRenewalPanel({assessment:a,context,change}){
     <EvaluationDisclosure><summary>地方獎勵重複面積扣除</summary><p>填入尚未於各項計算扣除的重複獎勵面積。中央、地方或其他獎勵之間的重複，另在上方「同一事項重複獎勵扣除」填寫百分比。</p><div className="taipei-fields">{number('地方獎勵應扣除面積（㎡）','localDeduction')}{input('重複項目與扣除依據','deductionSource')}</div></EvaluationDisclosure>
    </>}
    {review.errors.length>0?<ul className="taipei-gaps" aria-label="臺北地方獎勵待補資料">{[...new Set(review.errors)].map(e=><li key={e}>{e}</li>)}</ul>:<p className="taipei-result" role="status">地方細項合計{fmt(review.raw)}%，{review.multiplier===2?'加倍後':''}採用{fmt(review.applied)}%（{fmt(review.base*review.applied/100)}㎡）；地方上限{review.localCap}%。</p>}
-   <p>中央與地方都更獎勵合計，依本次路徑採{fmt(review.totalCap)}%上限。各項估算與最終核定額度，依案件文件分別確認。</p>
+   <p>中央與地方都更獎勵合計採{fmt(review.totalCap)}%上限。各項估算與最終核定額度，依案件文件分別確認。</p>
   </>}
  </section>;
 }

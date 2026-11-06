@@ -24,6 +24,14 @@ export function applyEvaluationPanelCopy(code){
  }
  visit(ast);for(const edit of edits.sort((a,b)=>b.start-a.start))code=code.slice(0,edit.start)+edit.text+code.slice(edit.end);
  code=applyBonusSectionLayout(applyTransferPresentation(applyPlanningAwardPresentation(applyBonusRouteVisibility(code))));
+ code=code.replace(
+  /"%\\u3002\\u53D6\\u503C\\u65B9\\u5F0F\\u70BA",(\s*)a\.tdrMode === "detail" \? "細項評定" : "快速估算欄位所填比例"/,
+  '"%。本次試算採用",$1a.tdrMode === "detail" ? "細項評定" : "快速估算欄位所填比例"'
+ );
+ code=code.replace(
+  /children: \[\n        a\.tdrProfile === "special50" \? ("免辦量體評定時，[^"]+") : "",/,
+  'children: a.tdrProfile === "special50" ? $1 : ['
+ );
  return applyParkingControlsLayout(applyBasementLayout(applyHousingModeEntryLayout(applyIndustrialResultLayout(applyIndustrialFirstStep(code)))));
 }
 
@@ -219,7 +227,7 @@ export function applyIndustrialFirstStep(code){
   ${jsxs}("div",{className:"le-settings-grid",children:[${controls.join(',\n    ')}]})
  ]})`;
  const updated=[`${jsx}("h1",{children:"工業土地與廠房開發"})`,source(intro),first,
-  group('開發途徑與樓層配置',[route,awards,conditions,floors]),
+  group('開發方式與樓層配置',[route,awards,conditions,floors]),
   group('案件資料與法規依據',[meta,evidence,law]),
   ...rest.slice(firstAction).map(source)].join(',\n    ');
  const params=panel.params[0];
@@ -326,9 +334,19 @@ export function applyBasementLayout(code){
 
 export function applyParkingControlsLayout(code){
  const panel=parse(code,{sourceType:'module'}).program.body.find(node=>node.type==='FunctionDeclaration'&&node.id.name==='LegalParkingPanel');
- if(!panel||code.slice(panel.start,panel.end).includes('le-parking-controls'))return code;
+ if(!panel)return code;
  const children=node=>node.arguments[1].properties.find(p=>p.key.name==='children').value.elements;
  const root=panel.body.body.find(node=>node.type==='ReturnStatement').argument;
+ const incomplete=children(root).find(node=>node.right?.arguments?.[1]?.properties?.some(p=>p.key.name==='className'&&p.value.value==='planning-incomplete'));
+ if(incomplete?.left.type==='UnaryExpression'){
+  const fallback=incomplete.right.arguments[1].properties.find(p=>p.key.name==='children').value;
+  if(fallback.type==='LogicalExpression'&&fallback.right.value?.startsWith('停車容量與地下層數')){
+   code=code.slice(0,fallback.left.end)+code.slice(fallback.end);
+   code=code.slice(0,incomplete.left.end)+' && z?.errors.length > 0'+code.slice(incomplete.left.end);
+   return applyParkingControlsLayout(code);
+  }
+ }
+ if(code.slice(panel.start,panel.end).includes('le-parking-controls'))return code;
  const controls=children(root)[0].right;
  const [demand,perUnit,basis]=children(controls);
  if(basis.arguments?.[0]?.value!=='label'||perUnit.type!=='LogicalExpression')throw Error('Parking controls layout changed');
